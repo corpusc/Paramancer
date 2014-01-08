@@ -1,0 +1,43 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\_Scripts\EntityClass.cs">
+    <Files>
+      <File FileName="Assets\_Scripts\CcNet.cs" Line="383" Column="34" />
+      <File FileName="Assets\_Scripts\Weapon\Weapon.cs" Line="120" Column="10" />
+      <File FileName="Assets\_Scripts\Hud\CcLog.cs" Line="33" Column="1" />
+      <File FileName="Assets\_Scripts\Hud\Hud.cs" Line="1084" Column="14" />
+      <File FileName="Assets\_Scripts\Hud\ControlsGui.cs" Line="117" Column="32" />
+      <File FileName="Assets\_Scripts\Hud\Controls.cs" Line="1" Column="1" />
+      <File FileName="Assets\_Scripts\GameMode\GameModeScript.cs" Line="4" Column="18" />
+      <File FileName="Assets\_Scripts\Map\LevelInfoScript.cs" Line="6" Column="1" />
+      <File FileName="Assets\_Scripts\Weapon\RocketScript.cs" Line="48" Column="1" />
+      <File FileName="Assets\_Scripts\EntityClass.cs" Line="711" Column="1" />
+      <File FileName="Assets\_Scripts\GameMode\BasketballScript.cs" Line="99" Column="35" />
+      <File FileName="Assets\_Scripts\Weapon\Ammo\SwapperBullet.cs" Line="1" Column="1" />
+      <File FileName="Assets\_Scripts\Weapon\Ammo\SimplePistolBullet.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Assembly-CSharp" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="_Scripts" expanded="True">
+                <Node name="Weapon" expanded="True">
+                  <Node name="Ammo" expanded="True" />
+                </Node>
+                <Node name="EntityClass.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

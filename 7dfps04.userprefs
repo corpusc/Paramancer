@@ -1,0 +1,18 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/SophieNetworkScript.cs">
+    <Files>
+      <File FileName="Assets/FPSEntity.cs" Line="264" Column="6" />
+      <File FileName="Assets/SophieNetworkScript.cs" Line="90" Column="63" />
+      <File FileName="Assets/FPSPlayer.cs" Line="17" Column="2" />
+      <File FileName="Assets/SimplePistolBullet.cs" Line="16" Column="37" />
+      <File FileName="Assets/FPSArtillery.cs" Line="61" Column="34" />
+      <File FileName="Assets/GrenadeScript.cs" Line="2" Column="26" />
+      <File FileName="Assets/GrenadeFlashScript.cs" Line="13" Column="32" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -1,0 +1,16 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FPSEntity.cs">
+    <Files>
+      <File FileName="Assets/FPSEntity.cs" Line="204" Column="85" />
+      <File FileName="Assets/LevelInfoScript.cs" Line="6" Column="1" />
+      <File FileName="Assets/SophieNetworkScript.cs" Line="60" Column="87" />
+      <File FileName="Assets/FPSMessages.cs" Line="10" Column="27" />
+      <File FileName="Assets/FPSGUI.cs" Line="345" Column="17" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -1,0 +1,127 @@
+fileFormatVersion: 2
+guid: 5bc91021011a14d5ba940549bf6bca7a
+ModelImporter:
+  serializedVersion: 15
+  fileIDToRecycleName:
+    100000: Scarf5
+    100002: Scarf4
+    100004: Leg_Target_R
+    100006: Leg_L
+    100008: Scarf6
+    100010: Arm_Target_R
+    100012: Scarf1
+    100014: ScarfRoot
+    100016: GunBone2
+    100018: GunBone1
+    100020: Arm_R_001
+    100022: Arm_R
+    100024: Arm_L_001
+    100026: Arm_L
+    100028: HeadBone
+    100030: KneckBone
+    100032: TorsoBone
+    100034: WaistBone
+    100036: HipBone
+    100038: Bone_001
+    100040: Armature
+    100042: MachineGun
+    100044: Scarf3
+    100046: Scarf2
+    100048: Foot_R
+    100050: //RootNode
+    100052: Arm_Target_L
+    100054: Leg_R_002
+    100056: Leg_R
+    100058: Leg_Target_L
+    100060: Foot_L
+    100062: Leg_L_002
+    400000: Scarf5
+    400002: Scarf4
+    400004: Leg_Target_R
+    400006: Leg_L
+    400008: Scarf6
+    400010: Arm_Target_R
+    400012: Scarf1
+    400014: ScarfRoot
+    400016: GunBone2
+    400018: GunBone1
+    400020: Arm_R_001
+    400022: Arm_R
+    400024: Arm_L_001
+    400026: Arm_L
+    400028: HeadBone
+    400030: KneckBone
+    400032: TorsoBone
+    400034: WaistBone
+    400036: HipBone
+    400038: Bone_001
+    400040: Armature
+    400042: MachineGun
+    400044: Scarf3
+    400046: Scarf2
+    400048: Foot_R
+    400050: //RootNode
+    400052: Arm_Target_L
+    400054: Leg_R_002
+    400056: Leg_R
+    400058: Leg_Target_L
+    400060: Foot_L
+    400062: Leg_L_002
+    4300000: MachineGun
+    7400000: Default Take
+    7400002: ArmatureAction
+    11100000: //RootNode
+    13700000: HipBone
+    13700002: MachineGun
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .5
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    handles: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  additionalBone: 1
+  animationType: 1
+  userData: 
