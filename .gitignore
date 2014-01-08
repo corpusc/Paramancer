@@ -1,25 +1,26 @@
-#this was taken from http://devblog.phillipspiess.com/2012/06/17/unity-3-5-free-and-source-control-lessons-learned-from-7dfps/
+#some of this was taken from http://devblog.phillipspiess.com/2012/06/17/unity-3-5-free-and-source-control-lessons-learned-from-7dfps/
 
 
 
-
-#NOTE: this will cause your collaborators to re-import assets periodically
-
-Temp/*
-Library/*
-Build/*
-Obj/*
-
+Builds
+Debugging Output
+Screenshots
+Source Material
+Temp
+Library
 
 
 
 #(NCarter said any Library folder exceptions were only needed in older version of Unity)
 
-
-
-
-#ignoring pidb, they are just code completion caching data according to:
+*pidb files are just code completion caching data according to:
 # http://stackoverflow.com/questions/1022111/what-are-monodevelops-pidb-files
 
+
+
+*.csproj
 *.pidb
+*.sln
+*.unityproj
 *.userprefs
+*.tmproj
