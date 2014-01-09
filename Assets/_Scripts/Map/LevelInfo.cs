@@ -1,9 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class LevelInfoScript : MonoBehaviour {
-
+public class LevelInfo : MonoBehaviour {
 	public string name = "";
-	
 	public Texture icon;
 }

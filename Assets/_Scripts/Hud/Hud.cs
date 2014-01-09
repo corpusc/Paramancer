@@ -5,7 +5,7 @@ using System.Globalization;
 
 public class Hud : MonoBehaviour {
 	public GameModeScript[] modes;
-	public LevelInfoScript[] levels;
+	public LevelInfo[] levels;
 
 	// swapper
 	public int swapperCrossX = 0;
