@@ -1671,6 +1671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BottomMost: 0
+  KeyCap: {fileID: 2800000, guid: ceab6340d6cef6a478ccbfa6f56fdc96, type: 3}
 --- !u!1 &2050906751
 GameObject:
   m_ObjectHideFlags: 0

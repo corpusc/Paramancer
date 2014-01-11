@@ -1,16 +1,21 @@
-﻿using UnityEngine;
+﻿// optimizeme?: would make me feel better if all the key rects were only calculated 
+// fresh for OnGUI whenever screen resolution changed
+using UnityEngine;
 using System.Collections;
 
 public class ControlsGui : MonoBehaviour {
 	public int BottomMost;
+	public Texture KeyCap;
 	
 	// privates
 	int numX = 21;
 	int numY = 6;
 	KeyCode[] codes;
-
-	// Use this for initialization
-	void Start () {
+	KeyData[] keyData;
+	
+	
+	
+	void Start() {
 		codes = new KeyCode[] {
 			KeyCode.Escape, 
 			KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6, 
@@ -59,62 +64,37 @@ public class ControlsGui : MonoBehaviour {
 			KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow,
 			KeyCode.Keypad0, KeyCode.None, KeyCode.KeypadPeriod, KeyCode.None, 
 		};
-	}
-	
-	void Update () {
-	}
-	
-	void OnGUI () {
-		int w = Screen.width/(numX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
-		//int h = Screen.height/(numY+1);
-		int fKeyGap = w/3;
 		
-		int i = 0;
-		for (int y = 0; y < numY; y++) {
-			for (int x = 0; x < numX; x++) {
-				if (codes[i] != KeyCode.None) {
-					// setup extra wide or tall keys
-					int numExtraXCells = numNonesToTheRight(codes[i]);
-					int numExtraYCells = 0;
-					switch (codes[i]) {
-						case KeyCode.KeypadPlus:
-						case KeyCode.KeypadEnter:
-							numExtraYCells++;
-							break;
-					}
-					
-					int xOffs = 0;
-					int yOffs = 0;
+		keyData = new KeyData[codes.Length];
+		for (int i = 0; i < keyData.Length; i++)
+			keyData[i] = new KeyData();
+	}
 	
-					if (y == 0) {
-						if (x > 0) xOffs += fKeyGap;
-						if (x > 4) xOffs += fKeyGap;
-						if (x > 8) xOffs += fKeyGap;
-						if (x > 12) xOffs += fKeyGap;
-					} else {
-						if (x > 13) xOffs += fKeyGap;
-						if (x > 16) xOffs += fKeyGap;
-						yOffs = w/2;
-					}
+	void Update() {
+	}
 	
-					
-					// get the right color
-					if (Input.GetKey(codes[i]) )
-						GUI.color = Color.yellow;
-					else
-						GUI.color = Color.cyan;
-						
-					GUI.Box(new Rect(
-						x * w + xOffs,
-						y * w + yOffs,
-						w + w * numExtraXCells, 
-						w + w * numExtraYCells), getConciseText(codes[i]) );
-				}
+	int oldW = 0; int oldH = 0;
+	void OnGUI () {
+		var mouPos = Input.mousePosition;
+		mouPos.y = Screen.height - mouPos.y;
+		
+		if /* screen size changed */ (oldW != Screen.width || oldH != Screen.height)
+			setupKeyData();
+		
+		oldW = Screen.width;
+		oldH = Screen.height;
+		
+		// draw keys
+		for (int i = 0; i < keyData.Length; i++) {
+			// get the right color
+			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) )
+				GUI.color = Color.yellow;
+			else
+				GUI.color = Color.cyan;
 				
-				i++;
-			}
-			
-			BottomMost = y * w + w + w/2;
+			// draw
+			GUI.DrawTexture(keyData[i].Rect, KeyCap);
+			GUI.Box(keyData[i].Rect, keyData[i].Text);
 		}
 	}
 	
@@ -180,5 +160,55 @@ public class ControlsGui : MonoBehaviour {
 			default:
 				return 0;		
 		}		
+	}
+
+	void setupKeyData() {
+		int w = Screen.width/(numX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
+		//int h = Screen.height/(numY+1);
+		int fKeyGap = w/3;
+		
+		int i = 0;
+		for (int y = 0; y < numY; y++) {
+			for (int x = 0; x < numX; x++) {
+				if (codes[i] != KeyCode.None) {
+					// setup extra wide or tall keys
+					int numExtraXCells = numNonesToTheRight(codes[i]);
+					int numExtraYCells = 0;
+					switch (codes[i]) {
+						case KeyCode.KeypadPlus:
+						case KeyCode.KeypadEnter:
+							numExtraYCells++;
+							break;
+					}
+					
+					int xOffs = 0;
+					int yOffs = 0;
+		
+					if (y == 0) {
+						if (x > 0) xOffs += fKeyGap;
+						if (x > 4) xOffs += fKeyGap;
+						if (x > 8) xOffs += fKeyGap;
+						if (x > 12) xOffs += fKeyGap;
+					} else {
+						if (x > 13) xOffs += fKeyGap;
+						if (x > 16) xOffs += fKeyGap;
+						yOffs = w/2;
+					}
+		
+					// set key data
+					keyData[i].KeyCode = codes[i];
+					keyData[i].Text = getConciseText(codes[i]);
+					keyData[i].Rect = new Rect(
+						x * w + xOffs,
+						y * w + yOffs,
+						w + w * numExtraXCells, 
+						w + w * numExtraYCells);
+				}
+				
+				i++;
+			}
+			
+			BottomMost = y * w + w + w/2;
+		}
 	}
 }

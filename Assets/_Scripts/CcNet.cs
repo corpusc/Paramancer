@@ -18,7 +18,7 @@ public class CcNet : MonoBehaviour {
 	public int listenPort = 25000;
 	public string comment = "GameMode|Level";
 	public string password = "";
-	public List<Player> players = new List<Player>();
+	public List<NetUser> players = new List<NetUser>();
 	public List<PickupPoint> pickupPoints = new List<PickupPoint>();
 	private float nextPingTime = 0f;
 	public int team1Score = 0;
@@ -42,7 +42,7 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	// personal stuff
-	public Player localPlayer;
+	public NetUser localPlayer;
 	public bool gunBobbing = true;
 	public bool autoPickup = false;
 	public float gameVolume = 1f;
@@ -820,7 +820,7 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	void AddPlayer(bool isLocal, NetworkViewID anID, Color cA, Color cB, Color cC, int head, string name, NetworkPlayer np, int targetTeam, int lives){
-		Player newPlayer = new Player();
+		NetUser newPlayer = new NetUser();
 		
 		newPlayer.colA = cA;
 		newPlayer.colB = cB;
@@ -1206,7 +1206,7 @@ public class CcNet : MonoBehaviour {
 			for (int i=0; i<players.Count; i++){
 				if (players[i].Entity!=null) Destroy(players[i].Entity.gameObject);
 			}
-			players = new List<Player>();
+			players = new List<NetUser>();
 			
 			hud.menuPoint = "top";
 			Application.LoadLevel("MenuMain");
@@ -1312,7 +1312,7 @@ public class CcNet : MonoBehaviour {
 		for (int i=0; i<players.Count; i++){
 			if (players[i].Entity!= null) Destroy(players[i].Entity.gameObject);
 		}
-		players = new List<Player>();
+		players = new List<NetUser>();
 		
 		hud.menuPoint = "top";
 		Application.LoadLevel("MenuMain");
@@ -1338,7 +1338,7 @@ public class CcNet : MonoBehaviour {
 				Destroy(players[i].Entity.gameObject);
 		}
 		
-		players = new List<Player>();
+		players = new List<NetUser>();
 		hud.menuPoint = "top";
 		Application.LoadLevel("MenuMain");
 		levelLoaded = false;

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class EntityClass : MonoBehaviour {
-	public Player thisPlayer;
+	public NetUser User;
 	private CharacterController cc;
 	private Avatar ava;
 
@@ -106,15 +106,15 @@ public class EntityClass : MonoBehaviour {
 		Material newMatA = new Material(dummyAMat);
 		Material newMatB = new Material(dummyBMat);
 		Material newMatC = new Material(dummyCMat);
-		newMatA.color = thisPlayer.colA;
-		newMatB.color = thisPlayer.colB;
-		newMatC.color = thisPlayer.colC;
+		newMatA.color = User.colA;
+		newMatB.color = User.colB;
+		newMatC.color = User.colC;
 		
 		if (net.ModeCfg.teamBased){
-			if (thisPlayer.team == 1) {
+			if (User.team == 1) {
 				newMatA.color = Color.red;
 			}
-			if (thisPlayer.team == 2) {
+			if (User.team == 2) {
 				newMatA.color = Color.cyan;
 			}
 		}
@@ -176,7 +176,7 @@ public class EntityClass : MonoBehaviour {
 			heads[17].renderer.material = maheadMat;
 		}
 		
-		if (firstPersonGun != null && thisPlayer.local && firstPersonGun.renderer && handGun>=0){
+		if (firstPersonGun != null && User.local && firstPersonGun.renderer && handGun>=0){
 			if (!visible){
 				firstPersonGun.renderer.enabled = true;
 				firstPersonGun.renderer.material = artil.gunTypes[handGun].gunMaterial;
@@ -186,14 +186,14 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		
-		if (!net.ModeCfg.pitchBlack || !thisPlayer.local){
+		if (!net.ModeCfg.pitchBlack || !User.local){
 			firstPersonLight.enabled = false;
 		
 		}
-		if (!thisPlayer.local && net.ModeCfg.pitchBlack){
-			if (net.ModeCfg.teamBased && thisPlayer.team == net.localPlayer.team){
+		if (!User.local && net.ModeCfg.pitchBlack){
+			if (net.ModeCfg.teamBased && User.team == net.localPlayer.team){
 				firstPersonLight.enabled = true;
-				if (thisPlayer.team == 1){
+				if (User.team == 1){
 					firstPersonLight.color = Color.red;
 				}else{
 					firstPersonLight.color = Color.cyan;
@@ -213,7 +213,7 @@ public class EntityClass : MonoBehaviour {
 		hud = o.GetComponent<Hud>();
 		artil = o.GetComponent<Weapon>();
 		
-		if (thisPlayer.local && net.ModeCfg.pitchBlack){
+		if (User.local && net.ModeCfg.pitchBlack){
 			Camera.main.backgroundColor = Color.black;
 			RenderSettings.ambientLight = Color.black;
 		}
@@ -223,7 +223,7 @@ public class EntityClass : MonoBehaviour {
 		if (ava == null) 
 			ava = gameObject.AddComponent<Avatar>();
 		
-		if (thisPlayer.lives>=0){
+		if (User.lives>=0){
 			if (isLocal){
 				SetModelVisibility(false);
 			}else{
@@ -311,7 +311,7 @@ public class EntityClass : MonoBehaviour {
 	private float rpcCamtime = 0f;
 	void Update () {
 		
-		if (thisPlayer.health <= 0f){
+		if (User.health <= 0f){
 			//if (handGun==7){
 				//shut off bomb
 				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null){
@@ -363,7 +363,7 @@ public class EntityClass : MonoBehaviour {
 				
 			}else{
 				Vector3 lastPos = transform.position;
-				if (thisPlayer.health>0f){
+				if (User.health>0f){
 					
 					
 					hud.offeredPickup = offeredPickup;
@@ -388,11 +388,11 @@ public class EntityClass : MonoBehaviour {
 									currentOfferedPickup.Pickup();
 								}
 							}
-							if (offeredPickup == "health" && thisPlayer.health<100f){
+							if (offeredPickup == "health" && User.health<100f){
 								
-								net.ConsumeHealth(thisPlayer.viewID);
+								net.ConsumeHealth(User.viewID);
 								net.localPlayer.health = 100f;
-								thisPlayer.health = 100f;
+								User.health = 100f;
 								
 								PlaySound("weaponChange");
 								
@@ -411,7 +411,7 @@ public class EntityClass : MonoBehaviour {
 				hud.gunACooldown = handGunCooldown;
 				hud.gunB = holsterGun;
 				
-				if (thisPlayer.health>0f){
+				if (User.health>0f){
 					
 					
 					
@@ -497,7 +497,7 @@ public class EntityClass : MonoBehaviour {
 						transform.position = lavaHit.point+ (Vector3.up*0.35f);
 						sendRPCUpdate = true;
 						inputVector = Vector3.zero;
-						net.RegisterHit("lava", thisPlayer.viewID, thisPlayer.viewID, lavaHit.point);
+						net.RegisterHit("lava", User.viewID, User.viewID, lavaHit.point);
 					}
 					
 					
@@ -506,7 +506,7 @@ public class EntityClass : MonoBehaviour {
 					if (moveVec != lastMoveVector) sendRPCUpdate = true;
 					if (crouched != lastCrouch) sendRPCUpdate = true;
 					//if (yMove != lastYmove) sendRPCUpdate = true;
-					if (thisPlayer.health != lastHealth) sendRPCUpdate = true;
+					if (User.health != lastHealth) sendRPCUpdate = true;
 					if (net.broadcastPos){
 						net.broadcastPos = false;
 						sendRPCUpdate = true;
@@ -516,10 +516,10 @@ public class EntityClass : MonoBehaviour {
 					lastMoveVector = moveVec;
 					lastCrouch = crouched;
 					lastYmove = yMove;
-					lastHealth = thisPlayer.health;
+					lastHealth = User.health;
 					
 					if (sendRPCUpdate){
-						net.SendPlayer(thisPlayer.viewID, transform.position, camAngle, crouched, moveVec, yMove, handGun, holsterGun, transform.up, transform.forward);
+						net.SendPlayer(User.viewID, transform.position, camAngle, crouched, moveVec, yMove, handGun, holsterGun, transform.up, transform.forward);
 						sendRPCUpdate = false;
 						
 						rpcCamtime = Time.time;// + 0.02f;
@@ -580,7 +580,7 @@ public class EntityClass : MonoBehaviour {
 							bballArrowObj.transform.parent = Camera.main.transform;
 							bballArrowObj.transform.localPosition = Vector3.forward - (Vector3.right*0.8f) + (Vector3.up*0.5f);
 						}
-						if (thisPlayer.hasBall){
+						if (User.hasBall){
 							bballArrowObj.renderer.enabled = false;
 						}else{
 							bballArrowObj.renderer.enabled = true;
@@ -621,7 +621,7 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if (handGun>=0 && !thisPlayer.hasBall){
+					if (handGun>=0 && !User.hasBall){
 						//shooting
 						if (Input.GetKeyDown("mouse 0") && Screen.lockCursor == true && !artil.gunTypes[handGun].isAutomatic){
 							if (handGunCooldown<=0f){
@@ -650,13 +650,13 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					//ball throwing
-					if (thisPlayer.hasBall && Input.GetKeyDown("mouse 0") && Screen.lockCursor == true){
+					if (User.hasBall && Input.GetKeyDown("mouse 0") && Screen.lockCursor == true){
 						net.ThrowBall(Camera.main.transform.position, Camera.main.transform.forward, 20f);
 						
 					}
 					
 					if (Input.GetKeyDown("k")){
-						net.RegisterHitRPC("suicide",thisPlayer.viewID,thisPlayer.viewID,transform.position);
+						net.RegisterHitRPC("suicide",User.viewID,User.viewID,transform.position);
 					}
 					
 					moveFPGun();
@@ -692,14 +692,14 @@ public class EntityClass : MonoBehaviour {
 		
 		
 		//visible person model anims
-		if (!thisPlayer.local) camHolder.transform.localEulerAngles = camAngle;
+		if (!User.local) camHolder.transform.localEulerAngles = camAngle;
 		Vector3 lookDir = camHolder.transform.forward;
 		//lookDir.y = 0;
 		lookDir.Normalize();
 		animObj.transform.LookAt(animObj.transform.position + lookDir,transform.up);
 		animObj.transform.localEulerAngles = new Vector3(0,animObj.transform.localEulerAngles.y,0);
 		
-		if (thisPlayer.health>0f){
+		if (User.health>0f){
 			if (yMove == 0f){
 				if (moveVec.magnitude>0.1f){
 					if (crouched){
@@ -746,7 +746,7 @@ public class EntityClass : MonoBehaviour {
 			gunMesh1.transform.localPosition = Vector3.zero;
 			lastKnownHandGun = handGun;
 			
-			if (thisPlayer.local){
+			if (User.local){
 				
 				
 				
@@ -764,7 +764,7 @@ public class EntityClass : MonoBehaviour {
 			
 			sendRPCUpdate = true;
 			
-			if (thisPlayer.health<=0f || !thisPlayer.local){
+			if (User.health<=0f || !User.local){
 				SetModelVisibility(true);
 			}else{
 				SetModelVisibility(false);
@@ -785,7 +785,7 @@ public class EntityClass : MonoBehaviour {
 			
 			sendRPCUpdate = true;
 			
-			if (thisPlayer.health<=0f || !thisPlayer.local){
+			if (User.health<=0f || !User.local){
 				SetModelVisibility(true);
 			}else{
 				SetModelVisibility(false);
@@ -796,22 +796,22 @@ public class EntityClass : MonoBehaviour {
 		
 		
 		//if dead, make unshootable
-		if (thisPlayer.health>0f){
+		if (User.health>0f){
 			gameObject.layer = 8;
 		}else{
 			gameObject.layer = 2;
 		}
 		//if no friendly fire & on same team, make unshootable
 		if (net.ModeCfg.teamBased && !net.ModeCfg.allowFriendlyFire){
-			if (thisPlayer.team == net.localPlayer.team){
+			if (User.team == net.localPlayer.team){
 				gameObject.layer = 2;
 			}
 		}
 		
-		if (thisPlayer.hasBall){
-			if (thisPlayer.local && firstPersonGun && firstPersonGun.renderer) firstPersonGun.renderer.enabled = false;
+		if (User.hasBall){
+			if (User.local && firstPersonGun && firstPersonGun.renderer) firstPersonGun.renderer.enabled = false;
 		}else{
-			if (thisPlayer.local && firstPersonGun && firstPersonGun.renderer && thisPlayer.health>0f) firstPersonGun.renderer.enabled = true;
+			if (User.local && firstPersonGun && firstPersonGun.renderer && User.health>0f) firstPersonGun.renderer.enabled = true;
 		}
 	}
 	
@@ -867,113 +867,57 @@ public class EntityClass : MonoBehaviour {
 		}
 	}
 	
-	void Fire(){
-		if (handGun == 0){
-			//pistol
+	void Fire() {
+		if (handGun == 0) {
 			FireBullet("pistol");
 			gunRecoil -= Vector3.forward * 2f;
 		}else if (handGun == 1){
-			//grenade
 			net.Shoot("grenade", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
-			
 			gunRecoil += Vector3.forward * 6f;
 		}else if (handGun == 2){
-			//machine gun
 			FireBullet("machinegun");
 			gunRecoil -= Vector3.forward * 2f;
 			gunRecoil += new Vector3(Random.Range(-1f,1f),Random.Range(-1f,1f),Random.Range(-1f,1f)).normalized * 0.2f;
 		}else if (handGun == 3){
-			//rifle
 			FireBullet("rifle");
 			gunRecoil -= Vector3.forward * 5f;
 		}else if (handGun == 4){
-			//rocket launcher
 			net.Shoot("rocketlauncher", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
 			gunRecoil -= Vector3.forward * 5f;
 		}else if (handGun == 5){
-			//swapper
-			if (swapperLockTarget == -1){
-				//not locked on, we miss
+			if (swapperLockTarget == -1) {
+				// not locked on, we miss
 				FireBullet("swapper");
 			}else{
 				//locked on, we hit
 				net.Shoot("swapper", transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true);
 				net.RegisterHit("swapper", net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
-				
 			}
 			gunRecoil -= Vector3.forward * 5f;
-		}else if (handGun == 6){
-			//grav gun
-			
+		}else if (handGun == 6) { // grav gun
 			Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 			RaycastHit gravHit = new RaycastHit();
 			int gravLayer = 1<<0;
 			if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)){
-				
 				Vector3 lookPos = Camera.main.transform.position + Camera.main.transform.forward;
 				Quaternion tempRot = Camera.main.transform.rotation;
-				
 				transform.LookAt(transform.position + Vector3.Cross(Camera.main.transform.forward,gravHit.normal) ,gravHit.normal);
-				
 				ForceLook(lookPos);
 				camHolder.transform.localEulerAngles = camAngle;
-				
 				Camera.main.transform.rotation = tempRot;
-				
 				PlaySound("gravgun");
 			}
 			
 			sendRPCUpdate = true;
-			
 			gunRecoil -= Vector3.forward * 5f;
 		}else if (handGun == 7){
-			//bomb
-			net.Detonate("bomb", transform.position, thisPlayer.viewID, thisPlayer.viewID);
-			
+			net.Detonate("bomb", transform.position, User.viewID, User.viewID);
 		}else if (handGun == 8){
-			//spatula
+			// spatula
+			// FIXME: IF WE KEEP THIS, IT SHOULD BE AN INSTAGIB MELEE WEAPON
+			
 			//gunRecoil += Vector3.forward * 6f;
 			gunRecoil -= Vector3.right * 4f;
-			
-			//send message
-			LogEntry newMsg = new LogEntry();
-			newMsg.Maker = thisPlayer.name;
-			newMsg.Color = thisPlayer.colA;
-			newMsg.Text = "SWISH SWISH, I HAVE A SPATULA!";
-			
-			int randInt = Random.Range(0,30);
-			if (randInt == 0) newMsg.Text = "WOOO, SPATULA! SPATULA SPATULA SPATULA SPAAAAAAAAAAATULA!";
-			if (randInt == 1) newMsg.Text = "YOU DON'T STAND A CHANCE AGAINST COUNT SPATULA!";
-			if (randInt == 2) newMsg.Text = "Knock knock, Who's there? ... SPATULA!";
-			if (randInt == 3) newMsg.Text = "THIS IS SPATULA-GASMIC!";
-			if (randInt == 4) newMsg.Text = "SPATULA-RIFFIC!";
-			if (randInt == 5) newMsg.Text = "(pssst, i have a... SPATULA! SPAAAATUUUULAAAA!)";
-			if (randInt == 6) newMsg.Text = "HAHA, GUNS SUCK! I HAVE A SPATULA! SWISH SWISH!";
-			if (randInt == 7) newMsg.Text = "I'M SPATULA-TASTIC!";
-			if (randInt == 8) newMsg.Text = "I WIN AT HAVING A SPATULA BECAUSE I HAVE A SPATULA!";
-			if (randInt == 9) newMsg.Text = "SPAAAAAAAATUUUUUUUULAAAAAAAAAAAAAAAAAAA!";
-			if (randInt == 10) newMsg.Text = "I USED TO BE SUCH A LOSER, BUT NOW I HAVE A SPATULA!";
-			if (randInt == 11) newMsg.Text = "SPATULA! SPAH! TYOO! LAAAAAH!";
-			if (randInt == 12) newMsg.Text = "SWISH SWOOSH SWISH SWOOSH SPATULA POWER!";
-			if (randInt == 13) newMsg.Text = "IS IT A BIRD? IS IT A PLANE? NO MORONS, IT'S A SPATULA!";
-			if (randInt == 14) newMsg.Text = "I HAVE A SPATULA, A SPATULA, A SPATULAAA~AAA, IT IS MY SPATULA!";
-			if (randInt == 15) newMsg.Text = "This one time, at spatula camp, SPATULAS EVERYWHERE, WOO!";
-			if (randInt == 16) newMsg.Text = "'Spatula'; Noun, 1. BEST THING IN THE WORLD! 2. Fly swatter.";
-			if (randInt == 17) newMsg.Text = "SEXY SEXY SPATULA, OH OH OH!";
-			if (randInt == 18) newMsg.Text = "MY SPATULA IS SWISHY! SWISH SWISH! YAY!";
-			if (randInt == 19) newMsg.Text = "I JUST WANT TO THANK DR EARNEST SPATULASON, FOR HIS GREAT INVENTION!";
-			if (randInt == 20) newMsg.Text = "MY SPATULA IS MAGIC! LOL! JUST KIDDING, ALL SPATULAS ARE MAGIC!";
-			if (randInt == 21) newMsg.Text = "SpAtUlA sPaTuLa SpAtUlA sPaTuLa SpAtUlA sPaTuLa SpAtUlA sPaTuLa!";
-			if (randInt == 22) newMsg.Text = "S  P  A  T  U  L  A  !!!";
-			if (randInt == 23) newMsg.Text = "Anyone want my spatula? TOUGH LUCK LOSERS, IT'S MINE!";
-			if (randInt == 24) newMsg.Text = "I AM THE RULER OF SPATULAND, FOR I BEAR THE ROYAL SPATULA!";
-			if (randInt == 25) newMsg.Text = "A wise man once told me; ''Spatulas are awesome'', he was right.";
-			if (randInt == 26) newMsg.Text = "SPAT SPAT SPATUUUUULLLAAAAAAAAAAA!";
-			if (randInt == 27) newMsg.Text = "LOVE, PEACE, SPATULAS!";
-			if (randInt == 28) newMsg.Text = "GUYS GUYS GUYS... I HAVE A SPAAAAAATUUUULAAAAAA!";
-			if (randInt == 29) newMsg.Text = "What's so wrong with being romantically involved with a spatula?";
-			
-			net.networkView.RPC("AddToLog",RPCMode.All, newMsg.Maker + ":", newMsg.Text, net.ColToVec(newMsg.Color));
 		}
 			
 	}
@@ -1067,11 +1011,11 @@ public class EntityClass : MonoBehaviour {
 				int randomIndex = Random.Range(0,spawns.normalSpawns.Length);
 				spawnPos = spawns.normalSpawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.normalSpawns[randomIndex].transform.eulerAngles;
-			}else if (thisPlayer.team == 1){
+			}else if (User.team == 1){
 				int randomIndex = Random.Range(0,spawns.team1Spawns.Length);
 				spawnPos = spawns.team1Spawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.team1Spawns[randomIndex].transform.eulerAngles;
-			}else if (thisPlayer.team == 2){
+			}else if (User.team == 2){
 				int randomIndex = Random.Range(0,spawns.team2Spawns.Length);
 				spawnPos = spawns.team2Spawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.team2Spawns[randomIndex].transform.eulerAngles;
@@ -1108,7 +1052,7 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void LateUpdate(){
-		if (thisPlayer.health>0f){
+		if (User.health>0f){
 			aimBone.transform.localEulerAngles += new Vector3(0, camAngle.x, 0);
 			animObj.transform.localPosition = (animObj.transform.forward * camAngle.x * -0.002f) - Vector3.up;
 		}
@@ -1116,7 +1060,7 @@ public class EntityClass : MonoBehaviour {
 	
 	void NonLocalUpdate(){
 		
-		if (thisPlayer.health<=0f) moveVec = Vector3.zero;
+		if (User.health<=0f) moveVec = Vector3.zero;
 		
 		if (cc == null) cc = GetComponent<CharacterController>();
 		if (ava == null) ava = gameObject.AddComponent<Avatar>();

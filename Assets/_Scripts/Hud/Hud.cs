@@ -66,9 +66,9 @@ public class Hud : MonoBehaviour {
 		controGui = GetComponent<ControlsGui>();
 		
 		//make local player
-		net.localPlayer = new Player();
+		net.localPlayer = new NetUser();
 		net.localPlayer.local = true;
-		net.localPlayer.name = PlayerPrefs.GetString("PlayerName", "DefaultName");
+		net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
 		net.localPlayer.headType = PlayerPrefs.GetInt("PlayerHead", 0);
 		net.localPlayer.colA.r = PlayerPrefs.GetFloat("PlayerColA_R", Color.yellow.r);
 		net.localPlayer.colA.g = PlayerPrefs.GetFloat("PlayerColA_G", Color.yellow.g);
@@ -175,7 +175,7 @@ public class Hud : MonoBehaviour {
 				}
 				
 				DrawWindowBackground(true);
-				PersonaliseMenu();
+				DrawMenuConfigAvatar();
 			} else if (menuPoint == "config") {
 				br.x = window.xMax;
 				br.y = controGui.BottomMost;
@@ -634,13 +634,14 @@ public class Hud : MonoBehaviour {
 		return ret;
 	}
 	
-	void PersonaliseMenu() {
+	void DrawMenuConfigAvatar() {
 		GUI.BeginGroup(window);
 		
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Name: ");
 		net.localPlayer.name = GUILayout.TextField(net.localPlayer.name);
-		if (net.localPlayer.name.Length>20) net.localPlayer.name = net.localPlayer.name.Substring(0,20);
+		if (net.localPlayer.name.Length>20) 
+			net.localPlayer.name = net.localPlayer.name.Substring(0,20);
 		net.localPlayer.name = FormatName(net.localPlayer.name);
 		GUILayout.EndHorizontal();
 			
@@ -661,10 +662,11 @@ public class Hud : MonoBehaviour {
 				
 		GUILayout.Label("");
 				
-		if (GUILayout.Button("Head type: " + net.localPlayer.headType.ToString())){
+		if (GUILayout.Button("Head type: " + net.localPlayer.headType.ToString())) {
 			net.localPlayer.headType++;
 			if (net.localPlayer.headType>17) net.localPlayer.headType = 0;
 		}
+		
 		if (net.localPlayer.headType == 11) GUILayout.Label("Head Credit: @Ast3c");
 		if (net.localPlayer.headType == 12) GUILayout.Label("Head Credit: @IcarusTyler");
 		if (net.localPlayer.headType == 13) GUILayout.Label("Head Credit: @LeanderCorp");
@@ -673,8 +675,8 @@ public class Hud : MonoBehaviour {
 		if (net.localPlayer.headType == 16) GUILayout.Label("Head Credit: @Ast3c");
 		if (net.localPlayer.headType == 17) GUILayout.Label("Head Credit: @Ast3c");
 				
-		//save player
-		if (net.localPlayer.name != "" && net.localPlayer.name != " "){
+		// save player
+		if (net.localPlayer.name != "" && net.localPlayer.name != " ") {
 			PlayerPrefs.SetString("PlayerName", net.localPlayer.name);
 		}else{
 			PlayerPrefs.SetString("PlayerName", defaultName);
@@ -694,22 +696,23 @@ public class Hud : MonoBehaviour {
 		GUI.EndGroup();
 	}
 	
-	void KickMenu(){
+	void KickMenu() {
 		GUI.BeginGroup(window);
 		
 		GUI.Label(new Rect(250,0,100,20), "Kick a player:");
-		
 		GUILayout.Label("\n\n\n");
 		
-		for (int i=0; i<net.players.Count; i++){
-			if (net.players[i].viewID != net.localPlayer.viewID){
+		for (int i=0; i<net.players.Count; i++) {
+			if (net.players[i].viewID != net.localPlayer.viewID) {
 				GUILayout.BeginHorizontal();
-				if (GUILayout.Button("Kick")){
+				
+				if (GUILayout.Button("Kick"))
 					net.Kick(i, false);
-				}
+
 				string pingString = "?";
 				if (net.players[i].ping.isDone) pingString = net.players[i].ping.time.ToString();
 				GUILayout.Label("- " + net.players[i].name + " - [Ping: " + pingString + "]");
+				
 				GUILayout.EndHorizontal();
 			}
 		}
