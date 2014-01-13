@@ -886,6 +886,7 @@ public class Hud : MonoBehaviour {
 		
 		Debug.Log("mode: " + mode);
 		Debug.Log("modes.Length: " + modes.Length);
+		Debug.Log("hostLevelSelectInt: " + hostLevelSelectInt);
 		GUI.Label(new Rect(360,100,200,30), "Level: " + modes[mode].allowedLevels[hostLevelSelectInt]);
 				
 				
