@@ -1,6 +1,4 @@
-﻿// optimizeme?: would make me feel better if all the key rects were only calculated 
-// fresh for OnGUI whenever screen resolution changed
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class ControlsGui : MonoBehaviour {
@@ -10,12 +8,27 @@ public class ControlsGui : MonoBehaviour {
 	// privates
 	int numX = 21;
 	int numY = 6;
-	KeyCode[] codes;
-	KeyData[] keyData;
+	// VVVVV matching indices VVVVVVV
+	KeyCode[] codes; // first build this for cleaner looking initialization of values
+	KeyData[] keyData; // this is the real structure built from "codes", that actually gets used elsewhere
+	// ^^^^^ matching indices ^^^^^^^
+	BindData[] bindData;
 	
 	
 	
 	void Start() {
+		Object[] pics = Resources.LoadAll("Basics");
+		
+//		for (int i = 0; i < pics.Length; i++) {
+//			bindData[i] = new BindData();
+//			var s = pics[i].ToString();
+//			Debug.Log("str of txtr: " + s);
+//			bindData[i].Text = s;
+//			//bindData[i].Action = (BindData.ActionType)s;
+//			bindData[i].Pic = (Texture)pics[i];
+//			///////////        STILL NEED TO FIGURE OUT HOW TO SET THE RIGHT .kEYcODE AND HOOK IT INTO PlayerPrefs.GetSetStuffz
+//		}
+		
 		codes = new KeyCode[] {
 			KeyCode.Escape, 
 			KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6, 

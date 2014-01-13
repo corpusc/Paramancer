@@ -112,12 +112,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d658b690d966457dbecac7fd52423e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunName: machinegun
-  iconTex: {fileID: 2800000, guid: 65c1951eec5a8492da4867c908565512, type: 3}
-  modelPrefab: {fileID: 100000, guid: 431b2d948e3ad4e63b0964b44b493229, type: 2}
-  gunMaterial: {fileID: 2100000, guid: 13e000790ef4a44338863c729e47d886, type: 2}
-  isAutomatic: 1
-  fireCooldown: .100000001
+  gunName: pistol
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
+  isAutomatic: 0
+  fireCooldown: 0
 --- !u!1 &95305895
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,12 +226,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d658b690d966457dbecac7fd52423e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunName: gravgun
-  iconTex: {fileID: 2800000, guid: 4da67524625e44a07bb9068fb0639fc3, type: 3}
-  modelPrefab: {fileID: 100000, guid: 140360ebe882a446daac8382751c8fdf, type: 2}
-  gunMaterial: {fileID: 2100000, guid: e9b2a5a52b48c40b889da3f11b3faf4f, type: 2}
+  gunName: pistol
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
   isAutomatic: 0
-  fireCooldown: 1
+  fireCooldown: 0
 --- !u!1 &156266422
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,8 +270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: TestLevel
-  icon: {fileID: 2800000, guid: e2c06e1e7185f44248934327330b400c, type: 3}
+  name: 
+  icon: {fileID: 0}
 --- !u!1 &251681430
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,12 +310,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d658b690d966457dbecac7fd52423e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunName: rifle
-  iconTex: {fileID: 2800000, guid: ce303c1e107e24e22b07114ce5429c1e, type: 3}
-  modelPrefab: {fileID: 100000, guid: a73c3dffa52934411ad13f68682d70f7, type: 2}
-  gunMaterial: {fileID: 2100000, guid: c980e2f22889f4d8987c02543be38064, type: 2}
+  gunName: pistol
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
   isAutomatic: 0
-  fireCooldown: 2
+  fireCooldown: 0
 --- !u!1 &291047413
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,8 +433,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Conflict Room
-  icon: {fileID: 2800000, guid: 997c117e4f6124fd6b0c4c3b5b0a0c59, type: 3}
+  name: 
+  icon: {fileID: 0}
 --- !u!1 &428004547
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,11 +474,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunName: pistol
-  iconTex: {fileID: 2800000, guid: 2c6116e3474bc440e8406315dd0f0653, type: 3}
-  modelPrefab: {fileID: 100000, guid: eff12a6411d2b40ddbadf2d0a8fa20b8, type: 2}
-  gunMaterial: {fileID: 2100000, guid: 32f63c749e30345c8bfd643dca4683ee, type: 2}
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
   isAutomatic: 0
-  fireCooldown: .150000006
+  fireCooldown: 0
 --- !u!1 &484089893
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,32 +517,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: Blast-ketball
-  gameModeDescription: it's like basketball, only with guns!
-  allowedLevels:
-  - Furnace
-  - Overpass
-  - Conflict Room
-  - The OctaDrome
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
   winScore: 0
-  gameTime: 3
-  respawnWait: 5
-  deathsSubtractScore: 0
-  killsIncreaseScore: 0
-  teamBased: 1
+  gameTime: 0
+  respawnWait: 10
+  deathsSubtractScore: 1
+  killsIncreaseScore: 1
+  teamBased: 0
   allowFriendlyFire: 0
   pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 1
   pickupSlot1: 0
-  pickupSlot2: 2
-  pickupSlot3: 3
-  pickupSlot4: 4
-  pickupSlot5: 5
+  pickupSlot2: 1
+  pickupSlot3: 2
+  pickupSlot4: 3
+  pickupSlot5: -3
   restockTime: 10
   playerLives: 0
-  basketball: 1
+  basketball: 0
 --- !u!1 &566821714
 GameObject:
   m_ObjectHideFlags: 0
@@ -581,12 +577,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d658b690d966457dbecac7fd52423e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunName: spatula
-  iconTex: {fileID: 2800000, guid: b9a1ea3aca3dd4c0e97aca7b4eeb3654, type: 3}
-  modelPrefab: {fileID: 100000, guid: 48a81d32b4fc14e319da415bfb49f5a5, type: 2}
-  gunMaterial: {fileID: 2100000, guid: dfd4dff5ae0d5460ab95559a1597e0b6, type: 2}
+  gunName: pistol
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
   isAutomatic: 0
-  fireCooldown: 3
+  fireCooldown: 0
 --- !u!1 &649684330
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,12 +621,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d658b690d966457dbecac7fd52423e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunName: rocketlauncher
-  iconTex: {fileID: 2800000, guid: c4672d598a4dc407cad81b02c5fb8488, type: 3}
-  modelPrefab: {fileID: 100000, guid: d51fc13db68ed4da9a53fda6e56c4343, type: 2}
-  gunMaterial: {fileID: 2100000, guid: 6d4a7d33823514dbe9fcf71f166f9411, type: 2}
+  gunName: pistol
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
   isAutomatic: 0
-  fireCooldown: 2
+  fireCooldown: 0
 --- !u!1 &721720855
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,20 +665,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: Team Deathmatch
-  gameModeDescription: Like a deathmatch, but with teams!
-  allowedLevels:
-  - Furnace
-  - Overpass
-  - Conflict Room
-  - The OctaDrome
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
   winScore: 0
-  gameTime: 3
-  respawnWait: 5
-  deathsSubtractScore: 0
+  gameTime: 0
+  respawnWait: 10
+  deathsSubtractScore: 1
   killsIncreaseScore: 1
-  teamBased: 1
+  teamBased: 0
   allowFriendlyFire: 0
   pitchBlack: 0
   spawnGunA: 0
@@ -691,7 +683,7 @@ MonoBehaviour:
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
-  pickupSlot5: 4
+  pickupSlot5: -3
   restockTime: 10
   playerLives: 0
   basketball: 0
@@ -733,18 +725,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: Deathmatch
-  gameModeDescription: A regular deathmatch. kill people for points, 3minute time
-    limit.
-  allowedLevels:
-  - Furnace
-  - Overpass
-  - Conflict Room
-  - The OctaDrome
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
   winScore: 0
-  gameTime: 3
-  respawnWait: 5
+  gameTime: 0
+  respawnWait: 10
   deathsSubtractScore: 1
   killsIncreaseScore: 1
   teamBased: 0
@@ -798,32 +785,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: Death Spatula
-  gameModeDescription: 'all weapons are randomly assigned,
-
-    First to 20 kills is the winner!'
-  allowedLevels:
-  - Furnace
-  - Overpass
-  - Conflict Room
-  - The OctaDrome
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
-  winScore: 20
+  winScore: 0
   gameTime: 0
-  respawnWait: 5
-  deathsSubtractScore: 0
+  respawnWait: 10
+  deathsSubtractScore: 1
   killsIncreaseScore: 1
   teamBased: 0
   allowFriendlyFire: 0
   pitchBlack: 0
-  spawnGunA: -2
-  spawnGunB: -2
-  pickupSlot1: -2
-  pickupSlot2: -2
-  pickupSlot3: -2
-  pickupSlot4: -2
-  pickupSlot5: -2
-  restockTime: 2
+  spawnGunA: 0
+  spawnGunB: 1
+  pickupSlot1: 0
+  pickupSlot2: 1
+  pickupSlot3: 2
+  pickupSlot4: 3
+  pickupSlot5: -3
+  restockTime: 10
   playerLives: 0
   basketball: 0
 --- !u!1 &890197039
@@ -864,8 +845,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: The OctaDrome
-  icon: {fileID: 2800000, guid: dc54f92856c754176b5cb31435ba0fec, type: 3}
+  name: 
+  icon: {fileID: 0}
 --- !u!1 &913912187
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,32 +885,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: Blackbox
-  gameModeDescription: 'A deathmatch, IN THE DARK! shooting gives away your position!
-
-
-    (It''s pitch black, you are likely to be eaten by a grue)'
-  allowedLevels:
-  - Furnace
-  - Overpass
-  - Conflict Room
-  - The OctaDrome
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
   winScore: 0
-  gameTime: 3
-  respawnWait: 5
-  deathsSubtractScore: 0
+  gameTime: 0
+  respawnWait: 10
+  deathsSubtractScore: 1
   killsIncreaseScore: 1
   teamBased: 0
   allowFriendlyFire: 0
-  pitchBlack: 1
+  pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 1
-  pickupSlot1: 1
-  pickupSlot2: 2
-  pickupSlot3: 3
-  pickupSlot4: 4
-  pickupSlot5: 7
+  pickupSlot1: 0
+  pickupSlot2: 1
+  pickupSlot3: 2
+  pickupSlot4: 3
+  pickupSlot5: -3
   restockTime: 10
   playerLives: 0
   basketball: 0
@@ -1003,8 +977,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Overpass
-  icon: {fileID: 2800000, guid: 8ff42a99000474544ae054668c1437ac, type: 3}
+  name: 
+  icon: {fileID: 0}
 --- !u!1 &1330099965
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,12 +1017,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d658b690d966457dbecac7fd52423e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunName: grenade
-  iconTex: {fileID: 2800000, guid: db24d1984d5ae4851be9246d8c2e0926, type: 3}
-  modelPrefab: {fileID: 100000, guid: f1b80169167934ca4bad146d3b53f415, type: 2}
-  gunMaterial: {fileID: 2100000, guid: ef478784e81c141cda237c8da842c514, type: 2}
+  gunName: pistol
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
   isAutomatic: 0
-  fireCooldown: .400000006
+  fireCooldown: 0
 --- !u!1 &1362290643
 GameObject:
   m_ObjectHideFlags: 0
@@ -1087,12 +1061,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d658b690d966457dbecac7fd52423e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunName: swapper
-  iconTex: {fileID: 2800000, guid: d8204373687304ea6aa544c7d04b8704, type: 3}
-  modelPrefab: {fileID: 100000, guid: 63a438f7073014371a3ad986bff0b0c4, type: 2}
-  gunMaterial: {fileID: 2100000, guid: f6bb09a1d95524812b354dff304189d5, type: 2}
+  gunName: pistol
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
   isAutomatic: 0
-  fireCooldown: 2
+  fireCooldown: 0
 --- !u!1 &1475012909
 GameObject:
   m_ObjectHideFlags: 0
@@ -1131,26 +1105,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: Swap Meat
-  gameModeDescription: There is only the swapper gun, grenades and lava... have fun!
-  allowedLevels:
-  - Furnace
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
   winScore: 0
-  gameTime: 2
-  respawnWait: 3
+  gameTime: 0
+  respawnWait: 10
   deathsSubtractScore: 1
-  killsIncreaseScore: 0
+  killsIncreaseScore: 1
   teamBased: 0
   allowFriendlyFire: 0
   pitchBlack: 0
-  spawnGunA: 5
+  spawnGunA: 0
   spawnGunB: 1
-  pickupSlot1: -1
-  pickupSlot2: -1
-  pickupSlot3: -1
-  pickupSlot4: -1
-  pickupSlot5: -1
+  pickupSlot1: 0
+  pickupSlot2: 1
+  pickupSlot3: 2
+  pickupSlot4: 3
+  pickupSlot5: -3
   restockTime: 10
   playerLives: 0
   basketball: 0
@@ -1192,19 +1165,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: You only live Thrice
-  gameModeDescription: Players have 3 lives each, last living player is the winner.
-  allowedLevels:
-  - Overpass
-  - Furnace
-  - Conflict Room
-  - The OctaDrome
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
   winScore: 0
   gameTime: 0
-  respawnWait: 5
+  respawnWait: 10
   deathsSubtractScore: 1
-  killsIncreaseScore: 0
+  killsIncreaseScore: 1
   teamBased: 0
   allowFriendlyFire: 0
   pitchBlack: 0
@@ -1214,9 +1183,9 @@ MonoBehaviour:
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
-  pickupSlot5: 4
+  pickupSlot5: -3
   restockTime: 10
-  playerLives: 3
+  playerLives: 0
   basketball: 0
 --- !u!1 &1586672846
 GameObject:
@@ -1256,12 +1225,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d658b690d966457dbecac7fd52423e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunName: bomb
-  iconTex: {fileID: 2800000, guid: 0fe3c999738c0484aafcbd0a62ed0423, type: 3}
-  modelPrefab: {fileID: 100006, guid: d39f93aaae88540cfaf7bfd870032a4f, type: 2}
-  gunMaterial: {fileID: 2100000, guid: f23f1dd460aa94748b60c57b60681d0e, type: 2}
+  gunName: pistol
+  iconTex: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  gunMaterial: {fileID: 0}
   isAutomatic: 0
-  fireCooldown: 1
+  fireCooldown: 0
 --- !u!1 &1766650088
 GameObject:
   m_ObjectHideFlags: 0
@@ -1300,8 +1269,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Furnace
-  icon: {fileID: 2800000, guid: 57a46760e0dd54c74ba52274674e28d3, type: 3}
+  name: 
+  icon: {fileID: 0}
 --- !u!1 &1820612917
 GameObject:
   m_ObjectHideFlags: 0
@@ -1340,8 +1309,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: TestLevelB
-  icon: {fileID: 2800000, guid: 318fecd9f93724563a9acb112587a1d9, type: 3}
+  name: 
+  icon: {fileID: 0}
 --- !u!1 &1914131304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1380,22 +1349,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: Custom
-  gameModeDescription: 'Build a custom game mode using rules you select.
-
-
-    (Not available yet)'
-  allowedLevels:
-  - Furnace
-  - Overpass
-  - Conflict Room
-  - The OctaDrome
-  - TestLevel
-  - TestLevelB
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
   winScore: 0
-  gameTime: 3
-  respawnWait: 5
+  gameTime: 0
+  respawnWait: 10
   deathsSubtractScore: 1
   killsIncreaseScore: 1
   teamBased: 0
@@ -1428,6 +1388,7 @@ GameObject:
   - 114: {fileID: 1973207299}
   - 114: {fileID: 1973207295}
   - 114: {fileID: 1973207300}
+  - 114: {fileID: 1973207301}
   m_Layer: 0
   m_Name: Main Program
   m_TagString: Untagged
@@ -1497,10 +1458,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e7222aaa5a55b4c8adf1605a296927, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fpsEntityPrefab: {fileID: 100004, guid: 89a329f693d984ee18392aeb629721c3, type: 2}
+  fpsEntityPrefab: {fileID: 0}
   connected: 0
   isServer: 0
-  uniqueGameName: Splat Death Salad
+  uniqueGameName: Y U REFLECT ME!!!!
   gameName: TestSession
   connections: 32
   listenPort: 25000
@@ -1514,13 +1475,13 @@ MonoBehaviour:
   broadcastPos: 0
   lastGameWasTeamBased: 0
   ModeCfg: {fileID: 0}
-  basketballPrefab: {fileID: 100000, guid: 8ccc6cdbf406f4006b9c39b7f41ace60, type: 2}
+  basketballPrefab: {fileID: 0}
   gunBobbing: 1
   autoPickup: 0
   gameVolume: 1
-  splatPrefab: {fileID: 100000, guid: 11fe9d174a98e4571b16186b46fee9a8, type: 2}
-  healthIcon: {fileID: 2800000, guid: a52d15c793d054880b371d92eadd5958, type: 3}
-  pickupBoxPrefab: {fileID: 100002, guid: d590a367980aa41cdae42504cf74de32, type: 2}
+  splatPrefab: {fileID: 0}
+  healthIcon: {fileID: 0}
+  pickupBoxPrefab: {fileID: 0}
   gameTimeLeft: 0
   nextMatchTime: 0
   errorString: 
@@ -1581,11 +1542,8 @@ MonoBehaviour:
   menuPoint: top
   Spectating: 0
   Spectatee: 0
-  invX: 0
-  invY: 0
-  mouseSensitivity: 2
-  gunA: 0
   gunACooldown: 0
+  gunA: 0
   gunB: 0
 --- !u!114 &1973207298
 MonoBehaviour:
@@ -1598,34 +1556,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f436f3e0a790494c9c67a5cd463e7cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pistolBulletPrefab: {fileID: 100000, guid: aa2bec16957c74136b0b6a9729a28fb6, type: 2}
-  swapperBulletPrefab: {fileID: 100000, guid: 512eb2b9b0e4e420d80680b8e33d2e22, type: 2}
-  grenadeBulletPrefab: {fileID: 100000, guid: 60eec104b207e4413a8d16b866a1bbb6, type: 2}
-  rifleDissipationPrefab: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9,
-    type: 2}
-  grenadeFlashPrefab: {fileID: 100000, guid: 881ce601f15ac4e9b9084babb5779a14, type: 2}
-  muzzleFlashPrefab: {fileID: 100000, guid: b13d09b761f4349a1902bbab9892b332, type: 2}
-  rocketPrefab: {fileID: 100008, guid: 25e20a6aa62c1484a885c7c782a77d9f, type: 2}
-  soundObjectPrefab: {fileID: 100000, guid: e86b6e853a30b4e2a9ef054ac49d6367, type: 2}
-  sfx_grenadeExplode: {fileID: 8300000, guid: e20fe93e9b7744e938a5fd0bbf35454c, type: 3}
-  sfx_rocketExplode: {fileID: 8300000, guid: b7dcb93b378bb47fb93cf39d620e1fec, type: 3}
-  sfx_machinegunshoot: {fileID: 8300000, guid: 80eb9cf2a70c64cbf9d8eec92c594ce9, type: 3}
-  sfx_pistolshoot: {fileID: 8300000, guid: 53c7bafdb1252480e80748652cfdfee7, type: 3}
-  sfx_rifleshoot: {fileID: 8300000, guid: afd9dd40cc0b24e1d9d69d71a74dc2fc, type: 3}
-  sfx_grenadethrow: {fileID: 8300000, guid: 5e4e48b59ab024ef9930b58e0097f3f1, type: 3}
-  sfx_swappershoot: {fileID: 8300000, guid: d28c124d7f4ba42349a9e85d3cf0e601, type: 3}
-  sfx_bombBeep: {fileID: 8300000, guid: 983c3e484036e420093be50b2e4028d6, type: 3}
-  sfx_bombExplode: {fileID: 8300000, guid: c3ab385101a644613b2940bcd6d0c23d, type: 3}
-  gunTypes:
-  - {fileID: 428004549}
-  - {fileID: 1330099967}
-  - {fileID: 2863774}
-  - {fileID: 251681432}
-  - {fileID: 649684332}
-  - {fileID: 1362290645}
-  - {fileID: 141240821}
-  - {fileID: 1586672848}
-  - {fileID: 566821716}
+  pistolBulletPrefab: {fileID: 0}
+  swapperBulletPrefab: {fileID: 0}
+  grenadeBulletPrefab: {fileID: 0}
+  rifleDissipationPrefab: {fileID: 0}
+  grenadeFlashPrefab: {fileID: 0}
+  muzzleFlashPrefab: {fileID: 0}
+  rocketPrefab: {fileID: 0}
+  soundObjectPrefab: {fileID: 0}
+  sfx_grenadeExplode: {fileID: 0}
+  sfx_rocketExplode: {fileID: 0}
+  sfx_machinegunshoot: {fileID: 0}
+  sfx_pistolshoot: {fileID: 0}
+  sfx_rifleshoot: {fileID: 0}
+  sfx_grenadethrow: {fileID: 0}
+  sfx_swappershoot: {fileID: 0}
+  sfx_bombBeep: {fileID: 0}
+  sfx_bombExplode: {fileID: 0}
+  gunTypes: []
 --- !u!114 &1973207299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1672,6 +1620,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BottomMost: 0
   KeyCap: {fileID: 2800000, guid: ceab6340d6cef6a478ccbfa6f56fdc96, type: 3}
+--- !u!114 &1973207301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1973207290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d34ddf4f6f6c3245b90f02ffc1ed0a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LookInvert: 0
+  mouseSensitivity: 2
+  MoveForward: 101
+  MoveBackward: 100
+  MoveLeft: 115
+  MoveRight: 102
 --- !u!1 &2050906751
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,29 +1675,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8f3fd6c1402450d8807199a06bccbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeName: Sobbing Newton
-  gameModeDescription: 'But... gravity doesn''t work like that! D:'
-  allowedLevels:
-  - Furnace
-  - Overpass
-  - Conflict Room
-  - The OctaDrome
+  gameModeName: 
+  gameModeDescription: 
+  allowedLevels: []
   levelName: 
   winScore: 0
-  gameTime: 3
-  respawnWait: 5
-  deathsSubtractScore: 0
+  gameTime: 0
+  respawnWait: 10
+  deathsSubtractScore: 1
   killsIncreaseScore: 1
   teamBased: 0
   allowFriendlyFire: 0
   pitchBlack: 0
   spawnGunA: 0
-  spawnGunB: 6
-  pickupSlot1: 6
+  spawnGunB: 1
+  pickupSlot1: 0
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
-  pickupSlot5: 4
+  pickupSlot5: -3
   restockTime: 10
   playerLives: 0
   basketball: 0

@@ -29,21 +29,11 @@ public class Hud : MonoBehaviour {
 	public bool Spectating = false;
 	public int Spectatee = 0;
 	
-	// settings
-	public bool invX = false;
-	public bool invY = false;
-	public float mouseSensitivity = 2f;
-	
-	public int gunA = 0;
 	public float gunACooldown = 0f;
+	public int gunA = 0;
 	public int gunB = 0;
 	
-		
-	
-	CcNet net;
-	CcLog messageScript;
-	Weapon artillery;
-	ControlsGui controGui;
+	// private
 	bool shouldDisableControGui = false;
 	bool viewingScores = false;
 	string gameMenuPoint = "config";
@@ -57,13 +47,21 @@ public class Hud : MonoBehaviour {
 	Rect button = new Rect(0, 0, 100, 40); // fixme: are buttons always 40 in height
 	int vSpan = 20; // fixme: hardwired vertical span of the font.  doubled in places for buttons...are they always 40?
 	
+	// scripts
+	CcNet net;
+	CcLog log;
+	Weapon artillery;
+	ControlsGui controGui;
+	LocalUser locUser;
+
 	
 	
 	void Start() {
 		net = GetComponent<CcNet>();
-		messageScript = GetComponent<CcLog>();
+		log = GetComponent<CcLog>();
 		artillery = GetComponent<Weapon>();
 		controGui = GetComponent<ControlsGui>();
+		locUser = GetComponent<LocalUser>();
 		
 		//make local player
 		net.localPlayer = new NetUser();
@@ -84,12 +82,9 @@ public class Hud : MonoBehaviour {
 		net.localPlayer.colC.a = 1;
 		
 		// load settings
-		invX = PlayerPrefs.GetInt("InvertX", 0) == 1;
-		invY = PlayerPrefs.GetInt("InvertY", 0) == 1;
-		mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 2f);
-		messageScript.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
-		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing",1)==1;
-		net.autoPickup = PlayerPrefs.GetInt("autoPickup",0)==1;
+		log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
+		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
+		net.autoPickup = PlayerPrefs.GetInt("autoPickup", 0) == 1;
 		net.gameVolume = PlayerPrefs.GetFloat("GameVolume", 1f);
 	}
 	
@@ -710,7 +705,9 @@ public class Hud : MonoBehaviour {
 					net.Kick(i, false);
 
 				string pingString = "?";
-				if (net.players[i].ping.isDone) pingString = net.players[i].ping.time.ToString();
+				if (net.players[i].ping.isDone) 
+					pingString = net.players[i].ping.time.ToString();
+				
 				GUILayout.Label("- " + net.players[i].name + " - [Ping: " + pingString + "]");
 				
 				GUILayout.EndHorizontal();
@@ -735,20 +732,19 @@ public class Hud : MonoBehaviour {
 		
 		GUILayout.BeginArea(new Rect(5,vSpan*2,280,380));
 		
-		invY = GUILayout.Toggle(invY, "Invert Y Mouse axis");
+		locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Mouselook inversion");
 		GUILayout.Label("Mouse Sensitivity:");
-		mouseSensitivity = GUILayout.HorizontalSlider(mouseSensitivity,0.1f,10f);
+		locUser.mouseSensitivity = GUILayout.HorizontalSlider(locUser.mouseSensitivity,0.1f,10f);
 		
 		if (GUILayout.Button("Reset Mouse")){
-			invX = false;
-			invY = false;
-			mouseSensitivity = 2f;
-			messageScript.FadeTime = 10f;
+			locUser.LookInvert = false;
+			locUser.mouseSensitivity = 2f;
+			log.FadeTime = 10f;
 		}
 		
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Chat messages fade time: ");
-		messageScript.FadeTime = (float)MakeInt(GUILayout.TextField(messageScript.FadeTime.ToString()));
+		log.FadeTime = (float)MakeInt(GUILayout.TextField(log.FadeTime.ToString()));
 		GUILayout.EndHorizontal();
 		
 		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "Gun Bobbing");
@@ -765,12 +761,10 @@ public class Hud : MonoBehaviour {
 		net.gameVolume = GUILayout.HorizontalSlider(net.gameVolume,0.0f,1f);
 		
 		
-		if (invX) PlayerPrefs.SetInt("InvertX", 1);
-		if (!invX) PlayerPrefs.SetInt("InvertX", 0);
-		if (invY) PlayerPrefs.SetInt("InvertY", 1);
-		if (!invY) PlayerPrefs.SetInt("InvertY", 0);
-		PlayerPrefs.SetFloat("MouseSensitivity", mouseSensitivity);
-		PlayerPrefs.SetFloat("textFadeTime", messageScript.FadeTime);
+		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
+		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
+		PlayerPrefs.SetFloat("MouseSensitivity", locUser.mouseSensitivity);
+		PlayerPrefs.SetFloat("textFadeTime", log.FadeTime);
 		
 		if (net.gunBobbing)
 			PlayerPrefs.SetInt("GunBobbing", 1);
@@ -805,7 +799,7 @@ public class Hud : MonoBehaviour {
 		GUI.EndGroup();
 	}
 	
-	void GameSetup(bool serving){
+	void GameSetup(bool serving) {
 		GUI.BeginGroup(window);
 		
 		if (serving)
@@ -830,7 +824,7 @@ public class Hud : MonoBehaviour {
 			GUILayout.BeginArea(new Rect(305,20,290,400));
 			
 			GUILayout.Label("Max Connections: " + net.connections.ToString());
-			net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections,2,32));
+			net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32));
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Port: ");
@@ -846,15 +840,17 @@ public class Hud : MonoBehaviour {
 			
 			mode--;
 			//hostLevelSelectInt = 0;
-			if (mode<0) mode+=modes.Length;
+			if (mode < 0) 
+				mode += modes.Length;
 			
 			int levelChangeIndex = 0;
-			for (int i=0; i<modes[mode].allowedLevels.Length; i++){
+			for (int i=0; i<modes[mode].allowedLevels.Length; i++) {
 				if (modes[mode].allowedLevels[i] == 
 					modes[lastInt].allowedLevels[hostLevelSelectInt]
 				) 
 					levelChangeIndex = i;
 			}
+			
 			hostLevelSelectInt = levelChangeIndex;
 		}
 		
@@ -866,32 +862,38 @@ public class Hud : MonoBehaviour {
 			if (mode>=modes.Length) mode-=modes.Length;
 			
 			int levelChangeIndex = 0;
-			for (int i=0; i<modes[mode].allowedLevels.Length; i++){
-				if (modes[mode].allowedLevels[i] == modes[lastInt].allowedLevels[hostLevelSelectInt]) levelChangeIndex = i;
+			for (int i=0; i<modes[mode].allowedLevels.Length; i++) {
+				if (modes[mode].allowedLevels[i] == modes[lastInt].allowedLevels[hostLevelSelectInt]) 
+					levelChangeIndex = i;
 			}
+			
 			hostLevelSelectInt = levelChangeIndex;
 		}
 		
 		GUI.Label(new Rect(60,100,200,30), "Mode: " + modes[mode].gameModeName);
 				
 		// game level
-		if (GUI.Button(new Rect(305,100,30,30), "<")) {
+		if (GUI.Button(new Rect(305,100,30,30), "<") ) {
 			hostLevelSelectInt--;
-			if (hostLevelSelectInt<0) hostLevelSelectInt+=modes[mode].allowedLevels.Length;
+			if (hostLevelSelectInt < 0) 
+				hostLevelSelectInt += modes[mode].allowedLevels.Length;
 		}
-		if (GUI.Button(new Rect(555,100,30,30), ">")) {
+		if (GUI.Button(new Rect(555,100,30,30), ">") ) {
 			hostLevelSelectInt++;
-			if (hostLevelSelectInt>=modes[mode].allowedLevels.Length) hostLevelSelectInt-=modes[mode].allowedLevels.Length;
+			if (hostLevelSelectInt >= modes[mode].allowedLevels.Length) 
+				hostLevelSelectInt -= modes[mode].allowedLevels.Length;
 		}
 		
+		Debug.Log("mode: " + mode);
+		Debug.Log("modes.Length: " + modes.Length);
 		GUI.Label(new Rect(360,100,200,30), "Level: " + modes[mode].allowedLevels[hostLevelSelectInt]);
 				
 				
 				
-		if (mode != 0) {	// not custom
-			//show icon
-			for (int i=0; i<levels.Length; i++){
-				if (levels[i].name == modes[mode].allowedLevels[hostLevelSelectInt]){
+		if (mode != 0) { // not custom
+			// show icon
+			for (int i=0; i<levels.Length; i++) {
+				if (levels[i].name == modes[mode].allowedLevels[hostLevelSelectInt]) {
 					GUI.DrawTexture(new Rect(5,135,590,100), levels[i].icon);
 				}
 			}
@@ -899,12 +901,14 @@ public class Hud : MonoBehaviour {
 			//description:
 			GUI.Label(new Rect(5,240,590,200), modes[mode].gameModeName + ":\n" + modes[mode].gameModeDescription);
 			
-			if (GUI.Button(new Rect(495,240,100,25), "Customise...")) {
+			if (GUI.Button(new Rect(495,240,100,25), "Customise...") ) {
 				
 				int levelChangeIndex = 0;
-				for (int i=0; i<modes[0].allowedLevels.Length; i++){
-					if (modes[0].allowedLevels[i] == modes[mode].allowedLevels[hostLevelSelectInt]) levelChangeIndex = i;
+				for (int i=0; i<modes[0].allowedLevels.Length; i++) {
+					if (modes[0].allowedLevels[i] == modes[mode].allowedLevels[hostLevelSelectInt]) 
+						levelChangeIndex = i;
 				}
+				
 				hostLevelSelectInt = levelChangeIndex;
 				
 				modes[0].killsIncreaseScore = modes[mode].killsIncreaseScore;

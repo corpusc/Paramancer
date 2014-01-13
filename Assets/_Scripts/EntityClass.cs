@@ -17,10 +17,6 @@ public class EntityClass : MonoBehaviour {
 	public string offeredPickup = "";
 	public PickupBoxScript currentOfferedPickup;
 	
-	public CcNet net;
-	private Hud hud;
-	private Weapon artil;
-	
 	public GameObject animObj;
 	
 	private Vector3 swapperLock = Vector3.zero;
@@ -95,14 +91,16 @@ public class EntityClass : MonoBehaviour {
 	public bool Spectating = false;
 	private int spectateInt = 0;
 	
+	// scripts
+	public CcNet net;
+	Hud hud;
+	Weapon artil;
+	LocalUser locUser;
 	
 	
-	public void SetModelVisibility(bool visible){
-		
-		
+	
+	public void SetModelVisibility(bool visible) {
 		Material[] mats = meshObj.renderer.materials;
-		
-		
 		Material newMatA = new Material(dummyAMat);
 		Material newMatB = new Material(dummyBMat);
 		Material newMatC = new Material(dummyCMat);
@@ -110,7 +108,7 @@ public class EntityClass : MonoBehaviour {
 		newMatB.color = User.colB;
 		newMatC.color = User.colC;
 		
-		if (net.ModeCfg.teamBased){
+		if (net.ModeCfg.teamBased) {
 			if (User.team == 1) {
 				newMatA.color = Color.red;
 			}
@@ -128,9 +126,9 @@ public class EntityClass : MonoBehaviour {
 			if (gunMesh1.renderer) gunMesh1.renderer.material = invisibleMat;
 			if (gunMesh2.renderer) gunMesh2.renderer.material = invisibleMat;
 			
-			if (handGun==7){
-				//bomb
-				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null){
+			if (handGun==7) {
+				// bomb
+				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null) {
 					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
 				}
 			}
@@ -142,11 +140,11 @@ public class EntityClass : MonoBehaviour {
 			
 			//heads[0].renderer.material.color = thisPlayer.colA;
 			
-			if (handGun>=0 && gunMesh1.renderer) gunMesh1.renderer.material = artil.gunTypes[handGun].gunMaterial;
-			if (holsterGun>=0 && gunMesh2.renderer) gunMesh2.renderer.material = artil.gunTypes[holsterGun].gunMaterial;
+			if (handGun >= 0 && gunMesh1.renderer) gunMesh1.renderer.material = artil.gunTypes[handGun].gunMaterial;
+			if (holsterGun >= 0 && gunMesh2.renderer) gunMesh2.renderer.material = artil.gunTypes[holsterGun].gunMaterial;
 		}
 		
-		//heads
+		// heads
 		for (int i=0; i<heads.Length; i++){
 			if (i!=headType){
 				heads[i].renderer.enabled = false;
@@ -155,6 +153,7 @@ public class EntityClass : MonoBehaviour {
 				heads[i].renderer.material = invisibleMat;
 			}	
 		}
+		
 		if (visible){
 			heads[0].renderer.material = newMatA;
 			heads[1].renderer.material = boxMat;
@@ -176,42 +175,38 @@ public class EntityClass : MonoBehaviour {
 			heads[17].renderer.material = maheadMat;
 		}
 		
-		if (firstPersonGun != null && User.local && firstPersonGun.renderer && handGun>=0){
-			if (!visible){
+		if (firstPersonGun != null && User.local && firstPersonGun.renderer && handGun>=0) {
+			if (visible) {
+				firstPersonGun.renderer.enabled = false;
+			}else{
 				firstPersonGun.renderer.enabled = true;
 				firstPersonGun.renderer.material = artil.gunTypes[handGun].gunMaterial;
-			}else{
-				firstPersonGun.renderer.enabled = false;
 			}
 		}
 		
-		
-		if (!net.ModeCfg.pitchBlack || !User.local){
+		if (!net.ModeCfg.pitchBlack || !User.local) {
 			firstPersonLight.enabled = false;
 		
 		}
-		if (!User.local && net.ModeCfg.pitchBlack){
-			if (net.ModeCfg.teamBased && User.team == net.localPlayer.team){
+		
+		if (!User.local && net.ModeCfg.pitchBlack) {
+			if (net.ModeCfg.teamBased && User.team == net.localPlayer.team) {
 				firstPersonLight.enabled = true;
-				if (User.team == 1){
+				if (User.team == 1) {
 					firstPersonLight.color = Color.red;
 				}else{
 					firstPersonLight.color = Color.cyan;
 				}
 			}
 		}
-		
-		
-		
-		
 	}
 	
-	// Use this for initialization
 	void Start () {
 		var o = GameObject.Find("Main Program");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
 		artil = o.GetComponent<Weapon>();
+		locUser = o.GetComponent<LocalUser>();
 		
 		if (User.local && net.ModeCfg.pitchBlack){
 			Camera.main.backgroundColor = Color.black;
@@ -339,12 +334,11 @@ public class EntityClass : MonoBehaviour {
 				
 				Camera.main.transform.parent = null;
 				Camera.main.transform.position = net.players[spectateInt].Entity.transform.position;
-				float invX = 1f;
 				float invY = 1f;
-				if (hud.invX) invX = -1f;
-				if (hud.invY) invY = -1f;
-				camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * hud.mouseSensitivity * invY;
-				camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * hud.mouseSensitivity * invX;
+				if (locUser.LookInvert)
+					invY = -1f;
+				camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.mouseSensitivity * invY;
+				camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.mouseSensitivity;
 				if (camAngle.x>85f) camAngle.x = 85f;
 				if (camAngle.x<-85f) camAngle.x = -85f;
 				Camera.main.transform.eulerAngles = camAngle;
@@ -425,13 +419,12 @@ public class EntityClass : MonoBehaviour {
 					
 					Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.Euler(new Vector3(0,0,0)), Time.deltaTime * 5f);
 					
-					float invX = 1f;
 					float invY = 1f;
-					if (hud.invX) invX = -1f;
-					if (hud.invY) invY = -1f;
+					if (locUser.LookInvert) 
+						invY = -1f;
 					
-					camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * hud.mouseSensitivity * invY;
-					camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * hud.mouseSensitivity * invX;
+					camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.mouseSensitivity * invY;
+					camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.mouseSensitivity;
 					if (camAngle.x>85f) camAngle.x = 85f;
 					if (camAngle.x<-85f) camAngle.x = -85f;
 					
