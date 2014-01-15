@@ -557,7 +557,7 @@ public class CcNet : MonoBehaviour {
 		
 		// game time up?
 		if (connected && !gameOver) {
-			if (gameTimeLeft <= 0f && ModeCfg.gameTime > 0f){
+			if (gameTimeLeft <= 0f && ModeCfg.MatchDuration > 0f){
 				gameTimeLeft = 0f;
 				gameOver = true;
 				
@@ -858,7 +858,7 @@ public class CcNet : MonoBehaviour {
 		ModeCfg.levelName = levelName;
 		
 		ModeCfg.winScore = gm.winScore;
-		ModeCfg.gameTime = gm.gameTime;
+		ModeCfg.MatchDuration = gm.MatchDuration;
 		ModeCfg.respawnWait = gm.respawnWait;
 		ModeCfg.deathsSubtractScore = gm.deathsSubtractScore;
 		ModeCfg.killsIncreaseScore = gm.killsIncreaseScore;
@@ -910,7 +910,7 @@ public class CcNet : MonoBehaviour {
 		
 		int livesBroadcast = 0;
 		if (serverGameChange){
-			gameTimeLeft = ModeCfg.gameTime * 60f;
+			gameTimeLeft = ModeCfg.MatchDuration * 60f;
 			gameOver = false;
 			livesBroadcast = ModeCfg.playerLives;
 		}else{
@@ -919,7 +919,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, ModeCfg.gameModeName, ModeCfg.levelName, ModeCfg.gameModeDescription, ModeCfg.winScore, ModeCfg.gameTime, ModeCfg.respawnWait, ModeCfg.deathsSubtractScore, ModeCfg.killsIncreaseScore, ModeCfg.teamBased, targetTeam, ModeCfg.allowFriendlyFire, ModeCfg.pitchBlack, gameOver, gameTimeLeft, ModeCfg.spawnGunA, ModeCfg.spawnGunB, ModeCfg.pickupSlot1, ModeCfg.pickupSlot2, ModeCfg.pickupSlot3, ModeCfg.pickupSlot4, ModeCfg.pickupSlot5, livesBroadcast, serverGameChange, ModeCfg.basketball);
+		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, ModeCfg.gameModeName, ModeCfg.levelName, ModeCfg.gameModeDescription, ModeCfg.winScore, ModeCfg.MatchDuration, ModeCfg.respawnWait, ModeCfg.deathsSubtractScore, ModeCfg.killsIncreaseScore, ModeCfg.teamBased, targetTeam, ModeCfg.allowFriendlyFire, ModeCfg.pitchBlack, gameOver, gameTimeLeft, ModeCfg.spawnGunA, ModeCfg.spawnGunB, ModeCfg.pickupSlot1, ModeCfg.pickupSlot2, ModeCfg.pickupSlot3, ModeCfg.pickupSlot4, ModeCfg.pickupSlot5, livesBroadcast, serverGameChange, ModeCfg.basketball);
 	}
 	
 	public float gameTimeLeft = 0f;
@@ -959,7 +959,7 @@ public class CcNet : MonoBehaviour {
 			//...
 			ModeCfg.gameModeDescription = gameModeDescription;
 			ModeCfg.winScore = winScore;
-			ModeCfg.gameTime = gameTime;
+			ModeCfg.MatchDuration = gameTime;
 			ModeCfg.respawnWait = respawnWait;
 			ModeCfg.deathsSubtractScore = deathsSubtractScore;
 			ModeCfg.killsIncreaseScore = killsIncreaseScore;
@@ -1244,14 +1244,8 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	public void Kick(int playerIndex, bool autokick){
-		bool kicked = false;
-		
-		
-		//do kicking here
 		Network.CloseConnection(players[playerIndex].netPlayer, true);
-		
 		networkView.RPC("KickedPlayer", RPCMode.AllBuffered, players[playerIndex].viewID, autokick);
-		
 	}
 	
 	[RPC]

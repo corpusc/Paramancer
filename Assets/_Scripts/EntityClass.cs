@@ -518,15 +518,21 @@ public class EntityClass : MonoBehaviour {
 						rpcCamtime = Time.time;// + 0.02f;
 					}
 					
-					if (handGun>=0 && handGunCooldown > 0f && handGunCooldown - Time.deltaTime <= 0f && artil.gunTypes[handGun].fireCooldown>=1f) PlaySound("reload");
+					if (handGun >= 0 && handGunCooldown > 0f && 
+						handGunCooldown - Time.deltaTime <= 0f && 
+						artil.gunTypes[handGun].fireCooldown >= 1f
+					) 
+						PlaySound("reload");
+					
 					handGunCooldown -= Time.deltaTime;
-					if (handGunCooldown<0f) handGunCooldown = 0f;
+					if (handGunCooldown < 0f) 
+						handGunCooldown = 0f;
 					
 					
 					hud.swapperLocked = false;
 					swapperLockTarget = -1;
 					if (handGun == 5){
-						//swapper aiming
+						// swapper aiming
 						List<int> validSwapTargets = new List<int>();
 						
 						for (int i=0; i<net.players.Count; i++){
@@ -546,17 +552,20 @@ public class EntityClass : MonoBehaviour {
 						float nearestDistance = 9999f;
 						for (int i=0; i<validSwapTargets.Count; i++){
 							Vector3 thisPos = Camera.main.WorldToScreenPoint(net.players[validSwapTargets[i]].Entity.transform.position);
-							if (Vector3.Distance(thisPos, new Vector3(Screen.width/2,Screen.height/2,0))<nearestDistance){
+							if (Vector3.Distance(thisPos, 
+								new Vector3(Screen.width/2, Screen.height/2, 0)) < nearestDistance
+							) {
 								nearestScreenspacePlayer = validSwapTargets[i];
 							}
 						}
+						
 						if (hud.swapperLocked){
-							//move target to locked on player
+							// move target to locked on player
 							Vector3 screenPos = Camera.main.WorldToScreenPoint(net.players[nearestScreenspacePlayer].Entity.transform.position);
 							swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
 							swapperLockTarget = nearestScreenspacePlayer;
 						}else{
-							//move target to center
+							// move target to center
 							swapperLock -= (swapperLock-new Vector3(Screen.width/2, Screen.height/2, 0)) * Time.deltaTime * 10f;
 						}
 					}else{
@@ -566,9 +575,9 @@ public class EntityClass : MonoBehaviour {
 					hud.swapperCrossX = Mathf.RoundToInt(swapperLock.x);
 					hud.swapperCrossY = Mathf.RoundToInt(swapperLock.y);
 					
-					//basketball arrow
-					if (net.ModeCfg.basketball){
-						if (bballArrowObj==null){
+					// basketball arrow
+					if (net.ModeCfg.basketball) {
+						if (bballArrowObj==null) {
 							bballArrowObj = (GameObject)GameObject.Instantiate(bballArrowPrefab);
 							bballArrowObj.transform.parent = Camera.main.transform;
 							bballArrowObj.transform.localPosition = Vector3.forward - (Vector3.right*0.8f) + (Vector3.up*0.5f);
@@ -581,13 +590,13 @@ public class EntityClass : MonoBehaviour {
 							
 						}
 					}else{
-						if (bballArrowObj!=null){
+						if (bballArrowObj!=null) {
 							bballArrowObj.renderer.enabled = false;
 						}
 					}
 					
-					//grav gun arrow
-					if (handGun == 6){
+					// grav gun arrow
+					if (handGun == 6) {
 						if (gravArrowObj == null){
 							gravArrowObj = (GameObject)GameObject.Instantiate(gravArrowPrefab);
 							//gravArrowObj.layer = 
@@ -598,24 +607,21 @@ public class EntityClass : MonoBehaviour {
 						Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 						RaycastHit gravHit = new RaycastHit();
 						int gravLayer = 1<<0;
-						if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)){
-							
+						
+						if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)) {
 							gravArrowObj.transform.LookAt(gravArrowObj.transform.position - gravHit.normal);
 							gravArrowObj.renderer.enabled = true;
 						}else{
 							gravArrowObj.renderer.enabled = false;
 						}
-						
-						
-						
 					}else{
 						if (gravArrowObj != null){
 							gravArrowObj.renderer.enabled = false;
 						}
 					}
 					
-					if (handGun>=0 && !User.hasBall){
-						//shooting
+					if (handGun >= 0 && !User.hasBall) {
+						// shooting
 						if (Input.GetKeyDown("mouse 0") && Screen.lockCursor == true && !artil.gunTypes[handGun].isAutomatic){
 							if (handGunCooldown<=0f){
 								Fire();
@@ -628,8 +634,9 @@ public class EntityClass : MonoBehaviour {
 							}
 						}
 					}
+					
 					if ((Input.GetKeyDown("mouse 1") || Input.GetKeyDown("q")) && Screen.lockCursor == true){
-						//swap guns
+						// swap guns
 						int tempInt = handGun;
 						float tempFloat = handGunCooldown;
 						handGun = holsterGun;
@@ -642,24 +649,22 @@ public class EntityClass : MonoBehaviour {
 						PlaySound("weaponChange");
 					}
 					
-					//ball throwing
-					if (User.hasBall && Input.GetKeyDown("mouse 0") && Screen.lockCursor == true){
+					// ball throwing
+					if (User.hasBall && Input.GetKeyDown("mouse 0") && Screen.lockCursor == true) {
 						net.ThrowBall(Camera.main.transform.position, Camera.main.transform.forward, 20f);
 						
 					}
 					
-					if (Input.GetKeyDown("k")){
+					if (Input.GetKeyDown("k")) {
 						net.RegisterHitRPC("suicide",User.viewID,User.viewID,transform.position);
 					}
 					
 					moveFPGun();
-				
-				}else{
-					//we dead
+				}else{ // we dead
+					if (Camera.main.transform.parent != null) 
+						SetModelVisibility(true);
 					
-					if (Camera.main.transform.parent != null) SetModelVisibility(true);
-					
-					if (ourKiller!=null){
+					if (ourKiller!=null) {
 						Camera.main.transform.parent = null;
 						Camera.main.transform.position = transform.position - animObj.transform.forward;
 						Camera.main.transform.LookAt(ourKiller.transform.position,transform.up);
@@ -668,39 +673,36 @@ public class EntityClass : MonoBehaviour {
 				}
 			}
 		}else{
-			if (lastUpdateTime>0f){
-				
+			if (lastUpdateTime>0f) {
 				NonLocalUpdate();
-				
-				
 			}
 		}
 		
-		if (!crouched){
+		if (!crouched) {
 			camHolder.transform.localPosition = Vector3.up * 0.7f;
 		}else{
 			camHolder.transform.localPosition = Vector3.zero;
 		}
 		
-		
-		
-		//visible person model anims
-		if (!User.local) camHolder.transform.localEulerAngles = camAngle;
+		// visible person model anims
+		if (!User.local) 
+			camHolder.transform.localEulerAngles = camAngle;
 		Vector3 lookDir = camHolder.transform.forward;
 		//lookDir.y = 0;
 		lookDir.Normalize();
 		animObj.transform.LookAt(animObj.transform.position + lookDir,transform.up);
 		animObj.transform.localEulerAngles = new Vector3(0,animObj.transform.localEulerAngles.y,0);
 		
-		if (User.health>0f){
-			if (yMove == 0f){
-				if (moveVec.magnitude>0.1f){
-					if (crouched){
+		if (User.health>0f) {
+			if (yMove == 0f) {
+				if (moveVec.magnitude>0.1f) {
+					if (crouched) {
 						animObj.animation.Play("crouchrun");
 					}else{
 						animObj.animation.Play("run");
 					}
-					if (Vector3.Dot(moveVec, lookDir)<-0.5f){
+					
+					if (Vector3.Dot(moveVec, lookDir)<-0.5f) {
 						animObj.animation["crouchrun"].speed = -1;
 						animObj.animation["run"].speed = -1;
 					}else{
@@ -708,14 +710,14 @@ public class EntityClass : MonoBehaviour {
 						animObj.animation["run"].speed = 1;
 					}
 				}else{
-					if (crouched){
+					if (crouched) {
 						animObj.animation.Play("crouch");
 					}else{
 						animObj.animation.Play("idle");
 					}
 				}
 			}else{
-				if (yMove>0f){
+				if (yMove>0f) {
 					animObj.animation.Play("rise");
 				}else{
 					animObj.animation.Play("fall");
@@ -725,60 +727,63 @@ public class EntityClass : MonoBehaviour {
 			animObj.animation.Play("die");
 		}
 		
-		//show correct guns
-		if (handGun != lastKnownHandGun){
+		// show correct guns
+		if (handGun != lastKnownHandGun) {
 			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
-			if (handGun>=0){
+			if (handGun>=0) {
 				gunMesh1 = (GameObject)GameObject.Instantiate(artil.gunTypes[handGun].modelPrefab);
 			}else{
 				gunMesh1 = new GameObject();
 			}
+			
 			gunMesh1.transform.parent = gunParent;
 			gunMesh1.transform.localEulerAngles = new Vector3(0,180,90);
 			gunMesh1.transform.localPosition = Vector3.zero;
 			lastKnownHandGun = handGun;
 			
-			if (User.local){
+			if (User.local) {
+				if (firstPersonGun != null) 
+					Destroy(firstPersonGun);
 				
-				
-				
-				if (firstPersonGun != null) Destroy(firstPersonGun);
-				if (handGun>=0){
+				if (handGun>=0) {
 					firstPersonGun = (GameObject)GameObject.Instantiate(artil.gunTypes[handGun].modelPrefab);
 				}else{
 					firstPersonGun = new GameObject();
 				}
+				
 				firstPersonGun.transform.parent = Camera.main.transform;
 				firstPersonGun.transform.localEulerAngles = new Vector3( -90, 0, 0);
 				firstPersonGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
-				if (firstPersonGun.renderer) firstPersonGun.renderer.castShadows = false;
+				if (firstPersonGun.renderer) 
+					firstPersonGun.renderer.castShadows = false;
 			}
 			
 			sendRPCUpdate = true;
 			
-			if (User.health<=0f || !User.local){
+			if (User.health<=0f || !User.local) {
 				SetModelVisibility(true);
 			}else{
 				SetModelVisibility(false);
 			}
 		}
-		if (holsterGun != lastKnownHolsterGun){
+		if (holsterGun != lastKnownHolsterGun) {
 			Transform gunParentB = gunMesh2.transform.parent;
 			Destroy(gunMesh2);
-			if (holsterGun>=0){
+			
+			if (holsterGun>=0) {
 				gunMesh2 = (GameObject)GameObject.Instantiate(artil.gunTypes[holsterGun].modelPrefab);
 			}else{
 				gunMesh2 = new GameObject();
 			}
+			
 			gunMesh2.transform.parent = gunParentB;
 			gunMesh2.transform.localEulerAngles = new Vector3(0,180,90);
 			gunMesh2.transform.localPosition = Vector3.zero;
 			lastKnownHolsterGun = holsterGun;
-			
 			sendRPCUpdate = true;
 			
-			if (User.health<=0f || !User.local){
+			if (User.health<=0f || !User.local) {
 				SetModelVisibility(true);
 			}else{
 				SetModelVisibility(false);
@@ -788,66 +793,65 @@ public class EntityClass : MonoBehaviour {
 		
 		
 		
-		//if dead, make unshootable
-		if (User.health>0f){
+		// if dead, make unshootable
+		if (User.health > 0f){
 			gameObject.layer = 8;
 		}else{
 			gameObject.layer = 2;
 		}
-		//if no friendly fire & on same team, make unshootable
-		if (net.ModeCfg.teamBased && !net.ModeCfg.allowFriendlyFire){
-			if (User.team == net.localPlayer.team){
+		
+		// if no friendly fire & on same team, make unshootable
+		if (net.ModeCfg.teamBased && !net.ModeCfg.allowFriendlyFire) {
+			if (User.team == net.localPlayer.team) {
 				gameObject.layer = 2;
 			}
 		}
 		
-		if (User.hasBall){
-			if (User.local && firstPersonGun && firstPersonGun.renderer) firstPersonGun.renderer.enabled = false;
+		if (User.hasBall) {
+			if (User.local && firstPersonGun && firstPersonGun.renderer) 
+				firstPersonGun.renderer.enabled = false;
 		}else{
-			if (User.local && firstPersonGun && firstPersonGun.renderer && User.health>0f) firstPersonGun.renderer.enabled = true;
+			if (User.local && firstPersonGun && firstPersonGun.renderer && User.health > 0f) 
+				firstPersonGun.renderer.enabled = true;
 		}
 	}
 	
 	public GameObject aimBone;
-	
 	private Vector3 gunInertia = Vector3.zero;
 	private Vector3 gunRecoil = Vector3.zero;
 	private Vector3 gunRot = Vector3.zero;
 	private float gunBounce = 0f;
 	
-	void moveFPGun(){
-		if (firstPersonGun == null) return;
+	void moveFPGun() {
+		if (firstPersonGun == null) 
+			return;
 		
-		//angle
+		// angle
 		firstPersonGun.transform.eulerAngles = gunRot;
 		Quaternion fromRot = firstPersonGun.transform.rotation;
 		firstPersonGun.transform.localEulerAngles = new Vector3( -90, 0, 0);
 		firstPersonGun.transform.rotation = Quaternion.Slerp(fromRot, firstPersonGun.transform.rotation, Time.deltaTime * 30f);
 		gunRot = firstPersonGun.transform.eulerAngles;
 		
-		
-		//position
 		firstPersonGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
 		
-		gunInertia -= (gunInertia-new Vector3(0f, yMove, 0f)) * Time.deltaTime * 5f;// * Time.deltaTime;
-		if (gunInertia.y<-3f) gunInertia.y = -3f;
+		gunInertia -= (gunInertia-new Vector3(0f, yMove, 0f)) * Time.deltaTime * 5f;
+		if (gunInertia.y < -3f) 
+			gunInertia.y = -3f;
 		firstPersonGun.transform.localPosition += gunInertia * 0.1f;
 		
 		float recoilRest = 5f;
-		if (handGun == 0) recoilRest = 5f;//pistol
-		if (handGun == 1) recoilRest = 8f;//grenade
-		if (handGun == 2) recoilRest = 8f;//machinegun
-		if (handGun == 3) recoilRest = 2f;//rifle
-		if (handGun == 4) recoilRest = 1f;//rocket launcher
-		if (handGun == 8) recoilRest = 2f;//spatula
+		if (handGun == 0) recoilRest = 5f; // pistol
+		if (handGun == 1) recoilRest = 8f; // grenade
+		if (handGun == 2) recoilRest = 8f; // machinegun
+		if (handGun == 3) recoilRest = 2f; // rifle
+		if (handGun == 4) recoilRest = 1f; // rocket launcher
+		if (handGun == 8) recoilRest = 2f; // spatula
+		
 		gunRecoil -= (gunRecoil-Vector3.zero) * Time.deltaTime * recoilRest;
-		
-		
 		firstPersonGun.transform.localPosition += gunRecoil * 0.1f;
 		
-		if (grounded){
-			
-			
+		if (grounded) {
 			if (moveVec.magnitude > 0.1f && net.gunBobbing){
 				if (crouched){
 					gunBounce += Time.deltaTime * 6f;
@@ -925,115 +929,105 @@ public class EntityClass : MonoBehaviour {
 		//return returnVec;
 	}
 	
-	public void ForceLook(Vector3 targetLookPos){
+	public void ForceLook(Vector3 targetLookPos) {
 		GameObject lookObj = new GameObject();
 		lookObj.transform.position = Camera.main.transform.position;
 		lookObj.transform.LookAt(targetLookPos, transform.up);
 		lookObj.transform.parent = camHolder.transform.parent;
 		camAngle = lookObj.transform.localEulerAngles;
-		
-		
 		while (camAngle.x>85f) camAngle.x-=180f;
 		while (camAngle.x<-85f) camAngle.x+=180f;
 		//Debug.Log("Force look: " + targetLookPos.ToString() + " ??? " + lookObj.transform.position.ToString() + " ??? " + camAngle.ToString());
 	}
 	
-	void FireBullet(string weaponType){
-		//fire instant-bullet type gun (change this later when multiple guns do things);
-			Vector3 bulletStart = Camera.main.transform.position;
-			Vector3 bulletDirection = Camera.main.transform.forward;
-			Vector3 bulletEnd = bulletStart + (bulletDirection*999f);
-			bool hit = false;
-		
-			bool registerhit = false;
-			int hitPlayer = -1;
-		
-			if (weaponType == "machinegun"){
-				float shakeValue = 0.01f;
-				bulletDirection += new Vector3(Random.Range(-shakeValue,shakeValue),Random.Range(-shakeValue,shakeValue),Random.Range(-shakeValue,shakeValue));
-				bulletDirection.Normalize();
-			}
-					
-			Ray bulletRay = new Ray(bulletStart, bulletDirection);
-			RaycastHit bulletHit = new RaycastHit();
-			int bulletLayer = (1<<0)|(1<<8);//walls & players
-					
-			gameObject.layer = 2;
-			if (Physics.Raycast(bulletRay, out bulletHit, 999f, bulletLayer)){
-				bulletEnd = bulletHit.point;
-						
-				if (bulletHit.collider.gameObject.layer == 8){
-					//hit a player, tell the server
+	void FireBullet(string weaponType) {
+		// fire hitscan type gun
+		Vector3 bulletStart = Camera.main.transform.position;
+		Vector3 bulletDirection = Camera.main.transform.forward;
+		Vector3 bulletEnd = bulletStart + (bulletDirection*999f);
+		bool hit = false;
+		bool registerhit = false;
+		int hitPlayer = -1;
+	
+		if (weaponType == "machinegun") {
+			float shakeValue = 0.01f;
+			bulletDirection += new Vector3(Random.Range(-shakeValue,shakeValue),Random.Range(-shakeValue,shakeValue),Random.Range(-shakeValue,shakeValue));
+			bulletDirection.Normalize();
+		}
 				
-					hit = true;
+		Ray bulletRay = new Ray(bulletStart, bulletDirection);
+		RaycastHit bulletHit = new RaycastHit();
+		int bulletLayer = (1<<0) | (1<<8); // walls & players
+				
+		gameObject.layer = 2;
+		if (Physics.Raycast(bulletRay, out bulletHit, 999f, bulletLayer)) {
+			bulletEnd = bulletHit.point;
 					
-					
-					for (int i=0; i<net.players.Count; i++){
-						if (bulletHit.collider.gameObject == net.players[i].Entity.gameObject){
-							hitPlayer = i;
-						}
+			if (bulletHit.collider.gameObject.layer == 8) {
+				// hit a player, tell the server
+				hit = true;
+				
+				for (int i=0; i<net.players.Count; i++) {
+					if (bulletHit.collider.gameObject == net.players[i].Entity.gameObject){
+						hitPlayer = i;
 					}
-				
-					registerhit = true;
-					//theNetwork.RegisterHit(weaponType, theNetwork.localPlayer.viewID, theNetwork.players[hitPlayer].viewID, bulletHit.point);
 				}
-			}else{
-				//miss
-			}
-			gameObject.layer = 8;
-					
-			bulletStart = transform.position;
-			bulletStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
 			
-					
-			//RPC the shot regardless
-			net.Shoot(weaponType, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit);
-		
-			if (registerhit) net.RegisterHit(weaponType, net.localPlayer.viewID, net.players[hitPlayer].viewID, bulletHit.point);
+				registerhit = true;
+				//theNetwork.RegisterHit(weaponType, theNetwork.localPlayer.viewID, theNetwork.players[hitPlayer].viewID, bulletHit.point);
+			}
+		}else{
+			//miss
+		}
+	
+		gameObject.layer = 8;
+		bulletStart = transform.position;
+		bulletStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
+		// RPC the shot, regardless
+		net.Shoot(weaponType, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit);
+	
+		if (registerhit) net.RegisterHit(weaponType, net.localPlayer.viewID, net.players[hitPlayer].viewID, bulletHit.point);
 	}
 	
-	public void Respawn(){
-		
+	public void Respawn() {
 		Vector3 spawnPos = Vector3.up;
 		Vector3 spawnAngle = Vector3.zero;
 		
-		if (GameObject.Find("_Spawns") != null){
+		if (GameObject.Find("_Spawns") != null) {
 			SpawnPointScript spawns = GameObject.Find("_Spawns").GetComponent<SpawnPointScript>();
 			
-			if (!net.ModeCfg.teamBased){
+			if (!net.ModeCfg.teamBased) {
 				int randomIndex = Random.Range(0,spawns.normalSpawns.Length);
 				spawnPos = spawns.normalSpawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.normalSpawns[randomIndex].transform.eulerAngles;
-			}else if (User.team == 1){
+			}else if (User.team == 1) {
 				int randomIndex = Random.Range(0,spawns.team1Spawns.Length);
 				spawnPos = spawns.team1Spawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.team1Spawns[randomIndex].transform.eulerAngles;
-			}else if (User.team == 2){
+			}else if (User.team == 2) {
 				int randomIndex = Random.Range(0,spawns.team2Spawns.Length);
 				spawnPos = spawns.team2Spawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.team2Spawns[randomIndex].transform.eulerAngles;
 			}
-			
 		}
 		
+		// assign spawn guns
+		if (firstPersonGun) 
+			Destroy(firstPersonGun);
 		
-		//assign spawn guns
-		if (firstPersonGun) Destroy(firstPersonGun);
-		if (net.ModeCfg.spawnGunA == -2){
+		if (net.ModeCfg.spawnGunA == -2) {
 			handGun = Random.Range(0,artil.gunTypes.Length);
 		}else{
 			handGun = net.ModeCfg.spawnGunA;
 		}
-		if (net.ModeCfg.spawnGunB == -2){
+		if (net.ModeCfg.spawnGunB == -2) {
 			holsterGun = Random.Range(0,artil.gunTypes.Length);
 		}else{
 			holsterGun = net.ModeCfg.spawnGunB;
 		}
+		
 		lastKnownHandGun = -99;
 		lastKnownHolsterGun = -99;
-		
-		
-		
 		handGunCooldown = 0f;
 		holsterGunCooldown = 0f;
 		
@@ -1044,16 +1038,16 @@ public class EntityClass : MonoBehaviour {
 		moveVec = Vector3.zero;
 	}
 	
-	void LateUpdate(){
-		if (User.health>0f){
+	void LateUpdate() {
+		if (User.health > 0f) {
 			aimBone.transform.localEulerAngles += new Vector3(0, camAngle.x, 0);
 			animObj.transform.localPosition = (animObj.transform.forward * camAngle.x * -0.002f) - Vector3.up;
 		}
 	}
 	
-	void NonLocalUpdate(){
-		
-		if (User.health<=0f) moveVec = Vector3.zero;
+	void NonLocalUpdate() {
+		if (User.health <= 0f) 
+			moveVec = Vector3.zero;
 		
 		if (cc == null) cc = GetComponent<CharacterController>();
 		if (ava == null) ava = gameObject.AddComponent<Avatar>();
@@ -1061,32 +1055,32 @@ public class EntityClass : MonoBehaviour {
 		float timeDelta = (float)(Network.time - lastUpdateTime);
 		lastUpdateTime = Network.time;
 		
-		
-		if (!crouched){
+		if (!crouched) {
 			ava.Move(ReorientMove(moveVec) * timeDelta * 10f);
 		}else{
 			ava.Move(ReorientMove(moveVec) * timeDelta * 5f);
 		}
 		
-		
-		if (yMove<=0f){
+		if (yMove <= 0f) {
 			ava.Move(transform.up * -0.2f);
+			
 			grounded = ava.isGrounded;
-			if (!grounded) ava.Move(transform.up * 0.2f);
+			if (!grounded) 
+				ava.Move(transform.up * 0.2f);
 		}else{
 			grounded = false;
 		}
 		
-		if (grounded){
+		if (grounded) {
 			yMove = 0f;
 		}else{
 			yMove -= timeDelta * 10f;
 		}
-		ava.Move(transform.up * yMove * timeDelta * 5f);
 		
+		ava.Move(transform.up * yMove * timeDelta * 5f);
 	}
 	
-	public void UpdatePlayer(Vector3 pos, Vector3 ang, bool crouch, Vector3 move, float yMovement, double time, int gunA, int gunB, Vector3 playerUp, Vector3 playerForward){
+	public void UpdatePlayer(Vector3 pos, Vector3 ang, bool crouch, Vector3 move, float yMovement, double time, int gunA, int gunB, Vector3 playerUp, Vector3 playerForward) {
 		transform.position = pos;
 		camHolder.transform.eulerAngles = ang;
 		camAngle = ang;
@@ -1094,12 +1088,9 @@ public class EntityClass : MonoBehaviour {
 		moveVec = move;
 		yMove = yMovement;
 		lastUpdateTime = time;
-		
 		handGun = gunA;
 		holsterGun = gunB;
-		
 		transform.LookAt(transform.position + playerForward ,playerUp);
-		
 		NonLocalUpdate();
 	}
 }

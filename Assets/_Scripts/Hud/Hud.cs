@@ -34,7 +34,6 @@ public class Hud : MonoBehaviour {
 	public int gunB = 0;
 	
 	// private
-	bool shouldDisableControGui = false;
 	bool viewingScores = false;
 	string gameMenuPoint = "config";
 	string defaultName = "Lazy Noob";
@@ -440,7 +439,7 @@ public class Hud : MonoBehaviour {
 			
 			// time
 			if (!net.gameOver) {
-				if (net.ModeCfg.gameTime > 0f) {
+				if (net.ModeCfg.MatchDuration > 0f) {
 					// show time left
 					GUI.color = Color.black;
 					GUI.Label(new Rect(midX-11, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
@@ -894,7 +893,7 @@ public class Hud : MonoBehaviour {
 		if (mode != 0) { // not custom
 			// show icon
 			for (int i=0; i<levels.Length; i++) {
-				if (levels[i].name == modes[mode].allowedLevels[hostLevelSelectInt]) {
+				if (levels[i].Name == modes[mode].allowedLevels[hostLevelSelectInt]) {
 					GUI.DrawTexture(new Rect(5,135,590,100), levels[i].icon);
 				}
 			}
@@ -918,7 +917,7 @@ public class Hud : MonoBehaviour {
 				modes[0].teamBased = modes[mode].teamBased;
 				modes[0].allowFriendlyFire = modes[mode].allowFriendlyFire;
 				modes[0].pitchBlack = modes[mode].pitchBlack;
-				modes[0].gameTime = modes[mode].gameTime;
+				modes[0].MatchDuration = modes[mode].MatchDuration;
 				modes[0].winScore = modes[mode].winScore;
 				modes[0].spawnGunA = modes[mode].spawnGunA;
 				modes[0].spawnGunB = modes[mode].spawnGunB;
@@ -961,7 +960,7 @@ public class Hud : MonoBehaviour {
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Round Time (minutes): ");
-			modes[mode].gameTime = MakeInt( GUILayout.TextField(modes[mode].gameTime.ToString()) );
+			modes[mode].MatchDuration = MakeInt( GUILayout.TextField(modes[mode].MatchDuration.ToString()) );
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();

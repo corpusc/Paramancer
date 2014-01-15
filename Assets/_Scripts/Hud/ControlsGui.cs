@@ -19,15 +19,15 @@ public class ControlsGui : MonoBehaviour {
 	void Start() {
 		Object[] pics = Resources.LoadAll("Basics");
 		
-//		for (int i = 0; i < pics.Length; i++) {
-//			bindData[i] = new BindData();
-//			var s = pics[i].ToString();
-//			Debug.Log("str of txtr: " + s);
+		for (int i = 0; i < pics.Length; i++) {
+			bindData[i] = new BindData();
+			var s = pics[i].ToString();
+			Debug.Log("str of txtr: " + s);
 //			bindData[i].Text = s;
 //			//bindData[i].Action = (BindData.ActionType)s;
 //			bindData[i].Pic = (Texture)pics[i];
 //			///////////        STILL NEED TO FIGURE OUT HOW TO SET THE RIGHT .kEYcODE AND HOOK IT INTO PlayerPrefs.GetSetStuffz
-//		}
+		}
 		
 		codes = new KeyCode[] {
 			KeyCode.Escape, 
