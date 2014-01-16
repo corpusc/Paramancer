@@ -853,10 +853,10 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	public void AssignGameModeConfig(GameModeScript gm, string levelName){
-		ModeCfg.gameModeName = gm.gameModeName;
-		ModeCfg.gameModeDescription = gm.gameModeDescription;
 		ModeCfg.levelName = levelName;
 		
+		ModeCfg.gameModeName = gm.gameModeName;
+		ModeCfg.gameModeDescription = gm.gameModeDescription;
 		ModeCfg.winScore = gm.winScore;
 		ModeCfg.MatchDuration = gm.MatchDuration;
 		ModeCfg.respawnWait = gm.respawnWait;
@@ -865,7 +865,9 @@ public class CcNet : MonoBehaviour {
 		ModeCfg.teamBased = gm.teamBased;
 		ModeCfg.allowFriendlyFire = gm.allowFriendlyFire;
 		ModeCfg.pitchBlack = gm.pitchBlack;
-		
+		ModeCfg.restockTime = gm.restockTime;
+		ModeCfg.playerLives = gm.playerLives;
+		ModeCfg.basketball = gm.basketball;
 		ModeCfg.spawnGunA = gm.spawnGunA;
 		ModeCfg.spawnGunB = gm.spawnGunB;
 		ModeCfg.pickupSlot1 = gm.pickupSlot1;
@@ -873,12 +875,6 @@ public class CcNet : MonoBehaviour {
 		ModeCfg.pickupSlot3 = gm.pickupSlot3;
 		ModeCfg.pickupSlot4 = gm.pickupSlot4;
 		ModeCfg.pickupSlot5 = gm.pickupSlot5;
-		
-		ModeCfg.restockTime = gm.restockTime;
-		
-		ModeCfg.playerLives = gm.playerLives;
-		
-		ModeCfg.basketball = gm.basketball;
 	}
 	
 	[RPC]

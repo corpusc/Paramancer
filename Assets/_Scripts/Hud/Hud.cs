@@ -1072,7 +1072,7 @@ public class Hud : MonoBehaviour {
 		// init button
 		if (!serving){
 			if (GUI.Button(new Rect(10,310,580,80), "Init Server!")){
-				//init a server with the current game mode settings
+				// init a server with the current game mode settings
 				net.serverGameChange = true;
 				Network.incomingPassword = net.password;
 				net.lastGameWasTeamBased = false;

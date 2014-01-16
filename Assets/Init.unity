@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: TestLevel
+  Name: TestLevel
   icon: {fileID: 2800000, guid: e2c06e1e7185f44248934327330b400c, type: 3}
 --- !u!1 &251681430
 GameObject:
@@ -433,7 +433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Conflict Room
+  Name: Conflict Room
   icon: {fileID: 2800000, guid: 997c117e4f6124fd6b0c4c3b5b0a0c59, type: 3}
 --- !u!1 &428004547
 GameObject:
@@ -526,7 +526,7 @@ MonoBehaviour:
   - The OctaDrome
   levelName: 
   winScore: 0
-  gameTime: 3
+  MatchDuration: 0
   respawnWait: 5
   deathsSubtractScore: 0
   killsIncreaseScore: 0
@@ -535,14 +535,14 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 1
+  restockTime: 10
+  playerLives: 0
+  basketball: 1
   pickupSlot1: 0
   pickupSlot2: 2
   pickupSlot3: 3
   pickupSlot4: 4
   pickupSlot5: 5
-  restockTime: 10
-  playerLives: 0
-  basketball: 1
 --- !u!1 &566821714
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,8 +609,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 649684330}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: .0183613244, y: .544284046, z: -.195068255, w: .815699756}
+  m_LocalPosition: {x: -19.3771858, y: 5.33059549, z: -8.95038319}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 115692936}
@@ -678,7 +678,7 @@ MonoBehaviour:
   - The OctaDrome
   levelName: 
   winScore: 0
-  gameTime: 3
+  MatchDuration: 0
   respawnWait: 5
   deathsSubtractScore: 0
   killsIncreaseScore: 1
@@ -687,14 +687,14 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 1
+  restockTime: 10
+  playerLives: 0
+  basketball: 0
   pickupSlot1: 0
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
   pickupSlot5: 4
-  restockTime: 10
-  playerLives: 0
-  basketball: 0
 --- !u!1 &774842515
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,7 +743,7 @@ MonoBehaviour:
   - The OctaDrome
   levelName: 
   winScore: 0
-  gameTime: 3
+  MatchDuration: 0
   respawnWait: 5
   deathsSubtractScore: 1
   killsIncreaseScore: 1
@@ -752,14 +752,14 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 1
+  restockTime: 10
+  playerLives: 0
+  basketball: 0
   pickupSlot1: 0
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
   pickupSlot5: -3
-  restockTime: 10
-  playerLives: 0
-  basketball: 0
 --- !u!1 &794054125
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,7 +809,7 @@ MonoBehaviour:
   - The OctaDrome
   levelName: 
   winScore: 20
-  gameTime: 0
+  MatchDuration: 0
   respawnWait: 5
   deathsSubtractScore: 0
   killsIncreaseScore: 1
@@ -818,14 +818,14 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: -2
   spawnGunB: -2
+  restockTime: 2
+  playerLives: 0
+  basketball: 0
   pickupSlot1: -2
   pickupSlot2: -2
   pickupSlot3: -2
   pickupSlot4: -2
   pickupSlot5: -2
-  restockTime: 2
-  playerLives: 0
-  basketball: 0
 --- !u!1 &890197039
 GameObject:
   m_ObjectHideFlags: 0
@@ -864,7 +864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: The OctaDrome
+  Name: The OctaDrome
   icon: {fileID: 2800000, guid: dc54f92856c754176b5cb31435ba0fec, type: 3}
 --- !u!1 &913912187
 GameObject:
@@ -916,7 +916,7 @@ MonoBehaviour:
   - The OctaDrome
   levelName: 
   winScore: 0
-  gameTime: 3
+  MatchDuration: 0
   respawnWait: 5
   deathsSubtractScore: 0
   killsIncreaseScore: 1
@@ -925,14 +925,14 @@ MonoBehaviour:
   pitchBlack: 1
   spawnGunA: 0
   spawnGunB: 1
+  restockTime: 10
+  playerLives: 0
+  basketball: 0
   pickupSlot1: 1
   pickupSlot2: 2
   pickupSlot3: 3
   pickupSlot4: 4
   pickupSlot5: 7
-  restockTime: 10
-  playerLives: 0
-  basketball: 0
 --- !u!1 &932986253
 GameObject:
   m_ObjectHideFlags: 0
@@ -1003,7 +1003,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Overpass
+  Name: Overpass
   icon: {fileID: 2800000, guid: 8ff42a99000474544ae054668c1437ac, type: 3}
 --- !u!1 &1330099965
 GameObject:
@@ -1137,7 +1137,7 @@ MonoBehaviour:
   - Furnace
   levelName: 
   winScore: 0
-  gameTime: 2
+  MatchDuration: 0
   respawnWait: 3
   deathsSubtractScore: 1
   killsIncreaseScore: 0
@@ -1146,14 +1146,14 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: 5
   spawnGunB: 1
+  restockTime: 10
+  playerLives: 0
+  basketball: 0
   pickupSlot1: -1
   pickupSlot2: -1
   pickupSlot3: -1
   pickupSlot4: -1
   pickupSlot5: -1
-  restockTime: 10
-  playerLives: 0
-  basketball: 0
 --- !u!1 &1502876669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1201,7 +1201,7 @@ MonoBehaviour:
   - The OctaDrome
   levelName: 
   winScore: 0
-  gameTime: 0
+  MatchDuration: 0
   respawnWait: 5
   deathsSubtractScore: 1
   killsIncreaseScore: 0
@@ -1210,14 +1210,14 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 1
+  restockTime: 10
+  playerLives: 3
+  basketball: 0
   pickupSlot1: 0
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
   pickupSlot5: 4
-  restockTime: 10
-  playerLives: 3
-  basketball: 0
 --- !u!1 &1586672846
 GameObject:
   m_ObjectHideFlags: 0
@@ -1300,7 +1300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Furnace
+  Name: Furnace
   icon: {fileID: 2800000, guid: 57a46760e0dd54c74ba52274674e28d3, type: 3}
 --- !u!1 &1820612917
 GameObject:
@@ -1340,7 +1340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: TestLevelB
+  Name: TestLevelB
   icon: {fileID: 2800000, guid: 318fecd9f93724563a9acb112587a1d9, type: 3}
 --- !u!1 &1914131304
 GameObject:
@@ -1394,7 +1394,7 @@ MonoBehaviour:
   - TestLevelB
   levelName: 
   winScore: 0
-  gameTime: 3
+  MatchDuration: 0
   respawnWait: 5
   deathsSubtractScore: 1
   killsIncreaseScore: 1
@@ -1403,14 +1403,14 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 1
+  restockTime: 10
+  playerLives: 0
+  basketball: 0
   pickupSlot1: 0
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
   pickupSlot5: -3
-  restockTime: 10
-  playerLives: 0
-  basketball: 0
 --- !u!1 &1973207290
 GameObject:
   m_ObjectHideFlags: 0
@@ -1640,7 +1640,7 @@ MonoBehaviour:
   allowedLevels: []
   levelName: 
   winScore: 0
-  gameTime: 0
+  MatchDuration: 0
   respawnWait: 10
   deathsSubtractScore: 1
   killsIncreaseScore: 1
@@ -1649,14 +1649,14 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 1
+  restockTime: 10
+  playerLives: 0
+  basketball: 0
   pickupSlot1: 0
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
   pickupSlot5: -3
-  restockTime: 10
-  playerLives: 0
-  basketball: 0
 --- !u!114 &1973207300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1734,7 +1734,7 @@ MonoBehaviour:
   - The OctaDrome
   levelName: 
   winScore: 0
-  gameTime: 3
+  MatchDuration: 0
   respawnWait: 5
   deathsSubtractScore: 0
   killsIncreaseScore: 1
@@ -1743,11 +1743,11 @@ MonoBehaviour:
   pitchBlack: 0
   spawnGunA: 0
   spawnGunB: 6
+  restockTime: 10
+  playerLives: 0
+  basketball: 0
   pickupSlot1: 6
   pickupSlot2: 1
   pickupSlot3: 2
   pickupSlot4: 3
   pickupSlot5: 4
-  restockTime: 10
-  playerLives: 0
-  basketball: 0
