@@ -38,7 +38,7 @@ public class Hud : MonoBehaviour {
 	string gameMenuPoint = "config";
 	string defaultName = "Lazy Noob";
 	int mode = 1;
-	int hostLevelSelectInt = 0;
+	int mapId = 0;
 	
 	// windows
 	Vector2 scrollPos = Vector2.zero;
@@ -964,12 +964,12 @@ public class Hud : MonoBehaviour {
 			int levelChangeIndex = 0;
 			for (int i=0; i<modes[mode].allowedLevels.Length; i++) {
 				if (modes[mode].allowedLevels[i] == 
-					modes[lastInt].allowedLevels[hostLevelSelectInt]
+					modes[lastInt].allowedLevels[mapId]
 				) 
 					levelChangeIndex = i;
 			}
 			
-			hostLevelSelectInt = levelChangeIndex;
+			mapId = levelChangeIndex;
 		}
 		
 		if (GUI.Button(new Rect(255,100,30,30), ">") ) {
@@ -981,38 +981,35 @@ public class Hud : MonoBehaviour {
 			
 			int levelChangeIndex = 0;
 			for (int i=0; i<modes[mode].allowedLevels.Length; i++) {
-				if (modes[mode].allowedLevels[i] == modes[lastInt].allowedLevels[hostLevelSelectInt]) 
+				if (modes[mode].allowedLevels[i] == modes[lastInt].allowedLevels[mapId]) 
 					levelChangeIndex = i;
 			}
 			
-			hostLevelSelectInt = levelChangeIndex;
+			mapId = levelChangeIndex;
 		}
 		
 		GUI.Label(new Rect(60,100,200,30), "Mode: " + modes[mode].gameModeName);
 				
 		// game level
 		if (GUI.Button(new Rect(305,100,30,30), "<") ) {
-			hostLevelSelectInt--;
-			if (hostLevelSelectInt < 0) 
-				hostLevelSelectInt += modes[mode].allowedLevels.Length;
+			mapId--;
+			if (mapId < 0) 
+				mapId += modes[mode].allowedLevels.Length;
 		}
 		if (GUI.Button(new Rect(555,100,30,30), ">") ) {
-			hostLevelSelectInt++;
-			if (hostLevelSelectInt >= modes[mode].allowedLevels.Length) 
-				hostLevelSelectInt -= modes[mode].allowedLevels.Length;
+			mapId++;
+			if (mapId >= modes[mode].allowedLevels.Length) 
+				mapId -= modes[mode].allowedLevels.Length;
 		}
 		
-		Debug.Log("mode: " + mode);
-		Debug.Log("modes.Length: " + modes.Length);
-		Debug.Log("hostLevelSelectInt: " + hostLevelSelectInt);
-		GUI.Label(new Rect(360,100,200,30), "Level: " + modes[mode].allowedLevels[hostLevelSelectInt]);
+		GUI.Label(new Rect(360,100,200,30), "Level: " + modes[mode].allowedLevels[mapId]);
 				
 				
 				
 		if (mode != 0) { // not custom
 			// show icon
 			for (int i=0; i<levels.Length; i++) {
-				if (levels[i].Name == modes[mode].allowedLevels[hostLevelSelectInt]) {
+				if (levels[i].Name == modes[mode].allowedLevels[mapId]) {
 					GUI.DrawTexture(new Rect(5,135,590,100), levels[i].icon);
 				}
 			}
@@ -1024,11 +1021,11 @@ public class Hud : MonoBehaviour {
 				
 				int levelChangeIndex = 0;
 				for (int i=0; i<modes[0].allowedLevels.Length; i++) {
-					if (modes[0].allowedLevels[i] == modes[mode].allowedLevels[hostLevelSelectInt]) 
+					if (modes[0].allowedLevels[i] == modes[mode].allowedLevels[mapId]) 
 						levelChangeIndex = i;
 				}
 				
-				hostLevelSelectInt = levelChangeIndex;
+				mapId = levelChangeIndex;
 				
 				modes[0].killsIncreaseScore = modes[mode].killsIncreaseScore;
 				modes[0].deathsSubtractScore = modes[mode].deathsSubtractScore;
@@ -1195,7 +1192,7 @@ public class Hud : MonoBehaviour {
 				net.serverGameChange = true;
 				Network.incomingPassword = net.password;
 				net.lastGameWasTeamBased = false;
-				net.AssignGameModeConfig(modes[mode], modes[mode].allowedLevels[hostLevelSelectInt]);
+				net.AssignGameModeConfig(modes[mode], modes[mode].allowedLevels[mapId]);
 				net.comment = net.ModeCfg.gameModeName + "\n" + net.ModeCfg.levelName;
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initialising server, has public address: " + Network.HavePublicAddress().ToString());
@@ -1206,7 +1203,7 @@ public class Hud : MonoBehaviour {
 			if (GUI.Button(new Rect(10,310,580,80), "Change Game")){
 				net.serverGameChange = true;
 				net.lastGameWasTeamBased = net.ModeCfg.teamBased;
-				net.AssignGameModeConfig(modes[mode], modes[mode].allowedLevels[hostLevelSelectInt]);
+				net.AssignGameModeConfig(modes[mode], modes[mode].allowedLevels[mapId]);
 				net.NetVI = Network.AllocateViewID();
 				net.RequestGameData();
 			}
