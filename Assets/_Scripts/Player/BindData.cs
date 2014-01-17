@@ -17,6 +17,7 @@ public class BindData {
 	public ActionType Action;
 	public KeyCode KeyCode;
 	public Texture Pic;
+	public int Id; // idx into the keyData, which stores the physical layout of keys
 	
 	
 	

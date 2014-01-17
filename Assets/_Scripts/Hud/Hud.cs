@@ -148,7 +148,6 @@ public class Hud : MonoBehaviour {
 		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {
 			var s = pics[i].name;
-			Debug.Log("pic: " + s);
 			
 			switch (s) {
 				case "Health": 

@@ -17,54 +17,18 @@ public class ControlsGui : MonoBehaviour {
 	
 	
 	void Start() {
+		// load textures
 		Object[] pics = Resources.LoadAll("Basics", typeof(Texture));
 		
 		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {
 			var s = pics[i].name;
-			Debug.Log(string.Format("pizznic: '{0}'", s));
 			
 			if (s == "KeyCap")
 				keyCap = pics[i] as Texture;
 		}
 		
-		// bind the keys
-		for (int i = 0; i < (int)BindData.ActionType.Count; i++) {
-			bindData[i] = new BindData();
-			bindData[i].Action = (BindData.ActionType)i;
-			
-			// get pic from list
-			Texture pic = null;
-			for (int j = 0; j < pics.Length; j++) {
-				if ((BindData.ActionType)i + "" == pics[j].ToString())
-					pic = (Texture)pics[j];
-			}
-			
-			bindData[i].Pic = pic;
-//			///////////  FIXME      HOOK INTO PlayerPrefs.GetSetStuffz
-			
-			switch ((BindData.ActionType)i) {
-				case BindData.ActionType.MoveForward:
-					bindData[i].KeyCode = KeyCode.E;
-					break;
-				case BindData.ActionType.MoveBackward:
-					bindData[i].KeyCode = KeyCode.D;
-					break;
-				case BindData.ActionType.MoveLeft:
-					bindData[i].KeyCode = KeyCode.S;
-					break;
-				case BindData.ActionType.MoveRight:
-					bindData[i].KeyCode = KeyCode.F;
-					break;
-				case BindData.ActionType.MoveUp:
-					bindData[i].KeyCode = KeyCode.A;
-					break;
-				case BindData.ActionType.MoveDown:
-					bindData[i].KeyCode = KeyCode.Z;
-					break;
-			}		
-		}
-		
+		// setup temp structure for the physical layout of the keyboard
 		codes = new KeyCode[] {
 			KeyCode.Escape, 
 			KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6, 
@@ -114,6 +78,48 @@ public class ControlsGui : MonoBehaviour {
 			KeyCode.Keypad0, KeyCode.None, KeyCode.KeypadPeriod, KeyCode.None, 
 		};
 		
+		// bind default keys to user actions
+		for (int i = 0; i < (int)BindData.ActionType.Count; i++) {
+			bindData[i] = new BindData();
+			bindData[i].Action = (BindData.ActionType)i;
+			
+			// get pic from list
+			Texture pic = null;
+			for (int j = 0; j < pics.Length; j++) {
+				if ((BindData.ActionType)i + "" == pics[j].name)
+					pic = (Texture)pics[j];
+			}
+			
+			bindData[i].Pic = pic;
+//			///////////  FIXME      HOOK INTO PlayerPrefs.GetSetStuffz
+			
+			switch ((BindData.ActionType)i) {
+				case BindData.ActionType.MoveForward:
+					bindData[i].KeyCode = KeyCode.E;
+					break;
+				case BindData.ActionType.MoveBackward:
+					bindData[i].KeyCode = KeyCode.D;
+					break;
+				case BindData.ActionType.MoveLeft:
+					bindData[i].KeyCode = KeyCode.S;
+					break;
+				case BindData.ActionType.MoveRight:
+					bindData[i].KeyCode = KeyCode.F;
+					break;
+				case BindData.ActionType.MoveUp:
+					bindData[i].KeyCode = KeyCode.A;
+					break;
+				case BindData.ActionType.MoveDown:
+					bindData[i].KeyCode = KeyCode.Z;
+					break;
+			}
+			
+			for (int j = 0; j < codes.Length; j++)
+				if (bindData[i].KeyCode == codes[j])
+					bindData[i].Id = j;
+		}
+		
+		// the more complicated structure that's used from now on
 		keyData = new KeyData[codes.Length];
 		for (int i = 0; i < keyData.Length; i++)
 			keyData[i] = new KeyData();
@@ -139,10 +145,27 @@ public class ControlsGui : MonoBehaviour {
 			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) )
 				GUI.color = Color.yellow;
 			else
-				GUI.color = Color.cyan;
+				GUI.color = Color.white;
 				
 			// draw
 			GUI.DrawTexture(keyData[i].Rect, keyCap);
+		}
+		
+		// draw actions
+		GUI.color = Color.cyan;
+		for (int i = 0; i < bindData.Length; i++) {
+			GUI.DrawTexture(keyData[bindData[i].Id].Rect, bindData[i].Pic);
+		}
+		
+		// draw key text
+		for (int i = 0; i < keyData.Length; i++) {
+			// get the right color
+			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) )
+				GUI.color = Color.yellow;
+			else
+				GUI.color = Color.white;
+				
+			// draw
 			GUI.Box(keyData[i].Rect, keyData[i].Text);
 		}
 	}
