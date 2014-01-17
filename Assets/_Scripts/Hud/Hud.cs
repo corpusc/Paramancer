@@ -56,6 +56,92 @@ public class Hud : MonoBehaviour {
 	
 	
 	void Start() {
+		// setup match configs
+		modes = new GameModeScript[9];
+		for (int i = 0; i < modes.Length; i++)
+			modes[i] = new GameModeScript();
+		
+		modes[0].gameModeName = "Custom";
+		modes[0].gameModeDescription = "Have it your way!  All the exact settings you prefer.";
+		modes[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB" };
+		modes[0].respawnWait = 5f;
+		
+		modes[1].gameModeName = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
+		modes[1].gameModeDescription = "Each player has their own, independent, changeable gravity";
+		modes[1].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[1].respawnWait = 5f;
+		
+		modes[2].gameModeName = "Grue Food";
+		modes[2].gameModeDescription = "It is pitch black.  You are likely to be eaten by a grue.";
+		modes[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[2].respawnWait = 5f;
+		modes[2].pitchBlack = true;
+		modes[2].pickupSlot1 = 1;
+		modes[2].pickupSlot2 = 2;
+		modes[2].pickupSlot3 = 3;
+		modes[2].pickupSlot4 = 4;
+		modes[2].pickupSlot5 = 7;
+		
+		modes[3].gameModeName = "FFA Fragmatch";
+		modes[3].gameModeDescription = "Frag count is ALL that counts in this freestyle Free For All!";
+		modes[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[3].respawnWait = 5f;
+		
+		modes[5].gameModeName = "Team Fragmatch";
+		modes[5].gameModeDescription = "Frag count is what counts, but don't hurt your mates!";
+		modes[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[5].respawnWait = 5f;
+		modes[5].teamBased = true;
+		modes[5].pickupSlot5 = 4;
+
+		modes[4].gameModeName = "BBall";
+		modes[4].gameModeDescription = "Shooting hoops...and GUNS!  GANGSTA!";
+		modes[4].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[4].respawnWait = 5f;
+		modes[4].deathsSubtractScore = false;
+		modes[4].killsIncreaseScore = false;
+		modes[4].teamBased = true;
+		modes[4].basketball = true;
+		modes[4].pickupSlot2 = 2;
+		modes[4].pickupSlot3 = 3;
+		modes[4].pickupSlot4 = 4;
+		modes[4].pickupSlot5 = 5;
+		
+		modes[6].gameModeName = "YOLT! (You Only Live Thrice)";
+		modes[6].gameModeDescription = "Last Person Standing, but you have 3 lives... like Pac-Man";
+		modes[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[6].MatchDuration = 0f;
+		modes[6].respawnWait = 5f;
+		modes[6].killsIncreaseScore = false;
+		modes[6].pickupSlot5 = 4;
+		
+		modes[7].gameModeName = "Swap Meat";
+		modes[7].gameModeDescription = "There is only the swapper gun, grenades and lava... have fun!";
+		modes[7].allowedLevels = new string[] { "Furnace" };
+		modes[7].respawnWait = 3f;
+		modes[7].killsIncreaseScore = false;
+		modes[7].spawnGunA = 5;
+		modes[7].spawnGunB = 1;
+		modes[7].pickupSlot1 = -1;
+		modes[7].pickupSlot2 = -1;
+		modes[7].pickupSlot3 = -1;
+		modes[7].pickupSlot4 = -1;
+		modes[7].pickupSlot5 = -1;
+		
+		modes[8].gameModeName = "Weapon Lottery";
+		modes[8].gameModeDescription = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
+		modes[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[8].winScore = 20;
+		modes[8].respawnWait = 5f;
+		modes[8].spawnGunA = -2;
+		modes[8].spawnGunB = -2;
+		modes[8].restockTime = 2f;
+		modes[8].pickupSlot1 = -2;
+		modes[8].pickupSlot2 = -2;
+		modes[8].pickupSlot3 = -2;
+		modes[8].pickupSlot4 = -2;
+		modes[8].pickupSlot5 = -2;
+
 		// load textures
 		UnityEngine.Object[] pics = Resources.LoadAll("Hud");
 		

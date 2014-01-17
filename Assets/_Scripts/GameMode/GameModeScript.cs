@@ -1,15 +1,15 @@
 using UnityEngine;
 using System.Collections;
 
-public class GameModeScript : MonoBehaviour {
+public class GameModeScript {
 	// 'mode select' stuff
 	public string gameModeName = "";
 	public string gameModeDescription;
 	public string[] allowedLevels;
 	// specific mode/game settings stuff
 	public string levelName; // ...to load/play in
-	public int winScore;
-	public float MatchDuration; // (negative for infinite)
+	public int winScore = 0;
+	public float MatchDuration = 3f; // (negative for infinite)
 	public float respawnWait = 10f;
 	public bool deathsSubtractScore = true;
 	public bool killsIncreaseScore = true;

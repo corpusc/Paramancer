@@ -63,7 +63,7 @@ public class CcNet : MonoBehaviour {
 		hud = GetComponent<Hud>();
 		log = GetComponent<CcLog>();
 		artill = GetComponent<Weapon>();
-		ModeCfg = GetComponent<GameModeScript>();
+		ModeCfg = new GameModeScript();
 		
 		Application.LoadLevel("MenuMain");
 	}
