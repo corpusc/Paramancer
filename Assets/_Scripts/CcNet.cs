@@ -428,10 +428,12 @@ public class CcNet : MonoBehaviour {
 	private string getObituary(string f, string v) { // fragger, victim
 		// suicides
 		if (f == v) { // fixme.... cuz if 2 players have the same name, it will read like a suicide when it wasn't
-			switch (Random.Range(0, 3)) {
+			switch (Random.Range(0, 5)) {
 				case 0:	return f + " went and bought the farm!";
-				case 1:	return f + " changed careers... to Daisy Pusher!";
-				case 2:	return f + " went and bit the dust!";
+				case 1:	return f + " changed career... to Daisy Pusher!";
+				case 2:	return f + " bit the dust!";
+				case 3:	return f + " really shot themself in the foot!";
+				case 4:	return f + " did some nice kamikaze work!";
 				default: return "....";
 			}
 		}

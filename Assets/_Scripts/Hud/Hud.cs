@@ -56,13 +56,47 @@ public class Hud : MonoBehaviour {
 	
 	
 	void Start() {
+		// load textures
+		UnityEngine.Object[] pics = Resources.LoadAll("Hud");
+		
+		// use this temp list to setup permanent vars
+		for (int i = 0; i < pics.Length; i++) {
+			var s = pics[i].name;
+			Debug.Log("pic: " + s);
+			
+			switch (s) {
+				case "Health": 
+					lifeIcon = (Texture)pics[i]; 
+					break;
+				case "whiteTex": 
+					backTex = (Texture)pics[i]; 
+					break;
+				case "blackTex": 
+					blackTex = (Texture)pics[i]; 
+					break;
+				case "Crosshair": 
+					crossHair = (Texture)pics[i]; 
+					break;
+				case "Logo": 
+					gamelogo = (Texture)pics[i]; 
+					break;
+				case "FlagRed": 
+					teamRedFlag = (Texture)pics[i]; 
+					break;
+				case "FlagBlue": 
+					teamBlueFlag = (Texture)pics[i]; 
+					break;
+			}
+		}
+		
+		// scripts
 		net = GetComponent<CcNet>();
 		log = GetComponent<CcLog>();
 		artillery = GetComponent<Weapon>();
 		controGui = GetComponent<ControlsGui>();
 		locUser = GetComponent<LocalUser>();
 		
-		//make local player
+		// make local player
 		net.localPlayer = new NetUser();
 		net.localPlayer.local = true;
 		net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);

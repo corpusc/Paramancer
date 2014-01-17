@@ -3,30 +3,66 @@ using System.Collections;
 
 public class ControlsGui : MonoBehaviour {
 	public int BottomMost;
-	public Texture KeyCap;
 	
 	// privates
+	Texture keyCap;
 	int numX = 21;
 	int numY = 6;
 	// VVVVV matching indices VVVVVVV
 	KeyCode[] codes; // first build this for cleaner looking initialization of values
 	KeyData[] keyData; // this is the real structure built from "codes", that actually gets used elsewhere
 	// ^^^^^ matching indices ^^^^^^^
-	BindData[] bindData;
+	BindData[] bindData = new BindData[(int)BindData.ActionType.Count];
 	
 	
 	
 	void Start() {
-		Object[] pics = Resources.LoadAll("Basics");
+		Object[] pics = Resources.LoadAll("Basics", typeof(Texture));
 		
+		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {
+			var s = pics[i].name;
+			Debug.Log(string.Format("pizznic: '{0}'", s));
+			
+			if (s == "KeyCap")
+				keyCap = pics[i] as Texture;
+		}
+		
+		// bind the keys
+		for (int i = 0; i < (int)BindData.ActionType.Count; i++) {
 			bindData[i] = new BindData();
-			var s = pics[i].ToString();
-			Debug.Log("str of txtr: " + s);
-//			bindData[i].Text = s;
-//			//bindData[i].Action = (BindData.ActionType)s;
-//			bindData[i].Pic = (Texture)pics[i];
-//			///////////        STILL NEED TO FIGURE OUT HOW TO SET THE RIGHT .kEYcODE AND HOOK IT INTO PlayerPrefs.GetSetStuffz
+			bindData[i].Action = (BindData.ActionType)i;
+			
+			// get pic from list
+			Texture pic = null;
+			for (int j = 0; j < pics.Length; j++) {
+				if ((BindData.ActionType)i + "" == pics[j].ToString())
+					pic = (Texture)pics[j];
+			}
+			
+			bindData[i].Pic = pic;
+//			///////////  FIXME      HOOK INTO PlayerPrefs.GetSetStuffz
+			
+			switch ((BindData.ActionType)i) {
+				case BindData.ActionType.MoveForward:
+					bindData[i].KeyCode = KeyCode.E;
+					break;
+				case BindData.ActionType.MoveBackward:
+					bindData[i].KeyCode = KeyCode.D;
+					break;
+				case BindData.ActionType.MoveLeft:
+					bindData[i].KeyCode = KeyCode.S;
+					break;
+				case BindData.ActionType.MoveRight:
+					bindData[i].KeyCode = KeyCode.F;
+					break;
+				case BindData.ActionType.MoveUp:
+					bindData[i].KeyCode = KeyCode.A;
+					break;
+				case BindData.ActionType.MoveDown:
+					bindData[i].KeyCode = KeyCode.Z;
+					break;
+			}		
 		}
 		
 		codes = new KeyCode[] {
@@ -106,7 +142,7 @@ public class ControlsGui : MonoBehaviour {
 				GUI.color = Color.cyan;
 				
 			// draw
-			GUI.DrawTexture(keyData[i].Rect, KeyCap);
+			GUI.DrawTexture(keyData[i].Rect, keyCap);
 			GUI.Box(keyData[i].Rect, keyData[i].Text);
 		}
 	}
