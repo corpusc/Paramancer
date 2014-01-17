@@ -7,14 +7,29 @@ public class Avatar : MonoBehaviour {
 	public bool isGrounded = false;
 	public float radius = 0.5f;
 	public float height = 1.8f;
+	public float SprintMultiplier = 2.0f;
 	
+	private bool sprinting = true;
+	private float sprintActivatedTime = 0f;
+	private const float sprintDuration = 5f;
 	
-	
-	public void Move(Vector3 moveVector) {
+	public void Move(Vector3 moveVector, bool StartSprint = false) {
 		// no move? no expensive spherecasts!
-		if (moveVector.magnitude <0.001f) return; 
+		if (moveVector.magnitude <0.001f){
+			//sprinting = false; //if the player stopped moving, they also stopped sprinting
+			return;
+		}
+		
+		//if(StartSprint) sprinting = true;
+		if(StartSprint) sprinting = !sprinting;
 		
 		// let's go
+		if(sprintActivatedTime > sprintDuration) sprinting = false;
+		if(sprinting){
+			moveVector *= SprintMultiplier;
+			sprintActivatedTime += Time.deltaTime;
+		}
+		else if(sprintActivatedTime > 0f) sprintActivatedTime -= Time.deltaTime;
 		isGrounded = false;
 		Ray coreRay = new Ray(transform.position, moveVector);
 		RaycastHit coreHit = new RaycastHit();

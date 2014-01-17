@@ -432,6 +432,8 @@ public class EntityClass : MonoBehaviour {
 					
 					camHolder.transform.localEulerAngles = camAngle;
 					
+					bool startedSprinitng = false;
+					
 					Vector3 inputVector = Vector3.zero; 
 					//if (Input.GetKey("w")) inputVector += Camera.main.transform.forward;
 					//if (Input.GetKey("s")) inputVector -= Camera.main.transform.forward;
@@ -441,11 +443,12 @@ public class EntityClass : MonoBehaviour {
 					if (Input.GetKey("s")) inputVector -= animObj.transform.forward;
 					if (Input.GetKey("d")) inputVector += animObj.transform.right;
 					if (Input.GetKey("a")) inputVector -= animObj.transform.right;
+					if(Input.GetKeyDown("r")) startedSprinitng = true;
 					//inputVector.y = 0f;
 					inputVector.Normalize();
 					
 					if (!crouched){
-						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 10f);
+						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 10f, startedSprinitng);
 					}else{
 						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 5f);
 					}
