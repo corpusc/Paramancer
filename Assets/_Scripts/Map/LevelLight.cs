@@ -19,7 +19,7 @@ public class LevelLight : MonoBehaviour {
 	
 	void Start () {
 		if (GameObject.Find("Main Program") != null) {
-			if (GameObject.Find("Main Program").GetComponent<CcNet>().ModeCfg.pitchBlack) {
+			if (GameObject.Find("Main Program").GetComponent<CcNet>().CurrMatch.pitchBlack) {
 				if (!litInPitchBlack) 
 					light.enabled = false;
 			}else{

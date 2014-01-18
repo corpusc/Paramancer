@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class GameModeScript {
+public class MatchData {
 	// 'mode select' stuff
 	public string Name = "";
 	public string Descript; // description

@@ -35,7 +35,7 @@ public class CcNet : MonoBehaviour {
 	private bool levelLoaded = false;
 	
 	// game modes/types
-	public GameModeScript ModeCfg;
+	public MatchData CurrMatch;
 	public GameObject basketballPrefab;
 	private GameObject basketball;
 	public BasketballScript GetBball() {
@@ -64,7 +64,7 @@ public class CcNet : MonoBehaviour {
 		hud = GetComponent<Hud>();
 		log = GetComponent<CcLog>();
 		artill = GetComponent<Weapon>();
-		ModeCfg = new GameModeScript();
+		CurrMatch = new MatchData();
 		
 		Application.LoadLevel("MenuMain");
 	}
@@ -130,7 +130,7 @@ public class CcNet : MonoBehaviour {
 					
 					bool skip = false;
 					//ignore if on the same team as the person who fired
-					if (ModeCfg.teamBased && !ModeCfg.allowFriendlyFire){
+					if (CurrMatch.teamBased && !CurrMatch.allowFriendlyFire){
 						int shooterIndex = -1;
 						for (int k=0; k<players.Count; k++){
 							if (players[k].viewID == shooterID) shooterIndex = k;
@@ -226,18 +226,18 @@ public class CcNet : MonoBehaviour {
 		//scores/kills/death stats
 		if (killShot){
 			players[victimIndex].deaths++;
-			if (ModeCfg.deathsSubtractScore) players[victimIndex].currentScore--;
+			if (CurrMatch.deathsSubtractScore) players[victimIndex].currentScore--;
 			
 			players[shooterIndex].kills++;
-			if (ModeCfg.killsIncreaseScore) players[shooterIndex].currentScore++;
+			if (CurrMatch.killsIncreaseScore) players[shooterIndex].currentScore++;
 		}
 		
 		//team stuff
-		if (killShot && ModeCfg.teamBased){
-			if (players[victimIndex].team == 1 && players[shooterIndex].team == 2 && ModeCfg.deathsSubtractScore) team1Score--;
-			if (players[victimIndex].team == 2 && players[shooterIndex].team == 1 && ModeCfg.deathsSubtractScore) team2Score--;
-			if (players[shooterIndex].team == 1 && players[victimIndex].team == 2 && ModeCfg.killsIncreaseScore) team1Score++;
-			if (players[shooterIndex].team == 2 && players[victimIndex].team == 1 && ModeCfg.killsIncreaseScore) team2Score++;
+		if (killShot && CurrMatch.teamBased){
+			if (players[victimIndex].team == 1 && players[shooterIndex].team == 2 && CurrMatch.deathsSubtractScore) team1Score--;
+			if (players[victimIndex].team == 2 && players[shooterIndex].team == 1 && CurrMatch.deathsSubtractScore) team2Score--;
+			if (players[shooterIndex].team == 1 && players[victimIndex].team == 2 && CurrMatch.killsIncreaseScore) team1Score++;
+			if (players[shooterIndex].team == 2 && players[victimIndex].team == 1 && CurrMatch.killsIncreaseScore) team2Score++;
 		}
 		
 		//assign results
@@ -246,16 +246,16 @@ public class CcNet : MonoBehaviour {
 		
 		
 		if (killShot) networkView.RPC("AnnounceKill", RPCMode.All, weaponType, shooterID, victimID);
-		if (ModeCfg.teamBased && killShot) networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
+		if (CurrMatch.teamBased && killShot) networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		
 		//let players see hit
 		networkView.RPC("ShowHit", RPCMode.All, weaponType, hitPos, victimID);
 		
 		
 		//check for game over
-		if (ModeCfg.winScore > 0){
+		if (CurrMatch.winScore > 0){
 			for (int i=0; i<players.Count; i++){
-				if (players[i].currentScore>=ModeCfg.winScore){
+				if (players[i].currentScore>=CurrMatch.winScore){
 					networkView.RPC("AnnounceGameOver",RPCMode.All);
 				}
 			}
@@ -378,7 +378,7 @@ public class CcNet : MonoBehaviour {
 				players[i].lives--;
 				if (players[i].lives<=0 && 
 					players[i].local && 
-					ModeCfg.playerLives>0)
+					CurrMatch.playerLives>0)
 				{
 					// spectate
 					players[i].Entity.Spectating = true;
@@ -387,7 +387,7 @@ public class CcNet : MonoBehaviour {
 			
 			// basketball
 			if (players[i].viewID == victimID) {
-				if (ModeCfg.basketball && players[i].hasBall){
+				if (CurrMatch.basketball && players[i].hasBall){
 					players[i].hasBall = false;
 					if (isServer)
 						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
@@ -399,7 +399,7 @@ public class CcNet : MonoBehaviour {
 		if (isServer && 
 			connected && 
 			!gameOver && 
-			ModeCfg.playerLives > 0 && 
+			CurrMatch.playerLives > 0 && 
 			players.Count > 1)
 		{
 			int livingPlayers = 0;
@@ -458,7 +458,7 @@ public class CcNet : MonoBehaviour {
 		if (viewID == localPlayer.viewID){
 			for (int i=0; i<players.Count; i++){
 				if (players[i].viewID == viewID){
-					if ((ModeCfg.playerLives > 0 && players[i].lives>0) || ModeCfg.playerLives ==0){
+					if ((CurrMatch.playerLives > 0 && players[i].lives>0) || CurrMatch.playerLives ==0){
 						//respawn
 						players[i].Entity.Respawn();
 					}
@@ -526,20 +526,20 @@ public class CcNet : MonoBehaviour {
 			for (int i=0; i<players.Count; i++) {
 				if (players[i].health <= 0f){
 					if (Time.time > players[i].respawnTime) {
-						if (ModeCfg.playerLives == 0 || players[i].lives > 0)
+						if (CurrMatch.playerLives == 0 || players[i].lives > 0)
 							players[i].health = 100f;
 						
 						networkView.RPC("AssignPlayerStats", RPCMode.All, players[i].viewID, players[i].health, players[i].kills, players[i].deaths, players[i].currentScore);
 						networkView.RPC("RespawnPlayer", RPCMode.All, players[i].viewID);
 					}
 				}else{
-					players[i].respawnTime = Time.time + ModeCfg.respawnWait;
+					players[i].respawnTime = Time.time + CurrMatch.respawnWait;
 				}
 			}
 		}
 		
 		// change team
-		if (connected && ModeCfg.teamBased) {
+		if (connected && CurrMatch.teamBased) {
 			if (Input.GetKeyDown("t") && Input.GetKey("tab")) {
 				if (localPlayer.team == 1) {
 					localPlayer.team = 2;
@@ -560,7 +560,7 @@ public class CcNet : MonoBehaviour {
 		
 		// game time up?
 		if (connected && !gameOver) {
-			if (gameTimeLeft <= 0f && ModeCfg.Duration > 0f){
+			if (gameTimeLeft <= 0f && CurrMatch.Duration > 0f){
 				gameTimeLeft = 0f;
 				gameOver = true;
 				
@@ -577,7 +577,7 @@ public class CcNet : MonoBehaviour {
 				if (isServer) {
 					//begin next match using current settings
 					serverGameChange = true;
-					lastGameWasTeamBased = ModeCfg.teamBased;
+					lastGameWasTeamBased = CurrMatch.teamBased;
 					NetVI = Network.AllocateViewID();
 					RequestGameData();
 				}
@@ -591,11 +591,11 @@ public class CcNet : MonoBehaviour {
 					pickupPoints[i].restockTime-=Time.deltaTime;
 					if (pickupPoints[i].restockTime <= 0f) {
 						int restockType = -1;
-						if (pickupPoints[i].pickupType == 1) restockType = ModeCfg.pickupSlot1;
-						if (pickupPoints[i].pickupType == 2) restockType = ModeCfg.pickupSlot2;
-						if (pickupPoints[i].pickupType == 3) restockType = ModeCfg.pickupSlot3;
-						if (pickupPoints[i].pickupType == 4) restockType = ModeCfg.pickupSlot4;
-						if (pickupPoints[i].pickupType == 5) restockType = ModeCfg.pickupSlot5;
+						if (pickupPoints[i].pickupType == 1) restockType = CurrMatch.pickupSlot1;
+						if (pickupPoints[i].pickupType == 2) restockType = CurrMatch.pickupSlot2;
+						if (pickupPoints[i].pickupType == 3) restockType = CurrMatch.pickupSlot3;
+						if (pickupPoints[i].pickupType == 4) restockType = CurrMatch.pickupSlot4;
+						if (pickupPoints[i].pickupType == 5) restockType = CurrMatch.pickupSlot5;
 						if (restockType == -2) {
 							// random
 							restockType = Random.Range(-1,artill.gunTypes.Length);
@@ -659,7 +659,7 @@ public class CcNet : MonoBehaviour {
 			if (pointID == pickupPoints[i].pickupPointID){
 				pickupPoints[i].stocked = false;
 				if (pickupPoints[i].currentAvailablePickup != null) Destroy(pickupPoints[i].currentAvailablePickup);
-				if (isServer) pickupPoints[i].restockTime = ModeCfg.restockTime;
+				if (isServer) pickupPoints[i].restockTime = CurrMatch.restockTime;
 			}
 		}
 	}
@@ -670,11 +670,11 @@ public class CcNet : MonoBehaviour {
 		for (int i=0; i<pickupPoints.Count; i++){
 			if (pickupPoints[i].stocked){
 				int restockType = -1;
-				if (pickupPoints[i].pickupType == 1) restockType = ModeCfg.pickupSlot1;
-				if (pickupPoints[i].pickupType == 2) restockType = ModeCfg.pickupSlot2;
-				if (pickupPoints[i].pickupType == 3) restockType = ModeCfg.pickupSlot3;
-				if (pickupPoints[i].pickupType == 4) restockType = ModeCfg.pickupSlot4;
-				if (pickupPoints[i].pickupType == 5) restockType = ModeCfg.pickupSlot5;
+				if (pickupPoints[i].pickupType == 1) restockType = CurrMatch.pickupSlot1;
+				if (pickupPoints[i].pickupType == 2) restockType = CurrMatch.pickupSlot2;
+				if (pickupPoints[i].pickupType == 3) restockType = CurrMatch.pickupSlot3;
+				if (pickupPoints[i].pickupType == 4) restockType = CurrMatch.pickupSlot4;
+				if (pickupPoints[i].pickupType == 5) restockType = CurrMatch.pickupSlot5;
 				if (restockType == -2){
 					//random
 					restockType = Random.Range(-1,artill.gunTypes.Length);
@@ -761,7 +761,7 @@ public class CcNet : MonoBehaviour {
 		lastRPCtime = Time.time;
 		
 		
-		if (players.Count==1 && ModeCfg.playerLives>0){
+		if (players.Count==1 && CurrMatch.playerLives>0){
 			if (isServer && connected && !gameOver){
 				//this is a lives match, and now we have enough players
 				gameTimeLeft = 0f;
@@ -855,29 +855,29 @@ public class CcNet : MonoBehaviour {
 		players.Add(newPlayer);
 	}
 	
-	public void AssignGameModeConfig(GameModeScript gm, string levelName){
-		ModeCfg.levelName = levelName;
+	public void AssignGameModeConfig(MatchData gm, string levelName){
+		CurrMatch.levelName = levelName;
 		
-		ModeCfg.Name = gm.Name;
-		ModeCfg.Descript = gm.Descript;
-		ModeCfg.winScore = gm.winScore;
-		ModeCfg.Duration = gm.Duration;
-		ModeCfg.respawnWait = gm.respawnWait;
-		ModeCfg.deathsSubtractScore = gm.deathsSubtractScore;
-		ModeCfg.killsIncreaseScore = gm.killsIncreaseScore;
-		ModeCfg.teamBased = gm.teamBased;
-		ModeCfg.allowFriendlyFire = gm.allowFriendlyFire;
-		ModeCfg.pitchBlack = gm.pitchBlack;
-		ModeCfg.restockTime = gm.restockTime;
-		ModeCfg.playerLives = gm.playerLives;
-		ModeCfg.basketball = gm.basketball;
-		ModeCfg.spawnGunA = gm.spawnGunA;
-		ModeCfg.spawnGunB = gm.spawnGunB;
-		ModeCfg.pickupSlot1 = gm.pickupSlot1;
-		ModeCfg.pickupSlot2 = gm.pickupSlot2;
-		ModeCfg.pickupSlot3 = gm.pickupSlot3;
-		ModeCfg.pickupSlot4 = gm.pickupSlot4;
-		ModeCfg.pickupSlot5 = gm.pickupSlot5;
+		CurrMatch.Name = gm.Name;
+		CurrMatch.Descript = gm.Descript;
+		CurrMatch.winScore = gm.winScore;
+		CurrMatch.Duration = gm.Duration;
+		CurrMatch.respawnWait = gm.respawnWait;
+		CurrMatch.deathsSubtractScore = gm.deathsSubtractScore;
+		CurrMatch.killsIncreaseScore = gm.killsIncreaseScore;
+		CurrMatch.teamBased = gm.teamBased;
+		CurrMatch.allowFriendlyFire = gm.allowFriendlyFire;
+		CurrMatch.pitchBlack = gm.pitchBlack;
+		CurrMatch.restockTime = gm.restockTime;
+		CurrMatch.playerLives = gm.playerLives;
+		CurrMatch.basketball = gm.basketball;
+		CurrMatch.spawnGunA = gm.spawnGunA;
+		CurrMatch.spawnGunB = gm.spawnGunB;
+		CurrMatch.pickupSlot1 = gm.pickupSlot1;
+		CurrMatch.pickupSlot2 = gm.pickupSlot2;
+		CurrMatch.pickupSlot3 = gm.pickupSlot3;
+		CurrMatch.pickupSlot4 = gm.pickupSlot4;
+		CurrMatch.pickupSlot5 = gm.pickupSlot5;
 	}
 	
 	[RPC]
@@ -893,9 +893,9 @@ public class CcNet : MonoBehaviour {
 			if (players[i].team == 2) team2count++;
 		}
 		int targetTeam = 0;
-		if (ModeCfg.teamBased) targetTeam = 1;
-		if (ModeCfg.teamBased && team1count>team2count) targetTeam = 2;
-		if (ModeCfg.teamBased && team2count>team1count) targetTeam = 1;
+		if (CurrMatch.teamBased) targetTeam = 1;
+		if (CurrMatch.teamBased && team1count>team2count) targetTeam = 2;
+		if (CurrMatch.teamBased && team2count>team1count) targetTeam = 1;
 		
 		//keep teams if we are already assigned to teams
 		if (serverGameChange && players.Count>0){
@@ -909,16 +909,16 @@ public class CcNet : MonoBehaviour {
 		
 		int livesBroadcast = 0;
 		if (serverGameChange){
-			gameTimeLeft = ModeCfg.Duration * 60f;
+			gameTimeLeft = CurrMatch.Duration * 60f;
 			gameOver = false;
-			livesBroadcast = ModeCfg.playerLives;
+			livesBroadcast = CurrMatch.playerLives;
 		}else{
-			if (ModeCfg.playerLives>0){
+			if (CurrMatch.playerLives>0){
 				livesBroadcast = -1;
 			}
 		}
 		
-		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, ModeCfg.Name, ModeCfg.levelName, ModeCfg.Descript, ModeCfg.winScore, ModeCfg.Duration, ModeCfg.respawnWait, ModeCfg.deathsSubtractScore, ModeCfg.killsIncreaseScore, ModeCfg.teamBased, targetTeam, ModeCfg.allowFriendlyFire, ModeCfg.pitchBlack, gameOver, gameTimeLeft, ModeCfg.spawnGunA, ModeCfg.spawnGunB, ModeCfg.pickupSlot1, ModeCfg.pickupSlot2, ModeCfg.pickupSlot3, ModeCfg.pickupSlot4, ModeCfg.pickupSlot5, livesBroadcast, serverGameChange, ModeCfg.basketball);
+		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, CurrMatch.Name, CurrMatch.levelName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, CurrMatch.respawnWait, CurrMatch.deathsSubtractScore, CurrMatch.killsIncreaseScore, CurrMatch.teamBased, targetTeam, CurrMatch.allowFriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, CurrMatch.spawnGunA, CurrMatch.spawnGunB, CurrMatch.pickupSlot1, CurrMatch.pickupSlot2, CurrMatch.pickupSlot3, CurrMatch.pickupSlot4, CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, CurrMatch.basketball);
 	}
 	
 	public float gameTimeLeft = 0f;
@@ -953,26 +953,26 @@ public class CcNet : MonoBehaviour {
 		
 		if (!isServer) {
 			// lets update the local game settings
-			ModeCfg.levelName = levelName;
-			ModeCfg.Name = matchName;
-			ModeCfg.Descript = matchDescript;
-			ModeCfg.winScore = winScore;
-			ModeCfg.Duration = duration;
-			ModeCfg.respawnWait = respawnWait;
-			ModeCfg.deathsSubtractScore = deathsSubtractScore;
-			ModeCfg.killsIncreaseScore = killsIncreaseScore;
-			ModeCfg.teamBased = teamBased;
-			ModeCfg.allowFriendlyFire = allowFriendlyFire;
-			ModeCfg.pitchBlack = pitchBlack;
-			ModeCfg.playerLives = playerLives;
-			ModeCfg.basketball = basketball;
-			ModeCfg.spawnGunA = spawnGunA;
-			ModeCfg.spawnGunB = spawnGunB;
-			ModeCfg.pickupSlot1 = pickupSlot1;
-			ModeCfg.pickupSlot2 = pickupSlot2;
-			ModeCfg.pickupSlot3 = pickupSlot3;
-			ModeCfg.pickupSlot4 = pickupSlot4;
-			ModeCfg.pickupSlot5 = pickupSlot5;
+			CurrMatch.levelName = levelName;
+			CurrMatch.Name = matchName;
+			CurrMatch.Descript = matchDescript;
+			CurrMatch.winScore = winScore;
+			CurrMatch.Duration = duration;
+			CurrMatch.respawnWait = respawnWait;
+			CurrMatch.deathsSubtractScore = deathsSubtractScore;
+			CurrMatch.killsIncreaseScore = killsIncreaseScore;
+			CurrMatch.teamBased = teamBased;
+			CurrMatch.allowFriendlyFire = allowFriendlyFire;
+			CurrMatch.pitchBlack = pitchBlack;
+			CurrMatch.playerLives = playerLives;
+			CurrMatch.basketball = basketball;
+			CurrMatch.spawnGunA = spawnGunA;
+			CurrMatch.spawnGunB = spawnGunB;
+			CurrMatch.pickupSlot1 = pickupSlot1;
+			CurrMatch.pickupSlot2 = pickupSlot2;
+			CurrMatch.pickupSlot3 = pickupSlot3;
+			CurrMatch.pickupSlot4 = pickupSlot4;
+			CurrMatch.pickupSlot5 = pickupSlot5;
 		}
 		
 		if (targetTeam != -1) {
@@ -1034,7 +1034,7 @@ public class CcNet : MonoBehaviour {
 			levelLoaded = true;
 			
 			// drop the basket ball in
-			if (ModeCfg.basketball) {
+			if (CurrMatch.basketball) {
 				basketball = (GameObject)GameObject.Instantiate(basketballPrefab);
 				if (!isServer) 
 					networkView.RPC("RequestBallStatus", RPCMode.Server);
@@ -1051,19 +1051,21 @@ public class CcNet : MonoBehaviour {
 			}
 			
 			// tell everyone we're here
-			networkView.RPC("NewPlayer", RPCMode.AllBuffered, localPlayer.viewID, localPlayer.name, ColToVec(localPlayer.colA), ColToVec(localPlayer.colB), ColToVec(localPlayer.colC), localPlayer.headType, Network.player, localPlayer.team, ModeCfg.playerLives);
+			networkView.RPC("NewPlayer", RPCMode.AllBuffered, localPlayer.viewID, localPlayer.name, 
+				ColToVec(localPlayer.colA), ColToVec(localPlayer.colB), ColToVec(localPlayer.colC), 
+				localPlayer.headType, Network.player, localPlayer.team, CurrMatch.playerLives);
 			
-			//make sure we know about pickup spawn points
+			// make sure we know about pickup spawn points
 			pickupPoints = new List<PickupPoint>();
 			if (GameObject.Find("_PickupSpots")!=null) {
 				GameObject pickupPointHolder = GameObject.Find("_PickupSpots");
 				foreach (Transform child in pickupPointHolder.transform) {
 					int stockType = -1;
-					if (child.GetComponent<PickupPoint>().pickupType == 1) stockType = ModeCfg.pickupSlot1;
-					if (child.GetComponent<PickupPoint>().pickupType == 2) stockType = ModeCfg.pickupSlot2;
-					if (child.GetComponent<PickupPoint>().pickupType == 3) stockType = ModeCfg.pickupSlot3;
-					if (child.GetComponent<PickupPoint>().pickupType == 4) stockType = ModeCfg.pickupSlot4;
-					if (child.GetComponent<PickupPoint>().pickupType == 5) stockType = ModeCfg.pickupSlot5;
+					if (child.GetComponent<PickupPoint>().pickupType == 1) stockType = CurrMatch.pickupSlot1;
+					if (child.GetComponent<PickupPoint>().pickupType == 2) stockType = CurrMatch.pickupSlot2;
+					if (child.GetComponent<PickupPoint>().pickupType == 3) stockType = CurrMatch.pickupSlot3;
+					if (child.GetComponent<PickupPoint>().pickupType == 4) stockType = CurrMatch.pickupSlot4;
+					if (child.GetComponent<PickupPoint>().pickupType == 5) stockType = CurrMatch.pickupSlot5;
 					if (stockType != -1) {
 						pickupPoints.Add(child.GetComponent<PickupPoint>());
 					}else{
@@ -1072,7 +1074,7 @@ public class CcNet : MonoBehaviour {
 				}
 			}
 			
-			networkView.RPC("RequestPickupStocks",RPCMode.Server);
+			networkView.RPC("RequestPickupStocks", RPCMode.Server);
 			Screen.lockCursor = true;
 		}
 	}
@@ -1083,6 +1085,7 @@ public class CcNet : MonoBehaviour {
 		var bballScript = basketball.GetComponent<BasketballScript>();
 		networkView.RPC("ShareBallStatus",RPCMode.Others, basketball.transform.position, bballScript.moveVector, bballScript.throwerID, bballScript.held);
 	}
+	
 	[RPC]
 	void ShareBallStatus(Vector3 ballPos, Vector3 ballMovement, NetworkViewID ballThrower, bool ballHeld) {
 		var bballScript = basketball.GetComponent<BasketballScript>();

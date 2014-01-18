@@ -21,3 +21,5 @@ EditorBuildSettings:
     path: Assets/_Levels/Conflict Room.unity
   - enabled: 1
     path: Assets/_Levels/The OctaDrome.unity
+  - enabled: 1
+    path: Assets/_Levels/Tower.unity

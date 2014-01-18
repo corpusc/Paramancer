@@ -129,26 +129,19 @@ public class ControlsGui : MonoBehaviour {
 			keyData[i] = new KeyData();
 	}
 	
-	int latestCleared;
+	int latestUnboundKey;
 	void Update() {
-		// dragging/dropping
-		// when starting a LMB press, we both want to pick up any action thats under the mouse
-		// & drop any action that may be attached to mouse pointer
-		// we probably need both a draggee var, and a temp one.  in order to do these events
-		// in the right order
-		// we'll wanna clear draggee upon leaving the controls config screen, otherwise
+		// move user action icons by clicking on the onscreen keyboard
+		// FIXME: we'll wanna clear draggee upon leaving the controls config screen, otherwise
 		// when coming back, there will be an action on the pointer instead of showing up on
 		// its proper key location
-		if (Input.GetKeyDown(KeyCode.Mouse0) /*||
-			Input.GetKeyUp(KeyCode.Mouse0)*/ // hmmm, maybe UP should only work if pointer hasn't travelled
-		) {                                // much from the DOWN position?
+		if (Input.GetKeyDown(KeyCode.Mouse0) ) {
 			int moId; // mouse over id
 			var mo = mouseOver(out moId);
-			Debug.Log("moId: " + moId);
 			if (mo == null) { // not a valid area, so discard draggee
 				if (draggee != null) {
-					draggee.Id = latestCleared;
-					draggee.KeyCode = codes[latestCleared];
+					draggee.Id = latestUnboundKey;
+					draggee.KeyCode = codes[latestUnboundKey];
 				}
 				
 				draggee = null; // 
@@ -158,7 +151,7 @@ public class ControlsGui : MonoBehaviour {
 					for (int i = 0; i < bindData.Length; i++) {
 						if (moId == bindData[i].Id) {
 							draggee = bindData[i];
-							latestCleared = bindData[i].Id;
+							latestUnboundKey = bindData[i].Id;
 						}
 					}
 				}else{ // we were dragging

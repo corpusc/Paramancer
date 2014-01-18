@@ -1,12 +1,10 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 
 public class Hud : MonoBehaviour {
-	public GameModeScript[] modes;
-	public LevelInfo[] levels;
-
 	// swapper
 	public int swapperCrossX = 0;
 	public int swapperCrossY = 0;
@@ -39,15 +37,19 @@ public class Hud : MonoBehaviour {
 	bool viewingScores = false;
 	string gameMenuPoint = "config";
 	string defaultName = "Lazy Noob";
-	int mode = 1;
-	int mapId = 0;
 	
 	// windows
 	Vector2 scrollPos = Vector2.zero;
 	Rect window = new Rect(0, 0, 600, 400);
-	Rect button = new Rect(0, 0, 100, 40); // fixme: are buttons always 40 in height
-	int vSpan = 20; // fixme: hardwired vertical span of the font.  doubled in places for buttons...are they always 40?
+	Rect button = new Rect(0, 0, 100, 40); // fixme: are buttons always 40 in height?
+	int vSpan = 20; // fixme: hardwired vertical span of the font.  doubled in places for buttons
 	
+	// match & map
+	int matchId = 1;
+	int mapId = 0;
+	MatchData[] matches;
+	List<LevelInfo> maps = new List<LevelInfo>();
+
 	// scripts
 	CcNet net;
 	CcLog log;
@@ -58,94 +60,103 @@ public class Hud : MonoBehaviour {
 	
 	
 	void Start() {
+		// load map preview pics
+		UnityEngine.Object[] pics = Resources.LoadAll("Maps");
+		
+		// setup map configs
+		for (int i = 0; i < pics.Length; i++) {
+			maps.Add(new LevelInfo(pics[i].name, (Texture)pics[i]) );
+		}
+		
+		
 		// setup match configs
-		modes = new GameModeScript[9];
-		for (int i = 0; i < modes.Length; i++)
-			modes[i] = new GameModeScript();
+		matches = new MatchData[9];
+		for (int i = 0; i < matches.Length; i++)
+			matches[i] = new MatchData();
 		
-		modes[0].Name = "Custom";
-		modes[0].Descript = "Have it your way!  All the exact settings you prefer.";
-		modes[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
-		modes[0].respawnWait = 5f;
+		matches[0].Name = "Custom";
+		matches[0].Descript = "Have it your way!  All the exact settings you prefer.";
+		matches[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
+		matches[0].respawnWait = 5f;
 		
-		modes[1].Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
-		modes[1].Descript = "Each player has their own, independent, changeable gravity";
-		modes[1].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-		modes[1].respawnWait = 5f;
+		matches[1].Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
+		matches[1].Descript = "Each player has their own, independent, changeable gravity";
+		matches[1].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		matches[1].respawnWait = 5f;
 		
-		modes[2].Name = "Grue Food";
-		modes[2].Descript = "It is pitch black.  You are likely to be eaten by a grue.";
-		modes[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		modes[2].respawnWait = 5f;
-		modes[2].pitchBlack = true;
-		modes[2].pickupSlot1 = 1;
-		modes[2].pickupSlot2 = 2;
-		modes[2].pickupSlot3 = 3;
-		modes[2].pickupSlot4 = 4;
-		modes[2].pickupSlot5 = 7;
+		matches[2].Name = "Grue Food";
+		matches[2].Descript = "It is pitch black.  You are likely to be eaten by a grue.";
+		matches[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
+		matches[2].respawnWait = 5f;
+		matches[2].pitchBlack = true;
+		matches[2].pickupSlot1 = 1;
+		matches[2].pickupSlot2 = 2;
+		matches[2].pickupSlot3 = 3;
+		matches[2].pickupSlot4 = 4;
+		matches[2].pickupSlot5 = 7;
 		
-		modes[3].Name = "FFA Fragmatch";
-		modes[3].Descript = "Frag count is ALL that counts in this freestyle Free For All!";
-		modes[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		modes[3].respawnWait = 5f;
+		matches[3].Name = "FFA Fragmatch";
+		matches[3].Descript = "Frag count is ALL that counts in this freestyle Free For All!";
+		matches[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
+		matches[3].respawnWait = 5f;
 		
-		modes[5].Name = "Team Fragmatch";
-		modes[5].Descript = "Frag count is what counts, but don't hurt your mates!";
-		modes[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		modes[5].respawnWait = 5f;
-		modes[5].teamBased = true;
-		modes[5].pickupSlot5 = 4;
+		matches[5].Name = "Team Fragmatch";
+		matches[5].Descript = "Frag count is what counts, but don't hurt your mates!";
+		matches[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
+		matches[5].respawnWait = 5f;
+		matches[5].teamBased = true;
+		matches[5].pickupSlot5 = 4;
 
-		modes[4].Name = "BBall";
-		modes[4].Descript = "Shooting hoops...and GUNS!  GANGSTA!";
-		modes[4].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-		modes[4].respawnWait = 5f;
-		modes[4].deathsSubtractScore = false;
-		modes[4].killsIncreaseScore = false;
-		modes[4].teamBased = true;
-		modes[4].basketball = true;
-		modes[4].pickupSlot2 = 2;
-		modes[4].pickupSlot3 = 3;
-		modes[4].pickupSlot4 = 4;
-		modes[4].pickupSlot5 = 5;
+		matches[4].Name = "BBall";
+		matches[4].Descript = "Shooting hoops...and GUNS!  GANGSTA!";
+		matches[4].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		matches[4].respawnWait = 5f;
+		matches[4].deathsSubtractScore = false;
+		matches[4].killsIncreaseScore = false;
+		matches[4].teamBased = true;
+		matches[4].basketball = true;
+		matches[4].pickupSlot2 = 2;
+		matches[4].pickupSlot3 = 3;
+		matches[4].pickupSlot4 = 4;
+		matches[4].pickupSlot5 = 5;
 		
-		modes[6].Name = "YOLT! (You Only Live Thrice)";
-		modes[6].Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
-		modes[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		modes[6].Duration = 0f;
-		modes[6].respawnWait = 5f;
-		modes[6].killsIncreaseScore = false;
-		modes[6].pickupSlot5 = 4;
+		matches[6].Name = "YOLT! (You Only Live Thrice)";
+		matches[6].Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
+		matches[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
+		matches[6].Duration = 0f;
+		matches[6].respawnWait = 5f;
+		matches[6].killsIncreaseScore = false;
+		matches[6].pickupSlot5 = 4;
 		
-		modes[7].Name = "Swap Meat";
-		modes[7].Descript = "There is only the swapper gun, grenades and lava... have fun!";
-		modes[7].allowedLevels = new string[] { "Furnace" , "Tower"};
-		modes[7].respawnWait = 3f;
-		modes[7].killsIncreaseScore = false;
-		modes[7].spawnGunA = 5;
-		modes[7].spawnGunB = 1;
-		modes[7].pickupSlot1 = -1;
-		modes[7].pickupSlot2 = -1;
-		modes[7].pickupSlot3 = -1;
-		modes[7].pickupSlot4 = -1;
-		modes[7].pickupSlot5 = -1;
+		matches[7].Name = "Swap Meat";
+		matches[7].Descript = "There is only the swapper gun, grenades and lava... have fun!";
+		matches[7].allowedLevels = new string[] { "Furnace" , "Tower"};
+		matches[7].respawnWait = 3f;
+		matches[7].killsIncreaseScore = false;
+		matches[7].spawnGunA = 5;
+		matches[7].spawnGunB = 1;
+		matches[7].pickupSlot1 = -1;
+		matches[7].pickupSlot2 = -1;
+		matches[7].pickupSlot3 = -1;
+		matches[7].pickupSlot4 = -1;
+		matches[7].pickupSlot5 = -1;
 		
-		modes[8].Name = "Weapon Lottery";
-		modes[8].Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
-		modes[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		modes[8].winScore = 20;
-		modes[8].respawnWait = 5f;
-		modes[8].spawnGunA = -2;
-		modes[8].spawnGunB = -2;
-		modes[8].restockTime = 2f;
-		modes[8].pickupSlot1 = -2;
-		modes[8].pickupSlot2 = -2;
-		modes[8].pickupSlot3 = -2;
-		modes[8].pickupSlot4 = -2;
-		modes[8].pickupSlot5 = -2;
+		matches[8].Name = "Weapon Lottery";
+		matches[8].Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
+		matches[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
+		matches[8].winScore = 20;
+		matches[8].respawnWait = 5f;
+		matches[8].spawnGunA = -2;
+		matches[8].spawnGunB = -2;
+		matches[8].restockTime = 2f;
+		matches[8].pickupSlot1 = -2;
+		matches[8].pickupSlot2 = -2;
+		matches[8].pickupSlot3 = -2;
+		matches[8].pickupSlot4 = -2;
+		matches[8].pickupSlot5 = -2;
 
 		// load textures
-		UnityEngine.Object[] pics = Resources.LoadAll("Hud");
+		pics = Resources.LoadAll("Hud");
 		
 		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {
@@ -453,8 +464,8 @@ public class Hud : MonoBehaviour {
 				}
 			}else{ // connected & cursor locked
 				if (viewingScores || net.gameOver) {
-					DrawWindowBackground();
-					Scoreboard();
+					DrawWindowBackground(true);
+					DrawScoreboard();
 				}else{
 					GUI.DrawTexture(new Rect(midX-8, midY-8, 16, 16), crossHair);
 					
@@ -481,7 +492,7 @@ public class Hud : MonoBehaviour {
 				GUI.DrawTexture(new Rect(midX-(energyWidth/2), Screen.height-28, energyWidthB, 5), backTex);
 				
 				// lives
-				if (net.ModeCfg.playerLives>0) {
+				if (net.CurrMatch.playerLives>0) {
 					int lifeCount = 0;
 					for (int i=0; i<net.players.Count; i++){
 						if (net.players[i].local) lifeCount = net.players[i].lives;
@@ -551,7 +562,7 @@ public class Hud : MonoBehaviour {
 			Color gcolB = GUI.color;
 			
 			// team icons
-			if (net.ModeCfg.teamBased && net.localPlayer.team != 0) {
+			if (net.CurrMatch.teamBased && net.localPlayer.team != 0) {
 				if /*``*/ (net.localPlayer.team == 1){
 					GUI.DrawTexture(new Rect(Screen.width-68,4,64,64),teamRedFlag);
 				} else if (net.localPlayer.team == 2){
@@ -561,7 +572,7 @@ public class Hud : MonoBehaviour {
 			
 			// time
 			if (!net.gameOver) {
-				if (net.ModeCfg.Duration > 0f) {
+				if (net.CurrMatch.Duration > 0f) {
 					// show time left
 					GUI.color = Color.black;
 					GUI.Label(new Rect(midX-11, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
@@ -625,12 +636,12 @@ public class Hud : MonoBehaviour {
 		GUI.color = new Color(0.8f, 0f, 1f, 1f);
 	}
 	
-	void Scoreboard() {
+	void DrawScoreboard() {
 		GUI.BeginGroup(window);
 		
 		GUI.Label(new Rect(250,0,100,vSpan), "Scores:");
 		
-		if (!net.ModeCfg.teamBased){
+		if (!net.CurrMatch.teamBased){
 			int highScore = -9999;
 			if (net.gameOver) {
 				for (int i=0; i<net.players.Count; i++) {
@@ -654,7 +665,7 @@ public class Hud : MonoBehaviour {
 			GUI.Label(new Rect(210, vSpan,50,vSpan), "Deaths:");
 			GUI.Label(new Rect(270, vSpan,50,vSpan), "Score:");
 			
-			if (net.ModeCfg.playerLives != 0) 
+			if (net.CurrMatch.playerLives != 0) 
 				GUI.Label(new Rect(400, vSpan,50,vSpan), "Lives:");
 			
 			for (int i=0; i<net.players.Count; i++) {
@@ -666,12 +677,12 @@ public class Hud : MonoBehaviour {
 				GUI.Label(new Rect(160,(i*vSpan) + 40,50,vSpan), net.players[i].kills.ToString());
 				GUI.Label(new Rect(210,(i*vSpan) + 40,50,vSpan), net.players[i].deaths.ToString());
 				GUI.Label(new Rect(270,(i*vSpan) + 40,50,vSpan), net.players[i].currentScore.ToString());
-				if (net.ModeCfg.playerLives!= 0) GUI.Label(new Rect(400, (i*vSpan) + 40,50,vSpan), net.players[i].lives.ToString());
+				if (net.CurrMatch.playerLives!= 0) GUI.Label(new Rect(400, (i*vSpan) + 40,50,vSpan), net.players[i].lives.ToString());
 			}
 			
 		}
 		
-		if (net.ModeCfg.teamBased) {
+		if (net.CurrMatch.teamBased) {
 			GUI.color = new Color(1f, 0f, 0f, 1f);
 			if (net.gameOver && net.team1Score>net.team2Score) GUI.color = new Color(UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), 1f);
 			GUI.Label(new Rect(100, 20,150,20), "Team 1 Score: " + net.team1Score.ToString());
@@ -957,16 +968,16 @@ public class Hud : MonoBehaviour {
 				
 		// game mode
 		if (GUI.Button(new Rect(5,100,30,30), "<") ) {
-			int lastInt = mode;
+			int lastInt = matchId;
 			
-			mode--;
-			if (mode < 0) 
-				mode += modes.Length;
+			matchId--;
+			if (matchId < 0) 
+				matchId += matches.Length;
 			
 			int levelChangeIndex = 0;
-			for (int i=0; i<modes[mode].allowedLevels.Length; i++) {
-				if (modes[mode].allowedLevels[i] == 
-					modes[lastInt].allowedLevels[mapId]
+			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
+				if (matches[matchId].allowedLevels[i] == 
+					matches[lastInt].allowedLevels[mapId]
 				) 
 					levelChangeIndex = i;
 			}
@@ -975,211 +986,211 @@ public class Hud : MonoBehaviour {
 		}
 		
 		if (GUI.Button(new Rect(255,100,30,30), ">") ) {
-			int lastInt = mode;
+			int lastInt = matchId;
 			
-			mode++;
-			if (mode>=modes.Length) mode-=modes.Length;
+			matchId++;
+			if (matchId>=matches.Length) matchId-=matches.Length;
 			
 			int levelChangeIndex = 0;
-			for (int i=0; i<modes[mode].allowedLevels.Length; i++) {
-				if (modes[mode].allowedLevels[i] == modes[lastInt].allowedLevels[mapId]) 
+			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
+				if (matches[matchId].allowedLevels[i] == matches[lastInt].allowedLevels[mapId]) 
 					levelChangeIndex = i;
 			}
 			
 			mapId = levelChangeIndex;
 		}
 		
-		GUI.Label(new Rect(60,100,200,30), "Mode: " + modes[mode].Name);
+		GUI.Label(new Rect(60,100,200,30), "Mode: " + matches[matchId].Name);
 				
 		// game level
 		if (GUI.Button(new Rect(305,100,30,30), "<") ) {
 			mapId--;
 			if (mapId < 0) 
-				mapId += modes[mode].allowedLevels.Length;
+				mapId += matches[matchId].allowedLevels.Length;
 		}
 		if (GUI.Button(new Rect(555,100,30,30), ">") ) {
 			mapId++;
-			if (mapId >= modes[mode].allowedLevels.Length) 
-				mapId -= modes[mode].allowedLevels.Length;
+			if (mapId >= matches[matchId].allowedLevels.Length) 
+				mapId -= matches[matchId].allowedLevels.Length;
 		}
 		
-		GUI.Label(new Rect(360,100,200,30), "Level: " + modes[mode].allowedLevels[mapId]);
+		GUI.Label(new Rect(360,100,200,30), "Level: " + matches[matchId].allowedLevels[mapId]);
 				
 				
 				
-		if (mode != 0) { // not custom
+		if (matchId != 0) { // not custom
 			// show icon
-			for (int i=0; i<levels.Length; i++) {
-				if (levels[i].Name == modes[mode].allowedLevels[mapId]) {
-					GUI.DrawTexture(new Rect(5,135,590,100), levels[i].icon);
+			for (int i=0; i<maps.Count; i++) {
+				if (maps[i].Name == matches[matchId].allowedLevels[mapId]) {
+					GUI.DrawTexture(new Rect(5,135,590,100), maps[i].Pic);
 				}
 			}
 			
 			//description:
-			GUI.Label(new Rect(5,240,590,200), modes[mode].Name + ":\n" + modes[mode].Descript);
+			GUI.Label(new Rect(5,240,590,200), matches[matchId].Name + ":\n" + matches[matchId].Descript);
 			
 			if (GUI.Button(new Rect(495,240,100,25), "Customise...") ) {
 				
 				int levelChangeIndex = 0;
-				for (int i=0; i<modes[0].allowedLevels.Length; i++) {
-					if (modes[0].allowedLevels[i] == modes[mode].allowedLevels[mapId]) 
+				for (int i=0; i<matches[0].allowedLevels.Length; i++) {
+					if (matches[0].allowedLevels[i] == matches[matchId].allowedLevels[mapId]) 
 						levelChangeIndex = i;
 				}
 				
 				mapId = levelChangeIndex;
 				
-				modes[0].killsIncreaseScore = modes[mode].killsIncreaseScore;
-				modes[0].deathsSubtractScore = modes[mode].deathsSubtractScore;
-				modes[0].respawnWait = modes[mode].respawnWait;
-				modes[0].teamBased = modes[mode].teamBased;
-				modes[0].allowFriendlyFire = modes[mode].allowFriendlyFire;
-				modes[0].pitchBlack = modes[mode].pitchBlack;
-				modes[0].Duration = modes[mode].Duration;
-				modes[0].winScore = modes[mode].winScore;
-				modes[0].spawnGunA = modes[mode].spawnGunA;
-				modes[0].spawnGunB = modes[mode].spawnGunB;
-				modes[0].pickupSlot1 = modes[mode].pickupSlot1;
-				modes[0].pickupSlot2 = modes[mode].pickupSlot2;
-				modes[0].pickupSlot3 = modes[mode].pickupSlot3;
-				modes[0].pickupSlot4 = modes[mode].pickupSlot4;
-				modes[0].pickupSlot5 = modes[mode].pickupSlot5;
-				modes[0].restockTime = modes[mode].restockTime;
-				modes[0].playerLives = modes[mode].playerLives;
-				modes[0].basketball = modes[mode].basketball;
+				matches[0].killsIncreaseScore = matches[matchId].killsIncreaseScore;
+				matches[0].deathsSubtractScore = matches[matchId].deathsSubtractScore;
+				matches[0].respawnWait = matches[matchId].respawnWait;
+				matches[0].teamBased = matches[matchId].teamBased;
+				matches[0].allowFriendlyFire = matches[matchId].allowFriendlyFire;
+				matches[0].pitchBlack = matches[matchId].pitchBlack;
+				matches[0].Duration = matches[matchId].Duration;
+				matches[0].winScore = matches[matchId].winScore;
+				matches[0].spawnGunA = matches[matchId].spawnGunA;
+				matches[0].spawnGunB = matches[matchId].spawnGunB;
+				matches[0].pickupSlot1 = matches[matchId].pickupSlot1;
+				matches[0].pickupSlot2 = matches[matchId].pickupSlot2;
+				matches[0].pickupSlot3 = matches[matchId].pickupSlot3;
+				matches[0].pickupSlot4 = matches[matchId].pickupSlot4;
+				matches[0].pickupSlot5 = matches[matchId].pickupSlot5;
+				matches[0].restockTime = matches[matchId].restockTime;
+				matches[0].playerLives = matches[matchId].playerLives;
+				matches[0].basketball = matches[matchId].basketball;
 				
-				mode = 0;
+				matchId = 0;
 			}
 		}else{ // custom, show options here
 			scrollPos = GUI.BeginScrollView(new Rect(5,135,590,160), scrollPos, new Rect(0,0,570,700));
 			
-			modes[mode].killsIncreaseScore = GUILayout.Toggle(modes[mode].killsIncreaseScore, "Kills Increase score");
-			modes[mode].deathsSubtractScore = GUILayout.Toggle(modes[mode].deathsSubtractScore, "Deaths Reduce score");
+			matches[matchId].killsIncreaseScore = GUILayout.Toggle(matches[matchId].killsIncreaseScore, "Kills Increase score");
+			matches[matchId].deathsSubtractScore = GUILayout.Toggle(matches[matchId].deathsSubtractScore, "Deaths Reduce score");
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Respawn Time: ");
-			modes[mode].respawnWait = MakeInt( GUILayout.TextField(modes[mode].respawnWait.ToString()) );
+			matches[matchId].respawnWait = MakeInt( GUILayout.TextField(matches[matchId].respawnWait.ToString()) );
 			GUILayout.EndHorizontal();
 			
-			modes[mode].teamBased = GUILayout.Toggle(modes[mode].teamBased, "Team Based");
+			matches[matchId].teamBased = GUILayout.Toggle(matches[matchId].teamBased, "Team Based");
 			
-			if (modes[mode].teamBased)
-				modes[mode].basketball = GUILayout.Toggle(modes[mode].basketball, "Basketball");
+			if (matches[matchId].teamBased)
+				matches[matchId].basketball = GUILayout.Toggle(matches[matchId].basketball, "Basketball");
 			else
-				modes[mode].basketball = false;
+				matches[matchId].basketball = false;
 			
 			
-			modes[mode].allowFriendlyFire = GUILayout.Toggle(modes[mode].allowFriendlyFire, "Allow Friendly Fire");
+			matches[matchId].allowFriendlyFire = GUILayout.Toggle(matches[matchId].allowFriendlyFire, "Allow Friendly Fire");
 			
-			modes[mode].pitchBlack = GUILayout.Toggle(modes[mode].pitchBlack, "Pitch Black");
+			matches[matchId].pitchBlack = GUILayout.Toggle(matches[matchId].pitchBlack, "Pitch Black");
 			
 			GUILayout.Label(" --- Round end conditions (set to 0 to ignore) --- ");
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Round Time (minutes): ");
-			modes[mode].Duration = MakeInt( GUILayout.TextField(modes[mode].Duration.ToString()) );
+			matches[matchId].Duration = MakeInt( GUILayout.TextField(matches[matchId].Duration.ToString()) );
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Winning score: ");
-			modes[mode].winScore = MakeInt( GUILayout.TextField(modes[mode].winScore.ToString()) );
+			matches[matchId].winScore = MakeInt( GUILayout.TextField(matches[matchId].winScore.ToString()) );
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Player Lives: ");
-			modes[mode].playerLives = MakeInt( GUILayout.TextField(modes[mode].playerLives.ToString()) );
+			matches[matchId].playerLives = MakeInt( GUILayout.TextField(matches[matchId].playerLives.ToString()) );
 			GUILayout.EndHorizontal();
 			
 			GUILayout.Label(" --- Weapon Settings --- ");
 			
 			//spawn gun A
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) modes[mode].spawnGunA--;
-			if (modes[mode].spawnGunA<-2) modes[mode].spawnGunA = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) matches[matchId].spawnGunA--;
+			if (matches[matchId].spawnGunA<-2) matches[matchId].spawnGunA = artillery.gunTypes.Length-1;
 			string gunName = "none";
-			if (modes[mode].spawnGunA==-2) gunName = "random";
-			if (modes[mode].spawnGunA>=0) gunName = artillery.gunTypes[modes[mode].spawnGunA].gunName;
+			if (matches[matchId].spawnGunA==-2) gunName = "random";
+			if (matches[matchId].spawnGunA>=0) gunName = artillery.gunTypes[matches[matchId].spawnGunA].gunName;
 			GUILayout.Label("Spawn Gun A: " + gunName);
-			if (GUILayout.Button(">")) modes[mode].spawnGunA++;
-			if (modes[mode].spawnGunA>=artillery.gunTypes.Length) modes[mode].spawnGunA = -2;
+			if (GUILayout.Button(">")) matches[matchId].spawnGunA++;
+			if (matches[matchId].spawnGunA>=artillery.gunTypes.Length) matches[matchId].spawnGunA = -2;
 			GUILayout.EndHorizontal();
 			//spawn gun B
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) modes[mode].spawnGunB--;
-			if (modes[mode].spawnGunB<-2) modes[mode].spawnGunB = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) matches[matchId].spawnGunB--;
+			if (matches[matchId].spawnGunB<-2) matches[matchId].spawnGunB = artillery.gunTypes.Length-1;
 			gunName = "none";
-			if (modes[mode].spawnGunB==-2) gunName = "random";
-			if (modes[mode].spawnGunB>=0) gunName = artillery.gunTypes[modes[mode].spawnGunB].gunName;
+			if (matches[matchId].spawnGunB==-2) gunName = "random";
+			if (matches[matchId].spawnGunB>=0) gunName = artillery.gunTypes[matches[matchId].spawnGunB].gunName;
 			GUILayout.Label("Spawn Gun B: " + gunName);
-			if (GUILayout.Button(">")) modes[mode].spawnGunB++;
-			if (modes[mode].spawnGunB>=artillery.gunTypes.Length) modes[mode].spawnGunB = -2;
+			if (GUILayout.Button(">")) matches[matchId].spawnGunB++;
+			if (matches[matchId].spawnGunB>=artillery.gunTypes.Length) matches[matchId].spawnGunB = -2;
 			GUILayout.EndHorizontal();
 			
 			GUILayout.Label(" --- ");
 			//gun slot 1
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) modes[mode].pickupSlot1--;
-			if (modes[mode].pickupSlot1<-3) modes[mode].pickupSlot1 = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) matches[matchId].pickupSlot1--;
+			if (matches[matchId].pickupSlot1<-3) matches[matchId].pickupSlot1 = artillery.gunTypes.Length-1;
 			gunName = "none";
-			if (modes[mode].pickupSlot1==-2) gunName = "random";
-			if (modes[mode].pickupSlot1==-3) gunName = "health";
-			if (modes[mode].pickupSlot1>=0) gunName = artillery.gunTypes[modes[mode].pickupSlot1].gunName;
+			if (matches[matchId].pickupSlot1==-2) gunName = "random";
+			if (matches[matchId].pickupSlot1==-3) gunName = "health";
+			if (matches[matchId].pickupSlot1>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot1].gunName;
 			GUILayout.Label("Pickup Slot 1: " + gunName);
-			if (GUILayout.Button(">")) modes[mode].pickupSlot1++;
-			if (modes[mode].pickupSlot1>=artillery.gunTypes.Length) modes[mode].pickupSlot1 = -3;
+			if (GUILayout.Button(">")) matches[matchId].pickupSlot1++;
+			if (matches[matchId].pickupSlot1>=artillery.gunTypes.Length) matches[matchId].pickupSlot1 = -3;
 			GUILayout.EndHorizontal();
 			//gun slot 2
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) modes[mode].pickupSlot2--;
-			if (modes[mode].pickupSlot2<-3) modes[mode].pickupSlot2 = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) matches[matchId].pickupSlot2--;
+			if (matches[matchId].pickupSlot2<-3) matches[matchId].pickupSlot2 = artillery.gunTypes.Length-1;
 			gunName = "none";
-			if (modes[mode].pickupSlot2==-2) gunName = "random";
-			if (modes[mode].pickupSlot2==-3) gunName = "health";
-			if (modes[mode].pickupSlot2>=0) gunName = artillery.gunTypes[modes[mode].pickupSlot2].gunName;
+			if (matches[matchId].pickupSlot2==-2) gunName = "random";
+			if (matches[matchId].pickupSlot2==-3) gunName = "health";
+			if (matches[matchId].pickupSlot2>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot2].gunName;
 			GUILayout.Label("Pickup Slot 2: " + gunName);
-			if (GUILayout.Button(">")) modes[mode].pickupSlot2++;
-			if (modes[mode].pickupSlot2>=artillery.gunTypes.Length) modes[mode].pickupSlot2 = -3;
+			if (GUILayout.Button(">")) matches[matchId].pickupSlot2++;
+			if (matches[matchId].pickupSlot2>=artillery.gunTypes.Length) matches[matchId].pickupSlot2 = -3;
 			GUILayout.EndHorizontal();
 			//gun slot 3
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) modes[mode].pickupSlot3--;
-			if (modes[mode].pickupSlot3<-3) modes[mode].pickupSlot3 = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) matches[matchId].pickupSlot3--;
+			if (matches[matchId].pickupSlot3<-3) matches[matchId].pickupSlot3 = artillery.gunTypes.Length-1;
 			gunName = "none";
-			if (modes[mode].pickupSlot3==-2) gunName = "random";
-			if (modes[mode].pickupSlot3==-3) gunName = "health";
-			if (modes[mode].pickupSlot3>=0) gunName = artillery.gunTypes[modes[mode].pickupSlot3].gunName;
+			if (matches[matchId].pickupSlot3==-2) gunName = "random";
+			if (matches[matchId].pickupSlot3==-3) gunName = "health";
+			if (matches[matchId].pickupSlot3>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot3].gunName;
 			GUILayout.Label("Pickup Slot 3: " + gunName);
-			if (GUILayout.Button(">")) modes[mode].pickupSlot3++;
-			if (modes[mode].pickupSlot3>=artillery.gunTypes.Length) modes[mode].pickupSlot3 = -3;
+			if (GUILayout.Button(">")) matches[matchId].pickupSlot3++;
+			if (matches[matchId].pickupSlot3>=artillery.gunTypes.Length) matches[matchId].pickupSlot3 = -3;
 			GUILayout.EndHorizontal();
 			//gun slot 4
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) modes[mode].pickupSlot4--;
-			if (modes[mode].pickupSlot4<-3) modes[mode].pickupSlot4 = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) matches[matchId].pickupSlot4--;
+			if (matches[matchId].pickupSlot4<-3) matches[matchId].pickupSlot4 = artillery.gunTypes.Length-1;
 			gunName = "none";
-			if (modes[mode].pickupSlot4==-2) gunName = "random";
-			if (modes[mode].pickupSlot4==-3) gunName = "health";
-			if (modes[mode].pickupSlot4>=0) gunName = artillery.gunTypes[modes[mode].pickupSlot4].gunName;
+			if (matches[matchId].pickupSlot4==-2) gunName = "random";
+			if (matches[matchId].pickupSlot4==-3) gunName = "health";
+			if (matches[matchId].pickupSlot4>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot4].gunName;
 			GUILayout.Label("Pickup Slot 4: " + gunName);
-			if (GUILayout.Button(">")) modes[mode].pickupSlot4++;
-			if (modes[mode].pickupSlot4>=artillery.gunTypes.Length) modes[mode].pickupSlot4 = -3;
+			if (GUILayout.Button(">")) matches[matchId].pickupSlot4++;
+			if (matches[matchId].pickupSlot4>=artillery.gunTypes.Length) matches[matchId].pickupSlot4 = -3;
 			GUILayout.EndHorizontal();
 			//gun slot 4
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) modes[mode].pickupSlot5--;
-			if (modes[mode].pickupSlot5<-3) modes[mode].pickupSlot5 = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) matches[matchId].pickupSlot5--;
+			if (matches[matchId].pickupSlot5<-3) matches[matchId].pickupSlot5 = artillery.gunTypes.Length-1;
 			gunName = "none";
-			if (modes[mode].pickupSlot5==-2) gunName = "random";
-			if (modes[mode].pickupSlot5==-3) gunName = "health";
-			if (modes[mode].pickupSlot5>=0) gunName = artillery.gunTypes[modes[mode].pickupSlot5].gunName;
+			if (matches[matchId].pickupSlot5==-2) gunName = "random";
+			if (matches[matchId].pickupSlot5==-3) gunName = "health";
+			if (matches[matchId].pickupSlot5>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot5].gunName;
 			GUILayout.Label("Pickup Slot 5: " + gunName);
-			if (GUILayout.Button(">")) modes[mode].pickupSlot5++;
-			if (modes[mode].pickupSlot5>=artillery.gunTypes.Length) modes[mode].pickupSlot5 = -3;
+			if (GUILayout.Button(">")) matches[matchId].pickupSlot5++;
+			if (matches[matchId].pickupSlot5>=artillery.gunTypes.Length) matches[matchId].pickupSlot5 = -3;
 			GUILayout.EndHorizontal();
 			
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Restock time (seconds): ");
-			modes[mode].restockTime = MakeInt( GUILayout.TextField(modes[mode].restockTime.ToString()) );
+			matches[matchId].restockTime = MakeInt( GUILayout.TextField(matches[matchId].restockTime.ToString()) );
 			GUILayout.EndHorizontal();
 			
 			GUI.EndScrollView();
@@ -1192,8 +1203,8 @@ public class Hud : MonoBehaviour {
 				net.serverGameChange = true;
 				Network.incomingPassword = net.password;
 				net.lastGameWasTeamBased = false;
-				net.AssignGameModeConfig(modes[mode], modes[mode].allowedLevels[mapId]);
-				net.comment = net.ModeCfg.Name + "\n" + net.ModeCfg.levelName;
+				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
+				net.comment = net.CurrMatch.Name + "\n" + net.CurrMatch.levelName;
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initialising server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections,net.listenPort, useNat);
@@ -1202,8 +1213,8 @@ public class Hud : MonoBehaviour {
 		}else{
 			if (GUI.Button(new Rect(10,310,580,80), "Change Game")){
 				net.serverGameChange = true;
-				net.lastGameWasTeamBased = net.ModeCfg.teamBased;
-				net.AssignGameModeConfig(modes[mode], modes[mode].allowedLevels[mapId]);
+				net.lastGameWasTeamBased = net.CurrMatch.teamBased;
+				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
 				net.NetVI = Network.AllocateViewID();
 				net.RequestGameData();
 			}

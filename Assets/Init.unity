@@ -197,46 +197,6 @@ MonoBehaviour:
   gunMaterial: {fileID: 2100000, guid: e9b2a5a52b48c40b889da3f11b3faf4f, type: 2}
   isAutomatic: 0
   fireCooldown: 1
---- !u!1 &156266422
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 156266423}
-  - 114: {fileID: 156266424}
-  m_Layer: 0
-  m_Name: 000_TestLevel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &156266423
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 156266422}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 932986254}
---- !u!114 &156266424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 156266422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: TestLevel
-  icon: {fileID: 2800000, guid: e2c06e1e7185f44248934327330b400c, type: 3}
 --- !u!1 &251681430
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,46 +320,6 @@ Behaviour:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291047413}
   m_Enabled: 1
---- !u!1 &298154773
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 298154774}
-  - 114: {fileID: 298154775}
-  m_Layer: 0
-  m_Name: 004_Conflict Room
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &298154774
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 298154773}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 932986254}
---- !u!114 &298154775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 298154773}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Conflict Room
-  icon: {fileID: 2800000, guid: 997c117e4f6124fd6b0c4c3b5b0a0c59, type: 3}
 --- !u!1 &428004547
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,118 +452,6 @@ MonoBehaviour:
   gunMaterial: {fileID: 2100000, guid: 6d4a7d33823514dbe9fcf71f166f9411, type: 2}
   isAutomatic: 0
   fireCooldown: 2
---- !u!1 &890197039
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 890197040}
-  - 114: {fileID: 890197041}
-  m_Layer: 0
-  m_Name: 008_OctaDrome
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &890197040
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 890197039}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 932986254}
---- !u!114 &890197041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 890197039}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: The OctaDrome
-  icon: {fileID: 2800000, guid: dc54f92856c754176b5cb31435ba0fec, type: 3}
---- !u!1 &932986253
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 932986254}
-  m_Layer: 0
-  m_Name: Levels
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &932986254
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 932986253}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 156266423}
-  - {fileID: 1298072000}
-  - {fileID: 1820612918}
-  - {fileID: 1766650089}
-  - {fileID: 298154774}
-  - {fileID: 890197040}
-  m_Father: {fileID: 1973207291}
---- !u!1 &1298071999
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1298072000}
-  - 114: {fileID: 1298072001}
-  m_Layer: 0
-  m_Name: 002_Overpass
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1298072000
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1298071999}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 932986254}
---- !u!114 &1298072001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1298071999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Overpass
-  icon: {fileID: 2800000, guid: 8ff42a99000474544ae054668c1437ac, type: 3}
 --- !u!1 &1330099965
 GameObject:
   m_ObjectHideFlags: 0
@@ -776,86 +584,6 @@ MonoBehaviour:
   gunMaterial: {fileID: 2100000, guid: f23f1dd460aa94748b60c57b60681d0e, type: 2}
   isAutomatic: 0
   fireCooldown: 1
---- !u!1 &1766650088
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1766650089}
-  - 114: {fileID: 1766650090}
-  m_Layer: 0
-  m_Name: 003_Furnace
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1766650089
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1766650088}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 932986254}
---- !u!114 &1766650090
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1766650088}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Furnace
-  icon: {fileID: 2800000, guid: 57a46760e0dd54c74ba52274674e28d3, type: 3}
---- !u!1 &1820612917
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1820612918}
-  - 114: {fileID: 1820612919}
-  m_Layer: 0
-  m_Name: 001_TestLevelB
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1820612918
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1820612917}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 932986254}
---- !u!114 &1820612919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1820612917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1db7a0d0632b34a21878cc38c4fe89d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: TestLevelB
-  icon: {fileID: 2800000, guid: 318fecd9f93724563a9acb112587a1d9, type: 3}
 --- !u!1 &1973207290
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,7 +619,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 115692936}
-  - {fileID: 932986254}
   m_Father: {fileID: 0}
 --- !u!23 &1973207292
 Renderer:
@@ -942,6 +669,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fpsEntityPrefab: {fileID: 100004, guid: 89a329f693d984ee18392aeb629721c3, type: 2}
+  Error: 
   connected: 0
   isServer: 0
   uniqueGameName: Splat Death Salad
@@ -966,7 +694,6 @@ MonoBehaviour:
   pickupBoxPrefab: {fileID: 100002, guid: d590a367980aa41cdae42504cf74de32, type: 2}
   gameTimeLeft: 0
   nextMatchTime: 0
-  errorString: 
 --- !u!114 &1973207296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -992,13 +719,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359f0fb783c8c814daa4c218ac0146e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levels:
-  - {fileID: 156266424}
-  - {fileID: 1820612919}
-  - {fileID: 1298072001}
-  - {fileID: 1766650090}
-  - {fileID: 298154775}
-  - {fileID: 890197041}
   swapperCrossX: 0
   swapperCrossY: 0
   swapperLocked: 0
@@ -1017,6 +737,7 @@ MonoBehaviour:
   gunACooldown: 0
   gunA: 0
   gunB: 0
+  EnergyLeft: 1
 --- !u!114 &1973207298
 MonoBehaviour:
   m_ObjectHideFlags: 0

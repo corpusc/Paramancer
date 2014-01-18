@@ -108,7 +108,7 @@ public class EntityClass : MonoBehaviour {
 		newMatB.color = User.colB;
 		newMatC.color = User.colC;
 		
-		if (net.ModeCfg.teamBased) {
+		if (net.CurrMatch.teamBased) {
 			if (User.team == 1) {
 				newMatA.color = Color.red;
 			}
@@ -117,16 +117,18 @@ public class EntityClass : MonoBehaviour {
 			}
 		}
 		
-		if (!visible){
+		if (!visible) {
 			mats[0] = invisibleMat;
 			mats[1] = invisibleMat;
 			mats[2] = invisibleMat;
 			meshObj.renderer.materials = mats;
 			
-			if (gunMesh1.renderer) gunMesh1.renderer.material = invisibleMat;
-			if (gunMesh2.renderer) gunMesh2.renderer.material = invisibleMat;
+			if (gunMesh1.renderer) 
+				gunMesh1.renderer.material = invisibleMat;
+			if (gunMesh2.renderer) 
+				gunMesh2.renderer.material = invisibleMat;
 			
-			if (handGun==7) {
+			if (handGun == 7) {
 				// bomb
 				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null) {
 					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
@@ -145,16 +147,17 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		// heads
-		for (int i=0; i<heads.Length; i++){
-			if (i!=headType){
+		for (int i=0; i<heads.Length; i++) {
+			if (i!=headType) {
 				heads[i].renderer.enabled = false;
 			}
+			
 			if (!visible){
 				heads[i].renderer.material = invisibleMat;
 			}	
 		}
 		
-		if (visible){
+		if (visible) {
 			heads[0].renderer.material = newMatA;
 			heads[1].renderer.material = boxMat;
 			heads[2].renderer.material = fishMat;
@@ -184,13 +187,13 @@ public class EntityClass : MonoBehaviour {
 			}
 		}
 		
-		if (!net.ModeCfg.pitchBlack || !User.local) {
+		if (!net.CurrMatch.pitchBlack || !User.local) {
 			firstPersonLight.enabled = false;
 		
 		}
 		
-		if (!User.local && net.ModeCfg.pitchBlack) {
-			if (net.ModeCfg.teamBased && User.team == net.localPlayer.team) {
+		if (!User.local && net.CurrMatch.pitchBlack) {
+			if (net.CurrMatch.teamBased && User.team == net.localPlayer.team) {
 				firstPersonLight.enabled = true;
 				if (User.team == 1) {
 					firstPersonLight.color = Color.red;
@@ -208,7 +211,7 @@ public class EntityClass : MonoBehaviour {
 		artil = o.GetComponent<Weapon>();
 		locUser = o.GetComponent<LocalUser>();
 		
-		if (User.local && net.ModeCfg.pitchBlack){
+		if (User.local && net.CurrMatch.pitchBlack){
 			Camera.main.backgroundColor = Color.black;
 			RenderSettings.ambientLight = Color.black;
 		}
@@ -581,7 +584,7 @@ public class EntityClass : MonoBehaviour {
 					hud.swapperCrossY = Mathf.RoundToInt(swapperLock.y);
 					
 					// basketball arrow
-					if (net.ModeCfg.basketball) {
+					if (net.CurrMatch.basketball) {
 						if (bballArrowObj==null) {
 							bballArrowObj = (GameObject)GameObject.Instantiate(bballArrowPrefab);
 							bballArrowObj.transform.parent = Camera.main.transform;
@@ -806,7 +809,7 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		// if no friendly fire & on same team, make unshootable
-		if (net.ModeCfg.teamBased && !net.ModeCfg.allowFriendlyFire) {
+		if (net.CurrMatch.teamBased && !net.CurrMatch.allowFriendlyFire) {
 			if (User.team == net.localPlayer.team) {
 				gameObject.layer = 2;
 			}
@@ -1001,7 +1004,7 @@ public class EntityClass : MonoBehaviour {
 		if (GameObject.Find("_Spawns") != null) {
 			SpawnPointScript spawns = GameObject.Find("_Spawns").GetComponent<SpawnPointScript>();
 			
-			if (!net.ModeCfg.teamBased) {
+			if (!net.CurrMatch.teamBased) {
 				int randomIndex = Random.Range(0,spawns.normalSpawns.Length);
 				spawnPos = spawns.normalSpawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.normalSpawns[randomIndex].transform.eulerAngles;
@@ -1020,15 +1023,15 @@ public class EntityClass : MonoBehaviour {
 		if (firstPersonGun) 
 			Destroy(firstPersonGun);
 		
-		if (net.ModeCfg.spawnGunA == -2) {
+		if (net.CurrMatch.spawnGunA == -2) {
 			handGun = Random.Range(0,artil.gunTypes.Length);
 		}else{
-			handGun = net.ModeCfg.spawnGunA;
+			handGun = net.CurrMatch.spawnGunA;
 		}
-		if (net.ModeCfg.spawnGunB == -2) {
+		if (net.CurrMatch.spawnGunB == -2) {
 			holsterGun = Random.Range(0,artil.gunTypes.Length);
 		}else{
-			holsterGun = net.ModeCfg.spawnGunB;
+			holsterGun = net.CurrMatch.spawnGunB;
 		}
 		
 		lastKnownHandGun = -99;
