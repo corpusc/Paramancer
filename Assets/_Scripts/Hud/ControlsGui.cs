@@ -129,6 +129,7 @@ public class ControlsGui : MonoBehaviour {
 			keyData[i] = new KeyData();
 	}
 	
+	int latestCleared;
 	void Update() {
 		// dragging/dropping
 		// when starting a LMB press, we both want to pick up any action thats under the mouse
@@ -138,22 +139,29 @@ public class ControlsGui : MonoBehaviour {
 		// we'll wanna clear draggee upon leaving the controls config screen, otherwise
 		// when coming back, there will be an action on the pointer instead of showing up on
 		// its proper key location
-		if (Input.GetKeyDown(KeyCode.Mouse0) ||
-			Input.GetKeyUp(KeyCode.Mouse0) // hmmm, maybe UP should only work if pointer hasn't travelled
+		if (Input.GetKeyDown(KeyCode.Mouse0) /*||
+			Input.GetKeyUp(KeyCode.Mouse0)*/ // hmmm, maybe UP should only work if pointer hasn't travelled
 		) {                                // much from the DOWN position?
 			int moId; // mouse over id
 			var mo = mouseOver(out moId);
 			Debug.Log("moId: " + moId);
-			if (mo == null) { // can't pickup, or drop onto a valid, so discard draggee
+			if (mo == null) { // not a valid area, so discard draggee
+				if (draggee != null) {
+					draggee.Id = latestCleared;
+					draggee.KeyCode = codes[latestCleared];
+				}
+				
 				draggee = null; // 
 			}else{ // over a valid key
 				if (draggee == null) {
 					// pick it up
 					for (int i = 0; i < bindData.Length; i++) {
-						if (moId == bindData[i].Id);
+						if (moId == bindData[i].Id) {
 							draggee = bindData[i];
+							latestCleared = bindData[i].Id;
+						}
 					}
-				}else{ // we were already dragging
+				}else{ // we were dragging
 					// change bind settings
 					draggee.Id = moId;
 					draggee.KeyCode = mo.KeyCode;

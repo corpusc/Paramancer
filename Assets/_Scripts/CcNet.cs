@@ -7,7 +7,7 @@ public class CcNet : MonoBehaviour {
 	public GameObject fpsEntityPrefab;
 	
 	// networky stuff
-	public string ErrorString = "";
+	public string Error = "";
 	public NetworkViewID NetVI;
 	public bool connected = false;
 	public bool isServer = false;
@@ -495,15 +495,15 @@ public class CcNet : MonoBehaviour {
 		
 		// are we still connected to the server?
 		if (connected && !isServer) {
-			if (Time.time > lastRPCtime + 30f){
+			if (Time.time > lastRPCtime + 30f) {
 				DisconnectNow();
 				hud.menuPoint = "connectionError";
-				ErrorString = "Client hasn't heard from host for 30 seconds.\nthis is probably because somebody's internet sucks,\nor latency is crazy high.\n\nplay with people closer to you,\nand shut off those torrents and the like! :P";
+				Error = "Client hasn't heard from host for 30 seconds.\nthis is probably because somebody's internet sucks,\nor latency is crazy high.\n\nplay with people closer to you,\nand shut off those torrents and the like! :P";
 			}
 			
 			// remind the server we here
 			for (int i=0; i<players.Count; i++) {
-				if (players[i].local && Time.time > players[i].lastPong + 5f){
+				if (players[i].local && Time.time > players[i].lastPong + 5f) {
 					networkView.RPC("PONG",RPCMode.Server,players[i].viewID);
 					players[i].lastPong = Time.time;
 				}	
@@ -1117,7 +1117,7 @@ public class CcNet : MonoBehaviour {
 			connected = true;
 		}else if (msEvent == MasterServerEvent.RegistrationFailedNoServer || msEvent == MasterServerEvent.RegistrationFailedGameType || msEvent == MasterServerEvent.RegistrationFailedGameName){
 			Debug.Log("server registration failed, disconnecting");
-			ErrorString = "server registration failed";
+			Error = "server registration failed";
 			hud.menuPoint = "connectionError";
 			localPlayer.viewID = new NetworkViewID();
 			NetVI = new NetworkViewID();
@@ -1138,40 +1138,41 @@ public class CcNet : MonoBehaviour {
 	void OnPlayerConnected(NetworkPlayer player) {
         Debug.Log("Player connected from " + player.ipAddress + ":" + player.port);
     }
-	void OnFailedToConnect(NetworkConnectionError error) {
-		ErrorString = "";
-		if (error == NetworkConnectionError.NoError) 
-			ErrorString = "No Error Reported.";
-		if (error == NetworkConnectionError.RSAPublicKeyMismatch) 
-			ErrorString = "We presented an RSA public key which does not match what the system we connected to is using.";
-		if (error == NetworkConnectionError.InvalidPassword) 
-			ErrorString = "The server is using a password and has refused our connection because we did not set the correct password.";
-		if (error == NetworkConnectionError.ConnectionFailed) 
-			ErrorString = "Connection attempt failed, possibly because of internal connectivity problems.";
-		if (error == NetworkConnectionError.TooManyConnectedPlayers) 
-			ErrorString = "The server is at full capacity, failed to connect.";
-		if (error == NetworkConnectionError.ConnectionBanned) 
-			ErrorString = "We are banned from the system we attempted to connect to (likely temporarily).";
-		if (error == NetworkConnectionError.AlreadyConnectedToServer) 
-			ErrorString = "We are already connected to this particular server (can happen after fast disconnect/reconnect).";
-		if (error == NetworkConnectionError.AlreadyConnectedToAnotherServer) 
-			ErrorString = "Cannot connect to two servers at once. Close the connection before connecting again.";
-		if (error == NetworkConnectionError.CreateSocketOrThreadFailure) 
-			ErrorString = "Internal error while attempting to initialize network interface. Socket possibly already in use.";
-		if (error == NetworkConnectionError.IncorrectParameters) 
-			ErrorString = "Incorrect parameters given to Connect function.";
-		if (error == NetworkConnectionError.EmptyConnectTarget) 
-			ErrorString = "No host target given in Connect.";
-		if (error == NetworkConnectionError.InternalDirectConnectFailed) 
-			ErrorString = "Client could not connect internally to same network NAT enabled server.";
-		if (error == NetworkConnectionError.NATTargetNotConnected) 
-			ErrorString = "The NAT target we are trying to connect to is not connected to the facilitator server.";
-		if (error == NetworkConnectionError.NATTargetConnectionLost) 
-			ErrorString = "Connection lost while attempting to connect to NAT target.";
-		if (error == NetworkConnectionError.NATPunchthroughFailed) 
-			ErrorString = "NAT punchthrough attempt has failed. The cause could be a too restrictive NAT implementation on either endpoints.";
+	
+	void OnFailedToConnect(NetworkConnectionError e) {
+		Error = "";
+		if (e == NetworkConnectionError.NoError) 
+			Error = "No Error Reported.";
+		if (e == NetworkConnectionError.RSAPublicKeyMismatch) 
+			Error = "We presented an RSA public key which does not match what the system we connected to is using.";
+		if (e == NetworkConnectionError.InvalidPassword) 
+			Error = "The server is using a password and has refused our connection because we did not set the correct password.";
+		if (e == NetworkConnectionError.ConnectionFailed) 
+			Error = "Connection attempt failed, possibly because of internal connectivity problems.";
+		if (e == NetworkConnectionError.TooManyConnectedPlayers) 
+			Error = "The server is at full capacity, failed to connect.";
+		if (e == NetworkConnectionError.ConnectionBanned) 
+			Error = "We are banned from the system we attempted to connect to (likely temporarily).";
+		if (e == NetworkConnectionError.AlreadyConnectedToServer) 
+			Error = "We are already connected to this particular server (can happen after fast disconnect/reconnect).";
+		if (e == NetworkConnectionError.AlreadyConnectedToAnotherServer) 
+			Error = "Cannot connect to two servers at once. Close the connection before connecting again.";
+		if (e == NetworkConnectionError.CreateSocketOrThreadFailure) 
+			Error = "Internal error while attempting to initialize network interface. Socket possibly already in use.";
+		if (e == NetworkConnectionError.IncorrectParameters) 
+			Error = "Incorrect parameters given to Connect function.";
+		if (e == NetworkConnectionError.EmptyConnectTarget) 
+			Error = "No host target given in Connect.";
+		if (e == NetworkConnectionError.InternalDirectConnectFailed) 
+			Error = "Client could not connect internally to same network NAT enabled server.";
+		if (e == NetworkConnectionError.NATTargetNotConnected) 
+			Error = "The NAT target we are trying to connect to is not connected to the facilitator server.";
+		if (e == NetworkConnectionError.NATTargetConnectionLost) 
+			Error = "Connection lost while attempting to connect to NAT target.";
+		if (e == NetworkConnectionError.NATPunchthroughFailed) 
+			Error = "NAT punchthrough attempt has failed. The cause could be a too restrictive NAT implementation on either endpoints.";
 		
-		Debug.Log("Failed to Connect: " + ErrorString);
+		Debug.Log("Failed to Connect: " + Error);
 		Network.Disconnect();
 		localPlayer.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();

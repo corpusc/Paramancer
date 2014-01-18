@@ -329,7 +329,7 @@ public class Hud : MonoBehaviour {
 				DrawWindowBackground();
 				GUI.BeginGroup(window);
 				GUILayout.Label("Failed to Connect:");
-				GUILayout.Label(net.ErrorString);
+				GUILayout.Label(net.Error);
 				GUI.EndGroup();
 			}else if (menuPoint == "connecting"){
 				if (GUI.Button(br, "Back...")){
