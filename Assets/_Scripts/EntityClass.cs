@@ -453,6 +453,8 @@ public class EntityClass : MonoBehaviour {
 						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 5f);
 					}
 					
+					hud.EnergyLeft = ava.GetEnergy();
+					
 					
 					if (yMove<=0f){
 						ava.Move(transform.up * -0.2f);

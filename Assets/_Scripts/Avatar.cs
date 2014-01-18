@@ -29,7 +29,7 @@ public class Avatar : MonoBehaviour {
 			moveVector *= SprintMultiplier;
 			sprintActivatedTime += Time.deltaTime;
 		}
-		else if(sprintActivatedTime > 0f) sprintActivatedTime -= Time.deltaTime;
+		else sprintActivatedTime = (sprintActivatedTime - Time.deltaTime < 0f) ? 0f : (sprintActivatedTime - Time.deltaTime);
 		isGrounded = false;
 		Ray coreRay = new Ray(transform.position, moveVector);
 		RaycastHit coreHit = new RaycastHit();
@@ -57,4 +57,10 @@ public class Avatar : MonoBehaviour {
 			transform.position = standPos;
 		}
 	}
+	
+	public float GetEnergy()
+	{
+		return (sprintDuration - sprintActivatedTime) / sprintDuration;
+	}
+	
 }

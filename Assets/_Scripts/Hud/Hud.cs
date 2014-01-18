@@ -33,6 +33,8 @@ public class Hud : MonoBehaviour {
 	public int gunA = 0;
 	public int gunB = 0;
 	
+	public float EnergyLeft = 1f; //0-1
+	
 	// private
 	bool viewingScores = false;
 	string gameMenuPoint = "config";
@@ -63,7 +65,7 @@ public class Hud : MonoBehaviour {
 		
 		modes[0].Name = "Custom";
 		modes[0].Descript = "Have it your way!  All the exact settings you prefer.";
-		modes[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB" };
+		modes[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
 		modes[0].respawnWait = 5f;
 		
 		modes[1].Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
@@ -73,7 +75,7 @@ public class Hud : MonoBehaviour {
 		
 		modes[2].Name = "Grue Food";
 		modes[2].Descript = "It is pitch black.  You are likely to be eaten by a grue.";
-		modes[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 		modes[2].respawnWait = 5f;
 		modes[2].pitchBlack = true;
 		modes[2].pickupSlot1 = 1;
@@ -84,12 +86,12 @@ public class Hud : MonoBehaviour {
 		
 		modes[3].Name = "FFA Fragmatch";
 		modes[3].Descript = "Frag count is ALL that counts in this freestyle Free For All!";
-		modes[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 		modes[3].respawnWait = 5f;
 		
 		modes[5].Name = "Team Fragmatch";
 		modes[5].Descript = "Frag count is what counts, but don't hurt your mates!";
-		modes[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 		modes[5].respawnWait = 5f;
 		modes[5].teamBased = true;
 		modes[5].pickupSlot5 = 4;
@@ -109,7 +111,7 @@ public class Hud : MonoBehaviour {
 		
 		modes[6].Name = "YOLT! (You Only Live Thrice)";
 		modes[6].Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
-		modes[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 		modes[6].Duration = 0f;
 		modes[6].respawnWait = 5f;
 		modes[6].killsIncreaseScore = false;
@@ -117,7 +119,7 @@ public class Hud : MonoBehaviour {
 		
 		modes[7].Name = "Swap Meat";
 		modes[7].Descript = "There is only the swapper gun, grenades and lava... have fun!";
-		modes[7].allowedLevels = new string[] { "Furnace" };
+		modes[7].allowedLevels = new string[] { "Furnace" , "Tower"};
 		modes[7].respawnWait = 3f;
 		modes[7].killsIncreaseScore = false;
 		modes[7].spawnGunA = 5;
@@ -130,7 +132,7 @@ public class Hud : MonoBehaviour {
 		
 		modes[8].Name = "Weapon Lottery";
 		modes[8].Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
-		modes[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		modes[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 		modes[8].winScore = 20;
 		modes[8].respawnWait = 5f;
 		modes[8].spawnGunA = -2;
@@ -471,6 +473,12 @@ public class Hud : MonoBehaviour {
 				GUI.DrawTexture(new Rect(midX-(healthWidth/2)-2, Screen.height-15, healthWidth+4, 9), blackTex);
 				int healthWidthB = (int)((((float)healthWidth)/100f)*net.localPlayer.health);
 				GUI.DrawTexture(new Rect(midX-(healthWidth/2), Screen.height-13, healthWidthB, 5), backTex);
+				
+				//energy bar
+				int energyWidth = (Screen.width/3);
+				GUI.DrawTexture(new Rect(midX-(energyWidth/2)-2, Screen.height-30, healthWidth+4, 9), blackTex);
+				int energyWidthB = (int)(((float)healthWidth)*EnergyLeft);
+				GUI.DrawTexture(new Rect(midX-(energyWidth/2), Screen.height-28, energyWidthB, 5), backTex);
 				
 				// lives
 				if (net.ModeCfg.playerLives>0) {
