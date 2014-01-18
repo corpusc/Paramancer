@@ -8,6 +8,8 @@ public class ControlsGui : MonoBehaviour {
 	Texture keyCap;
 	int numX = 21;
 	int numY = 6;
+	BindData draggee = null;
+	Vector3 mouPos; // = Input.mousePosition;
 	// VVVVV matching indices VVVVVVV
 	KeyCode[] codes; // first build this for cleaner looking initialization of values
 	KeyData[] keyData; // this is the real structure built from "codes", that actually gets used elsewhere
@@ -115,8 +117,10 @@ public class ControlsGui : MonoBehaviour {
 			}
 			
 			for (int j = 0; j < codes.Length; j++)
-				if (bindData[i].KeyCode == codes[j])
+				if (bindData[i].KeyCode == codes[j]) {
 					bindData[i].Id = j;
+					//Debug.Log("set an id to: " + j);
+				}
 		}
 		
 		// the more complicated structure that's used from now on
@@ -126,11 +130,58 @@ public class ControlsGui : MonoBehaviour {
 	}
 	
 	void Update() {
+		// dragging/dropping
+		// when starting a LMB press, we both want to pick up any action thats under the mouse
+		// & drop any action that may be attached to mouse pointer
+		// we probably need both a draggee var, and a temp one.  in order to do these events
+		// in the right order
+		// we'll wanna clear draggee upon leaving the controls config screen, otherwise
+		// when coming back, there will be an action on the pointer instead of showing up on
+		// its proper key location
+		if (Input.GetKeyDown(KeyCode.Mouse0) ||
+			Input.GetKeyUp(KeyCode.Mouse0) // hmmm, maybe UP should only work if pointer hasn't travelled
+		) {                                // much from the DOWN position?
+			int moId; // mouse over id
+			var mo = mouseOver(out moId);
+			Debug.Log("moId: " + moId);
+			if (mo == null) { // can't pickup, or drop onto a valid, so discard draggee
+				draggee = null; // 
+			}else{ // over a valid key
+				if (draggee == null) {
+					// pick it up
+					for (int i = 0; i < bindData.Length; i++) {
+						if (moId == bindData[i].Id);
+							draggee = bindData[i];
+					}
+				}else{ // we were already dragging
+					// change bind settings
+					draggee.Id = moId;
+					draggee.KeyCode = mo.KeyCode;
+					
+					// if there was something else there, that's the new draggee
+					bool anotherWasBoundThere = false;
+					BindData theOther = null;
+					for (int i = 0; i < bindData.Length; i++) {
+						if (draggee != bindData[i] && 
+							draggee.Id == bindData[i].Id)
+						{
+							anotherWasBoundThere = true;
+							theOther = bindData[i];
+						}
+					}
+					
+					if (anotherWasBoundThere)
+						draggee = theOther;
+					else
+						draggee = null;
+				}
+			}
+		}
 	}
 	
 	int oldW = 0; int oldH = 0;
 	void OnGUI () {
-		var mouPos = Input.mousePosition;
+		mouPos = Input.mousePosition;
 		mouPos.y = Screen.height - mouPos.y;
 		
 		if /* screen size changed */ (oldW != Screen.width || oldH != Screen.height)
@@ -139,7 +190,7 @@ public class ControlsGui : MonoBehaviour {
 		oldW = Screen.width;
 		oldH = Screen.height;
 		
-		// draw keys
+		// draw keys          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {
 			// get the right color
 			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) )
@@ -154,10 +205,11 @@ public class ControlsGui : MonoBehaviour {
 		// draw actions
 		GUI.color = Color.cyan;
 		for (int i = 0; i < bindData.Length; i++) {
-			GUI.DrawTexture(keyData[bindData[i].Id].Rect, bindData[i].Pic);
+			if (bindData[i] != draggee)
+				GUI.DrawTexture(keyData[bindData[i].Id].Rect, bindData[i].Pic);
 		}
 		
-		// draw key text
+		// draw key text          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {
 			// get the right color
 			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) )
@@ -168,6 +220,21 @@ public class ControlsGui : MonoBehaviour {
 			// draw
 			GUI.Box(keyData[i].Rect, keyData[i].Text);
 		}
+		
+		if (draggee != null)
+			GUI.DrawTexture(new Rect(mouPos.x, mouPos.y, 50, 50), draggee.Pic);
+	}
+	
+	KeyData mouseOver(out int mouseOverId) {
+		for (int i = 0; i < keyData.Length; i++) {
+			if (keyData[i].Rect.Contains(mouPos) ) {
+				mouseOverId = i;
+				return keyData[i];
+			}
+		}
+		
+		mouseOverId = 999777; // junk number that should never be used, because null (paired)
+		return null;
 	}
 	
 	string getConciseText(KeyCode kc) {

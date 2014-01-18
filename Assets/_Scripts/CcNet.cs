@@ -7,6 +7,7 @@ public class CcNet : MonoBehaviour {
 	public GameObject fpsEntityPrefab;
 	
 	// networky stuff
+	public string ErrorString = "";
 	public NetworkViewID NetVI;
 	public bool connected = false;
 	public bool isServer = false;
@@ -497,7 +498,7 @@ public class CcNet : MonoBehaviour {
 			if (Time.time > lastRPCtime + 30f){
 				DisconnectNow();
 				hud.menuPoint = "connectionError";
-				errorString = "Client hasn't heard from host for 30 seconds.\nthis is probably because somebody's internet sucks,\nor latency is crazy high.\n\nplay with people closer to you,\nand shut off those torrents and the like! :P";
+				ErrorString = "Client hasn't heard from host for 30 seconds.\nthis is probably because somebody's internet sucks,\nor latency is crazy high.\n\nplay with people closer to you,\nand shut off those torrents and the like! :P";
 			}
 			
 			// remind the server we here
@@ -559,7 +560,7 @@ public class CcNet : MonoBehaviour {
 		
 		// game time up?
 		if (connected && !gameOver) {
-			if (gameTimeLeft <= 0f && ModeCfg.MatchDuration > 0f){
+			if (gameTimeLeft <= 0f && ModeCfg.Duration > 0f){
 				gameTimeLeft = 0f;
 				gameOver = true;
 				
@@ -857,10 +858,10 @@ public class CcNet : MonoBehaviour {
 	public void AssignGameModeConfig(GameModeScript gm, string levelName){
 		ModeCfg.levelName = levelName;
 		
-		ModeCfg.gameModeName = gm.gameModeName;
-		ModeCfg.gameModeDescription = gm.gameModeDescription;
+		ModeCfg.Name = gm.Name;
+		ModeCfg.Descript = gm.Descript;
 		ModeCfg.winScore = gm.winScore;
-		ModeCfg.MatchDuration = gm.MatchDuration;
+		ModeCfg.Duration = gm.Duration;
 		ModeCfg.respawnWait = gm.respawnWait;
 		ModeCfg.deathsSubtractScore = gm.deathsSubtractScore;
 		ModeCfg.killsIncreaseScore = gm.killsIncreaseScore;
@@ -908,7 +909,7 @@ public class CcNet : MonoBehaviour {
 		
 		int livesBroadcast = 0;
 		if (serverGameChange){
-			gameTimeLeft = ModeCfg.MatchDuration * 60f;
+			gameTimeLeft = ModeCfg.Duration * 60f;
 			gameOver = false;
 			livesBroadcast = ModeCfg.playerLives;
 		}else{
@@ -917,14 +918,14 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, ModeCfg.gameModeName, ModeCfg.levelName, ModeCfg.gameModeDescription, ModeCfg.winScore, ModeCfg.MatchDuration, ModeCfg.respawnWait, ModeCfg.deathsSubtractScore, ModeCfg.killsIncreaseScore, ModeCfg.teamBased, targetTeam, ModeCfg.allowFriendlyFire, ModeCfg.pitchBlack, gameOver, gameTimeLeft, ModeCfg.spawnGunA, ModeCfg.spawnGunB, ModeCfg.pickupSlot1, ModeCfg.pickupSlot2, ModeCfg.pickupSlot3, ModeCfg.pickupSlot4, ModeCfg.pickupSlot5, livesBroadcast, serverGameChange, ModeCfg.basketball);
+		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, ModeCfg.Name, ModeCfg.levelName, ModeCfg.Descript, ModeCfg.winScore, ModeCfg.Duration, ModeCfg.respawnWait, ModeCfg.deathsSubtractScore, ModeCfg.killsIncreaseScore, ModeCfg.teamBased, targetTeam, ModeCfg.allowFriendlyFire, ModeCfg.pitchBlack, gameOver, gameTimeLeft, ModeCfg.spawnGunA, ModeCfg.spawnGunB, ModeCfg.pickupSlot1, ModeCfg.pickupSlot2, ModeCfg.pickupSlot3, ModeCfg.pickupSlot4, ModeCfg.pickupSlot5, livesBroadcast, serverGameChange, ModeCfg.basketball);
 	}
 	
 	public float gameTimeLeft = 0f;
 	public float nextMatchTime = 0f;
 	
 	[RPC]
-	void BroadcastNewGame(NetworkViewID viewID, string gameModeName, string levelName, string gameModeDescription, int winScore, float gameTime, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, int playerLives, bool newGame, bool basketball, NetworkMessageInfo info){
+	void BroadcastNewGame(NetworkViewID viewID, string matchName, string levelName, string matchDescript, int winScore, float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, int playerLives, bool newGame, bool basketball, NetworkMessageInfo info){
 		// we've received game info from the server
 		lastRPCtime = Time.time;
 		
@@ -951,62 +952,61 @@ public class CcNet : MonoBehaviour {
 		serverGameChange = false;
 		
 		if (!isServer) {
-			//lets update the local game settings
-			ModeCfg.gameModeName = gameModeName;
+			// lets update the local game settings
 			ModeCfg.levelName = levelName;
-			//...
-			ModeCfg.gameModeDescription = gameModeDescription;
+			ModeCfg.Name = matchName;
+			ModeCfg.Descript = matchDescript;
 			ModeCfg.winScore = winScore;
-			ModeCfg.MatchDuration = gameTime;
+			ModeCfg.Duration = duration;
 			ModeCfg.respawnWait = respawnWait;
 			ModeCfg.deathsSubtractScore = deathsSubtractScore;
 			ModeCfg.killsIncreaseScore = killsIncreaseScore;
 			ModeCfg.teamBased = teamBased;
 			ModeCfg.allowFriendlyFire = allowFriendlyFire;
 			ModeCfg.pitchBlack = pitchBlack;
-			
+			ModeCfg.playerLives = playerLives;
+			ModeCfg.basketball = basketball;
 			ModeCfg.spawnGunA = spawnGunA;
 			ModeCfg.spawnGunB = spawnGunB;
-			
-			
 			ModeCfg.pickupSlot1 = pickupSlot1;
 			ModeCfg.pickupSlot2 = pickupSlot2;
 			ModeCfg.pickupSlot3 = pickupSlot3;
 			ModeCfg.pickupSlot4 = pickupSlot4;
 			ModeCfg.pickupSlot5 = pickupSlot5;
-			
-			ModeCfg.playerLives = playerLives;
-			
-			ModeCfg.basketball = basketball;
 		}
 		
-		if (targetTeam != -1){
-			//don't keep current teams
+		if (targetTeam != -1) {
+			// don't keep current teams
 			localPlayer.team = targetTeam;
 			for (int i=0; i<players.Count; i++){
 				if (players[i].viewID == localPlayer.viewID){
 					players[i].team = targetTeam;
 				}
 			}
-		}if (targetTeam == -1){
-			//last game was team based, leave teams as they are
-		}if (targetTeam == -2){
-			//last game wasn't team based, this is, set team.
+		}
+		if (targetTeam == -1) {
+			// last game was team based, leave teams as they are
+		}
+		if (targetTeam == -2) {
+			// last game wasn't team based, this is, set team.
 			localPlayer.team = 1;
-			if (Random.Range(0,10)<5) localPlayer.team = 2;
-			for (int i=0; i<players.Count; i++){
-				if (players[i].viewID == localPlayer.viewID){
+			if (Random.Range(0,10) < 5) 
+				localPlayer.team = 2;
+			
+			for (int i=0; i<players.Count; i++) {
+				if (players[i].viewID == localPlayer.viewID) {
 					players[i].team = localPlayer.team;
 				}
 			}
 		}
+		
 		team1Score = 0;
 		team2Score = 0;
 		
-		//let's clear stuff out if we are already playing
+		// let's clear stuff out if we are already playing
 		preppingLevel = false;
 		levelLoaded = false;
-		for (int i=0; i<players.Count; i++){
+		for (int i=0; i<players.Count; i++) {
 			if (players[i].Entity != null) Destroy(players[i].Entity.gameObject);
 			players[i].Entity = null;
 			
@@ -1015,34 +1015,38 @@ public class CcNet : MonoBehaviour {
 			players[i].deaths = 0;
 			players[i].currentScore = 0;
 		}
+		
 		localPlayer.health = 100;
 		localPlayer.kills = 0;
 		localPlayer.deaths = 0;
 		localPlayer.currentScore = 0;
 		artill.Clear();
 		
-		//now let's load the level
+		// now let's load the level
 		preppingLevel = true;
 		Application.LoadLevel(levelName);
 	}
 	
-	void OnLevelWasLoaded (){
-		if (preppingLevel){
-			//level set up, let's play!
+	void OnLevelWasLoaded () {
+		if (preppingLevel) {
+			// level set up, let's play!
 			preppingLevel = false;
 			levelLoaded = true;
 			
-			//drop the basket ball in
-			if (ModeCfg.basketball){
+			// drop the basket ball in
+			if (ModeCfg.basketball) {
 				basketball = (GameObject)GameObject.Instantiate(basketballPrefab);
-				if (!isServer) networkView.RPC("RequestBallStatus", RPCMode.Server);
+				if (!isServer) 
+					networkView.RPC("RequestBallStatus", RPCMode.Server);
 			}else{
-				if (GameObject.Find("_BasketRed") != null) Destroy(GameObject.Find("_BasketRed"));
-				if (GameObject.Find("_BasketBlue") != null) Destroy(GameObject.Find("_BasketBlue"));
+				if (GameObject.Find("_BasketRed") != null) 
+					Destroy(GameObject.Find("_BasketRed"));
+				if (GameObject.Find("_BasketBlue") != null) 
+					Destroy(GameObject.Find("_BasketBlue"));
 			}
 			
 			// add fps entities for all known players
-			for (int i=0; i<players.Count; i++){
+			for (int i=0; i<players.Count; i++) {
 				players[i].InstantiateEntity(fpsEntityPrefab);
 			}
 			
@@ -1051,40 +1055,40 @@ public class CcNet : MonoBehaviour {
 			
 			//make sure we know about pickup spawn points
 			pickupPoints = new List<PickupPoint>();
-			if (GameObject.Find("_PickupSpots")!=null){
+			if (GameObject.Find("_PickupSpots")!=null) {
 				GameObject pickupPointHolder = GameObject.Find("_PickupSpots");
-				foreach (Transform child in pickupPointHolder.transform){
+				foreach (Transform child in pickupPointHolder.transform) {
 					int stockType = -1;
 					if (child.GetComponent<PickupPoint>().pickupType == 1) stockType = ModeCfg.pickupSlot1;
 					if (child.GetComponent<PickupPoint>().pickupType == 2) stockType = ModeCfg.pickupSlot2;
 					if (child.GetComponent<PickupPoint>().pickupType == 3) stockType = ModeCfg.pickupSlot3;
 					if (child.GetComponent<PickupPoint>().pickupType == 4) stockType = ModeCfg.pickupSlot4;
 					if (child.GetComponent<PickupPoint>().pickupType == 5) stockType = ModeCfg.pickupSlot5;
-					if (stockType != -1){
+					if (stockType != -1) {
 						pickupPoints.Add(child.GetComponent<PickupPoint>());
 					}else{
 						Destroy(child.gameObject);
 					}
 				}
 			}
+			
 			networkView.RPC("RequestPickupStocks",RPCMode.Server);
-			
 			Screen.lockCursor = true;
-			
 		}
 	}
 	
 	[RPC]
-	void RequestBallStatus(){
+	void RequestBallStatus() {
 		// player has joined and doesn't yet know the status of the basketball, lets share it
 		var bballScript = basketball.GetComponent<BasketballScript>();
 		networkView.RPC("ShareBallStatus",RPCMode.Others, basketball.transform.position, bballScript.moveVector, bballScript.throwerID, bballScript.held);
 	}
 	[RPC]
-	void ShareBallStatus(Vector3 ballPos, Vector3 ballMovement, NetworkViewID ballThrower, bool ballHeld){
+	void ShareBallStatus(Vector3 ballPos, Vector3 ballMovement, NetworkViewID ballThrower, bool ballHeld) {
 		var bballScript = basketball.GetComponent<BasketballScript>();
 		bballScript.throwerID = ballThrower;
-		if (ballHeld){
+		
+		if (ballHeld) {
 			bballScript.HoldBall(ballThrower);
 		}else{
 			bballScript.Throw(ballPos, ballMovement.normalized, ballMovement.magnitude);
@@ -1098,89 +1102,84 @@ public class CcNet : MonoBehaviour {
     }
 	
     void OnMasterServerEvent(MasterServerEvent msEvent) {
-        if (msEvent == MasterServerEvent.RegistrationSucceeded){
-			//success registering
+        if (msEvent == MasterServerEvent.RegistrationSucceeded) {
             Debug.Log("Server registered");
-			
 			isServer = true;
 			
-			
-			if (!connected){
-				//we've just joined a game as host, lets create the local player and it to the RPC buffer
+			if (!connected) {
+				// we've just joined a game as host, lets create the local player and it to the RPC buffer
 				localPlayer.viewID = Network.AllocateViewID();
-				
 				hud.menuPoint = "wait";
-				
 				NetVI = Network.AllocateViewID();
-				
 				RequestGameData();
-				
-				
-				
 			}
 			
 			connected = true;
-			
 		}else if (msEvent == MasterServerEvent.RegistrationFailedNoServer || msEvent == MasterServerEvent.RegistrationFailedGameType || msEvent == MasterServerEvent.RegistrationFailedGameName){
-			//failure registering
 			Debug.Log("server registration failed, disconnecting");
-			errorString = "server registration failed";
+			ErrorString = "server registration failed";
 			hud.menuPoint = "connectionError";
-			
 			localPlayer.viewID = new NetworkViewID();
 			NetVI = new NetworkViewID();
-			
 			Network.Disconnect();
 		}
     }
 	
-	void OnConnectedToServer(){
+	void OnConnectedToServer() {
 		Debug.Log("Connected to a server");
 		connected = true;
-		
-		//we just connected to a host, let's RPC the host and ask for the game info
+		// we just connected to a host, let's RPC the host and ask for the game info
 		networkView.RPC("RequestGameData", RPCMode.Server);
 		hud.menuPoint = "wait";
-		
 		lastRPCtime = Time.time;
-		
 		localPlayer.viewID = Network.AllocateViewID();
 	}
 	
 	void OnPlayerConnected(NetworkPlayer player) {
         Debug.Log("Player connected from " + player.ipAddress + ":" + player.port);
     }
-	void OnFailedToConnect(NetworkConnectionError error){
-		errorString = "";
-		if (error == NetworkConnectionError.NoError) errorString = "No Error Reported.";
-		if (error == NetworkConnectionError.RSAPublicKeyMismatch) errorString = "We presented an RSA public key which does not match what the system we connected to is using.";
-		if (error == NetworkConnectionError.InvalidPassword) errorString = "The server is using a password and has refused our connection because we did not set the correct password.";
-		if (error == NetworkConnectionError.ConnectionFailed) errorString = "Connection attempt failed, possibly because of internal connectivity problems.";
-		if (error == NetworkConnectionError.TooManyConnectedPlayers) errorString = "The server is at full capacity, failed to connect.";
-		if (error == NetworkConnectionError.ConnectionBanned) errorString = "We are banned from the system we attempted to connect to (likely temporarily).";
-		if (error == NetworkConnectionError.AlreadyConnectedToServer) errorString = "We are already connected to this particular server (can happen after fast disconnect/reconnect).";
-		if (error == NetworkConnectionError.AlreadyConnectedToAnotherServer) errorString = "Cannot connect to two servers at once. Close the connection before connecting again.";
-		if (error == NetworkConnectionError.CreateSocketOrThreadFailure) errorString = "Internal error while attempting to initialize network interface. Socket possibly already in use.";
-		if (error == NetworkConnectionError.IncorrectParameters) errorString = "Incorrect parameters given to Connect function.";
-		if (error == NetworkConnectionError.EmptyConnectTarget) errorString = "No host target given in Connect.";
-		if (error == NetworkConnectionError.InternalDirectConnectFailed) errorString = "Client could not connect internally to same network NAT enabled server.";
-		if (error == NetworkConnectionError.NATTargetNotConnected) errorString = "The NAT target we are trying to connect to is not connected to the facilitator server.";
-		if (error == NetworkConnectionError.NATTargetConnectionLost) errorString = "Connection lost while attempting to connect to NAT target.";
-		if (error == NetworkConnectionError.NATPunchthroughFailed) errorString = "NAT punchthrough attempt has failed. The cause could be a too restrictive NAT implementation on either endpoints.";
+	void OnFailedToConnect(NetworkConnectionError error) {
+		ErrorString = "";
+		if (error == NetworkConnectionError.NoError) 
+			ErrorString = "No Error Reported.";
+		if (error == NetworkConnectionError.RSAPublicKeyMismatch) 
+			ErrorString = "We presented an RSA public key which does not match what the system we connected to is using.";
+		if (error == NetworkConnectionError.InvalidPassword) 
+			ErrorString = "The server is using a password and has refused our connection because we did not set the correct password.";
+		if (error == NetworkConnectionError.ConnectionFailed) 
+			ErrorString = "Connection attempt failed, possibly because of internal connectivity problems.";
+		if (error == NetworkConnectionError.TooManyConnectedPlayers) 
+			ErrorString = "The server is at full capacity, failed to connect.";
+		if (error == NetworkConnectionError.ConnectionBanned) 
+			ErrorString = "We are banned from the system we attempted to connect to (likely temporarily).";
+		if (error == NetworkConnectionError.AlreadyConnectedToServer) 
+			ErrorString = "We are already connected to this particular server (can happen after fast disconnect/reconnect).";
+		if (error == NetworkConnectionError.AlreadyConnectedToAnotherServer) 
+			ErrorString = "Cannot connect to two servers at once. Close the connection before connecting again.";
+		if (error == NetworkConnectionError.CreateSocketOrThreadFailure) 
+			ErrorString = "Internal error while attempting to initialize network interface. Socket possibly already in use.";
+		if (error == NetworkConnectionError.IncorrectParameters) 
+			ErrorString = "Incorrect parameters given to Connect function.";
+		if (error == NetworkConnectionError.EmptyConnectTarget) 
+			ErrorString = "No host target given in Connect.";
+		if (error == NetworkConnectionError.InternalDirectConnectFailed) 
+			ErrorString = "Client could not connect internally to same network NAT enabled server.";
+		if (error == NetworkConnectionError.NATTargetNotConnected) 
+			ErrorString = "The NAT target we are trying to connect to is not connected to the facilitator server.";
+		if (error == NetworkConnectionError.NATTargetConnectionLost) 
+			ErrorString = "Connection lost while attempting to connect to NAT target.";
+		if (error == NetworkConnectionError.NATPunchthroughFailed) 
+			ErrorString = "NAT punchthrough attempt has failed. The cause could be a too restrictive NAT implementation on either endpoints.";
 		
-		Debug.Log("Failed to Connect: " + errorString);
-		
+		Debug.Log("Failed to Connect: " + ErrorString);
 		Network.Disconnect();
-		
 		localPlayer.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
-		
 		hud.menuPoint = "connectionError";
 	}
-	public string errorString = "";
 	
 	//--------- Disconnecting, quitting, kicking -----------
-	void OnApplicationQuit(){
+	void OnApplicationQuit() {
 		DisconnectNow();
 	}
 	

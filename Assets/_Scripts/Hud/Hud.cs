@@ -61,18 +61,18 @@ public class Hud : MonoBehaviour {
 		for (int i = 0; i < modes.Length; i++)
 			modes[i] = new GameModeScript();
 		
-		modes[0].gameModeName = "Custom";
-		modes[0].gameModeDescription = "Have it your way!  All the exact settings you prefer.";
+		modes[0].Name = "Custom";
+		modes[0].Descript = "Have it your way!  All the exact settings you prefer.";
 		modes[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB" };
 		modes[0].respawnWait = 5f;
 		
-		modes[1].gameModeName = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
-		modes[1].gameModeDescription = "Each player has their own, independent, changeable gravity";
+		modes[1].Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
+		modes[1].Descript = "Each player has their own, independent, changeable gravity";
 		modes[1].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		modes[1].respawnWait = 5f;
 		
-		modes[2].gameModeName = "Grue Food";
-		modes[2].gameModeDescription = "It is pitch black.  You are likely to be eaten by a grue.";
+		modes[2].Name = "Grue Food";
+		modes[2].Descript = "It is pitch black.  You are likely to be eaten by a grue.";
 		modes[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		modes[2].respawnWait = 5f;
 		modes[2].pitchBlack = true;
@@ -82,20 +82,20 @@ public class Hud : MonoBehaviour {
 		modes[2].pickupSlot4 = 4;
 		modes[2].pickupSlot5 = 7;
 		
-		modes[3].gameModeName = "FFA Fragmatch";
-		modes[3].gameModeDescription = "Frag count is ALL that counts in this freestyle Free For All!";
+		modes[3].Name = "FFA Fragmatch";
+		modes[3].Descript = "Frag count is ALL that counts in this freestyle Free For All!";
 		modes[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		modes[3].respawnWait = 5f;
 		
-		modes[5].gameModeName = "Team Fragmatch";
-		modes[5].gameModeDescription = "Frag count is what counts, but don't hurt your mates!";
+		modes[5].Name = "Team Fragmatch";
+		modes[5].Descript = "Frag count is what counts, but don't hurt your mates!";
 		modes[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		modes[5].respawnWait = 5f;
 		modes[5].teamBased = true;
 		modes[5].pickupSlot5 = 4;
 
-		modes[4].gameModeName = "BBall";
-		modes[4].gameModeDescription = "Shooting hoops...and GUNS!  GANGSTA!";
+		modes[4].Name = "BBall";
+		modes[4].Descript = "Shooting hoops...and GUNS!  GANGSTA!";
 		modes[4].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		modes[4].respawnWait = 5f;
 		modes[4].deathsSubtractScore = false;
@@ -107,16 +107,16 @@ public class Hud : MonoBehaviour {
 		modes[4].pickupSlot4 = 4;
 		modes[4].pickupSlot5 = 5;
 		
-		modes[6].gameModeName = "YOLT! (You Only Live Thrice)";
-		modes[6].gameModeDescription = "Last Person Standing, but you have 3 lives... like Pac-Man";
+		modes[6].Name = "YOLT! (You Only Live Thrice)";
+		modes[6].Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
 		modes[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-		modes[6].MatchDuration = 0f;
+		modes[6].Duration = 0f;
 		modes[6].respawnWait = 5f;
 		modes[6].killsIncreaseScore = false;
 		modes[6].pickupSlot5 = 4;
 		
-		modes[7].gameModeName = "Swap Meat";
-		modes[7].gameModeDescription = "There is only the swapper gun, grenades and lava... have fun!";
+		modes[7].Name = "Swap Meat";
+		modes[7].Descript = "There is only the swapper gun, grenades and lava... have fun!";
 		modes[7].allowedLevels = new string[] { "Furnace" };
 		modes[7].respawnWait = 3f;
 		modes[7].killsIncreaseScore = false;
@@ -128,8 +128,8 @@ public class Hud : MonoBehaviour {
 		modes[7].pickupSlot4 = -1;
 		modes[7].pickupSlot5 = -1;
 		
-		modes[8].gameModeName = "Weapon Lottery";
-		modes[8].gameModeDescription = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
+		modes[8].Name = "Weapon Lottery";
+		modes[8].Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
 		modes[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		modes[8].winScore = 20;
 		modes[8].respawnWait = 5f;
@@ -207,16 +207,11 @@ public class Hud : MonoBehaviour {
 	}
 	
 	void Update() {
-		if (Screen.lockCursor == true && Input.GetKeyDown("escape")) 
+		if (Screen.lockCursor == true && Input.GetKeyDown(KeyCode.Escape)) 
 			Screen.lockCursor = false;
 		
 		if (Input.GetKeyDown(KeyCode.Tab))
 			viewingScores = !viewingScores;
-		
-//		if (shouldDisableControGui) {
-//			shouldDisableControGui = false;
-//			controGui.enabled = false;
-//		}
 	}
 	
 	void OnGUI() {
@@ -334,7 +329,7 @@ public class Hud : MonoBehaviour {
 				DrawWindowBackground();
 				GUI.BeginGroup(window);
 				GUILayout.Label("Failed to Connect:");
-				GUILayout.Label(net.errorString);
+				GUILayout.Label(net.ErrorString);
 				GUI.EndGroup();
 			}else if (menuPoint == "connecting"){
 				if (GUI.Button(br, "Back...")){
@@ -558,7 +553,7 @@ public class Hud : MonoBehaviour {
 			
 			// time
 			if (!net.gameOver) {
-				if (net.ModeCfg.MatchDuration > 0f) {
+				if (net.ModeCfg.Duration > 0f) {
 					// show time left
 					GUI.color = Color.black;
 					GUI.Label(new Rect(midX-11, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
@@ -907,7 +902,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.Label("Q/Right Click - Swap Weapon");
 		GUILayout.Label("E - Pickup Weapon (replaces weapon in hand)");
 		GUILayout.Label("K - Kill yourself");
-		GUILayout.Label("");
+		GUILayout.Label("R - Sprint");
 		GUILayout.Label("ENTER - Chat");
 		GUILayout.Label("Tab - Scoreboard");
 		GUILayout.Label("Tab+T - Swap Teams");
@@ -957,7 +952,6 @@ public class Hud : MonoBehaviour {
 			int lastInt = mode;
 			
 			mode--;
-			//hostLevelSelectInt = 0;
 			if (mode < 0) 
 				mode += modes.Length;
 			
@@ -976,7 +970,6 @@ public class Hud : MonoBehaviour {
 			int lastInt = mode;
 			
 			mode++;
-			//hostLevelSelectInt = 0;
 			if (mode>=modes.Length) mode-=modes.Length;
 			
 			int levelChangeIndex = 0;
@@ -988,7 +981,7 @@ public class Hud : MonoBehaviour {
 			mapId = levelChangeIndex;
 		}
 		
-		GUI.Label(new Rect(60,100,200,30), "Mode: " + modes[mode].gameModeName);
+		GUI.Label(new Rect(60,100,200,30), "Mode: " + modes[mode].Name);
 				
 		// game level
 		if (GUI.Button(new Rect(305,100,30,30), "<") ) {
@@ -1015,7 +1008,7 @@ public class Hud : MonoBehaviour {
 			}
 			
 			//description:
-			GUI.Label(new Rect(5,240,590,200), modes[mode].gameModeName + ":\n" + modes[mode].gameModeDescription);
+			GUI.Label(new Rect(5,240,590,200), modes[mode].Name + ":\n" + modes[mode].Descript);
 			
 			if (GUI.Button(new Rect(495,240,100,25), "Customise...") ) {
 				
@@ -1033,7 +1026,7 @@ public class Hud : MonoBehaviour {
 				modes[0].teamBased = modes[mode].teamBased;
 				modes[0].allowFriendlyFire = modes[mode].allowFriendlyFire;
 				modes[0].pitchBlack = modes[mode].pitchBlack;
-				modes[0].MatchDuration = modes[mode].MatchDuration;
+				modes[0].Duration = modes[mode].Duration;
 				modes[0].winScore = modes[mode].winScore;
 				modes[0].spawnGunA = modes[mode].spawnGunA;
 				modes[0].spawnGunB = modes[mode].spawnGunB;
@@ -1046,7 +1039,6 @@ public class Hud : MonoBehaviour {
 				modes[0].playerLives = modes[mode].playerLives;
 				modes[0].basketball = modes[mode].basketball;
 				
-				//hostLevelSelectInt = 0;
 				mode = 0;
 			}
 		}else{ // custom, show options here
@@ -1076,7 +1068,7 @@ public class Hud : MonoBehaviour {
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Round Time (minutes): ");
-			modes[mode].MatchDuration = MakeInt( GUILayout.TextField(modes[mode].MatchDuration.ToString()) );
+			modes[mode].Duration = MakeInt( GUILayout.TextField(modes[mode].Duration.ToString()) );
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
@@ -1193,7 +1185,7 @@ public class Hud : MonoBehaviour {
 				Network.incomingPassword = net.password;
 				net.lastGameWasTeamBased = false;
 				net.AssignGameModeConfig(modes[mode], modes[mode].allowedLevels[mapId]);
-				net.comment = net.ModeCfg.gameModeName + "\n" + net.ModeCfg.levelName;
+				net.comment = net.ModeCfg.Name + "\n" + net.ModeCfg.levelName;
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initialising server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections,net.listenPort, useNat);

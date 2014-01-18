@@ -3,13 +3,13 @@ using System.Collections;
 
 public class GameModeScript {
 	// 'mode select' stuff
-	public string gameModeName = "";
-	public string gameModeDescription;
+	public string Name = "";
+	public string Descript; // description
 	public string[] allowedLevels;
 	// specific mode/game settings stuff
 	public string levelName; // ...to load/play in
 	public int winScore = 0;
-	public float MatchDuration = 3f; // (negative for infinite)
+	public float Duration = 3f; // (negative for infinite)
 	public float respawnWait = 10f;
 	public bool deathsSubtractScore = true;
 	public bool killsIncreaseScore = true;
