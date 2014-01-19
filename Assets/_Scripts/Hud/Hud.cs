@@ -48,7 +48,7 @@ public class Hud : MonoBehaviour {
 	int matchId = 1;
 	int mapId = 0;
 	MatchData[] matches;
-	List<LevelInfo> maps = new List<LevelInfo>();
+	List<MapData> maps = new List<MapData>();
 
 	// scripts
 	CcNet net;
@@ -65,7 +65,7 @@ public class Hud : MonoBehaviour {
 		
 		// setup map configs
 		for (int i = 0; i < pics.Length; i++) {
-			maps.Add(new LevelInfo(pics[i].name, (Texture)pics[i]) );
+			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
 		}
 		
 		

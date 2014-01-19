@@ -645,11 +645,11 @@ public class EntityClass : MonoBehaviour {
 					
 					if ((Input.GetKeyDown("mouse 1") || Input.GetKeyDown("q")) && Screen.lockCursor == true){
 						// swap guns
-						int tempInt = handGun;
+						int gun = handGun;
 						float tempFloat = handGunCooldown;
 						handGun = holsterGun;
 						handGunCooldown = holsterGunCooldown;
-						holsterGun = tempInt;
+						holsterGun = gun;
 						holsterGunCooldown = tempFloat;
 						
 						gunRecoil += Vector3.right * 5f;

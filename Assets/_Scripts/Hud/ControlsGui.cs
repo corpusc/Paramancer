@@ -200,14 +200,30 @@ public class ControlsGui : MonoBehaviour {
 				GUI.color = Color.white;
 				
 			// draw
-			GUI.DrawTexture(keyData[i].Rect, keyCap);
+			var dest = keyData[i].Rect;
+			float spanD = dest.width = dest.width / 3; // slice span for DESTINATION
+			float spanT = 0.3333f; // slice span for TEXTURE COORDS
+			var texCoords = new Rect(0f, 0f, spanT, 1f);
+			
+			GUI.color = Color.magenta;
+			GUI.DrawTextureWithTexCoords(dest, keyCap, texCoords);
+			
+			dest.x += spanD;
+			texCoords.x += spanT;
+			GUI.color = Color.green;
+			GUI.DrawTextureWithTexCoords(dest, keyCap, texCoords);
+			
+			dest.x += spanD;
+			texCoords.x += spanT;
+			GUI.color = Color.yellow;
+			GUI.DrawTextureWithTexCoords(dest, keyCap, texCoords);
 		}
 		
 		// draw actions
 		GUI.color = Color.cyan;
 		for (int i = 0; i < bindData.Length; i++) {
 			if (bindData[i] != draggee)
-				GUI.DrawTexture(keyData[bindData[i].Id].Rect, bindData[i].Pic);
+				GUI.DrawTexture(keyData[bindData[i].Id].Rect, bindData[i].Pic, ScaleMode.ScaleToFit);
 		}
 		
 		// draw key text          (perhaps clean this up by using mouseOver())

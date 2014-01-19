@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
-public class LevelInfo {
+public class MapData {
 	public string Name = "";
 	public Texture Pic;
 	
-	public LevelInfo(string name, Texture pic) {
+	public MapData(string name, Texture pic) {
 		Name = name;
 		Pic = pic;
 	}
