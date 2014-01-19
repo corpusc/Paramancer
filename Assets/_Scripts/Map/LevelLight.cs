@@ -14,6 +14,7 @@ public class LevelLight : MonoBehaviour {
 	// private
 	Vector3 dir = new Vector3(0f, 0f, 0f);
 	Vector3 p_origin;
+	bool dontFlicker = false;
 	
 	
 	
@@ -23,8 +24,10 @@ public class LevelLight : MonoBehaviour {
 				if (!litInPitchBlack) 
 					light.enabled = false;
 			}else{
-				if (OnlyPitchBlack) 
+				if (OnlyPitchBlack){
 					light.enabled = false;
+					dontFlicker = true;
+				}
 			}
 			
 			p_origin = light.transform.position;
@@ -44,7 +47,7 @@ public class LevelLight : MonoBehaviour {
 				light.transform.position = p_origin; //tele to start pos
 		}
 		
-		if (Flickering) {
+		if (Flickering && !dontFlicker) {
 			if (Random.Range(0, FlickerTimer) == 0) 
 				light.enabled = !light.enabled;
 		}
