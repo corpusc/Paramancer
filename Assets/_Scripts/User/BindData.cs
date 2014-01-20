@@ -2,19 +2,7 @@
 using System.Collections;
 
 public class BindData {
-	public enum ActionType {
-		MoveForward,
-		MoveBackward,
-		MoveLeft,
-		MoveRight,
-		MoveUp,
-		MoveDown,
-		Count
-	};
-	
-	
-
-	public ActionType Action;
+	public UserAction Action;
 	public KeyCode KeyCode;
 	public Texture Pic;
 	public int Id; // idx into the keyData, which stores the physical layout of keys

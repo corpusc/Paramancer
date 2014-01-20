@@ -442,11 +442,16 @@ public class EntityClass : MonoBehaviour {
 					//if (Input.GetKey("s")) inputVector -= Camera.main.transform.forward;
 					//if (Input.GetKey("d")) inputVector += Camera.main.transform.right;
 					//if (Input.GetKey("a")) inputVector -= Camera.main.transform.right;
-					if (Input.GetKey("w")) inputVector += animObj.transform.forward;
-					if (Input.GetKey("s")) inputVector -= animObj.transform.forward;
-					if (Input.GetKey("d")) inputVector += animObj.transform.right;
-					if (Input.GetKey("a")) inputVector -= animObj.transform.right;
-					if(Input.GetKeyDown("r")) startedSprinitng = true;
+					if (InputUser.Holding(UserAction.MoveForward)) 
+						inputVector += animObj.transform.forward;
+					if (InputUser.Holding(UserAction.MoveBackward)) 
+						inputVector -= animObj.transform.forward;
+					if (InputUser.Holding(UserAction.MoveRight)) 
+						inputVector += animObj.transform.right;
+					if (InputUser.Holding(UserAction.MoveLeft)) 
+						inputVector -= animObj.transform.right;
+					if(Input.GetKeyDown("r")) 
+						startedSprinitng = true;
 					//inputVector.y = 0f;
 					inputVector.Normalize();
 					
@@ -459,13 +464,15 @@ public class EntityClass : MonoBehaviour {
 					hud.EnergyLeft = ava.GetEnergy();
 					
 					
-					if (yMove<=0f){
+					if (yMove <= 0f) {
 						ava.Move(transform.up * -0.2f);
 						bool landed = grounded;
 						grounded = ava.isGrounded;
-						if (!grounded) ava.Move(transform.up * 0.2f);
 						
-						if (!landed && grounded){
+						if (!grounded) 
+							ava.Move(transform.up * 0.2f);
+						
+						if (!landed && grounded) {
 							PlaySound("land");
 							sendRPCUpdate = true;
 						}
@@ -473,9 +480,9 @@ public class EntityClass : MonoBehaviour {
 						grounded = false;
 					}
 					
-					if (grounded){
+					if (grounded) {
 						yMove = 0f;
-						if (Input.GetKeyDown("space")){
+						if (InputUser.Holding(UserAction.MoveUp)) {
 							yMove = 4f;
 							PlaySound("jump");
 							sendRPCUpdate = true;
@@ -486,15 +493,16 @@ public class EntityClass : MonoBehaviour {
 					ava.Move(transform.up * yMove * Time.deltaTime * 5f);
 					
 					crouched = false;
-					if (Input.GetKey("left shift") || Input.GetKey("left ctrl")) crouched = true;
+					if (InputUser.Holding(UserAction.MoveDown)) 
+						crouched = true;
 					
 					moveVec = inputVector;
 					
-					Ray lavaRay = new Ray( lastPos, transform.position - lastPos);
+					Ray lavaRay = new Ray(lastPos, transform.position - lastPos);
 					RaycastHit lavaHit = new RaycastHit();
 					float lavaRayLength = Vector3.Distance(transform.position, lastPos);
 					int lavaLayer = (1<<10);
-					if (Physics.Raycast(lavaRay, out lavaHit, lavaRayLength, lavaLayer)){
+					if (Physics.Raycast(lavaRay, out lavaHit, lavaRayLength, lavaLayer)) {
 						transform.position = lavaHit.point+ (Vector3.up*0.35f);
 						sendRPCUpdate = true;
 						inputVector = Vector3.zero;
@@ -503,12 +511,16 @@ public class EntityClass : MonoBehaviour {
 					
 					
 					//sendRPCUpdate = false;
-					if (camAngle != lastCamAngle && Time.time>rpcCamtime) sendRPCUpdate = true;
-					if (moveVec != lastMoveVector) sendRPCUpdate = true;
-					if (crouched != lastCrouch) sendRPCUpdate = true;
+					if (camAngle != lastCamAngle && Time.time>rpcCamtime) 
+						sendRPCUpdate = true;
+					if (moveVec != lastMoveVector) 
+						sendRPCUpdate = true;
+					if (crouched != lastCrouch) 
+						sendRPCUpdate = true;
 					//if (yMove != lastYmove) sendRPCUpdate = true;
-					if (User.health != lastHealth) sendRPCUpdate = true;
-					if (net.broadcastPos){
+					if (User.health != lastHealth) 
+						sendRPCUpdate = true;
+					if (net.broadcastPos) {
 						net.broadcastPos = false;
 						sendRPCUpdate = true;
 					}
@@ -519,11 +531,11 @@ public class EntityClass : MonoBehaviour {
 					lastYmove = yMove;
 					lastHealth = User.health;
 					
-					if (sendRPCUpdate){
+					if (sendRPCUpdate) {
 						net.SendPlayer(User.viewID, transform.position, camAngle, crouched, moveVec, yMove, handGun, holsterGun, transform.up, transform.forward);
 						sendRPCUpdate = false;
 						
-						rpcCamtime = Time.time;// + 0.02f;
+						rpcCamtime = Time.time; // + 0.02f;
 					}
 					
 					if (handGun >= 0 && handGunCooldown > 0f && 
@@ -539,7 +551,7 @@ public class EntityClass : MonoBehaviour {
 					
 					hud.swapperLocked = false;
 					swapperLockTarget = -1;
-					if (handGun == 5){
+					if (handGun == 5) {
 						// swapper aiming
 						List<int> validSwapTargets = new List<int>();
 						
@@ -550,7 +562,7 @@ public class EntityClass : MonoBehaviour {
 								RaycastHit swapCheckHit = new RaycastHit();
 								int swapCheckLayer = 1<<0;
 								float swapCheckLength = Vector3.Distance(net.players[i].Entity.transform.position, Camera.main.transform.position);
-								if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer)){
+								if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer) ) {
 									validSwapTargets.Add(i);
 									hud.swapperLocked = true;
 								}
@@ -558,7 +570,7 @@ public class EntityClass : MonoBehaviour {
 						}
 						int nearestScreenspacePlayer = 0;
 						float nearestDistance = 9999f;
-						for (int i=0; i<validSwapTargets.Count; i++){
+						for (int i=0; i<validSwapTargets.Count; i++) {
 							Vector3 thisPos = Camera.main.WorldToScreenPoint(net.players[validSwapTargets[i]].Entity.transform.position);
 							if (Vector3.Distance(thisPos, 
 								new Vector3(Screen.width/2, Screen.height/2, 0)) < nearestDistance
@@ -567,7 +579,7 @@ public class EntityClass : MonoBehaviour {
 							}
 						}
 						
-						if (hud.swapperLocked){
+						if (hud.swapperLocked) {
 							// move target to locked on player
 							Vector3 screenPos = Camera.main.WorldToScreenPoint(net.players[nearestScreenspacePlayer].Entity.transform.position);
 							swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
@@ -585,12 +597,12 @@ public class EntityClass : MonoBehaviour {
 					
 					// basketball arrow
 					if (net.CurrMatch.basketball) {
-						if (bballArrowObj==null) {
+						if (bballArrowObj == null) {
 							bballArrowObj = (GameObject)GameObject.Instantiate(bballArrowPrefab);
 							bballArrowObj.transform.parent = Camera.main.transform;
 							bballArrowObj.transform.localPosition = Vector3.forward - (Vector3.right*0.8f) + (Vector3.up*0.5f);
 						}
-						if (User.hasBall){
+						if (User.hasBall) {
 							bballArrowObj.renderer.enabled = false;
 						}else{
 							bballArrowObj.renderer.enabled = true;
@@ -598,14 +610,14 @@ public class EntityClass : MonoBehaviour {
 							
 						}
 					}else{
-						if (bballArrowObj!=null) {
+						if (bballArrowObj != null) {
 							bballArrowObj.renderer.enabled = false;
 						}
 					}
 					
 					// grav gun arrow
 					if (handGun == 6) {
-						if (gravArrowObj == null){
+						if (gravArrowObj == null) {
 							gravArrowObj = (GameObject)GameObject.Instantiate(gravArrowPrefab);
 							//gravArrowObj.layer = 
 							gravArrowObj.transform.parent = Camera.main.transform;
@@ -631,19 +643,19 @@ public class EntityClass : MonoBehaviour {
 					if (handGun >= 0 && !User.hasBall) {
 						// shooting
 						if (Input.GetKeyDown("mouse 0") && Screen.lockCursor == true && !artil.gunTypes[handGun].isAutomatic){
-							if (handGunCooldown<=0f){
+							if (handGunCooldown <= 0f) {
 								Fire();
 								handGunCooldown += artil.gunTypes[handGun].fireCooldown;
 							}
 						}else if (Input.GetKey("mouse 0") && Screen.lockCursor == true && artil.gunTypes[handGun].isAutomatic){
-							if (handGunCooldown<=0f){
+							if (handGunCooldown <= 0f) {
 								Fire();
 								handGunCooldown += artil.gunTypes[handGun].fireCooldown;
 							}
 						}
 					}
 					
-					if ((Input.GetKeyDown("mouse 1") || Input.GetKeyDown("q")) && Screen.lockCursor == true){
+					if ((Input.GetKeyDown("mouse 1") || Input.GetKeyDown("q")) && Screen.lockCursor == true) {
 						// swap guns
 						int gun = handGun;
 						float tempFloat = handGunCooldown;
@@ -672,11 +684,11 @@ public class EntityClass : MonoBehaviour {
 					if (Camera.main.transform.parent != null) 
 						SetModelVisibility(true);
 					
-					if (ourKiller!=null) {
+					if (ourKiller != null) {
 						Camera.main.transform.parent = null;
 						Camera.main.transform.position = transform.position - animObj.transform.forward;
 						Camera.main.transform.LookAt(ourKiller.transform.position,transform.up);
-						Camera.main.transform.Translate(0,0,-2f);
+						Camera.main.transform.Translate(0, 0, -2f);
 					}
 				}
 			}
@@ -695,6 +707,7 @@ public class EntityClass : MonoBehaviour {
 		// visible person model anims
 		if (!User.local) 
 			camHolder.transform.localEulerAngles = camAngle;
+		
 		Vector3 lookDir = camHolder.transform.forward;
 		//lookDir.y = 0;
 		lookDir.Normalize();

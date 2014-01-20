@@ -14,17 +14,18 @@ public class ControlsGui : MonoBehaviour {
 	KeyCode[] codes; // first build this for cleaner looking initialization of values
 	KeyData[] keyData; // this is the real structure built from "codes", that actually gets used elsewhere
 	// ^^^^^ matching indices ^^^^^^^
-	BindData[] bindData = new BindData[(int)BindData.ActionType.Count];
 	
 	
 	
 	void Start() {
+			Debug.Log("ControlsGui START()");
 		// load textures
-		Object[] pics = Resources.LoadAll("Pic/Basics", typeof(Texture));
+		Object[] pics = Resources.LoadAll("Pic/Hud/Controls");
 		
 		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {
 			var s = pics[i].name;
+			Debug.Log("Controls: " + s);
 			
 			if (s == "KeyCap")
 				keyCap = pics[i] as Texture;
@@ -80,53 +81,21 @@ public class ControlsGui : MonoBehaviour {
 			KeyCode.Keypad0, KeyCode.None, KeyCode.KeypadPeriod, KeyCode.None, 
 		};
 		
-		// bind default keys to user actions
-		for (int i = 0; i < (int)BindData.ActionType.Count; i++) {
-			bindData[i] = new BindData();
-			bindData[i].Action = (BindData.ActionType)i;
-			
-			// get pic from list
-			Texture pic = null;
-			for (int j = 0; j < pics.Length; j++) {
-				if ((BindData.ActionType)i + "" == pics[j].name)
-					pic = (Texture)pics[j];
-			}
-			
-			bindData[i].Pic = pic;
-//			///////////  FIXME      HOOK INTO PlayerPrefs.GetSetStuffz
-			
-			switch ((BindData.ActionType)i) {
-				case BindData.ActionType.MoveForward:
-					bindData[i].KeyCode = KeyCode.E;
-					break;
-				case BindData.ActionType.MoveBackward:
-					bindData[i].KeyCode = KeyCode.D;
-					break;
-				case BindData.ActionType.MoveLeft:
-					bindData[i].KeyCode = KeyCode.S;
-					break;
-				case BindData.ActionType.MoveRight:
-					bindData[i].KeyCode = KeyCode.F;
-					break;
-				case BindData.ActionType.MoveUp:
-					bindData[i].KeyCode = KeyCode.A;
-					break;
-				case BindData.ActionType.MoveDown:
-					bindData[i].KeyCode = KeyCode.Z;
-					break;
-			}
-			
-			for (int j = 0; j < codes.Length; j++)
-				if (bindData[i].KeyCode == codes[j]) {
-					bindData[i].Id = j;
-					//Debug.Log("set an id to: " + j);
-				}
-		}
-		
-		// the more complicated structure that's used from now on
+		// the more complicated mirrored structure that holds all the OTHER key data
 		keyData = new KeyData[codes.Length];
 		for (int i = 0; i < keyData.Length; i++)
 			keyData[i] = new KeyData();
+		
+		// bind action/keycode bindings to key
+		var bd = InputUser.BindData;
+		for (int i = 0; i < bd.Length; i++) {
+		for (int j = 0; j < codes.Length; j++) {
+			if (bd[i].KeyCode == codes[j]) {
+				bd[i].Id = j;
+				//Debug.Log("set an id to: " + j);
+			}
+		}
+		}
 	}
 	
 	int latestUnboundKey;
@@ -148,10 +117,10 @@ public class ControlsGui : MonoBehaviour {
 			}else{ // over a valid key
 				if (draggee == null) {
 					// pick it up
-					for (int i = 0; i < bindData.Length; i++) {
-						if (moId == bindData[i].Id) {
-							draggee = bindData[i];
-							latestUnboundKey = bindData[i].Id;
+					for (int i = 0; i < InputUser.BindData.Length; i++) {
+						if (moId == InputUser.BindData[i].Id) {
+							draggee = InputUser.BindData[i];
+							latestUnboundKey = InputUser.BindData[i].Id;
 						}
 					}
 				}else{ // we were dragging
@@ -162,12 +131,12 @@ public class ControlsGui : MonoBehaviour {
 					// if there was something else there, that's the new draggee
 					bool anotherWasBoundThere = false;
 					BindData theOther = null;
-					for (int i = 0; i < bindData.Length; i++) {
-						if (draggee != bindData[i] && 
-							draggee.Id == bindData[i].Id)
+					for (int i = 0; i < InputUser.BindData.Length; i++) {
+						if (draggee != InputUser.BindData[i] && 
+							draggee.Id == InputUser.BindData[i].Id)
 						{
 							anotherWasBoundThere = true;
-							theOther = bindData[i];
+							theOther = InputUser.BindData[i];
 						}
 					}
 					
@@ -221,9 +190,10 @@ public class ControlsGui : MonoBehaviour {
 		
 		// draw actions
 		GUI.color = Color.cyan;
-		for (int i = 0; i < bindData.Length; i++) {
-			if (bindData[i] != draggee)
-				GUI.DrawTexture(keyData[bindData[i].Id].Rect, bindData[i].Pic, ScaleMode.ScaleToFit);
+		var bd = InputUser.BindData;
+		for (int i = 0; i < bd.Length; i++) {
+			if (bd[i] != draggee)
+				GUI.DrawTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
 		}
 		
 		// draw key text          (perhaps clean this up by using mouseOver())
