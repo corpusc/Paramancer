@@ -33,6 +33,25 @@ public class Weapon : MonoBehaviour {
 	
 	void Start () {
 		net = GetComponent<CcNet>();
+		
+		// load the 3 kinds of resources that weapons need
+		Object[] mats = Resources.LoadAll("Mat/Weap");
+		foreach (var m in mats) {
+			Debug.Log("mat: " + m.name);
+		}
+		
+		Object[] prefabs = Resources.LoadAll("Prefab/Weap");
+		foreach (var p in prefabs) {
+			Debug.Log("prefab: " + p.name);
+		}
+		
+		Object[] pics = Resources.LoadAll("Pic/Weap");
+		foreach (var p in pics) {
+			Debug.Log("pic: ", p.name);
+		}
+		
+		//gunTypes = new GunTypeScript[9];
+		//gunTypes[
 	}
 	
 	public void Clear() {

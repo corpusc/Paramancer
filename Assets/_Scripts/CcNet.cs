@@ -588,7 +588,7 @@ public class CcNet : MonoBehaviour {
 		if (connected && isServer && !gameOver) {
 			for (int i=0; i<pickupPoints.Count; i++) {
 				if (!pickupPoints[i].stocked) {
-					pickupPoints[i].restockTime-=Time.deltaTime;
+					pickupPoints[i].restockTime -= Time.deltaTime;
 					if (pickupPoints[i].restockTime <= 0f) {
 						int restockType = -1;
 						if (pickupPoints[i].pickupType == 1) restockType = CurrMatch.pickupSlot1;
@@ -598,7 +598,7 @@ public class CcNet : MonoBehaviour {
 						if (pickupPoints[i].pickupType == 5) restockType = CurrMatch.pickupSlot5;
 						if (restockType == -2) {
 							// random
-							restockType = Random.Range(-1,artill.gunTypes.Length);
+							restockType = Random.Range(-1, artill.gunTypes.Length);
 							if (restockType == -1) 
 								restockType--;
 						}
@@ -610,7 +610,6 @@ public class CcNet : MonoBehaviour {
 				}
 			}
 		}
-		
 	}
 	public Texture healthIcon;
 	public GameObject pickupBoxPrefab;

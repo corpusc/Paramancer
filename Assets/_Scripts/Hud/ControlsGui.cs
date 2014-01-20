@@ -20,7 +20,7 @@ public class ControlsGui : MonoBehaviour {
 	
 	void Start() {
 		// load textures
-		Object[] pics = Resources.LoadAll("Basics", typeof(Texture));
+		Object[] pics = Resources.LoadAll("Pic/Basics", typeof(Texture));
 		
 		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {

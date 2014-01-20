@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 
 public class GunTypeScript : MonoBehaviour {
-	
 	public string gunName = "pistol";
 	public Texture iconTex;
 	public GameObject modelPrefab;

@@ -61,7 +61,7 @@ public class Hud : MonoBehaviour {
 	
 	void Start() {
 		// load map preview pics
-		UnityEngine.Object[] pics = Resources.LoadAll("Maps");
+		UnityEngine.Object[] pics = Resources.LoadAll("Pic/Map");
 		
 		// setup map configs
 		for (int i = 0; i < pics.Length; i++) {
@@ -156,7 +156,7 @@ public class Hud : MonoBehaviour {
 		matches[8].pickupSlot5 = -2;
 
 		// load textures
-		pics = Resources.LoadAll("Hud");
+		pics = Resources.LoadAll("Pic/Hud");
 		
 		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {
