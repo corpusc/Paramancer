@@ -360,7 +360,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunName: pistol
   iconTex: {fileID: 2800000, guid: 2c6116e3474bc440e8406315dd0f0653, type: 3}
-  modelPrefab: {fileID: 100000, guid: eff12a6411d2b40ddbadf2d0a8fa20b8, type: 2}
+  modelPrefab: {fileID: 100000, guid: 76e82c25e53183041aaa2f36b62d5c94, type: 2}
   gunMaterial: {fileID: 2100000, guid: 32f63c749e30345c8bfd643dca4683ee, type: 2}
   isAutomatic: 0
   fireCooldown: .150000006
@@ -492,7 +492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunName: grenade
   iconTex: {fileID: 2800000, guid: db24d1984d5ae4851be9246d8c2e0926, type: 3}
-  modelPrefab: {fileID: 100000, guid: f1b80169167934ca4bad146d3b53f415, type: 2}
+  modelPrefab: {fileID: 100000, guid: 9d7d659082efe774b878a3d1c07faa28, type: 2}
   gunMaterial: {fileID: 2100000, guid: ef478784e81c141cda237c8da842c514, type: 2}
   isAutomatic: 0
   fireCooldown: .400000006
@@ -597,10 +597,10 @@ GameObject:
   - 148: {fileID: 1973207294}
   - 114: {fileID: 1973207296}
   - 114: {fileID: 1973207297}
-  - 114: {fileID: 1973207298}
   - 114: {fileID: 1973207295}
   - 114: {fileID: 1973207300}
   - 114: {fileID: 1973207301}
+  - 114: {fileID: 1973207298}
   m_Layer: 0
   m_Name: Main Program
   m_TagString: Untagged
@@ -722,7 +722,11 @@ MonoBehaviour:
   swapperCrossX: 0
   swapperCrossY: 0
   swapperLocked: 0
-  swapperCrosshair: []
+  swapperCrosshair:
+  - {fileID: 2800000, guid: 9fb953b13c5b845a2ba770cdf0ab96ab, type: 3}
+  - {fileID: 2800000, guid: ffa405fc504c146c0b631455cf27e5fc, type: 3}
+  - {fileID: 2800000, guid: ea1eb5d540de445299919905281d284f, type: 3}
+  - {fileID: 2800000, guid: 14aae30a3279d42949ac0b48618574b0, type: 3}
   lifeIcon: {fileID: 2800000, guid: a52d15c793d054880b371d92eadd5958, type: 3}
   backTex: {fileID: 2800000, guid: cf943808b5e3043ac828c3f9a7ff0fdc, type: 3}
   blackTex: {fileID: 2800000, guid: aeaeeb400efa94bdb865bab57de147ab, type: 3}
@@ -749,34 +753,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f436f3e0a790494c9c67a5cd463e7cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pistolBulletPrefab: {fileID: 100000, guid: aa2bec16957c74136b0b6a9729a28fb6, type: 2}
-  swapperBulletPrefab: {fileID: 100000, guid: 512eb2b9b0e4e420d80680b8e33d2e22, type: 2}
-  grenadeBulletPrefab: {fileID: 100000, guid: 60eec104b207e4413a8d16b866a1bbb6, type: 2}
-  rifleDissipationPrefab: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9,
-    type: 2}
-  grenadeFlashPrefab: {fileID: 100000, guid: 881ce601f15ac4e9b9084babb5779a14, type: 2}
-  muzzleFlashPrefab: {fileID: 100000, guid: b13d09b761f4349a1902bbab9892b332, type: 2}
-  rocketPrefab: {fileID: 100008, guid: 25e20a6aa62c1484a885c7c782a77d9f, type: 2}
-  soundObjectPrefab: {fileID: 100000, guid: e86b6e853a30b4e2a9ef054ac49d6367, type: 2}
-  sfx_grenadeExplode: {fileID: 8300000, guid: e20fe93e9b7744e938a5fd0bbf35454c, type: 3}
-  sfx_rocketExplode: {fileID: 8300000, guid: b7dcb93b378bb47fb93cf39d620e1fec, type: 3}
-  sfx_machinegunshoot: {fileID: 8300000, guid: 80eb9cf2a70c64cbf9d8eec92c594ce9, type: 3}
-  sfx_pistolshoot: {fileID: 8300000, guid: 53c7bafdb1252480e80748652cfdfee7, type: 3}
-  sfx_rifleshoot: {fileID: 8300000, guid: afd9dd40cc0b24e1d9d69d71a74dc2fc, type: 3}
-  sfx_grenadethrow: {fileID: 8300000, guid: 5e4e48b59ab024ef9930b58e0097f3f1, type: 3}
-  sfx_swappershoot: {fileID: 8300000, guid: d28c124d7f4ba42349a9e85d3cf0e601, type: 3}
-  sfx_bombBeep: {fileID: 8300000, guid: 983c3e484036e420093be50b2e4028d6, type: 3}
-  sfx_bombExplode: {fileID: 8300000, guid: c3ab385101a644613b2940bcd6d0c23d, type: 3}
-  gunTypes:
-  - {fileID: 428004549}
-  - {fileID: 1330099967}
-  - {fileID: 2863774}
-  - {fileID: 251681432}
-  - {fileID: 649684332}
-  - {fileID: 1362290645}
-  - {fileID: 141240821}
-  - {fileID: 1586672848}
-  - {fileID: 566821716}
+  pistolBulletPrefab: {fileID: 0}
+  swapperBulletPrefab: {fileID: 0}
+  grenadeBulletPrefab: {fileID: 0}
+  rifleDissipationPrefab: {fileID: 0}
+  grenadeFlashPrefab: {fileID: 0}
+  muzzleFlashPrefab: {fileID: 0}
+  rocketPrefab: {fileID: 0}
+  soundObjectPrefab: {fileID: 0}
+  sfx_grenadeExplode: {fileID: 0}
+  sfx_rocketExplode: {fileID: 0}
+  sfx_machinegunshoot: {fileID: 0}
+  sfx_pistolshoot: {fileID: 0}
+  sfx_rifleshoot: {fileID: 0}
+  sfx_grenadethrow: {fileID: 0}
+  sfx_swappershoot: {fileID: 0}
+  sfx_bombBeep: {fileID: 0}
+  sfx_bombExplode: {fileID: 0}
+  gunTypes: []
 --- !u!114 &1973207300
 MonoBehaviour:
   m_ObjectHideFlags: 0

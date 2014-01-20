@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Weapon : MonoBehaviour {
+public class Arsenal : MonoBehaviour {
 	public GameObject pistolBulletPrefab;
 	public GameObject swapperBulletPrefab;
 	public GameObject grenadeBulletPrefab;

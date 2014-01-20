@@ -52,7 +52,7 @@ public class CcNet : MonoBehaviour {
 	// scripts
 	CcLog log;
 	Hud hud;
-	Weapon artill;
+	Arsenal artill;
 	
 	
 	
@@ -63,7 +63,7 @@ public class CcNet : MonoBehaviour {
 		// get access to scripts
 		hud = GetComponent<Hud>();
 		log = GetComponent<CcLog>();
-		artill = GetComponent<Weapon>();
+		artill = GetComponent<Arsenal>();
 		CurrMatch = new MatchData();
 		
 		Application.LoadLevel("MenuMain");
@@ -489,7 +489,7 @@ public class CcNet : MonoBehaviour {
 		if (connected && isServer){
 			if (Time.time > lastServerPoketime+5f) {
 				lastServerPoketime = Time.time+5f;
-				networkView.RPC("ServerSaysHi",RPCMode.All);
+				networkView.RPC("ServerSaysHi", RPCMode.All);
 			}
 		}
 		
@@ -917,7 +917,13 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, CurrMatch.Name, CurrMatch.levelName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, CurrMatch.respawnWait, CurrMatch.deathsSubtractScore, CurrMatch.killsIncreaseScore, CurrMatch.teamBased, targetTeam, CurrMatch.allowFriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, CurrMatch.spawnGunA, CurrMatch.spawnGunB, CurrMatch.pickupSlot1, CurrMatch.pickupSlot2, CurrMatch.pickupSlot3, CurrMatch.pickupSlot4, CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, CurrMatch.basketball);
+		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, 
+			CurrMatch.Name, CurrMatch.levelName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, 
+			CurrMatch.respawnWait, CurrMatch.deathsSubtractScore, CurrMatch.killsIncreaseScore, CurrMatch.teamBased, 
+			targetTeam, CurrMatch.allowFriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
+			CurrMatch.spawnGunA, CurrMatch.spawnGunB, CurrMatch.pickupSlot1, CurrMatch.pickupSlot2, 
+			CurrMatch.pickupSlot3, CurrMatch.pickupSlot4, CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
+			CurrMatch.basketball);
 	}
 	
 	public float gameTimeLeft = 0f;

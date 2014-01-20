@@ -53,7 +53,7 @@ public class Hud : MonoBehaviour {
 	// scripts
 	CcNet net;
 	CcLog log;
-	Weapon artillery;
+	Arsenal artillery;
 	ControlsGui controGui;
 	LocalUser locUser;
 
@@ -190,7 +190,7 @@ public class Hud : MonoBehaviour {
 		// scripts
 		net = GetComponent<CcNet>();
 		log = GetComponent<CcLog>();
-		artillery = GetComponent<Weapon>();
+		artillery = GetComponent<Arsenal>();
 		controGui = GetComponent<ControlsGui>();
 		locUser = GetComponent<LocalUser>();
 		
@@ -528,21 +528,24 @@ public class Hud : MonoBehaviour {
 				}
 				
 				// weapon
-				GUI.color = new Color(0.1f,0.1f,0.1f,0.7f);
-				if (gunB >= 0) GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64),artillery.gunTypes[gunB].iconTex);
-				GUI.color = gcol;
-				if (gunA >= 0) GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64),artillery.gunTypes[gunA].iconTex);
+				GUI.color = new Color(0.1f, 0.1f, 0.1f, 0.7f);
+				if (gunB >= 0) 
+					GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), artillery.gunTypes[gunB].iconTex);
 				
-				if (gunA >= 0){
+				GUI.color = gcol;
+				if (gunA >= 0) 
+					GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), artillery.gunTypes[gunA].iconTex);
+				
+				if (gunA >= 0) {
 					GUI.color = Color.black;
 				
-					GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), artillery.gunTypes[gunA].gunName );
-					GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), artillery.gunTypes[gunA].gunName );
-					GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), artillery.gunTypes[gunA].gunName );
-					GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), artillery.gunTypes[gunA].gunName );
+					GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), artillery.gunTypes[gunA].gunName);
+					GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), artillery.gunTypes[gunA].gunName);
+					GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), artillery.gunTypes[gunA].gunName);
+					GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), artillery.gunTypes[gunA].gunName);
 					
 					GUI.color = gcol;
-					GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), artillery.gunTypes[gunA].gunName );
+					GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), artillery.gunTypes[gunA].gunName);
 				}
 				
 				// weapon cooldown
@@ -917,7 +920,6 @@ public class Hud : MonoBehaviour {
 		
 		GUILayout.Label("---------- Controls: ----------");
 		
-		GUILayout.Label("Left Shift/Ctrl - Crouch");
 		GUILayout.Label("Q/Right Click - Swap Weapon");
 		GUILayout.Label("E - Pickup Weapon (replaces weapon in hand)");
 		GUILayout.Label("K - Kill yourself");
@@ -1102,43 +1104,64 @@ public class Hud : MonoBehaviour {
 			
 			GUILayout.Label(" --- Weapon Settings --- ");
 			
-			//spawn gun A
+			// spawn gun A
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) matches[matchId].spawnGunA--;
-			if (matches[matchId].spawnGunA<-2) matches[matchId].spawnGunA = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) 
+				matches[matchId].spawnGunA--;
+			if (matches[matchId].spawnGunA<-2) 
+				matches[matchId].spawnGunA = artillery.gunTypes.Length-1;
+			
 			string gunName = "none";
-			if (matches[matchId].spawnGunA==-2) gunName = "random";
-			if (matches[matchId].spawnGunA>=0) gunName = artillery.gunTypes[matches[matchId].spawnGunA].gunName;
+			if (matches[matchId].spawnGunA == -2) 
+				gunName = "random";
+			if (matches[matchId].spawnGunA >= 0) 
+				gunName = artillery.gunTypes[matches[matchId].spawnGunA].gunName;
 			GUILayout.Label("Spawn Gun A: " + gunName);
-			if (GUILayout.Button(">")) matches[matchId].spawnGunA++;
-			if (matches[matchId].spawnGunA>=artillery.gunTypes.Length) matches[matchId].spawnGunA = -2;
+			if (GUILayout.Button(">")) 
+				matches[matchId].spawnGunA++;
+			if (matches[matchId].spawnGunA >= artillery.gunTypes.Length) 
+				matches[matchId].spawnGunA = -2;
 			GUILayout.EndHorizontal();
-			//spawn gun B
+			
+			// spawn gun B
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) matches[matchId].spawnGunB--;
-			if (matches[matchId].spawnGunB<-2) matches[matchId].spawnGunB = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) 
+				matches[matchId].spawnGunB--;
+			if (matches[matchId].spawnGunB < -2) 
+				matches[matchId].spawnGunB = artillery.gunTypes.Length-1;
 			gunName = "none";
-			if (matches[matchId].spawnGunB==-2) gunName = "random";
-			if (matches[matchId].spawnGunB>=0) gunName = artillery.gunTypes[matches[matchId].spawnGunB].gunName;
+			if (matches[matchId].spawnGunB == -2) 
+				gunName = "random";
+			if (matches[matchId].spawnGunB >= 0) 
+				gunName = artillery.gunTypes[matches[matchId].spawnGunB].gunName;
 			GUILayout.Label("Spawn Gun B: " + gunName);
-			if (GUILayout.Button(">")) matches[matchId].spawnGunB++;
-			if (matches[matchId].spawnGunB>=artillery.gunTypes.Length) matches[matchId].spawnGunB = -2;
+			if (GUILayout.Button(">")) 
+				matches[matchId].spawnGunB++;
+			if (matches[matchId].spawnGunB >= artillery.gunTypes.Length) 
+				matches[matchId].spawnGunB = -2;
 			GUILayout.EndHorizontal();
 			
 			GUILayout.Label(" --- ");
-			//gun slot 1
+			
+			// gun slot 1
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("<")) matches[matchId].pickupSlot1--;
 			if (matches[matchId].pickupSlot1<-3) matches[matchId].pickupSlot1 = artillery.gunTypes.Length-1;
 			gunName = "none";
-			if (matches[matchId].pickupSlot1==-2) gunName = "random";
-			if (matches[matchId].pickupSlot1==-3) gunName = "health";
-			if (matches[matchId].pickupSlot1>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot1].gunName;
+			if (matches[matchId].pickupSlot1 == -2) 
+				gunName = "random";
+			if (matches[matchId].pickupSlot1 == -3) 
+				gunName = "health";
+			if (matches[matchId].pickupSlot1 >= 0) 
+				gunName = artillery.gunTypes[matches[matchId].pickupSlot1].gunName;
 			GUILayout.Label("Pickup Slot 1: " + gunName);
-			if (GUILayout.Button(">")) matches[matchId].pickupSlot1++;
-			if (matches[matchId].pickupSlot1>=artillery.gunTypes.Length) matches[matchId].pickupSlot1 = -3;
+			if (GUILayout.Button(">")) 
+				matches[matchId].pickupSlot1++;
+			if (matches[matchId].pickupSlot1>=artillery.gunTypes.Length) 
+				matches[matchId].pickupSlot1 = -3;
 			GUILayout.EndHorizontal();
-			//gun slot 2
+			
+			// gun slot 2
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("<")) matches[matchId].pickupSlot2--;
 			if (matches[matchId].pickupSlot2<-3) matches[matchId].pickupSlot2 = artillery.gunTypes.Length-1;
@@ -1150,55 +1173,84 @@ public class Hud : MonoBehaviour {
 			if (GUILayout.Button(">")) matches[matchId].pickupSlot2++;
 			if (matches[matchId].pickupSlot2>=artillery.gunTypes.Length) matches[matchId].pickupSlot2 = -3;
 			GUILayout.EndHorizontal();
+			
 			//gun slot 3
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) matches[matchId].pickupSlot3--;
-			if (matches[matchId].pickupSlot3<-3) matches[matchId].pickupSlot3 = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) 
+				matches[matchId].pickupSlot3--;
+			if (matches[matchId].pickupSlot3 < -3) 
+				matches[matchId].pickupSlot3 = artillery.gunTypes.Length-1;
+			
 			gunName = "none";
-			if (matches[matchId].pickupSlot3==-2) gunName = "random";
-			if (matches[matchId].pickupSlot3==-3) gunName = "health";
-			if (matches[matchId].pickupSlot3>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot3].gunName;
+			if (matches[matchId].pickupSlot3==-2) 
+				gunName = "random";
+			if (matches[matchId].pickupSlot3==-3) 
+				gunName = "health";
+			if (matches[matchId].pickupSlot3>=0) 
+				gunName = artillery.gunTypes[matches[matchId].pickupSlot3].gunName;
 			GUILayout.Label("Pickup Slot 3: " + gunName);
-			if (GUILayout.Button(">")) matches[matchId].pickupSlot3++;
-			if (matches[matchId].pickupSlot3>=artillery.gunTypes.Length) matches[matchId].pickupSlot3 = -3;
+			if (GUILayout.Button(">")) 
+				matches[matchId].pickupSlot3++;
+			if (matches[matchId].pickupSlot3>=artillery.gunTypes.Length) 
+				matches[matchId].pickupSlot3 = -3;
 			GUILayout.EndHorizontal();
+			
 			//gun slot 4
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) matches[matchId].pickupSlot4--;
-			if (matches[matchId].pickupSlot4<-3) matches[matchId].pickupSlot4 = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) 
+				matches[matchId].pickupSlot4--;
+			if (matches[matchId].pickupSlot4 < -3) 
+				matches[matchId].pickupSlot4 = artillery.gunTypes.Length-1;
+			
 			gunName = "none";
-			if (matches[matchId].pickupSlot4==-2) gunName = "random";
-			if (matches[matchId].pickupSlot4==-3) gunName = "health";
-			if (matches[matchId].pickupSlot4>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot4].gunName;
+			if (matches[matchId].pickupSlot4 == -2) 
+				gunName = "random";
+			if (matches[matchId].pickupSlot4 == -3) 
+				gunName = "health";
+			if (matches[matchId].pickupSlot4 >= 0) 
+				gunName = artillery.gunTypes[matches[matchId].pickupSlot4].gunName;
+			
 			GUILayout.Label("Pickup Slot 4: " + gunName);
-			if (GUILayout.Button(">")) matches[matchId].pickupSlot4++;
-			if (matches[matchId].pickupSlot4>=artillery.gunTypes.Length) matches[matchId].pickupSlot4 = -3;
+			if (GUILayout.Button(">")) 
+				matches[matchId].pickupSlot4++;
+			if (matches[matchId].pickupSlot4 >= artillery.gunTypes.Length) 
+				matches[matchId].pickupSlot4 = -3;
 			GUILayout.EndHorizontal();
-			//gun slot 4
+			
+			// gun slot 4
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) matches[matchId].pickupSlot5--;
-			if (matches[matchId].pickupSlot5<-3) matches[matchId].pickupSlot5 = artillery.gunTypes.Length-1;
+			if (GUILayout.Button("<")) 
+				matches[matchId].pickupSlot5--;
+			if (matches[matchId].pickupSlot5<-3) 
+				matches[matchId].pickupSlot5 = artillery.gunTypes.Length-1;
+			
 			gunName = "none";
-			if (matches[matchId].pickupSlot5==-2) gunName = "random";
-			if (matches[matchId].pickupSlot5==-3) gunName = "health";
-			if (matches[matchId].pickupSlot5>=0) gunName = artillery.gunTypes[matches[matchId].pickupSlot5].gunName;
+			if (matches[matchId].pickupSlot5==-2) 
+				gunName = "random";
+			if (matches[matchId].pickupSlot5==-3) 
+				gunName = "health";
+			if (matches[matchId].pickupSlot5>=0) 
+				gunName = artillery.gunTypes[matches[matchId].pickupSlot5].gunName;
 			GUILayout.Label("Pickup Slot 5: " + gunName);
-			if (GUILayout.Button(">")) matches[matchId].pickupSlot5++;
-			if (matches[matchId].pickupSlot5>=artillery.gunTypes.Length) matches[matchId].pickupSlot5 = -3;
+			
+			if (GUILayout.Button(">")) 
+				matches[matchId].pickupSlot5++;
+			if (matches[matchId].pickupSlot5>=artillery.gunTypes.Length) 
+				matches[matchId].pickupSlot5 = -3;
 			GUILayout.EndHorizontal();
 			
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Restock time (seconds): ");
-			matches[matchId].restockTime = MakeInt( GUILayout.TextField(matches[matchId].restockTime.ToString()) );
+			matches[matchId].restockTime = MakeInt(GUILayout.TextField(matches[matchId].restockTime.ToString()) );
 			GUILayout.EndHorizontal();
 			
 			GUI.EndScrollView();
 		}
 				
 		// init button
-		if (!serving){
-			if (GUI.Button(new Rect(10,310,580,80), "Init Server!")){
+		if (!serving) {
+			if (GUI.Button(new Rect(10,310,580,80), "Init Server!")) {
 				// init a server with the current game mode settings
 				net.serverGameChange = true;
 				Network.incomingPassword = net.password;
@@ -1211,7 +1263,7 @@ public class Hud : MonoBehaviour {
 				menuPoint = "initializingServer";
 			}
 		}else{
-			if (GUI.Button(new Rect(10,310,580,80), "Change Game")){
+			if (GUI.Button(new Rect(10,310,580,80), "Change Game")) {
 				net.serverGameChange = true;
 				net.lastGameWasTeamBased = net.CurrMatch.teamBased;
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
@@ -1224,7 +1276,7 @@ public class Hud : MonoBehaviour {
 	}
 	
 	Ping[] hostPings;// = new Ping[0];
-	void JoinMenu(){
+	void JoinMenu() {
 				GUI.BeginGroup(window);
 				
 				GUI.Label(new Rect(250,0,100,20), "Join a game:");

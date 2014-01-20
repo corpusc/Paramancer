@@ -21,3 +21,15 @@ public enum UserAction {
 //	SwapTeam,
 //	Suicide,
 };
+
+public enum Weapon {
+	Pistol,
+	Grenade,
+	MachineGun,
+	Rifle,
+	RocketLauncher,
+	Swapper,
+	GravGun,
+	Bomb,
+	Spatula
+}

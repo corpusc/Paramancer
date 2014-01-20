@@ -94,7 +94,7 @@ public class EntityClass : MonoBehaviour {
 	// scripts
 	public CcNet net;
 	Hud hud;
-	Weapon artil;
+	Arsenal artil;
 	LocalUser locUser;
 	
 	
@@ -140,10 +140,10 @@ public class EntityClass : MonoBehaviour {
 			mats[2] = newMatC;
 			meshObj.renderer.materials = mats;
 			
-			//heads[0].renderer.material.color = thisPlayer.colA;
-			
-			if (handGun >= 0 && gunMesh1.renderer) gunMesh1.renderer.material = artil.gunTypes[handGun].gunMaterial;
-			if (holsterGun >= 0 && gunMesh2.renderer) gunMesh2.renderer.material = artil.gunTypes[holsterGun].gunMaterial;
+			if (handGun >= 0 && gunMesh1.renderer) 
+				gunMesh1.renderer.material = artil.gunTypes[handGun].gunMaterial;
+			if (holsterGun >= 0 && gunMesh2.renderer) 
+				gunMesh2.renderer.material = artil.gunTypes[holsterGun].gunMaterial;
 		}
 		
 		// heads
@@ -152,7 +152,7 @@ public class EntityClass : MonoBehaviour {
 				heads[i].renderer.enabled = false;
 			}
 			
-			if (!visible){
+			if (!visible) {
 				heads[i].renderer.material = invisibleMat;
 			}	
 		}
@@ -208,7 +208,7 @@ public class EntityClass : MonoBehaviour {
 		var o = GameObject.Find("Main Program");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
-		artil = o.GetComponent<Weapon>();
+		artil = o.GetComponent<Arsenal>();
 		locUser = o.GetComponent<LocalUser>();
 		
 		if (User.local && net.CurrMatch.pitchBlack){
@@ -712,18 +712,18 @@ public class EntityClass : MonoBehaviour {
 		//lookDir.y = 0;
 		lookDir.Normalize();
 		animObj.transform.LookAt(animObj.transform.position + lookDir,transform.up);
-		animObj.transform.localEulerAngles = new Vector3(0,animObj.transform.localEulerAngles.y,0);
+		animObj.transform.localEulerAngles = new Vector3(0, animObj.transform.localEulerAngles.y, 0);
 		
 		if (User.health>0f) {
 			if (yMove == 0f) {
-				if (moveVec.magnitude>0.1f) {
+				if (moveVec.magnitude > 0.1f) {
 					if (crouched) {
 						animObj.animation.Play("crouchrun");
 					}else{
 						animObj.animation.Play("run");
 					}
 					
-					if (Vector3.Dot(moveVec, lookDir)<-0.5f) {
+					if (Vector3.Dot(moveVec, lookDir) < -0.5f) {
 						animObj.animation["crouchrun"].speed = -1;
 						animObj.animation["run"].speed = -1;
 					}else{
@@ -738,7 +738,7 @@ public class EntityClass : MonoBehaviour {
 					}
 				}
 			}else{
-				if (yMove>0f) {
+				if (yMove > 0f) {
 					animObj.animation.Play("rise");
 				}else{
 					animObj.animation.Play("fall");
@@ -752,7 +752,7 @@ public class EntityClass : MonoBehaviour {
 		if (handGun != lastKnownHandGun) {
 			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
-			if (handGun>=0) {
+			if (handGun >= 0) {
 				gunMesh1 = (GameObject)GameObject.Instantiate(artil.gunTypes[handGun].modelPrefab);
 			}else{
 				gunMesh1 = new GameObject();
@@ -767,7 +767,7 @@ public class EntityClass : MonoBehaviour {
 				if (firstPersonGun != null) 
 					Destroy(firstPersonGun);
 				
-				if (handGun>=0) {
+				if (handGun >= 0) {
 					firstPersonGun = (GameObject)GameObject.Instantiate(artil.gunTypes[handGun].modelPrefab);
 				}else{
 					firstPersonGun = new GameObject();
@@ -776,13 +776,14 @@ public class EntityClass : MonoBehaviour {
 				firstPersonGun.transform.parent = Camera.main.transform;
 				firstPersonGun.transform.localEulerAngles = new Vector3( -90, 0, 0);
 				firstPersonGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
+				
 				if (firstPersonGun.renderer) 
 					firstPersonGun.renderer.castShadows = false;
 			}
 			
 			sendRPCUpdate = true;
 			
-			if (User.health<=0f || !User.local) {
+			if (User.health <= 0f || !User.local) {
 				SetModelVisibility(true);
 			}else{
 				SetModelVisibility(false);
@@ -792,7 +793,7 @@ public class EntityClass : MonoBehaviour {
 			Transform gunParentB = gunMesh2.transform.parent;
 			Destroy(gunMesh2);
 			
-			if (holsterGun>=0) {
+			if (holsterGun >= 0) {
 				gunMesh2 = (GameObject)GameObject.Instantiate(artil.gunTypes[holsterGun].modelPrefab);
 			}else{
 				gunMesh2 = new GameObject();
@@ -804,7 +805,7 @@ public class EntityClass : MonoBehaviour {
 			lastKnownHolsterGun = holsterGun;
 			sendRPCUpdate = true;
 			
-			if (User.health<=0f || !User.local) {
+			if (User.health <= 0f || !User.local) {
 				SetModelVisibility(true);
 			}else{
 				SetModelVisibility(false);
@@ -815,7 +816,7 @@ public class EntityClass : MonoBehaviour {
 		
 		
 		// if dead, make unshootable
-		if (User.health > 0f){
+		if (User.health > 0f) {
 			gameObject.layer = 8;
 		}else{
 			gameObject.layer = 2;
@@ -862,12 +863,20 @@ public class EntityClass : MonoBehaviour {
 		firstPersonGun.transform.localPosition += gunInertia * 0.1f;
 		
 		float recoilRest = 5f;
-		if (handGun == 0) recoilRest = 5f; // pistol
-		if (handGun == 1) recoilRest = 8f; // grenade
-		if (handGun == 2) recoilRest = 8f; // machinegun
-		if (handGun == 3) recoilRest = 2f; // rifle
-		if (handGun == 4) recoilRest = 1f; // rocket launcher
-		if (handGun == 8) recoilRest = 2f; // spatula
+		switch ((Weapon)handGun) {
+			case Weapon.Pistol:
+				recoilRest = 5f; break;
+			case Weapon.Grenade:
+				recoilRest = 8f; break;
+			case Weapon.MachineGun:
+				recoilRest = 8f; break;
+			case Weapon.Rifle:
+				recoilRest = 2f; break;
+			case Weapon.RocketLauncher:
+				recoilRest = 1f; break;
+			case Weapon.Spatula:
+				recoilRest = 2f; break;
+		}
 		
 		gunRecoil -= (gunRecoil-Vector3.zero) * Time.deltaTime * recoilRest;
 		firstPersonGun.transform.localPosition += gunRecoil * 0.1f;
@@ -886,58 +895,66 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void Fire() {
-		if (handGun == 0) {
-			FireBullet("pistol");
-			gunRecoil -= Vector3.forward * 2f;
-		}else if (handGun == 1){
-			net.Shoot("grenade", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
-			gunRecoil += Vector3.forward * 6f;
-		}else if (handGun == 2){
-			FireBullet("machinegun");
-			gunRecoil -= Vector3.forward * 2f;
-			gunRecoil += new Vector3(Random.Range(-1f,1f),Random.Range(-1f,1f),Random.Range(-1f,1f)).normalized * 0.2f;
-		}else if (handGun == 3){
-			FireBullet("rifle");
-			gunRecoil -= Vector3.forward * 5f;
-		}else if (handGun == 4){
-			net.Shoot("rocketlauncher", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
-			gunRecoil -= Vector3.forward * 5f;
-		}else if (handGun == 5){
-			if (swapperLockTarget == -1) {
-				// not locked on, we miss
-				FireBullet("swapper");
-			}else{
-				//locked on, we hit
-				net.Shoot("swapper", transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true);
-				net.RegisterHit("swapper", net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
-			}
-			gunRecoil -= Vector3.forward * 5f;
-		}else if (handGun == 6) { // grav gun
-			Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-			RaycastHit gravHit = new RaycastHit();
-			int gravLayer = 1<<0;
-			if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)){
-				Vector3 lookPos = Camera.main.transform.position + Camera.main.transform.forward;
-				Quaternion tempRot = Camera.main.transform.rotation;
-				transform.LookAt(transform.position + Vector3.Cross(Camera.main.transform.forward,gravHit.normal) ,gravHit.normal);
-				ForceLook(lookPos);
-				camHolder.transform.localEulerAngles = camAngle;
-				Camera.main.transform.rotation = tempRot;
-				PlaySound("gravgun");
-			}
-			
-			sendRPCUpdate = true;
-			gunRecoil -= Vector3.forward * 5f;
-		}else if (handGun == 7){
-			net.Detonate("bomb", transform.position, User.viewID, User.viewID);
-		}else if (handGun == 8){
-			// spatula
-			// FIXME: IF WE KEEP THIS, IT SHOULD BE AN INSTAGIB MELEE WEAPON
-			
-			//gunRecoil += Vector3.forward * 6f;
-			gunRecoil -= Vector3.right * 4f;
+		switch ((Weapon)handGun) {
+			case Weapon.Pistol:
+				FireBullet("pistol");
+				gunRecoil -= Vector3.forward * 2f;
+				break; 
+			case Weapon.Grenade:
+				net.Shoot("grenade", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
+				gunRecoil += Vector3.forward * 6f;
+				break; 
+			case Weapon.MachineGun:
+				FireBullet("machinegun");
+				gunRecoil -= Vector3.forward * 2f;
+				gunRecoil += new Vector3(Random.Range(-1f,1f),Random.Range(-1f,1f),Random.Range(-1f,1f)).normalized * 0.2f;
+				break; 
+			case Weapon.Rifle:
+				FireBullet("rifle");
+				gunRecoil -= Vector3.forward * 5f;
+				break; 
+			case Weapon.RocketLauncher:
+				net.Shoot("rocketlauncher", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
+				gunRecoil -= Vector3.forward * 5f;
+				break; 
+			case Weapon.Swapper:
+				if (swapperLockTarget == -1) {
+					// not locked on, we miss
+					FireBullet("swapper");
+				}else{
+					//locked on, we hit
+					net.Shoot("swapper", transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true);
+					net.RegisterHit("swapper", net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
+				}
+				gunRecoil -= Vector3.forward * 5f;
+				break; 
+			case Weapon.GravGun:
+				Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+				RaycastHit gravHit = new RaycastHit();
+				int gravLayer = 1<<0;
+				if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)){
+					Vector3 lookPos = Camera.main.transform.position + Camera.main.transform.forward;
+					Quaternion tempRot = Camera.main.transform.rotation;
+					transform.LookAt(transform.position + Vector3.Cross(Camera.main.transform.forward,gravHit.normal) ,gravHit.normal);
+					ForceLook(lookPos);
+					camHolder.transform.localEulerAngles = camAngle;
+					Camera.main.transform.rotation = tempRot;
+					PlaySound("gravgun");
+				}
+				
+				sendRPCUpdate = true;
+				gunRecoil -= Vector3.forward * 5f;
+				break; 
+			case Weapon.Bomb:
+				net.Detonate("bomb", transform.position, User.viewID, User.viewID);
+				break; 
+			case Weapon.Spatula:
+				// FIXME: IF WE KEEP THIS, IT SHOULD BE AN INSTAGIB MELEE WEAPON
+				
+				//gunRecoil += Vector3.forward * 6f;
+				gunRecoil -= Vector3.right * 4f;
+				break;
 		}
-			
 	}
 	
 	Vector3 ReorientMove(Vector3 moveness){
@@ -1037,12 +1054,12 @@ public class EntityClass : MonoBehaviour {
 			Destroy(firstPersonGun);
 		
 		if (net.CurrMatch.spawnGunA == -2) {
-			handGun = Random.Range(0,artil.gunTypes.Length);
+			handGun = Random.Range(0, artil.gunTypes.Length);
 		}else{
 			handGun = net.CurrMatch.spawnGunA;
 		}
 		if (net.CurrMatch.spawnGunB == -2) {
-			holsterGun = Random.Range(0,artil.gunTypes.Length);
+			holsterGun = Random.Range(0, artil.gunTypes.Length);
 		}else{
 			holsterGun = net.CurrMatch.spawnGunB;
 		}
