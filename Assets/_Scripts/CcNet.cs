@@ -598,7 +598,7 @@ public class CcNet : MonoBehaviour {
 						if (pickupPoints[i].pickupType == 5) restockType = CurrMatch.pickupSlot5;
 						if (restockType == -2) {
 							// random
-							restockType = Random.Range(-1, artill.gunTypes.Length);
+							restockType = Random.Range(-1, artill.Guns.Length);
 							if (restockType == -1) 
 								restockType--;
 						}
@@ -635,10 +635,10 @@ public class CcNet : MonoBehaviour {
 					box.boxObj.renderer.materials = mats;
 				}else{
 					//gun of some type
-					box.pickupName = artill.gunTypes[restockType].gunName;
-					box.iconObj.renderer.material.SetTexture("_MainTex",artill.gunTypes[restockType].iconTex);
+					box.pickupName = artill.Guns[restockType].Name;
+					box.iconObj.renderer.material.SetTexture("_MainTex",artill.Guns[restockType].Pic);
 					Material[] mats = box.boxObj.renderer.materials;
-					mats[0] = artill.gunTypes[restockType].gunMaterial;
+					mats[0] = artill.Guns[restockType].Mat;
 					box.boxObj.renderer.materials = mats;
 				}
 			}
@@ -676,7 +676,7 @@ public class CcNet : MonoBehaviour {
 				if (pickupPoints[i].pickupType == 5) restockType = CurrMatch.pickupSlot5;
 				if (restockType == -2){
 					//random
-					restockType = Random.Range(-1,artill.gunTypes.Length);
+					restockType = Random.Range(-1,artill.Guns.Length);
 					if (restockType == -1) restockType--;
 				}
 				if (restockType != -1){

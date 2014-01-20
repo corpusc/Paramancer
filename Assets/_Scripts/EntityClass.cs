@@ -141,9 +141,9 @@ public class EntityClass : MonoBehaviour {
 			meshObj.renderer.materials = mats;
 			
 			if (handGun >= 0 && gunMesh1.renderer) 
-				gunMesh1.renderer.material = artil.gunTypes[handGun].gunMaterial;
+				gunMesh1.renderer.material = artil.Guns[handGun].Mat;
 			if (holsterGun >= 0 && gunMesh2.renderer) 
-				gunMesh2.renderer.material = artil.gunTypes[holsterGun].gunMaterial;
+				gunMesh2.renderer.material = artil.Guns[holsterGun].Mat;
 		}
 		
 		// heads
@@ -183,7 +183,7 @@ public class EntityClass : MonoBehaviour {
 				firstPersonGun.renderer.enabled = false;
 			}else{
 				firstPersonGun.renderer.enabled = true;
-				firstPersonGun.renderer.material = artil.gunTypes[handGun].gunMaterial;
+				firstPersonGun.renderer.material = artil.Guns[handGun].Mat;
 			}
 		}
 		
@@ -373,8 +373,8 @@ public class EntityClass : MonoBehaviour {
 						if (pickup){
 							//pickup weapon.
 							
-							for (int i=0; i<artil.gunTypes.Length; i++){
-								if (offeredPickup == artil.gunTypes[i].gunName){
+							for (int i=0; i<artil.Guns.Length; i++){
+								if (offeredPickup == artil.Guns[i].Name){
 									handGun = i;
 									handGunCooldown = 0f;
 									
@@ -540,7 +540,7 @@ public class EntityClass : MonoBehaviour {
 					
 					if (handGun >= 0 && handGunCooldown > 0f && 
 						handGunCooldown - Time.deltaTime <= 0f && 
-						artil.gunTypes[handGun].fireCooldown >= 1f
+						artil.Guns[handGun].Delay >= 1f
 					) 
 						PlaySound("reload");
 					
@@ -642,15 +642,15 @@ public class EntityClass : MonoBehaviour {
 					
 					if (handGun >= 0 && !User.hasBall) {
 						// shooting
-						if (Input.GetKeyDown("mouse 0") && Screen.lockCursor == true && !artil.gunTypes[handGun].isAutomatic){
+						if (Input.GetKeyDown("mouse 0") && Screen.lockCursor == true && !artil.Guns[handGun].AutoFire){
 							if (handGunCooldown <= 0f) {
 								Fire();
-								handGunCooldown += artil.gunTypes[handGun].fireCooldown;
+								handGunCooldown += artil.Guns[handGun].Delay;
 							}
-						}else if (Input.GetKey("mouse 0") && Screen.lockCursor == true && artil.gunTypes[handGun].isAutomatic){
+						}else if (Input.GetKey("mouse 0") && Screen.lockCursor == true && artil.Guns[handGun].AutoFire){
 							if (handGunCooldown <= 0f) {
 								Fire();
-								handGunCooldown += artil.gunTypes[handGun].fireCooldown;
+								handGunCooldown += artil.Guns[handGun].Delay;
 							}
 						}
 					}
@@ -753,7 +753,7 @@ public class EntityClass : MonoBehaviour {
 			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
 			if (handGun >= 0) {
-				gunMesh1 = (GameObject)GameObject.Instantiate(artil.gunTypes[handGun].modelPrefab);
+				gunMesh1 = (GameObject)GameObject.Instantiate(artil.Guns[handGun].Prefab);
 			}else{
 				gunMesh1 = new GameObject();
 			}
@@ -768,7 +768,7 @@ public class EntityClass : MonoBehaviour {
 					Destroy(firstPersonGun);
 				
 				if (handGun >= 0) {
-					firstPersonGun = (GameObject)GameObject.Instantiate(artil.gunTypes[handGun].modelPrefab);
+					firstPersonGun = (GameObject)GameObject.Instantiate(artil.Guns[handGun].Prefab);
 				}else{
 					firstPersonGun = new GameObject();
 				}
@@ -794,7 +794,7 @@ public class EntityClass : MonoBehaviour {
 			Destroy(gunMesh2);
 			
 			if (holsterGun >= 0) {
-				gunMesh2 = (GameObject)GameObject.Instantiate(artil.gunTypes[holsterGun].modelPrefab);
+				gunMesh2 = (GameObject)GameObject.Instantiate(artil.Guns[holsterGun].Prefab);
 			}else{
 				gunMesh2 = new GameObject();
 			}
@@ -1054,12 +1054,12 @@ public class EntityClass : MonoBehaviour {
 			Destroy(firstPersonGun);
 		
 		if (net.CurrMatch.spawnGunA == -2) {
-			handGun = Random.Range(0, artil.gunTypes.Length);
+			handGun = Random.Range(0, artil.Guns.Length);
 		}else{
 			handGun = net.CurrMatch.spawnGunA;
 		}
 		if (net.CurrMatch.spawnGunB == -2) {
-			holsterGun = Random.Range(0, artil.gunTypes.Length);
+			holsterGun = Random.Range(0, artil.Guns.Length);
 		}else{
 			holsterGun = net.CurrMatch.spawnGunB;
 		}

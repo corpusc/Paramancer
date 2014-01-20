@@ -22,7 +22,7 @@ public class Arsenal : MonoBehaviour {
 	public AudioClip sfx_bombBeep;
 	public AudioClip sfx_bombExplode;
 	
-	public GunTypeScript[] gunTypes;
+	public GunData[] Guns;
 	
 	// private 
 	CcNet net;
@@ -37,55 +37,53 @@ public class Arsenal : MonoBehaviour {
 		// load the 3 kinds of resources that weapons need
 		int i = 0;
 		Object[] mats = Resources.LoadAll("Mat/Weap");
-		foreach (var m in mats) {
-			Debug.Log("mat: " + i + " " + m.name);
-			i++;
-		}
+//		foreach (var m in mats) {
+//			Debug.Log("mat: " + i + " " + m.name);
+//			i++;
+//		}
 		
 		i = 0;
 		Object[] prefabs = Resources.LoadAll("Prefab/Weap");
-		foreach (var p in prefabs) {
-			Debug.Log("prefab: " + i + " " + p.name);
-			i++;
-		}
+//		foreach (var p in prefabs) {
+//			Debug.Log("prefab: " + i + " " + p.name);
+//			i++;
+//		}
 		
 		i = 0;
 		Object[] pics = Resources.LoadAll("Pic/Weap");
-		foreach (var p in pics) {
-			Debug.Log("pic: " + i + " " + p.name);
-			i++;
-		}
+//		foreach (var p in pics) {
+//			Debug.Log("pic: " + i + " " + p.name);
+//			i++;
+//		}
 		
-		gunTypes = new GunTypeScript[9];
-		for (i = 0; i < gunTypes.Length; i++) {
-			gunTypes[i] = new GunTypeScript();
+		Guns = new GunData[9];
+		for (i = 0; i < Guns.Length; i++) {
+			Guns[i] = new GunData();
 			
-			gunTypes[i].gunName = "" + (Weapon)i;
-			gunTypes[i].iconTex = (Texture)pics[i];
-			gunTypes[i].gunMaterial = (Material)mats[i];
-			gunTypes[i].modelPrefab = (GameObject)prefabs[i];
+			Guns[i].Name = "" + (Weapon)i;
+			Guns[i].Pic = (Texture)pics[i];
+			Guns[i].Mat = (Material)mats[i];
+			Guns[i].Prefab = (GameObject)prefabs[i];
 			
 			switch ((Weapon)i) {
 				case Weapon.Pistol: 
-					gunTypes[i].fireCooldown = 0.15f; break; 
+					Guns[i].Delay = 0.15f; break; 
 				case Weapon.Grenade:  
-					gunTypes[i].fireCooldown = 0.4f; break; 
+					Guns[i].Delay = 0.4f; break; 
 				case Weapon.MachineGun:  
-					gunTypes[i].fireCooldown = 0.1f; 
-					gunTypes[i].isAutomatic = true; 
-					break; 
+					Guns[i].Delay = 0.1f; Guns[i].AutoFire = true; break; 
 				case Weapon.Rifle:  
-					gunTypes[i].fireCooldown = 2f; break; 
+					Guns[i].Delay = 2f; break; 
 				case Weapon.RocketLauncher:  
-					gunTypes[i].fireCooldown = 2f; break; 
+					Guns[i].Delay = 2f; break; 
 				case Weapon.Swapper:  
-					gunTypes[i].fireCooldown = 2f; break; 
+					Guns[i].Delay = 2f; break; 
 				case Weapon.GravGun:  
-					gunTypes[i].fireCooldown = 1f; break; 
+					Guns[i].Delay = 1f; break; 
 				case Weapon.Bomb:  
-					gunTypes[i].fireCooldown = 1f; break; 
+					Guns[i].Delay = 1f; break; 
 				case Weapon.Spatula:  
-					gunTypes[i].fireCooldown = 3f; break;
+					Guns[i].Delay = 3f; break;
 			}
 		}
 	}
