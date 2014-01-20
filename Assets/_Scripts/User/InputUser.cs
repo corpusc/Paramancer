@@ -13,7 +13,6 @@ public static class InputUser {
 		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {
 			var s = pics[i].name;
-			Debug.Log("Action: " + s);
 		}
 		
 		

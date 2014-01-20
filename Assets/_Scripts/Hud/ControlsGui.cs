@@ -18,14 +18,12 @@ public class ControlsGui : MonoBehaviour {
 	
 	
 	void Start() {
-			Debug.Log("ControlsGui START()");
 		// load textures
 		Object[] pics = Resources.LoadAll("Pic/Hud/Controls");
 		
 		// use this temp list to setup permanent vars
 		for (int i = 0; i < pics.Length; i++) {
 			var s = pics[i].name;
-			Debug.Log("Controls: " + s);
 			
 			if (s == "KeyCap")
 				keyCap = pics[i] as Texture;

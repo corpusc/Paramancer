@@ -35,27 +35,63 @@ public class Arsenal : MonoBehaviour {
 		net = GetComponent<CcNet>();
 		
 		// load the 3 kinds of resources that weapons need
+		int i = 0;
 		Object[] mats = Resources.LoadAll("Mat/Weap");
 		foreach (var m in mats) {
-			Debug.Log("mat: " + m.name);
+			Debug.Log("mat: " + i + " " + m.name);
+			i++;
 		}
 		
+		i = 0;
 		Object[] prefabs = Resources.LoadAll("Prefab/Weap");
 		foreach (var p in prefabs) {
-			Debug.Log("prefab: " + p.name);
+			Debug.Log("prefab: " + i + " " + p.name);
+			i++;
 		}
 		
+		i = 0;
 		Object[] pics = Resources.LoadAll("Pic/Weap");
 		foreach (var p in pics) {
-			Debug.Log("pic: " + p.name);
+			Debug.Log("pic: " + i + " " + p.name);
+			i++;
 		}
 		
-		//gunTypes = new GunTypeScript[9];
-		//gunTypes[
+		gunTypes = new GunTypeScript[9];
+		for (i = 0; i < gunTypes.Length; i++) {
+			gunTypes[i] = new GunTypeScript();
+			
+			gunTypes[i].gunName = "" + (Weapon)i;
+			gunTypes[i].iconTex = (Texture)pics[i];
+			gunTypes[i].gunMaterial = (Material)mats[i];
+			gunTypes[i].modelPrefab = (GameObject)prefabs[i];
+			
+			switch ((Weapon)i) {
+				case Weapon.Pistol: 
+					gunTypes[i].fireCooldown = 0.15f; break; 
+				case Weapon.Grenade:  
+					gunTypes[i].fireCooldown = 0.4f; break; 
+				case Weapon.MachineGun:  
+					gunTypes[i].fireCooldown = 0.1f; 
+					gunTypes[i].isAutomatic = true; 
+					break; 
+				case Weapon.Rifle:  
+					gunTypes[i].fireCooldown = 2f; break; 
+				case Weapon.RocketLauncher:  
+					gunTypes[i].fireCooldown = 2f; break; 
+				case Weapon.Swapper:  
+					gunTypes[i].fireCooldown = 2f; break; 
+				case Weapon.GravGun:  
+					gunTypes[i].fireCooldown = 1f; break; 
+				case Weapon.Bomb:  
+					gunTypes[i].fireCooldown = 1f; break; 
+				case Weapon.Spatula:  
+					gunTypes[i].fireCooldown = 3f; break;
+			}
+		}
 	}
 	
 	public void Clear() {
-		for (int i=0; i<activeGrenades.Count; i++){
+		for (int i=0; i<activeGrenades.Count; i++) {
 			if (activeGrenades[i] != null && activeGrenades[i].gameObject != null) 
 				Destroy(activeGrenades[i].gameObject);
 		}
@@ -63,8 +99,10 @@ public class Arsenal : MonoBehaviour {
 		activeGrenades = new List<GrenadeScript>();
 	}
 
-	public void Shoot(string weaponType, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit){
-		if (weaponType == "pistol" || weaponType == "machinegun" || weaponType == "rifle"){
+	public void Shoot(string weaponType, Vector3 origin, Vector3 direction, Vector3 end, 
+		NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit
+	) {
+		if (weaponType == "pistol" || weaponType == "machinegun" || weaponType == "rifle") {
 			bool localFire = false;
 			Vector3 localstart = origin;
 			for (int i=0; i<net.players.Count; i++) {
