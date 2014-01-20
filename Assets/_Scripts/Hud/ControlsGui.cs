@@ -166,24 +166,37 @@ public class ControlsGui : MonoBehaviour {
 			else
 				GUI.color = Color.white;
 				
-			// draw
-			var dest = keyData[i].Rect;
-			float spanD = dest.width = dest.width / 3; // slice span for DESTINATION
-			float spanT = 0.3333f; // slice span for TEXTURE COORDS
-			var texCoords = new Rect(0f, 0f, spanT, 1f);
+			Rect or = keyData[i].Rect; // store original rect
 			
-			GUI.color = Color.magenta;
-			GUI.DrawTextureWithTexCoords(dest, keyCap, texCoords);
+			// if slicing not needed, just draw in single call and move on to next key
+			if (or.width <= or.height) {
+				GUI.DrawTexture(or, keyCap);
+				continue;
+			}
 			
-			dest.x += spanD;
-			texCoords.x += spanT;
-			GUI.color = Color.green;
-			GUI.DrawTextureWithTexCoords(dest, keyCap, texCoords);
+			// setup border widths for 3 panel vertical slicing, so center can stretch, leaving normal borders
+			Rect dest = or;
+			int numSl = 3; // number of slices per normal key (1x1 aspect ratio / perfectly square)
+			float numDiv = dest.width / dest.height * numSl; // num of divisions
+			float pixBorderW = dest.width / numDiv; // pixel width
+			float perBorderW = 1f / numSl; // percent width
+			Rect texC = new Rect(0f, 0f, perBorderW, 1f); // texture coordinates
 			
-			dest.x += spanD;
-			texCoords.x += spanT;
-			GUI.color = Color.yellow;
-			GUI.DrawTextureWithTexCoords(dest, keyCap, texCoords);
+			// draw left border
+			dest.width = pixBorderW;
+			GUI.DrawTextureWithTexCoords(dest, keyCap, texC);
+			
+			// draw right border
+			dest.x = or.xMax - pixBorderW;
+			texC.x = 1f - perBorderW;
+			GUI.DrawTextureWithTexCoords(dest, keyCap, texC);
+			
+			// draw middle slice
+			dest.x = or.x + pixBorderW;
+			texC.x = 0f + perBorderW;
+			dest.width = or.width - pixBorderW*2;
+			texC.width = 1f - perBorderW*2;
+			GUI.DrawTextureWithTexCoords(dest, keyCap, texC);
 		}
 		
 		// draw actions

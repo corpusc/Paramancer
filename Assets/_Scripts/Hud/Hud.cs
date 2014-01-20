@@ -53,7 +53,7 @@ public class Hud : MonoBehaviour {
 	// scripts
 	CcNet net;
 	CcLog log;
-	Arsenal artillery;
+	Arsenal arse;
 	ControlsGui controGui;
 	LocalUser locUser;
 
@@ -191,7 +191,7 @@ public class Hud : MonoBehaviour {
 		// scripts
 		net = GetComponent<CcNet>();
 		log = GetComponent<CcLog>();
-		artillery = GetComponent<Arsenal>();
+		arse = GetComponent<Arsenal>();
 		controGui = GetComponent<ControlsGui>();
 		locUser = GetComponent<LocalUser>();
 		
@@ -531,30 +531,30 @@ public class Hud : MonoBehaviour {
 				// weapon
 				GUI.color = new Color(0.1f, 0.1f, 0.1f, 0.7f);
 				if (gunB >= 0) 
-					GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), artillery.Guns[gunB].Pic);
+					GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), arse.Guns[gunB].Pic);
 				
 				GUI.color = gcol;
 				if (gunA >= 0) 
-					GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), artillery.Guns[gunA].Pic);
+					GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), arse.Guns[gunA].Pic);
 				
 				if (gunA >= 0) {
 					GUI.color = Color.black;
 				
-					GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), artillery.Guns[gunA].Name);
-					GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), artillery.Guns[gunA].Name);
-					GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), artillery.Guns[gunA].Name);
-					GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), artillery.Guns[gunA].Name);
+					GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
+					GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
+					GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), arse.Guns[gunA].Name);
+					GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), arse.Guns[gunA].Name);
 					
 					GUI.color = gcol;
-					GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), artillery.Guns[gunA].Name);
+					GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
 				}
 				
 				// weapon cooldown
 				if (gunA >= 0) {
 					GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), blackTex);
 					float coolDownPercent = 50f;
-					if (artillery.Guns[gunA].Delay>0f) {
-						coolDownPercent = (gunACooldown / artillery.Guns[gunA].Delay) * 50f;
+					if (arse.Guns[gunA].Delay>0f) {
+						coolDownPercent = (gunACooldown / arse.Guns[gunA].Delay) * 50f;
 						coolDownPercent = 50f-coolDownPercent;
 					}
 					GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), backTex);
@@ -1110,17 +1110,17 @@ public class Hud : MonoBehaviour {
 			if (GUILayout.Button("<")) 
 				matches[matchId].spawnGunA--;
 			if (matches[matchId].spawnGunA<-2) 
-				matches[matchId].spawnGunA = artillery.Guns.Length-1;
+				matches[matchId].spawnGunA = arse.Guns.Length-1;
 			
 			string gunName = "none";
 			if (matches[matchId].spawnGunA == -2) 
 				gunName = "random";
 			if (matches[matchId].spawnGunA >= 0) 
-				gunName = artillery.Guns[matches[matchId].spawnGunA].Name;
+				gunName = arse.Guns[matches[matchId].spawnGunA].Name;
 			GUILayout.Label("Spawn Gun A: " + gunName);
 			if (GUILayout.Button(">")) 
 				matches[matchId].spawnGunA++;
-			if (matches[matchId].spawnGunA >= artillery.Guns.Length) 
+			if (matches[matchId].spawnGunA >= arse.Guns.Length) 
 				matches[matchId].spawnGunA = -2;
 			GUILayout.EndHorizontal();
 			
@@ -1129,16 +1129,16 @@ public class Hud : MonoBehaviour {
 			if (GUILayout.Button("<")) 
 				matches[matchId].spawnGunB--;
 			if (matches[matchId].spawnGunB < -2) 
-				matches[matchId].spawnGunB = artillery.Guns.Length-1;
+				matches[matchId].spawnGunB = arse.Guns.Length-1;
 			gunName = "none";
 			if (matches[matchId].spawnGunB == -2) 
 				gunName = "random";
 			if (matches[matchId].spawnGunB >= 0) 
-				gunName = artillery.Guns[matches[matchId].spawnGunB].Name;
+				gunName = arse.Guns[matches[matchId].spawnGunB].Name;
 			GUILayout.Label("Spawn Gun B: " + gunName);
 			if (GUILayout.Button(">")) 
 				matches[matchId].spawnGunB++;
-			if (matches[matchId].spawnGunB >= artillery.Guns.Length) 
+			if (matches[matchId].spawnGunB >= arse.Guns.Length) 
 				matches[matchId].spawnGunB = -2;
 			GUILayout.EndHorizontal();
 			
@@ -1147,32 +1147,32 @@ public class Hud : MonoBehaviour {
 			// gun slot 1
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("<")) matches[matchId].pickupSlot1--;
-			if (matches[matchId].pickupSlot1<-3) matches[matchId].pickupSlot1 = artillery.Guns.Length-1;
+			if (matches[matchId].pickupSlot1<-3) matches[matchId].pickupSlot1 = arse.Guns.Length-1;
 			gunName = "none";
 			if (matches[matchId].pickupSlot1 == -2) 
 				gunName = "random";
 			if (matches[matchId].pickupSlot1 == -3) 
 				gunName = "health";
 			if (matches[matchId].pickupSlot1 >= 0) 
-				gunName = artillery.Guns[matches[matchId].pickupSlot1].Name;
+				gunName = arse.Guns[matches[matchId].pickupSlot1].Name;
 			GUILayout.Label("Pickup Slot 1: " + gunName);
 			if (GUILayout.Button(">")) 
 				matches[matchId].pickupSlot1++;
-			if (matches[matchId].pickupSlot1>=artillery.Guns.Length) 
+			if (matches[matchId].pickupSlot1>=arse.Guns.Length) 
 				matches[matchId].pickupSlot1 = -3;
 			GUILayout.EndHorizontal();
 			
 			// gun slot 2
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("<")) matches[matchId].pickupSlot2--;
-			if (matches[matchId].pickupSlot2<-3) matches[matchId].pickupSlot2 = artillery.Guns.Length-1;
+			if (matches[matchId].pickupSlot2<-3) matches[matchId].pickupSlot2 = arse.Guns.Length-1;
 			gunName = "none";
 			if (matches[matchId].pickupSlot2==-2) gunName = "random";
 			if (matches[matchId].pickupSlot2==-3) gunName = "health";
-			if (matches[matchId].pickupSlot2>=0) gunName = artillery.Guns[matches[matchId].pickupSlot2].Name;
+			if (matches[matchId].pickupSlot2>=0) gunName = arse.Guns[matches[matchId].pickupSlot2].Name;
 			GUILayout.Label("Pickup Slot 2: " + gunName);
 			if (GUILayout.Button(">")) matches[matchId].pickupSlot2++;
-			if (matches[matchId].pickupSlot2>=artillery.Guns.Length) matches[matchId].pickupSlot2 = -3;
+			if (matches[matchId].pickupSlot2>=arse.Guns.Length) matches[matchId].pickupSlot2 = -3;
 			GUILayout.EndHorizontal();
 			
 			//gun slot 3
@@ -1180,7 +1180,7 @@ public class Hud : MonoBehaviour {
 			if (GUILayout.Button("<")) 
 				matches[matchId].pickupSlot3--;
 			if (matches[matchId].pickupSlot3 < -3) 
-				matches[matchId].pickupSlot3 = artillery.Guns.Length-1;
+				matches[matchId].pickupSlot3 = arse.Guns.Length-1;
 			
 			gunName = "none";
 			if (matches[matchId].pickupSlot3==-2) 
@@ -1188,11 +1188,11 @@ public class Hud : MonoBehaviour {
 			if (matches[matchId].pickupSlot3==-3) 
 				gunName = "health";
 			if (matches[matchId].pickupSlot3>=0) 
-				gunName = artillery.Guns[matches[matchId].pickupSlot3].Name;
+				gunName = arse.Guns[matches[matchId].pickupSlot3].Name;
 			GUILayout.Label("Pickup Slot 3: " + gunName);
 			if (GUILayout.Button(">")) 
 				matches[matchId].pickupSlot3++;
-			if (matches[matchId].pickupSlot3>=artillery.Guns.Length) 
+			if (matches[matchId].pickupSlot3>=arse.Guns.Length) 
 				matches[matchId].pickupSlot3 = -3;
 			GUILayout.EndHorizontal();
 			
@@ -1201,7 +1201,7 @@ public class Hud : MonoBehaviour {
 			if (GUILayout.Button("<")) 
 				matches[matchId].pickupSlot4--;
 			if (matches[matchId].pickupSlot4 < -3) 
-				matches[matchId].pickupSlot4 = artillery.Guns.Length-1;
+				matches[matchId].pickupSlot4 = arse.Guns.Length-1;
 			
 			gunName = "none";
 			if (matches[matchId].pickupSlot4 == -2) 
@@ -1209,12 +1209,12 @@ public class Hud : MonoBehaviour {
 			if (matches[matchId].pickupSlot4 == -3) 
 				gunName = "health";
 			if (matches[matchId].pickupSlot4 >= 0) 
-				gunName = artillery.Guns[matches[matchId].pickupSlot4].Name;
+				gunName = arse.Guns[matches[matchId].pickupSlot4].Name;
 			
 			GUILayout.Label("Pickup Slot 4: " + gunName);
 			if (GUILayout.Button(">")) 
 				matches[matchId].pickupSlot4++;
-			if (matches[matchId].pickupSlot4 >= artillery.Guns.Length) 
+			if (matches[matchId].pickupSlot4 >= arse.Guns.Length) 
 				matches[matchId].pickupSlot4 = -3;
 			GUILayout.EndHorizontal();
 			
@@ -1223,7 +1223,7 @@ public class Hud : MonoBehaviour {
 			if (GUILayout.Button("<")) 
 				matches[matchId].pickupSlot5--;
 			if (matches[matchId].pickupSlot5<-3) 
-				matches[matchId].pickupSlot5 = artillery.Guns.Length-1;
+				matches[matchId].pickupSlot5 = arse.Guns.Length-1;
 			
 			gunName = "none";
 			if (matches[matchId].pickupSlot5==-2) 
@@ -1231,12 +1231,12 @@ public class Hud : MonoBehaviour {
 			if (matches[matchId].pickupSlot5==-3) 
 				gunName = "health";
 			if (matches[matchId].pickupSlot5>=0) 
-				gunName = artillery.Guns[matches[matchId].pickupSlot5].Name;
+				gunName = arse.Guns[matches[matchId].pickupSlot5].Name;
 			GUILayout.Label("Pickup Slot 5: " + gunName);
 			
 			if (GUILayout.Button(">")) 
 				matches[matchId].pickupSlot5++;
-			if (matches[matchId].pickupSlot5>=artillery.Guns.Length) 
+			if (matches[matchId].pickupSlot5>=arse.Guns.Length) 
 				matches[matchId].pickupSlot5 = -3;
 			GUILayout.EndHorizontal();
 			
