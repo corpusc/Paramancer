@@ -47,7 +47,7 @@ public class Weapon : MonoBehaviour {
 		
 		Object[] pics = Resources.LoadAll("Pic/Weap");
 		foreach (var p in pics) {
-			Debug.Log("pic: ", p.name);
+			Debug.Log("pic: " + p.name);
 		}
 		
 		//gunTypes = new GunTypeScript[9];
