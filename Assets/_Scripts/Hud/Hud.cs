@@ -221,10 +221,10 @@ public class Hud : MonoBehaviour {
 	}
 	
 	void Update() {
-		if (Screen.lockCursor == true && Input.GetKeyDown(KeyCode.Escape)) 
+		if (Screen.lockCursor == true && InputUser.Started(UserAction.Menu)) 
 			Screen.lockCursor = false;
 		
-		if (Input.GetKeyDown(KeyCode.Tab))
+		if (InputUser.Started(UserAction.Scores))
 			viewingScores = !viewingScores;
 	}
 	
@@ -508,12 +508,13 @@ public class Hud : MonoBehaviour {
 				Color gcol = GUI.color;
 				if (offeredPickup != "" && !net.autoPickup) {
 					GUI.color = Color.black;
-					GUI.Label(new Rect(midX-51,midY+100,100,60),"PRESS 'E' TO PICK UP " + offeredPickup.ToUpper());
-					GUI.Label(new Rect(midX-49,midY+100,100,60),"PRESS 'E' TO PICK UP " + offeredPickup.ToUpper());
-					GUI.Label(new Rect(midX-50,midY+101,100,60),"PRESS 'E' TO PICK UP " + offeredPickup.ToUpper());
-					GUI.Label(new Rect(midX-50,midY+99,100,60),"PRESS 'E' TO PICK UP " + offeredPickup.ToUpper());
+					string s = "Press '" + InputUser.GetKeyLabel(UserAction.GrabItem) + "' to grab " + offeredPickup.ToUpper();
+					GUI.Label(new Rect(midX-51, midY+100, 100, 60), s);
+					GUI.Label(new Rect(midX-49, midY+100, 100, 60), s);
+					GUI.Label(new Rect(midX-50, midY+101, 100, 60), s);
+					GUI.Label(new Rect(midX-50, midY+99, 100, 60), s);
 					GUI.color = gcol;
-					GUI.Label(new Rect(midX-50,midY+100,100,60),"PRESS 'E' TO PICK UP " + offeredPickup.ToUpper());
+					GUI.Label(new Rect(midX-50, midY+100, 100, 60), s);
 				}
 				
 				if (Spectating) {
@@ -730,10 +731,10 @@ public class Hud : MonoBehaviour {
 					if (net.players[i].local) GUI.color = new Color(0.3f, 1, 1, 1f);
 					if (net.gameOver && net.team2Score>net.team1Score) GUI.color = new Color(UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), 1f);
 				
-					GUI.Label(new Rect(10,(yOffset*20) + 60,150,20), net.players[i].name);
-					GUI.Label(new Rect(160,(yOffset*20) + 60,50,20), net.players[i].kills.ToString());
-					GUI.Label(new Rect(210,(yOffset*20) + 60,50,20), net.players[i].deaths.ToString());
-					GUI.Label(new Rect(270,(yOffset*20) + 60,50,20), net.players[i].currentScore.ToString());
+					GUI.Label(new Rect(10, yOffset*20 + 60, 150, 20), net.players[i].name);
+					GUI.Label(new Rect(160, yOffset*20 + 60, 50, 20), net.players[i].kills.ToString());
+					GUI.Label(new Rect(210, yOffset*20 + 60, 50, 20), net.players[i].deaths.ToString());
+					GUI.Label(new Rect(270, yOffset*20 + 60, 50, 20), net.players[i].currentScore.ToString());
 					
 					yOffset++;
 				}
@@ -741,7 +742,8 @@ public class Hud : MonoBehaviour {
 			
 			GUI.color = Color.black;
 			yOffset++;
-			GUI.Label(new Rect(10,(yOffset*20) + 60,300,20), ">> TO CHANGE TEAMS, PRESS 'T' <<");
+			GUI.Label(new Rect(10,(yOffset*20) + 60,300,20), 
+				">> TO CHANGE TEAMS, PRESS '" + InputUser.GetKeyLabel(UserAction.SwapTeam) + "' <<");
 		}
 		
 		GUI.EndGroup();
@@ -921,13 +923,7 @@ public class Hud : MonoBehaviour {
 		
 		GUILayout.Label("---------- Controls: ----------");
 		
-		GUILayout.Label("Q/Right Click - Swap Weapon");
-		GUILayout.Label("E - Pickup Weapon (replaces weapon in hand)");
-		GUILayout.Label("K - Kill yourself");
-		GUILayout.Label("R - Sprint");
-		GUILayout.Label("ENTER - Chat");
-		GUILayout.Label("Tab - Scoreboard");
-		GUILayout.Label("Tab+T - Swap Teams");
+		GUILayout.Label("Right Click - Swap Weapon");
 		
 		GUILayout.EndArea();
 		

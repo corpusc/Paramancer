@@ -351,75 +351,56 @@ public class EntityClass : MonoBehaviour {
 			return;
 		}
 		
-		
-		if (isLocal){
-			if (Spectating){
-				
-				
-				
-				
+		if (isLocal) {
+			if (Spectating) {
 			}else{
 				Vector3 lastPos = transform.position;
-				if (User.health>0f){
-					
-					
+				if (User.health > 0f) {
 					hud.offeredPickup = offeredPickup;
-					if (offeredPickup != ""){
-						
+					if (offeredPickup != "") {
 						bool pickup = false;
-						if (!net.autoPickup && Input.GetKeyDown("e")) pickup = true;
-						if (net.autoPickup) pickup = true;
+
+						if (!net.autoPickup && InputUser.Started(UserAction.GrabItem)) 
+							pickup = true;
+						if (net.autoPickup) 
+							pickup = true;
 						
-						if (pickup){
-							//pickup weapon.
-							
-							for (int i=0; i<artil.Guns.Length; i++){
-								if (offeredPickup == artil.Guns[i].Name){
+						if (pickup) {
+							for (int i=0; i<artil.Guns.Length; i++) {
+								if (offeredPickup == artil.Guns[i].Name) {
 									handGun = i;
 									handGunCooldown = 0f;
-									
 									gunRecoil += Vector3.right * 5f;
 									gunRecoil -= Vector3.up * 5f;
 									PlaySound("weaponChange");
-									
 									currentOfferedPickup.Pickup();
 								}
 							}
-							if (offeredPickup == "health" && User.health<100f){
-								
+							
+							if (offeredPickup == "health" && User.health < 100f){
 								net.ConsumeHealth(User.viewID);
 								net.localPlayer.health = 100f;
 								User.health = 100f;
-								
 								PlaySound("weaponChange");
-								
 								currentOfferedPickup.Pickup();
 							}
-							
-							
-							
 						}
 					}
 				}
+				
 				offeredPickup = "";
-				
-				
 				hud.gunA = handGun;
 				hud.gunACooldown = handGunCooldown;
 				hud.gunB = holsterGun;
 				
-				if (User.health>0f){
-					
-					
-					
-					if (Camera.main.transform.parent == null) SetModelVisibility(false);
+				if (User.health > 0f) {
+					if (Camera.main.transform.parent == null) 
+						SetModelVisibility(false);
 					
 					ourKiller = null;
-					
 					Camera.main.transform.parent = camHolder.transform;
 					Camera.main.transform.localPosition = Vector3.zero;
 					//Camera.main.transform.localEulerAngles = Vector3.zero;
-					
 					Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.Euler(new Vector3(0,0,0)), Time.deltaTime * 5f);
 					
 					float invY = 1f;
@@ -431,32 +412,30 @@ public class EntityClass : MonoBehaviour {
 					if (camAngle.x>85f) camAngle.x = 85f;
 					if (camAngle.x<-85f) camAngle.x = -85f;
 					
-					
-					
 					camHolder.transform.localEulerAngles = camAngle;
-					
-					bool startedSprinitng = false;
-					
+					bool startedSprinting = false;
 					Vector3 inputVector = Vector3.zero; 
-					//if (Input.GetKey("w")) inputVector += Camera.main.transform.forward;
-					//if (Input.GetKey("s")) inputVector -= Camera.main.transform.forward;
-					//if (Input.GetKey("d")) inputVector += Camera.main.transform.right;
-					//if (Input.GetKey("a")) inputVector -= Camera.main.transform.right;
+
 					if (InputUser.Holding(UserAction.MoveForward)) 
 						inputVector += animObj.transform.forward;
+					
 					if (InputUser.Holding(UserAction.MoveBackward)) 
 						inputVector -= animObj.transform.forward;
+					
 					if (InputUser.Holding(UserAction.MoveRight)) 
 						inputVector += animObj.transform.right;
+					
 					if (InputUser.Holding(UserAction.MoveLeft)) 
 						inputVector -= animObj.transform.right;
-					if(Input.GetKeyDown("r")) 
-						startedSprinitng = true;
+					
+					if (InputUser.Holding(UserAction.Sprint)) 
+						startedSprinting = true;
+					
 					//inputVector.y = 0f;
 					inputVector.Normalize();
 					
-					if (!crouched){
-						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 10f, startedSprinitng);
+					if (!crouched) {
+						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 10f, startedSprinting);
 					}else{
 						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 5f);
 					}
@@ -655,7 +634,7 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if ((Input.GetKeyDown("mouse 1") || Input.GetKeyDown("q")) && Screen.lockCursor == true) {
+					if ((Input.GetKeyDown("mouse 1") || InputUser.Started(UserAction.SwapWeapon)) && Screen.lockCursor == true) {
 						// swap guns
 						int gun = handGun;
 						float tempFloat = handGunCooldown;
@@ -675,7 +654,7 @@ public class EntityClass : MonoBehaviour {
 						
 					}
 					
-					if (Input.GetKeyDown("k")) {
+					if (InputUser.Started(UserAction.Suicide)) {
 						net.RegisterHitRPC("suicide",User.viewID,User.viewID,transform.position);
 					}
 					

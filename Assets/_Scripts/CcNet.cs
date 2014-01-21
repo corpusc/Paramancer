@@ -540,7 +540,7 @@ public class CcNet : MonoBehaviour {
 		
 		// change team
 		if (connected && CurrMatch.teamBased) {
-			if (Input.GetKeyDown("t") && Input.GetKey("tab")) {
+			if (InputUser.Started(UserAction.SwapTeam)) {
 				if (localPlayer.team == 1) {
 					localPlayer.team = 2;
 				}else{

@@ -53,8 +53,52 @@ public static class InputUser {
 				case UserAction.MoveDown:
 					BindData[i].KeyCode = KeyCode.Z;
 					break;
+
+				case UserAction.Sprint:
+					BindData[i].KeyCode = KeyCode.LeftShift;
+					break;
+				case UserAction.SwapWeapon:
+					BindData[i].KeyCode = KeyCode.R;
+					break;
+				case UserAction.GrabItem:
+					BindData[i].KeyCode = KeyCode.G;
+					break;
+				case UserAction.Chat:
+					BindData[i].KeyCode = KeyCode.Return;
+					break;
+				case UserAction.Menu:
+					BindData[i].KeyCode = KeyCode.Escape;
+					break;
+				case UserAction.Scores:
+					BindData[i].KeyCode = KeyCode.Tab;
+					break;
+				case UserAction.SwapTeam:
+					BindData[i].KeyCode = KeyCode.Alpha5;
+					break;
+				case UserAction.Suicide:
+					BindData[i].KeyCode = KeyCode.K;
+					break;
 			}
 		}
+	}
+	
+	public static string GetKeyLabel(UserAction action) {
+		for (int i = 0; i < BindData.Length; i++) {
+			if (action == BindData[i].Action)
+				return BindData[i].KeyCode.ToString();
+		}
+		
+		return "THAT BIND DOESN'T EXIST";
+	}
+	
+	public static bool Started(UserAction action) {
+		for (int i = 0; i < BindData.Length; i++) {
+			if (action == BindData[i].Action)
+				if (Input.GetKeyDown(BindData[i].KeyCode) )
+					return true;
+		}
+		
+		return false;
 	}
 	
 	public static bool Holding(UserAction action) {

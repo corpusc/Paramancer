@@ -9,17 +9,17 @@ public enum UserAction {
 	MoveUp,
 	MoveDown,
 	
+	Sprint,
+	SwapWeapon,
+	GrabItem,
+	Chat,
+	Menu,
+	Scores,
+	SwapTeam,
+	Suicide,
 	
 	Count
 //	Use, // fire/activate/use whatever you are holding
-//	Sprint,
-//	SwapWeapon,
-//	GrabItem,
-//	Chat,
-//	Menu,
-//	Scores,
-//	SwapTeam,
-//	Suicide,
 };
 
 public enum Weapon {

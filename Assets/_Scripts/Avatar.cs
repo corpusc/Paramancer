@@ -21,15 +21,19 @@ public class Avatar : MonoBehaviour {
 		}
 		
 		//if(StartSprint) sprinting = true;
-		if(StartSprint) sprinting = !sprinting;
+		if (StartSprint) 
+			sprinting = !sprinting;
 		
 		// let's go
-		if(sprintActivatedTime > sprintDuration) sprinting = false;
-		if(sprinting){
+		if (sprintActivatedTime > sprintDuration) 
+			sprinting = false;
+		
+		if (sprinting) {
 			moveVector *= SprintMultiplier;
 			sprintActivatedTime += Time.deltaTime;
-		}
-		else sprintActivatedTime = (sprintActivatedTime - Time.deltaTime < 0f) ? 0f : (sprintActivatedTime - Time.deltaTime);
+		}else 
+			sprintActivatedTime = (sprintActivatedTime - Time.deltaTime < 0f) ? 0f : (sprintActivatedTime - Time.deltaTime);
+		
 		isGrounded = false;
 		Ray coreRay = new Ray(transform.position, moveVector);
 		RaycastHit coreHit = new RaycastHit();
@@ -58,8 +62,7 @@ public class Avatar : MonoBehaviour {
 		}
 	}
 	
-	public float GetEnergy()
-	{
+	public float GetEnergy() {
 		return (sprintDuration - sprintActivatedTime) / sprintDuration;
 	}
 	

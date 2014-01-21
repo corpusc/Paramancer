@@ -23,13 +23,6 @@ public class CcLog : MonoBehaviour {
 	void Update() {
 		//if (Input.GetKeyDown("t") && 
 		//	!Input.GetKey("tab") && !chatTextEntry){
-		
-//		if (Input.GetKeyDown("t") && 
-//			!Typing)
-//			Typing = true;
-		
-//		if (Input.GetKeyDown("escape") )
-//			Typing = false;
 	}
 	
 	void OnGUI() {
