@@ -428,7 +428,7 @@ public class EntityClass : MonoBehaviour {
 					if (InputUser.Holding(UserAction.MoveLeft)) 
 						inputVector -= animObj.transform.right;
 					
-					if (InputUser.Holding(UserAction.Sprint)) 
+					if (InputUser.Started(UserAction.Sprint)) 
 						startedSprinting = true;
 					
 					//inputVector.y = 0f;
