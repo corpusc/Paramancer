@@ -5,14 +5,18 @@ public class ControlsGui : MonoBehaviour {
 	public int BottomMost;
 	
 	// privates
+	static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
+	Color purpleLight = Color.Lerp(purple, Color.white, 0.5f);
+	Color orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
 	Texture keyCap;
 	int numX = 21;
 	int numY = 6;
-	BindData draggee = null;
-	Vector3 mouPos; // = Input.mousePosition;
+	int w;
+	BindData draggee = null; // user action that is attached to pointer.  it's still dragging if you're not HOLDING LMB?!
+	Vector3 mouPos; // converted Input.mousePosition to sensible coordinates
 	// VVVVV matching indices VVVVVVV
 	KeyCode[] codes; // first build this for cleaner looking initialization of values
-	KeyData[] keyData; // this is the real structure built from "codes", that actually gets used elsewhere
+	KeyData[] keyData; // this is the real structure built from "codes", that is mostly used elsewhere
 	// ^^^^^ matching indices ^^^^^^^
 	
 	
@@ -101,11 +105,12 @@ public class ControlsGui : MonoBehaviour {
 		// move user action icons by clicking on the onscreen keyboard
 		// FIXME: we'll wanna clear draggee upon leaving the controls config screen, otherwise
 		// when coming back, there will be an action on the pointer instead of showing up on
-		// its proper key location
+		// its proper key location (altho atm, its impossible to leave without clicking on menu 
+		// option, thus dropping the action
 		if (Input.GetKeyDown(KeyCode.Mouse0) ) {
-			int moId; // mouse over id
-			var mo = mouseOver(out moId);
-			if (mo == null) { // not a valid area, so discard draggee
+			int tkId; // targeted key id
+			var tk = targetedKey(out tkId);
+			if (tk == null) { // not a valid area, so discard draggee
 				if (draggee != null) {
 					draggee.Id = latestUnboundKey;
 					draggee.KeyCode = codes[latestUnboundKey];
@@ -116,15 +121,16 @@ public class ControlsGui : MonoBehaviour {
 				if (draggee == null) {
 					// pick it up
 					for (int i = 0; i < InputUser.BindData.Length; i++) {
-						if (moId == InputUser.BindData[i].Id) {
-							draggee = InputUser.BindData[i];
+						if (tkId == InputUser.BindData[i].Id) {
 							latestUnboundKey = InputUser.BindData[i].Id;
+							InputUser.BindData[i].Id = 9999;
+							draggee = InputUser.BindData[i];
 						}
 					}
 				}else{ // we were dragging
 					// change bind settings
-					draggee.Id = moId;
-					draggee.KeyCode = mo.KeyCode;
+					draggee.Id = tkId;
+					draggee.KeyCode = tk.KeyCode;
 					
 					// if there was something else there, that's the new draggee
 					bool anotherWasBoundThere = false;
@@ -138,9 +144,10 @@ public class ControlsGui : MonoBehaviour {
 						}
 					}
 					
-					if (anotherWasBoundThere)
+					if (anotherWasBoundThere) {
+						theOther.Id = 9999;
 						draggee = theOther;
-					else
+					}else
 						draggee = null;
 				}
 			}
@@ -149,6 +156,7 @@ public class ControlsGui : MonoBehaviour {
 	
 	int oldW = 0; int oldH = 0;
 	void OnGUI () {
+		// handle change of screen dimensions
 		mouPos = Input.mousePosition;
 		mouPos.y = Screen.height - mouPos.y;
 		
@@ -161,9 +169,9 @@ public class ControlsGui : MonoBehaviour {
 		// draw keys          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {
 			// get the right color
-			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) )
-				GUI.color = Color.yellow;
-			else
+			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) ) {
+				GUI.color = purpleLight;
+			}else
 				GUI.color = Color.white;
 				
 			Rect or = keyData[i].Rect; // store original rect
@@ -200,18 +208,18 @@ public class ControlsGui : MonoBehaviour {
 		}
 		
 		// draw actions
-		GUI.color = Color.cyan;
+		GUI.color = purple;
 		var bd = InputUser.BindData;
 		for (int i = 0; i < bd.Length; i++) {
 			if (bd[i] != draggee)
 				GUI.DrawTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
 		}
 		
-		// draw key text          (perhaps clean this up by using mouseOver())
+		// draw key labels          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {
 			// get the right color
 			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) )
-				GUI.color = Color.yellow;
+				GUI.color = purple;
 			else
 				GUI.color = Color.white;
 				
@@ -219,11 +227,35 @@ public class ControlsGui : MonoBehaviour {
 			GUI.Box(keyData[i].Rect, keyData[i].Text);
 		}
 		
-		if (draggee != null)
-			GUI.DrawTexture(new Rect(mouPos.x, mouPos.y, 50, 50), draggee.Pic);
+		// draw hover text for action icons
+		string s = targetedBind();
+		if (s != null) {
+			GUI.color = Color.cyan;
+			GUI.Box(new Rect(mouPos.x-w, mouPos.y-w/4*3, w*2, w/2), s);
+		}
+		
+		// draw action icon near pointer if it's being moved
+		if (draggee != null) {
+			GUI.color = purple;
+			GUI.DrawTexture(new Rect(mouPos.x-w/2, mouPos.y/*+w/2*/, w, w), draggee.Pic);
+		}
 	}
 	
-	KeyData mouseOver(out int mouseOverId) {
+	string targetedBind() {
+		if (draggee != null)
+			Debug.Log("draggee.Id: " + draggee.Id);
+		
+		for (int i = 0; i < InputUser.BindData.Length; i++) {
+			if ((draggee == null || InputUser.BindData[i].Id != draggee.Id) &&
+				keyData[InputUser.BindData[i].Id].Rect.Contains(mouPos) ) {
+				return InputUser.BindData[i].Action.ToString();
+			}
+		}
+		
+		return null;
+	}
+	
+	KeyData targetedKey(out int mouseOverId) {
 		for (int i = 0; i < keyData.Length; i++) {
 			if (keyData[i].Rect.Contains(mouPos) ) {
 				mouseOverId = i;
@@ -300,7 +332,7 @@ public class ControlsGui : MonoBehaviour {
 	}
 
 	void setupKeyData() {
-		int w = Screen.width/(numX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
+		w = Screen.width/(numX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
 		//int h = Screen.height/(numY+1);
 		int fKeyGap = w/3;
 		
