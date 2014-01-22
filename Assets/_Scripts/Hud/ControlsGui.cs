@@ -1,5 +1,5 @@
 ﻿// TODO
-// PlayerPrefs. saving
+// ******** PlayerPrefs. saving **************
 // space it to take up the whole width of screen.... offsets for groupings take the leftover pixels
 // attention grabbing text such as "Click on actions/keys to change them"
 // ??  maybe extra text when one is picked up, telling them to place it?  prob not

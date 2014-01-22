@@ -303,7 +303,7 @@ MonoBehaviour:
   teamBlueFlag: {fileID: 2800000, guid: 9685204decc744871b9c108d9c206039, type: 3}
   gamelogo: {fileID: 2800000, guid: e9b7526decc6d4160aef224badd76a6e, type: 3}
   offeredPickup: 
-  menuPoint: top
+  OfflineMenu: 0
   Spectating: 0
   Spectatee: 0
   gunACooldown: 0
