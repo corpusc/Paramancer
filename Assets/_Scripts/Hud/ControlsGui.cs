@@ -1,4 +1,24 @@
-﻿using UnityEngine;
+﻿// TODO
+// PlayerPrefs. saving
+// space it to take up the whole width of screen.... offsets for groupings take the leftover pixels
+// attention grabbing text such as "Click on actions/keys to change them"
+// ??  maybe extra text when one is picked up, telling them to place it?  prob not
+// 		ACTUALLY, just replace the initial text with the latter, while dragging something...PROBABLY!
+// mouse keys, allowing spaces for Naga/MMO thumb grids
+// changeable visibility windows for left and right hand, with horizontal splitter
+//		when more than 2 rows
+// gameplay hotbar
+// tabs for other categories (music playing, vehicular controls)
+// animations/sounds
+//		smoothly move to mouse pointer on pickup, smoothly move to destination key on dropping
+//		tilting graphic variable to how fast pointer is moving?  maybe even spinning at height of craziness
+//			maybe its anchored along top edge, and physics could let it spin around
+//		size/color changes upon grab/drop
+// lol!  levelling up in "Reconfig Mastery" the more keys you remap?  8)
+// gamepad
+// drag keys themselves around, for foreign keyboards
+
+using UnityEngine;
 using System.Collections;
 
 public class ControlsGui : MonoBehaviour {
@@ -231,7 +251,7 @@ public class ControlsGui : MonoBehaviour {
 		string s = targetedBind();
 		if (s != null) {
 			GUI.color = Color.cyan;
-			GUI.Box(new Rect(mouPos.x-w, mouPos.y-w/4*3, w*2, w/2), s);
+			GUI.Box(new Rect(mouPos.x-w*1.5f, mouPos.y-w/4*3, w*3, w/2), s);
 		}
 		
 		// draw action icon near pointer if it's being moved
@@ -241,6 +261,20 @@ public class ControlsGui : MonoBehaviour {
 		}
 	}
 	
+	string getSpacedOut(string s) {
+		string ns = "";
+		// add spaces between words, determined by capital letters
+		for (int i = 0; i < s.Length; i++) {
+			if (i != 0 && s[i] >= 'A' && s[i] <= 'Z') {
+				ns += " ";
+			}
+			
+			ns += s[i];
+		}
+		
+		return ns;
+	}
+	
 	string targetedBind() {
 		if (draggee != null)
 			Debug.Log("draggee.Id: " + draggee.Id);
@@ -248,7 +282,7 @@ public class ControlsGui : MonoBehaviour {
 		for (int i = 0; i < InputUser.BindData.Length; i++) {
 			if ((draggee == null || InputUser.BindData[i].Id != draggee.Id) &&
 				keyData[InputUser.BindData[i].Id].Rect.Contains(mouPos) ) {
-				return InputUser.BindData[i].Action.ToString();
+				return getSpacedOut(InputUser.BindData[i].Action.ToString());
 			}
 		}
 		
