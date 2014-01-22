@@ -23,6 +23,7 @@ public class Hud : MonoBehaviour {
 	// misc
 	public string offeredPickup = "";
 	public Menu OfflineMenu = Menu.Main;
+	public Menu OnlineMenu = Menu.Controls;
 	
 	public bool Spectating = false;
 	public int Spectatee = 0;
@@ -36,7 +37,6 @@ public class Hud : MonoBehaviour {
 	// private
 	Rect screen;
 	bool viewingScores = false;
-	Menu onlineMenu = Menu.Controls;
 	string defaultName = "Lazy Noob";
 	
 	// windows
@@ -246,7 +246,7 @@ public class Hud : MonoBehaviour {
 		
 		// show map picture, if setting up match
 		bool settingUpMatch;
-		if ( (net.connected && onlineMenu == Menu.Match) ||
+		if ( (net.connected && OnlineMenu == Menu.Match) ||
 			(!net.connected && OfflineMenu == Menu.StartGame)
 		) {
 			for (int i=0; i<maps.Count; i++) {
@@ -449,7 +449,7 @@ public class Hud : MonoBehaviour {
 
 				if (GUI.Button(button, "Resume")) {
 					Screen.lockCursor = true;
-					onlineMenu = Menu.Controls;
+					OnlineMenu = Menu.Controls;
 				}
 				
 				button.y += h;
@@ -460,30 +460,30 @@ public class Hud : MonoBehaviour {
 				if (net.isServer) {
 					button.y += h;
 					if (GUI.Button(button, Menu.Controls.ToString()))
-						onlineMenu = Menu.Controls;
+						OnlineMenu = Menu.Controls;
 					
 					button.y += h;
 					if (GUI.Button(button, Menu.Match.ToString()))
-						onlineMenu = Menu.Match;
+						OnlineMenu = Menu.Match;
 					
 					button.y += h;
 					if (GUI.Button(button, Menu.Kick.ToString()))
-						onlineMenu = Menu.Kick;				
+						OnlineMenu = Menu.Kick;				
 				}
 				
 				// show menus
-				if (onlineMenu == Menu.Kick) {
+				if (OnlineMenu == Menu.Kick) {
 					if (net.isServer) {
 						DrawWindowBackground();
 						KickMenu();
 					}else
-						onlineMenu = Menu.Controls;
-				}else if (onlineMenu == Menu.Match) {
+						OnlineMenu = Menu.Controls;
+				}else if (OnlineMenu == Menu.Match) {
 					if (net.isServer) {
 						MatchSetup(true);
 					}else
-						onlineMenu = Menu.Controls;
-				}else if (onlineMenu == Menu.Controls) {
+						OnlineMenu = Menu.Controls;
+				}else if (OnlineMenu == Menu.Controls) {
 					MenuControls();
 				}
 			}else{ // connected & cursor locked
@@ -1283,6 +1283,7 @@ public class Hud : MonoBehaviour {
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
 				net.NetVI = Network.AllocateViewID();
 				net.RequestGameData();
+				OnlineMenu = Menu.Controls;
 			}
 		}
 				

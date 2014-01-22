@@ -1085,6 +1085,7 @@ public class CcNet : MonoBehaviour {
 			
 			networkView.RPC("RequestPickupStocks", RPCMode.Server);
 			Screen.lockCursor = true;
+			hud.OnlineMenu = Menu.Controls;
 		}
 	}
 	
