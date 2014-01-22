@@ -276,9 +276,6 @@ public class ControlsGui : MonoBehaviour {
 	}
 	
 	string targetedBind() {
-		if (draggee != null)
-			Debug.Log("draggee.Id: " + draggee.Id);
-		
 		for (int i = 0; i < InputUser.BindData.Length; i++) {
 			if ((draggee == null || InputUser.BindData[i].Id != draggee.Id) &&
 				keyData[InputUser.BindData[i].Id].Rect.Contains(mouPos) ) {

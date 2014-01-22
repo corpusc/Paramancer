@@ -22,7 +22,7 @@ public class Hud : MonoBehaviour {
 	
 	// misc
 	public string offeredPickup = "";
-	public string menuPoint = "top";
+	public Menu OfflineMenu = Menu.Main;
 	
 	public bool Spectating = false;
 	public int Spectatee = 0;
@@ -35,7 +35,7 @@ public class Hud : MonoBehaviour {
 	
 	// private
 	bool viewingScores = false;
-	string gameMenuPoint = "config";
+	Menu onlineMenu = Menu.Main;
 	string defaultName = "Lazy Noob";
 	
 	// windows
@@ -80,6 +80,7 @@ public class Hud : MonoBehaviour {
 		matches[0].respawnWait = 5f;
 		
 		matches[1].Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
+		// Gravity Is/Gets Personal?, Personal Gravity?, Gravitaction?
 		matches[1].Descript = "Each player has their own, independent, changeable gravity";
 		matches[1].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		matches[1].respawnWait = 5f;
@@ -244,27 +245,27 @@ public class Hud : MonoBehaviour {
 		if (!net.connected){
 			Screen.lockCursor = false;
 			
-			if (menuPoint == "top"){
+			if (OfflineMenu == Menu.Main){
 				GUI.BeginGroup(window);
 				
-				if (GUILayout.Button("Host a game")){
-					menuPoint = "host";
+				if (GUILayout.Button(Menu.StartGame.ToString())){
+					OfflineMenu = Menu.StartGame;
 					net.gameName = net.localPlayer.name + "'s Game";
 				}
-				if (GUILayout.Button("Join a game")){
-					menuPoint = "join";
+				if (GUILayout.Button(Menu.JoinGame.ToString())){
+					OfflineMenu = Menu.JoinGame;
 					scrollPos = Vector2.zero;
 					MasterServer.RequestHostList(net.uniqueGameName);
 					hostPings = new Ping[0];
 				}
-				if (GUILayout.Button("Avatar")){
-					menuPoint = "personalise";
+				if (GUILayout.Button(Menu.Avatar.ToString())){
+					OfflineMenu = Menu.Avatar;
 				}
-				if (GUILayout.Button("Config")){
-					menuPoint = "config";
+				if (GUILayout.Button(Menu.Controls.ToString())){
+					OfflineMenu = Menu.Controls;
 				}
-				if (GUILayout.Button("About")){
-					menuPoint = "about";
+				if (GUILayout.Button(Menu.Credits.ToString())){
+					OfflineMenu = Menu.Credits;
 				}
 				
 				GUILayout.Label("");
@@ -278,37 +279,36 @@ public class Hud : MonoBehaviour {
 				
 				GUI.EndGroup();
 				
-			} else if (menuPoint == "host") {
+			} else if (OfflineMenu == Menu.StartGame) {
 				if (GUI.Button(br, "Back..."))
-					menuPoint = "top";
+					OfflineMenu = Menu.Main;
 				
-				DrawWindowBackground();
-				GameSetup(false);
-			} else if (menuPoint == "join") {
+				MatchSetup(false);
+			} else if (OfflineMenu == Menu.JoinGame) {
 				if (GUI.Button(br, "Back..."))
-					menuPoint = "top";
+					OfflineMenu = Menu.Main;
 				
 				DrawWindowBackground();
 				JoinMenu();
-			} else if (menuPoint == "personalise") {
+			} else if (OfflineMenu == Menu.Avatar) {
 				if (GUI.Button(br, "Back...")) {
-					menuPoint = "top";
+					OfflineMenu = Menu.Main;
 					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
 				}
 				
 				DrawWindowBackground(true);
 				DrawMenuConfigAvatar();
-			} else if (menuPoint == "config") {
+			} else if (OfflineMenu == Menu.Controls) {
 				br.x = window.xMax;
 				br.y = controGui.BottomMost;
 				if (GUI.Button(br, "Back...")) {
-					menuPoint = "top";
+					OfflineMenu = Menu.Main;
 				}
 				
-				DrawMenuConfig();
-			} else if(menuPoint=="about"){
+				MenuControls();
+			} else if(OfflineMenu==Menu.Credits){
 				if (GUI.Button(br, "Back..."))
-					menuPoint = "top";
+					OfflineMenu = Menu.Main;
 				
 				DrawWindowBackground();
 				
@@ -336,29 +336,29 @@ public class Hud : MonoBehaviour {
 					GUILayout.Label("*** Visit the SDS homepage for standalone client downloads (win/mac) ***");
 				
 				GUI.EndGroup();
-			} else if (menuPoint == "connectionError"){
+			} else if (OfflineMenu == Menu.ConnectionError){
 				if (GUI.Button(br, "Back..."))
-					menuPoint = "top";
+					OfflineMenu = Menu.Main;
 				
 				DrawWindowBackground();
 				GUI.BeginGroup(window);
 				GUILayout.Label("Failed to Connect:");
 				GUILayout.Label(net.Error);
 				GUI.EndGroup();
-			}else if (menuPoint == "connecting"){
+			}else if (OfflineMenu == Menu.Connecting){
 				if (GUI.Button(br, "Back...")){
 					Network.Disconnect();
-					menuPoint = "top";
+					OfflineMenu = Menu.Main;
 				}
 				
 				DrawWindowBackground();
 				GUI.BeginGroup(window);
 				GUILayout.Label("Connecting...");
 				GUI.EndGroup();
-			}else if (menuPoint == "initializingServer"){
+			}else if (OfflineMenu == Menu.InitializingServer){
 				if (GUI.Button(br, "Back...")){
 					Network.Disconnect();
-					menuPoint = "top";
+					OfflineMenu = Menu.Main;
 				}
 				
 				DrawWindowBackground();
@@ -368,7 +368,7 @@ public class Hud : MonoBehaviour {
 			}
 		}
 		
-		if (menuPoint == "top" || menuPoint == "personalise") {
+		if (OfflineMenu == Menu.Main || OfflineMenu == Menu.Avatar) {
 			if (GameObject.Find("CharaMesh") != null){
 				// colours
 				Material[] mats = GameObject.Find("CharaMesh").renderer.materials;
@@ -435,33 +435,32 @@ public class Hud : MonoBehaviour {
 				
 				if (net.isServer) {
 					button.y += h;
-					if (GUI.Button(button, "Config"))
-						gameMenuPoint = "config";
+					if (GUI.Button(button, Menu.Controls.ToString()))
+						onlineMenu = Menu.Controls;
 					
 					button.y += h;
-					if (GUI.Button(button, "Change Game"))
-						gameMenuPoint = "gameType";
+					if (GUI.Button(button, Menu.Match.ToString()))
+						onlineMenu = Menu.Match;
 					
 					button.y += h;
-					if (GUI.Button(button, "Kick"))
-						gameMenuPoint = "kick";
+					if (GUI.Button(button, Menu.Kick.ToString()))
+						onlineMenu = Menu.Kick;
 				}
 				
 				// show menus
-				if (gameMenuPoint == "kick") {
+				if (onlineMenu == Menu.Kick) {
 					if (net.isServer) {
 						DrawWindowBackground();
 						KickMenu();
 					}else
-						gameMenuPoint = "config";
-				}else if (gameMenuPoint == "gameType") {
+						onlineMenu = Menu.Controls;
+				}else if (onlineMenu == Menu.Match) {
 					if (net.isServer) {
-						DrawWindowBackground();
-						GameSetup(true);
+						MatchSetup(true);
 					}else
-						gameMenuPoint = "config";
-				}else if (gameMenuPoint == "config") {
-					DrawMenuConfig();
+						onlineMenu = Menu.Controls;
+				}else if (onlineMenu == Menu.Controls) {
+					MenuControls();
 				}
 			}else{ // connected & cursor locked
 				if (viewingScores || net.gameOver) {
@@ -839,7 +838,7 @@ public class Hud : MonoBehaviour {
 			if (net.players[i].viewID != net.localPlayer.viewID) {
 				GUILayout.BeginHorizontal();
 				
-				if (GUILayout.Button("Kick"))
+				if (GUILayout.Button(Menu.Kick.ToString()))
 					net.Kick(i, false);
 
 				string pingString = "?";
@@ -857,7 +856,7 @@ public class Hud : MonoBehaviour {
 	
 	private int fsWidth = 1280;
 	private int fsHeight = 720;
-	void DrawMenuConfig() {
+	void MenuControls() {
 		controGui.enabled = true;
 		Rect r = window;
 		r.y = controGui.BottomMost;
@@ -930,7 +929,7 @@ public class Hud : MonoBehaviour {
 		GUI.EndGroup();
 	}
 	
-	void GameSetup(bool serving) {
+	void MatchSetup(bool serving) {
 		GUI.BeginGroup(window);
 		
 		if (serving)
@@ -1257,7 +1256,7 @@ public class Hud : MonoBehaviour {
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initialising server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections,net.listenPort, useNat);
-				menuPoint = "initializingServer";
+				OfflineMenu = Menu.InitializingServer;
 			}
 		}else{
 			if (GUI.Button(new Rect(10,310,580,80), "Change Game")) {
@@ -1325,7 +1324,7 @@ public class Hud : MonoBehaviour {
 					
 					if (GUI.Button(new Rect(5,(i*40)+2, 80,36), "Connect")){
 						Network.Connect(hostData[i],net.password);
-						menuPoint = "connecting";
+						OfflineMenu = Menu.Connecting;
 					}
 			
 					GUI.Label(new Rect(100,(i*40)+2,150, 30), hostData[i].gameName);
