@@ -1,22 +1,30 @@
 ﻿// TODO
+
+// ------------------absolutely necessary for 1st release
 // ******** PlayerPrefs. saving **************
+// gamepad
+// drag keys themselves around, for foreign keyboards
 // space it to take up the whole width of screen.... offsets for groupings take the leftover pixels
 // attention grabbing text such as "Click on actions/keys to change them"
+//		left click to move actions, right click to move keys.  maybe mouse in the middle and l & r texts on either side
 // ??  maybe extra text when one is picked up, telling them to place it?  prob not
 // 		ACTUALLY, just replace the initial text with the latter, while dragging something...PROBABLY!
 // mouse keys, allowing spaces for Naga/MMO thumb grids
-// changeable visibility windows for left and right hand, with horizontal splitter
-//		when more than 2 rows
-// gameplay hotbar
-// tabs for other categories (music playing, vehicular controls)
 // animations/sounds
 //		smoothly move to mouse pointer on pickup, smoothly move to destination key on dropping
 //		tilting graphic variable to how fast pointer is moving?  maybe even spinning at height of craziness
 //			maybe its anchored along top edge, and physics could let it spin around
 //		size/color changes upon grab/drop
+
+// ------------------"hotbar" release
+// changeable visibility panels for left and right hand, with horizontal splitter when more than 2 rows
+// gameplay hotbar
+
+// ------------------final release
+// tabs for other categories (music playing, vehicular controls)
 // lol!  levelling up in "Reconfig Mastery" the more keys you remap?  8)
-// gamepad
-// drag keys themselves around, for foreign keyboards
+
+
 
 using UnityEngine;
 using System.Collections;

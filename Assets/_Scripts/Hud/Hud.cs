@@ -34,8 +34,9 @@ public class Hud : MonoBehaviour {
 	public float EnergyLeft = 1f; //0-1
 	
 	// private
+	Rect screen;
 	bool viewingScores = false;
-	Menu onlineMenu = Menu.Main;
+	Menu onlineMenu = Menu.Controls;
 	string defaultName = "Lazy Noob";
 	
 	// windows
@@ -228,10 +229,11 @@ public class Hud : MonoBehaviour {
 		if (InputUser.Started(UserAction.Scores))
 			viewingScores = !viewingScores;
 	}
-	
+
 	void OnGUI() {
 		controGui.enabled = false;
 		
+		screen = new Rect(0, 0, Screen.width, Screen.height);
 		int midX = Screen.width/2;
 		int midY = Screen.height/2;
 		
@@ -242,7 +244,22 @@ public class Hud : MonoBehaviour {
 		br.width = 100; // fixme for actual string width?
 		br.height = vSpan * 2;
 		
-		if (!net.connected){
+		// show map picture, if setting up match
+		bool settingUpMatch;
+		if ( (net.connected && onlineMenu == Menu.Match) ||
+			(!net.connected && OfflineMenu == Menu.StartGame)
+		) {
+			for (int i=0; i<maps.Count; i++) {
+				if (maps[i].Name == matches[matchId].allowedLevels[mapId]) {
+					GUI.DrawTexture(screen, maps[i].Pic);
+				}
+			}
+			
+			settingUpMatch = true;
+		}else
+			settingUpMatch = false;
+	
+		if (!net.connected) {
 			Screen.lockCursor = false;
 			
 			if (OfflineMenu == Menu.Main){
@@ -250,7 +267,7 @@ public class Hud : MonoBehaviour {
 				
 				if (GUILayout.Button(Menu.StartGame.ToString())){
 					OfflineMenu = Menu.StartGame;
-					net.gameName = net.localPlayer.name + "'s Game";
+					net.gameName = net.localPlayer.name + "'s match...of the Damned!";
 				}
 				if (GUILayout.Button(Menu.JoinGame.ToString())){
 					OfflineMenu = Menu.JoinGame;
@@ -306,7 +323,7 @@ public class Hud : MonoBehaviour {
 				}
 				
 				MenuControls();
-			} else if(OfflineMenu==Menu.Credits){
+			} else if(OfflineMenu == Menu.Credits) {
 				if (GUI.Button(br, "Back..."))
 					OfflineMenu = Menu.Main;
 				
@@ -426,13 +443,20 @@ public class Hud : MonoBehaviour {
 				float h = button.height;
 				button.x = window.xMax;
 				button.y = controGui.BottomMost;
-				if (GUI.Button(button, "Resume"))
+
+				if (settingUpMatch)
+					button.x -= button.width;
+
+				if (GUI.Button(button, "Resume")) {
 					Screen.lockCursor = true;
+					onlineMenu = Menu.Controls;
+				}
 				
 				button.y += h;
 				if (GUI.Button(button, "Disconnect"))
 					net.DisconnectNow();
 				
+				// server mode buttons
 				if (net.isServer) {
 					button.y += h;
 					if (GUI.Button(button, Menu.Controls.ToString()))
@@ -444,7 +468,7 @@ public class Hud : MonoBehaviour {
 					
 					button.y += h;
 					if (GUI.Button(button, Menu.Kick.ToString()))
-						onlineMenu = Menu.Kick;
+						onlineMenu = Menu.Kick;				
 				}
 				
 				// show menus
@@ -930,7 +954,7 @@ public class Hud : MonoBehaviour {
 	}
 	
 	void MatchSetup(bool serving) {
-		GUI.BeginGroup(window);
+		GUI.BeginGroup(screen);
 		
 		if (serving)
 			GUI.Label(new Rect(250,0,100,20), "Change game:");
@@ -987,7 +1011,8 @@ public class Hud : MonoBehaviour {
 			int lastInt = matchId;
 			
 			matchId++;
-			if (matchId>=matches.Length) matchId-=matches.Length;
+			if (matchId >= matches.Length) 
+				matchId -= matches.Length;
 			
 			int levelChangeIndex = 0;
 			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
@@ -1014,17 +1039,8 @@ public class Hud : MonoBehaviour {
 		
 		GUI.Label(new Rect(360,100,200,30), "Level: " + matches[matchId].allowedLevels[mapId]);
 				
-				
-				
 		if (matchId != 0) { // not custom
-			// show icon
-			for (int i=0; i<maps.Count; i++) {
-				if (maps[i].Name == matches[matchId].allowedLevels[mapId]) {
-					GUI.DrawTexture(new Rect(5,135,590,100), maps[i].Pic);
-				}
-			}
-			
-			//description:
+			// description
 			GUI.Label(new Rect(5,240,590,200), matches[matchId].Name + ":\n" + matches[matchId].Descript);
 			
 			if (GUI.Button(new Rect(495,240,100,25), "Customise...") ) {
@@ -1244,9 +1260,11 @@ public class Hud : MonoBehaviour {
 			GUI.EndScrollView();
 		}
 				
+		int qSpan = Screen.width / 4; // quarter of screen width span
+		var start = new Rect(qSpan, Screen.height - vSpan*4, qSpan*2, vSpan*4);
 		// init button
 		if (!serving) {
-			if (GUI.Button(new Rect(10,310,580,80), "Init Server!")) {
+			if (GUI.Button(start, "Start Game!")) {
 				// init a server with the current game mode settings
 				net.serverGameChange = true;
 				Network.incomingPassword = net.password;
@@ -1259,7 +1277,7 @@ public class Hud : MonoBehaviour {
 				OfflineMenu = Menu.InitializingServer;
 			}
 		}else{
-			if (GUI.Button(new Rect(10,310,580,80), "Change Game")) {
+			if (GUI.Button(start, "Start Match!")) {
 				net.serverGameChange = true;
 				net.lastGameWasTeamBased = net.CurrMatch.teamBased;
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);

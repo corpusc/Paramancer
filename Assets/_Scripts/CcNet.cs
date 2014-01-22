@@ -7,7 +7,7 @@ public class CcNet : MonoBehaviour {
 	public GameObject fpsEntityPrefab;
 	
 	// networky stuff
-	public string Error = "";
+	public string Error = "'Error' string init value...NO ERRORS YET!";
 	public NetworkViewID NetVI;
 	public bool connected = false;
 	public bool isServer = false;
