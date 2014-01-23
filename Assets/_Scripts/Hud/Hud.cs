@@ -39,7 +39,7 @@ public class Hud : MonoBehaviour {
 	bool viewingScores = false;
 	string defaultName = "Lazy Noob";
 	
-	// windows
+	// UI element sizes
 	Vector2 scrollPos = Vector2.zero;
 	Rect window = new Rect(0, 0, 600, 400);
 	Rect button = new Rect(0, 0, 100, 40); // fixme: are buttons always 40 in height?
@@ -61,141 +61,22 @@ public class Hud : MonoBehaviour {
 	
 	
 	void Start() {
-		// load map preview pics
-		UnityEngine.Object[] pics = Resources.LoadAll("Pic/Map");
-		
-		// setup map configs
-		for (int i = 0; i < pics.Length; i++) {
-			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
-		}
-		
-		
-		// setup match configs
-		matches = new MatchData[9];
-		for (int i = 0; i < matches.Length; i++)
-			matches[i] = new MatchData();
-		
-		matches[0].Name = "Custom";
-		matches[0].Descript = "Have it your way!  All the exact settings you prefer.";
-		matches[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
-		matches[0].respawnWait = 5f;
-		
-		matches[1].Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
-		// Gravity Is/Gets Personal?, Personal Gravity?, Gravitaction?
-		matches[1].Descript = "Each player has their own, independent, changeable gravity";
-		matches[1].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-		matches[1].respawnWait = 5f;
-		matches[1].spawnGunB = (int)Weapon.GravGun;
-		
-		matches[2].Name = "Grue Food";
-		matches[2].Descript = "It is pitch black.  You are likely to be eaten by a grue.";
-		matches[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		matches[2].respawnWait = 5f;
-		matches[2].pitchBlack = true;
-		matches[2].pickupSlot1 = 1;
-		matches[2].pickupSlot2 = 2;
-		matches[2].pickupSlot3 = 3;
-		matches[2].pickupSlot4 = 4;
-		matches[2].pickupSlot5 = 7;
-		
-		matches[3].Name = "FFA Fragmatch";
-		matches[3].Descript = "Frag count is ALL that counts in this freestyle Free For All!";
-		matches[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
-		matches[3].respawnWait = 5f;
-		
-		matches[5].Name = "Team Fragmatch";
-		matches[5].Descript = "Frag count is what counts, but don't hurt your mates!";
-		matches[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
-		matches[5].respawnWait = 5f;
-		matches[5].teamBased = true;
-		matches[5].pickupSlot5 = 4;
-
-		matches[4].Name = "BBall";
-		matches[4].Descript = "Shooting hoops...and GUNS!  GANGSTA!";
-		matches[4].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-		matches[4].respawnWait = 5f;
-		matches[4].deathsSubtractScore = false;
-		matches[4].killsIncreaseScore = false;
-		matches[4].teamBased = true;
-		matches[4].basketball = true;
-		matches[4].pickupSlot2 = 2;
-		matches[4].pickupSlot3 = 3;
-		matches[4].pickupSlot4 = 4;
-		matches[4].pickupSlot5 = 5;
-		
-		matches[6].Name = "YOLT! (You Only Live Thrice)";
-		matches[6].Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
-		matches[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		matches[6].Duration = 0f;
-		matches[6].respawnWait = 5f;
-		matches[6].killsIncreaseScore = false;
-		matches[6].pickupSlot5 = 4;
-		
-		matches[7].Name = "Swap Meat";
-		matches[7].Descript = "There is only the swapper gun, grenades and lava... have fun!";
-		matches[7].allowedLevels = new string[] { "Furnace" , "Tower"};
-		matches[7].respawnWait = 3f;
-		matches[7].killsIncreaseScore = false;
-		matches[7].spawnGunA = 5;
-		matches[7].spawnGunB = 1;
-		matches[7].pickupSlot1 = -1;
-		matches[7].pickupSlot2 = -1;
-		matches[7].pickupSlot3 = -1;
-		matches[7].pickupSlot4 = -1;
-		matches[7].pickupSlot5 = -1;
-		
-		matches[8].Name = "Weapon Lottery";
-		matches[8].Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
-		matches[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		matches[8].winScore = 20;
-		matches[8].respawnWait = 5f;
-		matches[8].spawnGunA = -2;
-		matches[8].spawnGunB = -2;
-		matches[8].restockTime = 2f;
-		matches[8].pickupSlot1 = -2;
-		matches[8].pickupSlot2 = -2;
-		matches[8].pickupSlot3 = -2;
-		matches[8].pickupSlot4 = -2;
-		matches[8].pickupSlot5 = -2;
-
-		// load textures
-		pics = Resources.LoadAll("Pic/Hud");
-		
-		// use this temp list to setup permanent vars
-		for (int i = 0; i < pics.Length; i++) {
-			var s = pics[i].name;
-			
-			switch (s) {
-				case "Health": 
-					lifeIcon = (Texture)pics[i]; 
-					break;
-				case "whiteTex": 
-					backTex = (Texture)pics[i]; 
-					break;
-				case "blackTex": 
-					blackTex = (Texture)pics[i]; 
-					break;
-				case "Crosshair": 
-					crossHair = (Texture)pics[i]; 
-					break;
-				case "Logo": 
-					gamelogo = (Texture)pics[i]; 
-					break;
-				case "FlagRed": 
-					teamRedFlag = (Texture)pics[i]; 
-					break;
-				case "FlagBlue": 
-					teamBlueFlag = (Texture)pics[i]; 
-					break;
-			}
-		}
-		
 		// scripts
 		net = GetComponent<CcNet>();
 		log = GetComponent<CcLog>();
 		arse = GetComponent<Arsenal>();
 		controGui = GetComponent<ControlsGui>();
 		locUser = GetComponent<LocalUser>();
+		
+		// load map preview pics
+		UnityEngine.Object[] pics = Resources.LoadAll("Pic/Map");
+		
+		// setup map configs
+		for (int i = 0; i < pics.Length; i++)
+			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
+		
+		setupMatchTypes();
+		loadHudPics();
 		
 		// make local player
 		net.localPlayer = new NetUser();
@@ -233,11 +114,10 @@ public class Hud : MonoBehaviour {
 	void OnGUI() {
 		controGui.enabled = false;
 		
+		// sizes of UI elements
 		screen = new Rect(0, 0, Screen.width, Screen.height);
 		int midX = Screen.width/2;
 		int midY = Screen.height/2;
-		
-		// sizes of windows and button
 		window.y = Screen.height - window.height;
 		var br = window; // back button rectangle
 		br.y -= vSpan * 2;
@@ -259,372 +139,35 @@ public class Hud : MonoBehaviour {
 		}else
 			settingUpMatch = false;
 	
+//		// experi
+//		Experi experi = new Experi();
+//		experi.Draw(screen);
+		
 		if (!net.connected) {
-			Screen.lockCursor = false;
-			
-			if (OfflineMenu == Menu.Main){
-				GUI.BeginGroup(window);
-				
-				if (GUILayout.Button(Menu.StartGame.ToString())){
-					OfflineMenu = Menu.StartGame;
-					net.gameName = net.localPlayer.name + "'s match...of the Damned!";
-				}
-				if (GUILayout.Button(Menu.JoinGame.ToString())){
-					OfflineMenu = Menu.JoinGame;
-					scrollPos = Vector2.zero;
-					MasterServer.RequestHostList(net.uniqueGameName);
-					hostPings = new Ping[0];
-				}
-				if (GUILayout.Button(Menu.Avatar.ToString())){
-					OfflineMenu = Menu.Avatar;
-				}
-				if (GUILayout.Button(Menu.Controls.ToString())){
-					OfflineMenu = Menu.Controls;
-				}
-				if (GUILayout.Button(Menu.Credits.ToString())){
-					OfflineMenu = Menu.Credits;
-				}
-				
-				GUILayout.Label("");
-				if (!Application.isWebPlayer){
-					if (GUILayout.Button("Quit")){
-						Application.Quit();
-					}
-				}
-				
-				GUI.DrawTexture(new Rect(0,150,256,256), gamelogo);
-				
-				GUI.EndGroup();
-				
-			} else if (OfflineMenu == Menu.StartGame) {
-				if (GUI.Button(br, "Back..."))
-					OfflineMenu = Menu.Main;
-				
-				MatchSetup(false);
-			} else if (OfflineMenu == Menu.JoinGame) {
-				if (GUI.Button(br, "Back..."))
-					OfflineMenu = Menu.Main;
-				
-				DrawWindowBackground();
-				JoinMenu();
-			} else if (OfflineMenu == Menu.Avatar) {
-				if (GUI.Button(br, "Back...")) {
-					OfflineMenu = Menu.Main;
-					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
-				}
-				
-				DrawWindowBackground(true);
-				DrawMenuConfigAvatar();
-			} else if (OfflineMenu == Menu.Controls) {
-				br.x = window.xMax;
-				br.y = controGui.BottomMost;
-				if (GUI.Button(br, "Back...")) {
-					OfflineMenu = Menu.Main;
-				}
-				
-				MenuControls();
-			} else if(OfflineMenu == Menu.Credits) {
-				if (GUI.Button(br, "Back..."))
-					OfflineMenu = Menu.Main;
-				
-				DrawWindowBackground();
-				
-				GUI.BeginGroup(window);
-				
-				if (GUI.Button(new Rect(0,360,200,40), "Sophie Houlden"))
-					Application.OpenURL("http://sophiehoulden.com");
-				if (GUI.Button(new Rect(200,360,200,40), "7DFPS"))
-					Application.OpenURL("http://7dfps.org");
-				if (GUI.Button(new Rect(400,360,200,40), "SPLAT DEATH SALAD\nHomepage"))
-					Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
-				
-				GUILayout.Label("This game is a fork of...");
-				GUILayout.Label("");
-				GUILayout.Label("");
-				GUILayout.Label("~~^~~~ SPLAT DEATH SALAD ~~~^~~");
-				GUILayout.Label("(Version: 1.1)");
-				GUILayout.Label("");
-				GUILayout.Label("Made by Sophie Houlden.  Using Unity; for 7DFPS (June 2012)");
-				GUILayout.Label("");
-				GUILayout.Label("Don't be surprised if you have poor performance or get kicked with high ping");
-				GUILayout.Label("Click a button to visit these sites:");
-				
-				if (Application.isWebPlayer) 
-					GUILayout.Label("*** Visit the SDS homepage for standalone client downloads (win/mac) ***");
-				
-				GUI.EndGroup();
-			} else if (OfflineMenu == Menu.ConnectionError){
-				if (GUI.Button(br, "Back..."))
-					OfflineMenu = Menu.Main;
-				
-				DrawWindowBackground();
-				GUI.BeginGroup(window);
-				GUILayout.Label("Failed to Connect:");
-				GUILayout.Label(net.Error);
-				GUI.EndGroup();
-			}else if (OfflineMenu == Menu.Connecting){
-				if (GUI.Button(br, "Back...")){
-					Network.Disconnect();
-					OfflineMenu = Menu.Main;
-				}
-				
-				DrawWindowBackground();
-				GUI.BeginGroup(window);
-				GUILayout.Label("Connecting...");
-				GUI.EndGroup();
-			}else if (OfflineMenu == Menu.InitializingServer){
-				if (GUI.Button(br, "Back...")){
-					Network.Disconnect();
-					OfflineMenu = Menu.Main;
-				}
-				
-				DrawWindowBackground();
-				GUI.BeginGroup(window);
-				GUILayout.Label("Initialising Server...");
-				GUI.EndGroup();
-			}
+			offlineMenus(br);
 		}
 		
 		if (OfflineMenu == Menu.Main || OfflineMenu == Menu.Avatar) {
-			if (GameObject.Find("CharaMesh") != null){
-				// colours
-				Material[] mats = GameObject.Find("CharaMesh").renderer.materials;
-				mats[0].color = net.localPlayer.colA;
-				mats[1].color = net.localPlayer.colB;
-				mats[2].color = net.localPlayer.colC;
-				GameObject.Find("NormalHead").renderer.material.color = net.localPlayer.colA;
-				
-				// heads
-				GameObject.Find("NormalHead").renderer.enabled = false;
-				GameObject.Find("CardboardBoxHead").renderer.enabled = false;
-				GameObject.Find("FishHead").renderer.enabled = false;
-				GameObject.Find("BananaHead").renderer.enabled = false;
-				GameObject.Find("CreeperHead").renderer.enabled = false;
-				GameObject.Find("ElephantHeadMesh").renderer.enabled = false;
-				GameObject.Find("MoonHead").renderer.enabled = false;
-				GameObject.Find("PyramidHead").renderer.enabled = false;
-				GameObject.Find("ChocoboHead").renderer.enabled = false;
-				GameObject.Find("SpikeHead").renderer.enabled = false;
-				GameObject.Find("TentacleRoot").renderer.enabled = false;
-				GameObject.Find("RobotHead").renderer.enabled = false;
-				GameObject.Find("head_spaceship").renderer.enabled = false;
-				GameObject.Find("enforcer_face").renderer.enabled = false;
-				GameObject.Find("SmileyHead").renderer.enabled = false;
-				GameObject.Find("Helmet").renderer.enabled = false;
-				GameObject.Find("PaperBag").renderer.enabled = false;
-				GameObject.Find("Mahead").renderer.enabled = false;
-				
-				if (net.localPlayer.headType == 0) GameObject.Find("NormalHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 1) GameObject.Find("CardboardBoxHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 2) GameObject.Find("FishHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 3) GameObject.Find("BananaHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 4) GameObject.Find("CreeperHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 5) GameObject.Find("ElephantHeadMesh").renderer.enabled = true;
-				if (net.localPlayer.headType == 6) GameObject.Find("MoonHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 7) GameObject.Find("PyramidHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 8) GameObject.Find("ChocoboHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 9) GameObject.Find("SpikeHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 10) GameObject.Find("TentacleRoot").renderer.enabled = true;
-				if (net.localPlayer.headType == 11) GameObject.Find("RobotHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 12) GameObject.Find("head_spaceship").renderer.enabled = true;
-				if (net.localPlayer.headType == 13) GameObject.Find("enforcer_face").renderer.enabled = true;
-				if (net.localPlayer.headType == 14) GameObject.Find("SmileyHead").renderer.enabled = true;
-				if (net.localPlayer.headType == 15) GameObject.Find("Helmet").renderer.enabled = true;
-				if (net.localPlayer.headType == 16) GameObject.Find("PaperBag").renderer.enabled = true;
-				if (net.localPlayer.headType == 17) GameObject.Find("Mahead").renderer.enabled = true;
-				
-				GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.localPlayer.name;
-			}
+			avatarView();
 		}
 			
 		if (net.connected) {
-			if (!Screen.lockCursor) {
-				// buttons
-				float h = button.height;
-				button.x = window.xMax;
-				button.y = controGui.BottomMost;
-
-				if (settingUpMatch)
-					button.x -= button.width;
-
-				if (GUI.Button(button, "Resume")) {
-					Screen.lockCursor = true;
-					OnlineMenu = Menu.Controls;
-				}
-				
-				button.y += h;
-				if (GUI.Button(button, "Disconnect"))
-					net.DisconnectNow();
-				
-				// server mode buttons
-				if (net.isServer) {
-					button.y += h;
-					if (GUI.Button(button, Menu.Controls.ToString()))
-						OnlineMenu = Menu.Controls;
-					
-					button.y += h;
-					if (GUI.Button(button, Menu.Match.ToString()))
-						OnlineMenu = Menu.Match;
-					
-					button.y += h;
-					if (GUI.Button(button, Menu.Kick.ToString()))
-						OnlineMenu = Menu.Kick;				
-				}
-				
-				// show menus
-				if (OnlineMenu == Menu.Kick) {
-					if (net.isServer) {
-						DrawWindowBackground();
-						KickMenu();
-					}else
-						OnlineMenu = Menu.Controls;
-				}else if (OnlineMenu == Menu.Match) {
-					if (net.isServer) {
-						MatchSetup(true);
-					}else
-						OnlineMenu = Menu.Controls;
-				}else if (OnlineMenu == Menu.Controls) {
-					MenuControls();
-				}
-			}else{ // connected & cursor locked
-				if (viewingScores || net.gameOver) {
-					DrawWindowBackground(true);
-					DrawScoreboard();
-				}else{
-					GUI.DrawTexture(new Rect(midX-8, midY-8, 16, 16), crossHair);
-					
-					if (gunA == 5) {
-						//swapper
-						int swapperFrame = Mathf.FloorToInt((Time.time*15f) % swapperCrosshair.Length);
-						if (!swapperLocked) 
-							swapperFrame = 0;
-						
-						GUI.DrawTexture(new Rect(swapperCrossX-32, (Screen.height-swapperCrossY)-32, 64, 64), swapperCrosshair[swapperFrame]);
-					}
-				}
-				
-				// health bar
-				int healthWidth = (Screen.width/3);
-				GUI.DrawTexture(new Rect(midX-(healthWidth/2)-2, Screen.height-15, healthWidth+4, 9), blackTex);
-				int healthWidthB = (int)((((float)healthWidth)/100f)*net.localPlayer.health);
-				GUI.DrawTexture(new Rect(midX-(healthWidth/2), Screen.height-13, healthWidthB, 5), backTex);
-				
-				//energy bar
-				int energyWidth = (Screen.width/3);
-				GUI.DrawTexture(new Rect(midX-(energyWidth/2)-2, Screen.height-30, healthWidth+4, 9), blackTex);
-				int energyWidthB = (int)(((float)healthWidth)*EnergyLeft);
-				GUI.DrawTexture(new Rect(midX-(energyWidth/2), Screen.height-28, energyWidthB, 5), backTex);
-				
-				// lives
-				if (net.CurrMatch.playerLives>0) {
-					int lifeCount = 0;
-					for (int i=0; i<net.players.Count; i++){
-						if (net.players[i].local) lifeCount = net.players[i].lives;
-					}
-					//Debug.Log(lifeCount);
-					for (int i=0; i<lifeCount; i++){
-						GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), lifeIcon);
-					}
-				}
-				
-				// pickup stuff
-				Color gcol = GUI.color;
-				if (offeredPickup != "" && !net.autoPickup) {
-					GUI.color = Color.black;
-					string s = "Press '" + InputUser.GetKeyLabel(UserAction.GrabItem) + "' to grab " + offeredPickup.ToUpper();
-					GUI.Label(new Rect(midX-51, midY+100, 100, 60), s);
-					GUI.Label(new Rect(midX-49, midY+100, 100, 60), s);
-					GUI.Label(new Rect(midX-50, midY+101, 100, 60), s);
-					GUI.Label(new Rect(midX-50, midY+99, 100, 60), s);
-					GUI.color = gcol;
-					GUI.Label(new Rect(midX-50, midY+100, 100, 60), s);
-				}
-				
-				if (Spectating) {
-					GUI.color = Color.black;
-					GUI.Label(new Rect(4, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
-					GUI.Label(new Rect(6, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
-					GUI.Label(new Rect(5, 4, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
-					GUI.Label(new Rect(5, 6, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
-					
-					GUI.color = gcol;
-					GUI.Label(new Rect(5, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
-					
-				}
-				
-				// weapon
-				GUI.color = new Color(0.1f, 0.1f, 0.1f, 0.7f);
-				if (gunB >= 0) 
-					GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), arse.Guns[gunB].Pic);
-				
-				GUI.color = gcol;
-				if (gunA >= 0) 
-					GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), arse.Guns[gunA].Pic);
-				
-				if (gunA >= 0) {
-					GUI.color = Color.black;
-				
-					GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
-					GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
-					GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), arse.Guns[gunA].Name);
-					GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), arse.Guns[gunA].Name);
-					
-					GUI.color = gcol;
-					GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
-				}
-				
-				// weapon cooldown
-				if (gunA >= 0) {
-					GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), blackTex);
-					float coolDownPercent = 50f;
-					if (arse.Guns[gunA].Delay>0f) {
-						coolDownPercent = (gunACooldown / arse.Guns[gunA].Delay) * 50f;
-						coolDownPercent = 50f-coolDownPercent;
-					}
-					GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), backTex);
-				}
-				
-				GUI.color = gcol;
-			}
-			
-			Color gcolB = GUI.color;
-			
-			// team icons
-			if (net.CurrMatch.teamBased && net.localPlayer.team != 0) {
-				if /*``*/ (net.localPlayer.team == 1){
-					GUI.DrawTexture(new Rect(Screen.width-68,4,64,64),teamRedFlag);
-				} else if (net.localPlayer.team == 2){
-					GUI.DrawTexture(new Rect(Screen.width-68,4,64,64),teamBlueFlag);
-				}
-			}
-			
-			// time
-			if (!net.gameOver) {
-				if (net.CurrMatch.Duration > 0f) {
-					// show time left
-					GUI.color = Color.black;
-					GUI.Label(new Rect(midX-11, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-					GUI.Label(new Rect(midX-9, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-					GUI.Label(new Rect(midX-10, 4, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-					GUI.Label(new Rect(midX-10, 6, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-					
-					GUI.color = gcolB;
-					GUI.Label(new Rect(midX-10, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-				}
-			}else{
-				GUI.color = Color.black;
-				GUI.Label(new Rect(midX-51, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
-				GUI.Label(new Rect(midX-49, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
-				GUI.Label(new Rect(midX-50, 4, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
-				GUI.Label(new Rect(midX-50, 6, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
-				
-				GUI.color = gcolB;
-				GUI.Label(new Rect(midX-50, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
-			}
+			onlineMenus(midX, midY, settingUpMatch);
 		}
 	}
 	
-	string TimeStringFromSecs(float totalSecs){
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	string TimeStringFromSecs(float totalSecs) {
 		string timeString = "";
 		int seconds = Mathf.FloorToInt(totalSecs);
 		
@@ -651,6 +194,13 @@ public class Hud : MonoBehaviour {
 		return timeString;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
 	void DrawWindowBackground(bool halfWidth = false) {
 		DrawWindowBackground(window, halfWidth);
 	}
@@ -663,6 +213,13 @@ public class Hud : MonoBehaviour {
 		GUI.DrawTexture(r, backTex);
 		GUI.color = new Color(0.8f, 0f, 1f, 1f);
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	void DrawScoreboard() {
 		GUI.BeginGroup(window);
@@ -772,23 +329,34 @@ public class Hud : MonoBehaviour {
 		GUI.EndGroup();
 	}
 	
+	
+	
+	
 	string FormatName(string s) {
 		string ret = "";
 		
 		for (int i=0; i<s.Length; i++) {
 			bool pass = true;
-			if (s.Substring(i,1) == " ")
+			if (s.Substring(i, 1) == " ")
 				if (i<s.Length-1)
 					if (s.Substring(i+1,1) == " ")
 						pass = false;
 			
-			if (s.Substring(i,1) == "\n") pass = false;
-			if (s.Substring(i,1) == "	") pass = false;
-			if (pass) ret += s.Substring(i,1);
+			if (s.Substring(i, 1) == "\n") pass = false;
+			if (s.Substring(i, 1) == "	") pass = false;
+			if (pass) 
+				ret += s.Substring(i, 1);
 		}
 		
 		return ret;
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	void DrawMenuConfigAvatar() {
 		GUI.BeginGroup(window);
@@ -852,6 +420,14 @@ public class Hud : MonoBehaviour {
 		GUI.EndGroup();
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
 	void KickMenu() {
 		GUI.BeginGroup(window);
 		
@@ -877,6 +453,14 @@ public class Hud : MonoBehaviour {
 		
 		GUI.EndGroup();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	private int fsWidth = 1280;
 	private int fsHeight = 720;
@@ -940,18 +524,17 @@ public class Hud : MonoBehaviour {
 		PlayerPrefs.SetFloat("GameVolume", net.gameVolume);
 		
 		GUILayout.EndArea();
-		GUILayout.BeginArea(new Rect(305,vSpan*2,280,380));
-		
-		
-		
-		GUILayout.Label("---------- Controls: ----------");
-		
-		GUILayout.Label("Right Click - Swap Weapon");
-		
-		GUILayout.EndArea();
 		
 		GUI.EndGroup();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	void MatchSetup(bool serving) {
 		GUI.BeginGroup(screen);
@@ -1369,5 +952,513 @@ public class Hud : MonoBehaviour {
 	
 	private int MakeInt(string v) {
 		return Convert.ToInt32(v.Trim(), new CultureInfo("en-US"));
+	}
+
+	void setupMatchTypes ()
+	{
+		matches = new MatchData[9];
+		for (int i = 0; i < matches.Length; i++)
+			matches[i] = new MatchData();
+		
+		matches[0].Name = "Custom";
+		matches[0].Descript = "Have it your way!  All the exact settings you prefer.";
+		matches[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
+		matches[0].respawnWait = 5f;
+		
+		matches[1].Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
+		// Gravity Is/Gets Personal?, Personal Gravity?, Gravitaction?
+		matches[1].Descript = "Each player has their own, independent, changeable gravity";
+		matches[1].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		matches[1].respawnWait = 5f;
+		matches[1].spawnGunB = (int)Weapon.GravGun;
+		
+		matches[2].Name = "Grue Food";
+		matches[2].Descript = "It is pitch black.  You are likely to be eaten by a grue.";
+		matches[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
+		matches[2].respawnWait = 5f;
+		matches[2].pitchBlack = true;
+		matches[2].pickupSlot1 = 1;
+		matches[2].pickupSlot2 = 2;
+		matches[2].pickupSlot3 = 3;
+		matches[2].pickupSlot4 = 4;
+		matches[2].pickupSlot5 = 7;
+		
+		matches[3].Name = "FFA Fragmatch";
+		matches[3].Descript = "Frag count is ALL that counts in this freestyle Free For All!";
+		matches[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
+		matches[3].respawnWait = 5f;
+		
+		matches[5].Name = "Team Fragmatch";
+		matches[5].Descript = "Frag count is what counts, but don't hurt your mates!";
+		matches[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
+		matches[5].respawnWait = 5f;
+		matches[5].teamBased = true;
+		matches[5].pickupSlot5 = 4;
+		
+		matches[4].Name = "BBall";
+		matches[4].Descript = "Shooting hoops...and GUNS!  GANGSTA!";
+		matches[4].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		matches[4].respawnWait = 5f;
+		matches[4].deathsSubtractScore = false;
+		matches[4].killsIncreaseScore = false;
+		matches[4].teamBased = true;
+		matches[4].basketball = true;
+		matches[4].pickupSlot2 = 2;
+		matches[4].pickupSlot3 = 3;
+		matches[4].pickupSlot4 = 4;
+		matches[4].pickupSlot5 = 5;
+		
+		matches[6].Name = "YOLT! (You Only Live Thrice)";
+		matches[6].Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
+		matches[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
+		matches[6].Duration = 0f;
+		matches[6].respawnWait = 5f;
+		matches[6].killsIncreaseScore = false;
+		matches[6].pickupSlot5 = 4;
+		
+		matches[7].Name = "Swap Meat";
+		matches[7].Descript = "There is only the swapper gun, grenades and lava... have fun!";
+		matches[7].allowedLevels = new string[] { "Furnace" , "Tower"};
+		matches[7].respawnWait = 3f;
+		matches[7].killsIncreaseScore = false;
+		matches[7].spawnGunA = 5;
+		matches[7].spawnGunB = 1;
+		matches[7].pickupSlot1 = -1;
+		matches[7].pickupSlot2 = -1;
+		matches[7].pickupSlot3 = -1;
+		matches[7].pickupSlot4 = -1;
+		matches[7].pickupSlot5 = -1;
+		
+		matches[8].Name = "Weapon Lottery";
+		matches[8].Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
+		matches[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
+		matches[8].winScore = 20;
+		matches[8].respawnWait = 5f;
+		matches[8].spawnGunA = -2;
+		matches[8].spawnGunB = -2;
+		matches[8].restockTime = 2f;
+		matches[8].pickupSlot1 = -2;
+		matches[8].pickupSlot2 = -2;
+		matches[8].pickupSlot3 = -2;
+		matches[8].pickupSlot4 = -2;
+		matches[8].pickupSlot5 = -2;
+	}
+
+	void loadHudPics ()
+	{
+		UnityEngine.Object[] pics = Resources.LoadAll("Pic/Hud");
+		
+		// use this temp list to setup permanent vars
+		for (int i = 0; i < pics.Length; i++) {
+			var s = pics[i].name;
+			
+			switch (s) {
+				case "Health": 
+					lifeIcon = (Texture)pics[i]; 
+					break;
+				case "whiteTex": 
+					backTex = (Texture)pics[i]; 
+					break;
+				case "blackTex": 
+					blackTex = (Texture)pics[i]; 
+					break;
+				case "Crosshair": 
+					crossHair = (Texture)pics[i]; 
+					break;
+				case "Logo": 
+					gamelogo = (Texture)pics[i]; 
+					break;
+				case "FlagRed": 
+					teamRedFlag = (Texture)pics[i]; 
+					break;
+				case "FlagBlue": 
+					teamBlueFlag = (Texture)pics[i]; 
+					break;
+			}
+		}
+	}
+
+	void avatarView ()
+	{
+		if (GameObject.Find("CharaMesh") != null) {
+			// colours
+			Material[] mats = GameObject.Find("CharaMesh").renderer.materials;
+			mats[0].color = net.localPlayer.colA;
+			mats[1].color = net.localPlayer.colB;
+			mats[2].color = net.localPlayer.colC;
+			GameObject.Find("NormalHead").renderer.material.color = net.localPlayer.colA;
+			
+			// heads
+			GameObject.Find("NormalHead").renderer.enabled = false;
+			GameObject.Find("CardboardBoxHead").renderer.enabled = false;
+			GameObject.Find("FishHead").renderer.enabled = false;
+			GameObject.Find("BananaHead").renderer.enabled = false;
+			GameObject.Find("CreeperHead").renderer.enabled = false;
+			GameObject.Find("ElephantHeadMesh").renderer.enabled = false;
+			GameObject.Find("MoonHead").renderer.enabled = false;
+			GameObject.Find("PyramidHead").renderer.enabled = false;
+			GameObject.Find("ChocoboHead").renderer.enabled = false;
+			GameObject.Find("SpikeHead").renderer.enabled = false;
+			GameObject.Find("TentacleRoot").renderer.enabled = false;
+			GameObject.Find("RobotHead").renderer.enabled = false;
+			GameObject.Find("head_spaceship").renderer.enabled = false;
+			GameObject.Find("enforcer_face").renderer.enabled = false;
+			GameObject.Find("SmileyHead").renderer.enabled = false;
+			GameObject.Find("Helmet").renderer.enabled = false;
+			GameObject.Find("PaperBag").renderer.enabled = false;
+			GameObject.Find("Mahead").renderer.enabled = false;
+			
+			if (net.localPlayer.headType == 0) GameObject.Find("NormalHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 1) GameObject.Find("CardboardBoxHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 2) GameObject.Find("FishHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 3) GameObject.Find("BananaHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 4) GameObject.Find("CreeperHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 5) GameObject.Find("ElephantHeadMesh").renderer.enabled = true;
+			if (net.localPlayer.headType == 6) GameObject.Find("MoonHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 7) GameObject.Find("PyramidHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 8) GameObject.Find("ChocoboHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 9) GameObject.Find("SpikeHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 10) GameObject.Find("TentacleRoot").renderer.enabled = true;
+			if (net.localPlayer.headType == 11) GameObject.Find("RobotHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 12) GameObject.Find("head_spaceship").renderer.enabled = true;
+			if (net.localPlayer.headType == 13) GameObject.Find("enforcer_face").renderer.enabled = true;
+			if (net.localPlayer.headType == 14) GameObject.Find("SmileyHead").renderer.enabled = true;
+			if (net.localPlayer.headType == 15) GameObject.Find("Helmet").renderer.enabled = true;
+			if (net.localPlayer.headType == 16) GameObject.Find("PaperBag").renderer.enabled = true;
+			if (net.localPlayer.headType == 17) GameObject.Find("Mahead").renderer.enabled = true;
+			
+			GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.localPlayer.name;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	void onlineMenus (int midX, int midY, bool settingUpMatch) {
+		if (!Screen.lockCursor) {
+			// buttons
+			float h = button.height;
+			button.x = window.xMax;
+			button.y = controGui.BottomMost;
+	
+			if (settingUpMatch)
+				button.x -= button.width;
+	
+			if (GUI.Button(button, "Resume")) {
+				Screen.lockCursor = true;
+				OnlineMenu = Menu.Controls;
+			}
+			
+			button.y += h;
+			if (GUI.Button(button, "Disconnect"))
+				net.DisconnectNow();
+			
+			// server mode buttons
+			if (net.isServer) {
+				button.y += h;
+				if (GUI.Button(button, Menu.Controls.ToString()))
+					OnlineMenu = Menu.Controls;
+				
+				button.y += h;
+				if (GUI.Button(button, Menu.Match.ToString()))
+					OnlineMenu = Menu.Match;
+				
+				button.y += h;
+				if (GUI.Button(button, Menu.Kick.ToString()))
+					OnlineMenu = Menu.Kick;				
+			}
+			
+			// show menus
+			if (OnlineMenu == Menu.Kick) {
+				if (net.isServer) {
+					DrawWindowBackground();
+					KickMenu();
+				}else
+					OnlineMenu = Menu.Controls;
+			}else if (OnlineMenu == Menu.Match) {
+				if (net.isServer) {
+					MatchSetup(true);
+				}else
+					OnlineMenu = Menu.Controls;
+			}else if (OnlineMenu == Menu.Controls) {
+				MenuControls();
+			}
+		}else{ // connected & cursor locked
+			if (viewingScores || net.gameOver) {
+				DrawWindowBackground(true);
+				DrawScoreboard();
+			}else{
+				GUI.DrawTexture(new Rect(midX-8, midY-8, 16, 16), crossHair);
+				
+				if (gunA == 5) {
+					//swapper
+					int swapperFrame = Mathf.FloorToInt((Time.time*15f) % swapperCrosshair.Length);
+					if (!swapperLocked) 
+						swapperFrame = 0;
+					
+					GUI.DrawTexture(new Rect(swapperCrossX-32, (Screen.height-swapperCrossY)-32, 64, 64), swapperCrosshair[swapperFrame]);
+				}
+			}
+			
+			// health bar
+			int healthWidth = (Screen.width/3);
+			GUI.DrawTexture(new Rect(midX-(healthWidth/2)-2, Screen.height-15, healthWidth+4, 9), blackTex);
+			int healthWidthB = (int)((((float)healthWidth)/100f)*net.localPlayer.health);
+			GUI.DrawTexture(new Rect(midX-(healthWidth/2), Screen.height-13, healthWidthB, 5), backTex);
+			
+			//energy bar
+			int energyWidth = (Screen.width/3);
+			GUI.DrawTexture(new Rect(midX-(energyWidth/2)-2, Screen.height-30, healthWidth+4, 9), blackTex);
+			int energyWidthB = (int)(((float)healthWidth)*EnergyLeft);
+			GUI.DrawTexture(new Rect(midX-(energyWidth/2), Screen.height-28, energyWidthB, 5), backTex);
+			
+			// lives
+			if (net.CurrMatch.playerLives>0) {
+				int lifeCount = 0;
+				for (int i=0; i<net.players.Count; i++){
+					if (net.players[i].local) lifeCount = net.players[i].lives;
+				}
+				//Debug.Log(lifeCount);
+				for (int i=0; i<lifeCount; i++){
+					GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), lifeIcon);
+				}
+			}
+			
+			// pickup stuff
+			Color gcol = GUI.color;
+			if (offeredPickup != "" && !net.autoPickup) {
+				GUI.color = Color.black;
+				string s = "Press '" + InputUser.GetKeyLabel(UserAction.GrabItem) + "' to grab " + offeredPickup.ToUpper();
+				GUI.Label(new Rect(midX-51, midY+100, 100, 60), s);
+				GUI.Label(new Rect(midX-49, midY+100, 100, 60), s);
+				GUI.Label(new Rect(midX-50, midY+101, 100, 60), s);
+				GUI.Label(new Rect(midX-50, midY+99, 100, 60), s);
+				GUI.color = gcol;
+				GUI.Label(new Rect(midX-50, midY+100, 100, 60), s);
+			}
+			
+			if (Spectating) {
+				GUI.color = Color.black;
+				GUI.Label(new Rect(4, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
+				GUI.Label(new Rect(6, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
+				GUI.Label(new Rect(5, 4, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
+				GUI.Label(new Rect(5, 6, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
+				
+				GUI.color = gcol;
+				GUI.Label(new Rect(5, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
+				
+			}
+			
+			// weapon
+			GUI.color = new Color(0.1f, 0.1f, 0.1f, 0.7f);
+			if (gunB >= 0) 
+				GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), arse.Guns[gunB].Pic);
+			
+			GUI.color = gcol;
+			if (gunA >= 0) 
+				GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), arse.Guns[gunA].Pic);
+			
+			if (gunA >= 0) {
+				GUI.color = Color.black;
+			
+				GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
+				GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
+				GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), arse.Guns[gunA].Name);
+				GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), arse.Guns[gunA].Name);
+				
+				GUI.color = gcol;
+				GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
+			}
+			
+			// weapon cooldown
+			if (gunA >= 0) {
+				GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), blackTex);
+				float coolDownPercent = 50f;
+				if (arse.Guns[gunA].Delay>0f) {
+					coolDownPercent = (gunACooldown / arse.Guns[gunA].Delay) * 50f;
+					coolDownPercent = 50f-coolDownPercent;
+				}
+				GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), backTex);
+			}
+			
+			GUI.color = gcol;
+		}
+		
+		Color gcolB = GUI.color;
+		
+		// team icons
+		if (net.CurrMatch.teamBased && net.localPlayer.team != 0) {
+			if /*``*/ (net.localPlayer.team == 1){
+				GUI.DrawTexture(new Rect(Screen.width-68,4,64,64),teamRedFlag);
+			} else if (net.localPlayer.team == 2){
+				GUI.DrawTexture(new Rect(Screen.width-68,4,64,64),teamBlueFlag);
+			}
+		}
+		
+		// time
+		if (!net.gameOver) {
+			if (net.CurrMatch.Duration > 0f) {
+				// show time left
+				GUI.color = Color.black;
+				GUI.Label(new Rect(midX-11, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
+				GUI.Label(new Rect(midX-9, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
+				GUI.Label(new Rect(midX-10, 4, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
+				GUI.Label(new Rect(midX-10, 6, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
+				
+				GUI.color = gcolB;
+				GUI.Label(new Rect(midX-10, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
+			}
+		}else{
+			GUI.color = Color.black;
+			GUI.Label(new Rect(midX-51, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
+			GUI.Label(new Rect(midX-49, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
+			GUI.Label(new Rect(midX-50, 4, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
+			GUI.Label(new Rect(midX-50, 6, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
+			
+			GUI.color = gcolB;
+			GUI.Label(new Rect(midX-50, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
+		}
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	void offlineMenus(Rect br) {
+		Screen.lockCursor = false;
+		
+		if (OfflineMenu == Menu.Main){
+			GUI.BeginGroup(window);
+			
+			if (GUILayout.Button(Menu.StartGame.ToString())){
+				OfflineMenu = Menu.StartGame;
+				net.gameName = net.localPlayer.name + "'s match...of the Damned!";
+			}
+			if (GUILayout.Button(Menu.JoinGame.ToString())){
+				OfflineMenu = Menu.JoinGame;
+				scrollPos = Vector2.zero;
+				MasterServer.RequestHostList(net.uniqueGameName);
+				hostPings = new Ping[0];
+			}
+			if (GUILayout.Button(Menu.Avatar.ToString())){
+				OfflineMenu = Menu.Avatar;
+			}
+			if (GUILayout.Button(Menu.Controls.ToString())){
+				OfflineMenu = Menu.Controls;
+			}
+			if (GUILayout.Button(Menu.Credits.ToString())){
+				OfflineMenu = Menu.Credits;
+			}
+			
+			GUILayout.Label("");
+			if (!Application.isWebPlayer){
+				if (GUILayout.Button("Quit")){
+					Application.Quit();
+				}
+			}
+			
+			GUI.DrawTexture(new Rect(0,150,256,256), gamelogo);
+			
+			GUI.EndGroup();
+			
+		} else if (OfflineMenu == Menu.StartGame) {
+			if (GUI.Button(br, "Back..."))
+				OfflineMenu = Menu.Main;
+			
+			MatchSetup(false);
+		} else if (OfflineMenu == Menu.JoinGame) {
+			if (GUI.Button(br, "Back..."))
+				OfflineMenu = Menu.Main;
+			
+			DrawWindowBackground();
+			JoinMenu();
+		} else if (OfflineMenu == Menu.Avatar) {
+			if (GUI.Button(br, "Back...")) {
+				OfflineMenu = Menu.Main;
+				net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+			}
+			
+			DrawWindowBackground(true);
+			DrawMenuConfigAvatar();
+		} else if (OfflineMenu == Menu.Controls) {
+			br.x = window.xMax;
+			br.y = controGui.BottomMost;
+			if (GUI.Button(br, "Back...")) {
+				OfflineMenu = Menu.Main;
+			}
+			
+			MenuControls();
+		} else if(OfflineMenu == Menu.Credits) {
+			if (GUI.Button(br, "Back..."))
+				OfflineMenu = Menu.Main;
+			
+			DrawWindowBackground();
+			
+			GUI.BeginGroup(window);
+			
+			if (GUI.Button(new Rect(0,360,200,40), "Sophie Houlden"))
+				Application.OpenURL("http://sophiehoulden.com");
+			if (GUI.Button(new Rect(200,360,200,40), "7DFPS"))
+				Application.OpenURL("http://7dfps.org");
+			if (GUI.Button(new Rect(400,360,200,40), "SPLAT DEATH SALAD\nHomepage"))
+				Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
+			
+			GUILayout.Label("This game is a fork of...");
+			GUILayout.Label("");
+			GUILayout.Label("");
+			GUILayout.Label("~~^~~~ SPLAT DEATH SALAD ~~~^~~");
+			GUILayout.Label("(Version: 1.1)");
+			GUILayout.Label("");
+			GUILayout.Label("Made by Sophie Houlden.  Using Unity; for 7DFPS (June 2012)");
+			GUILayout.Label("");
+			GUILayout.Label("Don't be surprised if you have poor performance or get kicked with high ping");
+			GUILayout.Label("Click a button to visit these sites:");
+			
+			if (Application.isWebPlayer) 
+				GUILayout.Label("*** Visit the SDS homepage for standalone client downloads (win/mac) ***");
+			
+			GUI.EndGroup();
+		} else if (OfflineMenu == Menu.ConnectionError){
+			if (GUI.Button(br, "Back..."))
+				OfflineMenu = Menu.Main;
+			
+			DrawWindowBackground();
+			GUI.BeginGroup(window);
+			GUILayout.Label("Failed to Connect:");
+			GUILayout.Label(net.Error);
+			GUI.EndGroup();
+		}else if (OfflineMenu == Menu.Connecting){
+			if (GUI.Button(br, "Back...")){
+				Network.Disconnect();
+				OfflineMenu = Menu.Main;
+			}
+			
+			DrawWindowBackground();
+			GUI.BeginGroup(window);
+			GUILayout.Label("Connecting...");
+			GUI.EndGroup();
+		}else if (OfflineMenu == Menu.InitializingServer){
+			if (GUI.Button(br, "Back...")){
+				Network.Disconnect();
+				OfflineMenu = Menu.Main;
+			}
+			
+			DrawWindowBackground();
+			GUI.BeginGroup(window);
+			GUILayout.Label("Initialising Server...");
+			GUI.EndGroup();
+		}
 	}
 }
