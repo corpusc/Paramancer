@@ -301,9 +301,11 @@ MonoBehaviour:
   crossHair: {fileID: 2800000, guid: ce8bf1f6283744130bc635adc1a50c4c, type: 3}
   teamRedFlag: {fileID: 2800000, guid: d9a04b9a37664487cae18481aeacbb84, type: 3}
   teamBlueFlag: {fileID: 2800000, guid: 9685204decc744871b9c108d9c206039, type: 3}
-  gamelogo: {fileID: 2800000, guid: e9b7526decc6d4160aef224badd76a6e, type: 3}
+  gameLogo: {fileID: 0}
+  companyLogo: {fileID: 0}
   offeredPickup: 
   OfflineMenu: 0
+  OnlineMenu: 11
   Spectating: 0
   Spectatee: 0
   gunACooldown: 0
@@ -333,9 +335,9 @@ MonoBehaviour:
   sfx_grenadeExplode: {fileID: 8300000, guid: e20fe93e9b7744e938a5fd0bbf35454c, type: 3}
   sfx_rocketExplode: {fileID: 8300000, guid: b7dcb93b378bb47fb93cf39d620e1fec, type: 3}
   sfx_machinegunshoot: {fileID: 8300000, guid: 80eb9cf2a70c64cbf9d8eec92c594ce9, type: 3}
-  sfx_pistolshoot: {fileID: 8300000, guid: 53c7bafdb1252480e80748652cfdfee7, type: 3}
+  sfx_pistolshoot: {fileID: 8300000, guid: 910a402d773125c409f036802c152da5, type: 3}
   sfx_rifleshoot: {fileID: 8300000, guid: aa2383076672f4596aa86efe7637d3df, type: 3}
-  sfx_grenadethrow: {fileID: 8300000, guid: 5e4e48b59ab024ef9930b58e0097f3f1, type: 3}
+  sfx_grenadethrow: {fileID: 8300000, guid: 1d76523fac103be49b2c4c186b5761bc, type: 3}
   sfx_swappershoot: {fileID: 8300000, guid: d28c124d7f4ba42349a9e85d3cf0e601, type: 3}
   sfx_bombBeep: {fileID: 8300000, guid: 983c3e484036e420093be50b2e4028d6, type: 3}
   sfx_bombExplode: {fileID: 8300000, guid: c3ab385101a644613b2940bcd6d0c23d, type: 3}
@@ -364,7 +366,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LookInvert: 0
   mouseSensitivity: 2
-  MoveForward: 101
-  MoveBackward: 100
-  MoveLeft: 115
-  MoveRight: 102

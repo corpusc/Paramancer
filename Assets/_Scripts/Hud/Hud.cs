@@ -18,7 +18,8 @@ public class Hud : MonoBehaviour {
 	public Texture crossHair;
 	public Texture teamRedFlag;
 	public Texture teamBlueFlag;
-	public Texture gamelogo;
+	public Texture gameLogo;
+	public Texture companyLogo;
 	
 	// misc
 	public string offeredPickup = "";
@@ -468,7 +469,7 @@ public class Hud : MonoBehaviour {
 		controGui.enabled = true;
 		Rect r = window;
 		r.y = controGui.BottomMost;
-		DrawWindowBackground(r);
+		DrawWindowBackground(r, true);
 		r.height = vSpan + vSpan / 2;
 		GUI.Box(r, "Config:");
 		
@@ -1065,8 +1066,11 @@ public class Hud : MonoBehaviour {
 				case "Crosshair": 
 					crossHair = (Texture)pics[i]; 
 					break;
-				case "Logo": 
-					gamelogo = (Texture)pics[i]; 
+				case "Logo - CazCore": 
+					companyLogo = (Texture)pics[i]; 
+					break;
+				case "Logo - Paramancer": 
+					gameLogo = (Texture)pics[i]; 
 					break;
 				case "FlagRed": 
 					teamRedFlag = (Texture)pics[i]; 
@@ -1078,8 +1082,7 @@ public class Hud : MonoBehaviour {
 		}
 	}
 
-	void avatarView ()
-	{
+	void avatarView() {
 		if (GameObject.Find("CharaMesh") != null) {
 			// colours
 			Material[] mats = GameObject.Find("CharaMesh").renderer.materials;
@@ -1129,6 +1132,42 @@ public class Hud : MonoBehaviour {
 			
 			GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.localPlayer.name;
 		}
+	}
+
+	void credits(Rect br) {
+		if (GUI.Button(br, "Back..."))
+			OfflineMenu = Menu.Main;
+		
+		DrawWindowBackground();
+		
+		GUI.BeginGroup(window);
+		
+		if (GUI.Button(new Rect(0,360,200,40), "Sophie Houlden"))
+			Application.OpenURL("http://sophiehoulden.com");
+		if (GUI.Button(new Rect(200,360,200,40), "7DFPS"))
+			Application.OpenURL("http://7dfps.org");
+		if (GUI.Button(new Rect(400,360,200,40), "SPLAT DEATH SALAD\nHomepage"))
+			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
+		
+		GUILayout.Label("Current team:");
+		GUILayout.Label("");
+		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls & Match screens");
+		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions");
+		GUILayout.Label("CarnagePolicy     - Sounds");
+		GUILayout.Label("");
+		GUILayout.Label("This game is a fork of...");
+		GUILayout.Label("");
+		GUILayout.Label("~~~ SPLAT DEATH SALAD ~~~    (Version: 1.1)");
+		GUILayout.Label("");
+		GUILayout.Label("Made by Sophie Houlden.  Using Unity, for 7DFPS (June 2012)");
+		GUILayout.Label("");
+		GUILayout.Label("Don't be surprised if you have poor performance or get kicked with high ping");
+		GUILayout.Label("Click a button to visit these sites:");
+		
+//		if (Application.isWebPlayer) 
+//			GUILayout.Label("*** Visit the homepage for standalone client downloads (win/mac) ***");
+		
+		GUI.EndGroup();
 	}
 	
 	
@@ -1316,63 +1355,69 @@ public class Hud : MonoBehaviour {
 				GUI.Label(new Rect(midX-10, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
 			}
 		}else{
+			string s = "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.";
 			GUI.color = Color.black;
-			GUI.Label(new Rect(midX-51, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
-			GUI.Label(new Rect(midX-49, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
-			GUI.Label(new Rect(midX-50, 4, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
-			GUI.Label(new Rect(midX-50, 6, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
+			GUI.Label(new Rect(midX-51, 5, 200, 30), s);
+			GUI.Label(new Rect(midX-49, 5, 200, 30), s);
+			GUI.Label(new Rect(midX-50, 4, 200, 30), s);
+			GUI.Label(new Rect(midX-50, 6, 200, 30), s);
 			
 			GUI.color = gcolB;
-			GUI.Label(new Rect(midX-50, 5, 200, 30), "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.");
+			GUI.Label(new Rect(midX-50, 5, 200, 30), s);
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	bool buttonStarts(Menu menu, Rect rect) {
+		if (GUI.Button(rect, menu.ToString())) {
+			OfflineMenu = menu;
+			return true;
+		}
+		
+		return false;
+	}
 
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	
 	void offlineMenus(Rect br) {
 		Screen.lockCursor = false;
 		
-		if (OfflineMenu == Menu.Main){
-			GUI.BeginGroup(window);
+		if (OfflineMenu == Menu.Main) {
+			int cX = Screen.width/4; // center of item in x (aligns it to the center of the logo
+			int hS = 64; // half the horizontal span of menu item
+			int mIH = vSpan*2; // menu item height
+			var r = new Rect(cX-hS, Screen.height-mIH, hS*2, mIH); // menu rect
 			
-			if (GUILayout.Button(Menu.StartGame.ToString())){
-				OfflineMenu = Menu.StartGame;
-				net.gameName = net.localPlayer.name + "'s match...of the Damned!";
+			GUI.DrawTexture(new Rect(0, 0, Screen.width/2, Screen.width/2 /* dimensions are so close to perfect square */), gameLogo);
+			
+			// start drawing from the bottom
+			if (!Application.isWebPlayer) {
+				if (GUI.Button(r, "Quit")) {
+					Application.Quit();
+				} /*^*/ r.y -= mIH;
 			}
-			if (GUILayout.Button(Menu.JoinGame.ToString())){
-				OfflineMenu = Menu.JoinGame;
+			buttonStarts(Menu.Credits, r); /*^*/ r.y -= mIH;
+			buttonStarts(Menu.Controls, r); /*^*/ r.y -= mIH;
+			buttonStarts(Menu.Avatar, r); /*^*/ r.y -= mIH;
+			if (buttonStarts(Menu.JoinGame, r)) {
 				scrollPos = Vector2.zero;
 				MasterServer.RequestHostList(net.uniqueGameName);
 				hostPings = new Ping[0];
-			}
-			if (GUILayout.Button(Menu.Avatar.ToString())){
-				OfflineMenu = Menu.Avatar;
-			}
-			if (GUILayout.Button(Menu.Controls.ToString())){
-				OfflineMenu = Menu.Controls;
-			}
-			if (GUILayout.Button(Menu.Credits.ToString())){
-				OfflineMenu = Menu.Credits;
-			}
-			
-			GUILayout.Label("");
-			if (!Application.isWebPlayer){
-				if (GUILayout.Button("Quit")){
-					Application.Quit();
-				}
-			}
-			
-			GUI.DrawTexture(new Rect(0,150,256,256), gamelogo);
-			
-			GUI.EndGroup();
-			
+			} /*^*/ r.y -= mIH;
+
+			if (buttonStarts(Menu.StartGame, r)) {
+				net.gameName = net.localPlayer.name + "'s match...of the Damned!";
+			} /*^*/ r.y -= mIH;
 		} else if (OfflineMenu == Menu.StartGame) {
 			if (GUI.Button(br, "Back..."))
 				OfflineMenu = Menu.Main;
@@ -1401,35 +1446,7 @@ public class Hud : MonoBehaviour {
 			
 			MenuControls();
 		} else if(OfflineMenu == Menu.Credits) {
-			if (GUI.Button(br, "Back..."))
-				OfflineMenu = Menu.Main;
-			
-			DrawWindowBackground();
-			
-			GUI.BeginGroup(window);
-			
-			if (GUI.Button(new Rect(0,360,200,40), "Sophie Houlden"))
-				Application.OpenURL("http://sophiehoulden.com");
-			if (GUI.Button(new Rect(200,360,200,40), "7DFPS"))
-				Application.OpenURL("http://7dfps.org");
-			if (GUI.Button(new Rect(400,360,200,40), "SPLAT DEATH SALAD\nHomepage"))
-				Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
-			
-			GUILayout.Label("This game is a fork of...");
-			GUILayout.Label("");
-			GUILayout.Label("");
-			GUILayout.Label("~~^~~~ SPLAT DEATH SALAD ~~~^~~");
-			GUILayout.Label("(Version: 1.1)");
-			GUILayout.Label("");
-			GUILayout.Label("Made by Sophie Houlden.  Using Unity; for 7DFPS (June 2012)");
-			GUILayout.Label("");
-			GUILayout.Label("Don't be surprised if you have poor performance or get kicked with high ping");
-			GUILayout.Label("Click a button to visit these sites:");
-			
-			if (Application.isWebPlayer) 
-				GUILayout.Label("*** Visit the SDS homepage for standalone client downloads (win/mac) ***");
-			
-			GUI.EndGroup();
+			credits(br);
 		} else if (OfflineMenu == Menu.ConnectionError){
 			if (GUI.Button(br, "Back..."))
 				OfflineMenu = Menu.Main;

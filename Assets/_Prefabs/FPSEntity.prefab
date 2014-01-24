@@ -2859,7 +2859,6 @@ MonoBehaviour:
   weaponSoundObj: {fileID: 100118}
   offeredPickup: 
   currentOfferedPickup: {fileID: 0}
-  net: {fileID: 0}
   animObj: {fileID: 100080}
   gravArrowPrefab: {fileID: 100000, guid: df7f56927f8a54b1491632e2101399e9, type: 2}
   bballArrowPrefab: {fileID: 100000, guid: a7e2aca689b5b404bb4726ad3137c59e, type: 2}
@@ -2923,14 +2922,15 @@ MonoBehaviour:
   firstPersonGun: {fileID: 0}
   isLocal: 1
   Spectating: 0
+  net: {fileID: 0}
   ourKiller: {fileID: 0}
   sendRPCUpdate: 0
   sfx_takeDamage: {fileID: 8300000, guid: 81d31fb2d0b154ce98b59df324359b15, type: 3}
-  sfx_jump: {fileID: 8300000, guid: b258103983f7b4e1492514ad9d7a039d, type: 3}
+  sfx_jump: {fileID: 8300000, guid: 9334dbeb2b6dadc42a00c3a81932f95b, type: 3}
   sfx_land: {fileID: 8300000, guid: 405e4d0d9ec9846b09d8b7d1cddb2d36, type: 3}
   sfx_die: {fileID: 8300000, guid: f8c01ab3714e74eb8aee5b898e3bed41, type: 3}
-  sfx_weaponChange: {fileID: 8300000, guid: 29d0a9b9f23144edba4dd1130b8db504, type: 3}
-  sfx_reload: {fileID: 8300000, guid: 856ce1269c558405cb011b1d1d72b375, type: 3}
+  sfx_weaponChange: {fileID: 8300000, guid: a3fec2472d7118b49ad8b0f79430d2ab, type: 3}
+  sfx_reload: {fileID: 8300000, guid: 3ffa9a57ddad07744b7c3cea81320332, type: 3}
   sfx_swapped: {fileID: 8300000, guid: f0526028748da47d4a9994b20979c17d, type: 3}
   sfx_catchBall: {fileID: 8300000, guid: fecb223d2f7f943fcb1fae424c5f3ccf, type: 3}
   sfx_gravgun: {fileID: 8300000, guid: 4c1bb63c01e02457498e63597927e6ff, type: 3}
