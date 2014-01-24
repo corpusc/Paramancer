@@ -26,5 +26,5 @@ public class MatchData {
 	public int pickupSlot2 = 1;
 	public int pickupSlot3 = 2;
 	public int pickupSlot4 = 3;
-	public int pickupSlot5 = -3;
+	public int pickupSlot5 = 4;
 }
