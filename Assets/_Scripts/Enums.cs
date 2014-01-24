@@ -1,6 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum Match {
+	Custom,
+	GravORama,
+	GrueFood,
+	FFAFragMatch,
+	BBall,
+	TeamFragMatch,
+	YouOnlyLiveThrice,
+	SwapMeat,
+	WeaponLottery,
+	Count
+}
+
 public enum Menu {
 	// Offline
 	Main,
@@ -19,6 +32,8 @@ public enum Menu {
 	
 	// both
 	Controls,
+	
+	Count
 }
 
 public enum Weapon {
@@ -30,7 +45,8 @@ public enum Weapon {
 	Swapper,
 	GravGun,
 	Bomb,
-	Spatula
+	Spatula,
+	Count
 }
 
 public enum UserAction {

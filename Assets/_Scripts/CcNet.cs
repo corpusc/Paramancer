@@ -64,7 +64,7 @@ public class CcNet : MonoBehaviour {
 		hud = GetComponent<Hud>();
 		log = GetComponent<CcLog>();
 		artill = GetComponent<Arsenal>();
-		CurrMatch = new MatchData();
+		CurrMatch = new MatchData(Match.FFAFragMatch);
 		
 		Application.LoadLevel("MenuMain");
 	}

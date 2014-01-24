@@ -703,7 +703,7 @@ public class Hud : MonoBehaviour {
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("<")) 
 				matches[matchId].pickupSlot5--;
-			if (matches[matchId].pickupSlot5<-3) 
+			if (matches[matchId].pickupSlot5 < -3) 
 				matches[matchId].pickupSlot5 = arse.Guns.Length-1;
 			
 			gunName = "none";
@@ -717,7 +717,7 @@ public class Hud : MonoBehaviour {
 			
 			if (GUILayout.Button(">")) 
 				matches[matchId].pickupSlot5++;
-			if (matches[matchId].pickupSlot5>=arse.Guns.Length) 
+			if (matches[matchId].pickupSlot5 >= arse.Guns.Length) 
 				matches[matchId].pickupSlot5 = -3;
 			GUILayout.EndHorizontal();
 			
@@ -773,7 +773,7 @@ public class Hud : MonoBehaviour {
 				}
 				GUILayout.EndArea();
 		
-				GUILayout.BeginArea(new Rect(305,20,290,400));
+				GUILayout.BeginArea(new Rect(305, 20, 290, 400));
 					GUILayout.BeginHorizontal();
 					GUILayout.Label("Game Password: ");
 					net.password = GUILayout.TextField(net.password);
@@ -841,94 +841,10 @@ public class Hud : MonoBehaviour {
 		return Convert.ToInt32(v.Trim(), new CultureInfo("en-US"));
 	}
 
-	void setupMatchTypes ()
-	{
-		matches = new MatchData[9];
+	void setupMatchTypes() {
+		matches = new MatchData[(int)Match.Count];
 		for (int i = 0; i < matches.Length; i++)
-			matches[i] = new MatchData();
-		
-		matches[0].Name = "Custom";
-		matches[0].Descript = "Have it your way!  All the exact settings you prefer.";
-		matches[0].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
-		matches[0].respawnWait = 5f;
-		
-		matches[1].Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
-		// Gravity Is/Gets Personal?, Personal Gravity?, Gravitaction?
-		matches[1].Descript = "Each player has their own, independent, changeable gravity";
-		matches[1].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-		matches[1].respawnWait = 5f;
-		matches[1].spawnGunB = (int)Weapon.GravGun;
-		
-		matches[2].Name = "Grue Food";
-		matches[2].Descript = "It is pitch black.  You are likely to be eaten by a grue.";
-		matches[2].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		matches[2].respawnWait = 5f;
-		matches[2].pitchBlack = true;
-		matches[2].pickupSlot1 = 1;
-		matches[2].pickupSlot2 = 2;
-		matches[2].pickupSlot3 = 3;
-		matches[2].pickupSlot4 = 4;
-		matches[2].pickupSlot5 = 7;
-		
-		matches[3].Name = "FFA Fragmatch";
-		matches[3].Descript = "Frag count is ALL that counts in this freestyle Free For All!";
-		matches[3].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
-		matches[3].respawnWait = 5f;
-		
-		matches[5].Name = "Team Fragmatch";
-		matches[5].Descript = "Frag count is what counts, but don't hurt your mates!";
-		matches[5].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", "TestLevelB", "Tower" };
-		matches[5].respawnWait = 5f;
-		matches[5].teamBased = true;
-		matches[5].pickupSlot5 = 4;
-		
-		matches[4].Name = "BBall";
-		matches[4].Descript = "Shooting hoops...and GUNS!  GANGSTA!";
-		matches[4].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-		matches[4].respawnWait = 5f;
-		matches[4].deathsSubtractScore = false;
-		matches[4].killsIncreaseScore = false;
-		matches[4].teamBased = true;
-		matches[4].basketball = true;
-		matches[4].pickupSlot2 = 2;
-		matches[4].pickupSlot3 = 3;
-		matches[4].pickupSlot4 = 4;
-		matches[4].pickupSlot5 = 5;
-		
-		matches[6].Name = "YOLT! (You Only Live Thrice)";
-		matches[6].Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
-		matches[6].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		matches[6].Duration = 0f;
-		matches[6].respawnWait = 5f;
-		matches[6].killsIncreaseScore = false;
-		matches[6].pickupSlot5 = 4;
-		
-		matches[7].Name = "Swap Meat";
-		matches[7].Descript = "There is only the swapper gun, grenades and lava... have fun!";
-		matches[7].allowedLevels = new string[] { "Furnace" , "Tower"};
-		matches[7].respawnWait = 3f;
-		matches[7].killsIncreaseScore = false;
-		matches[7].spawnGunA = 5;
-		matches[7].spawnGunB = 1;
-		matches[7].pickupSlot1 = -1;
-		matches[7].pickupSlot2 = -1;
-		matches[7].pickupSlot3 = -1;
-		matches[7].pickupSlot4 = -1;
-		matches[7].pickupSlot5 = -1;
-		
-		matches[8].Name = "Weapon Lottery";
-		matches[8].Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
-		matches[8].allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-		matches[8].winScore = 20;
-		matches[8].respawnWait = 5f;
-		matches[8].spawnGunA = -2;
-		matches[8].spawnGunB = -2;
-		matches[8].restockTime = 2f;
-		matches[8].pickupSlot1 = -2;
-		matches[8].pickupSlot2 = -2;
-		matches[8].pickupSlot3 = -2;
-		matches[8].pickupSlot4 = -2;
-		matches[8].pickupSlot5 = -2;
+			matches[i] = new MatchData((Match)i);
 	}
 
 	void loadHudPics ()
