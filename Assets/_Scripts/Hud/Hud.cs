@@ -39,6 +39,7 @@ public class Hud : MonoBehaviour {
 	Rect screen;
 	bool viewingScores = false;
 	string defaultName = "Lazy Noob";
+	Scoreboard scores = new Scoreboard();
 	
 	// UI element sizes
 	Vector2 scrollPos = Vector2.zero;
@@ -140,21 +141,15 @@ public class Hud : MonoBehaviour {
 		}else
 			settingUpMatch = false;
 	
-//		// experi
-//		Experi experi = new Experi();
-//		experi.Draw(screen);
+
 		
-		if (!net.connected) {
-			offlineMenus(br);
-		}
-		
-		if (OfflineMenu == Menu.Main || OfflineMenu == Menu.Avatar) {
+		if (OfflineMenu == Menu.Main || OfflineMenu == Menu.Avatar)
 			avatarView();
-		}
 			
-		if (net.connected) {
+		if (net.connected)
 			onlineMenus(midX, midY, settingUpMatch);
-		}
+		else
+			offlineMenus(br);
 	}
 	
 	
@@ -220,115 +215,6 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-	
-	
-	void DrawScoreboard() {
-		GUI.BeginGroup(window);
-		
-		GUI.Label(new Rect(250,0,100,vSpan), "Scores:");
-		
-		if (!net.CurrMatch.teamBased){
-			int highScore = -9999;
-			if (net.gameOver) {
-				for (int i=0; i<net.players.Count; i++) {
-					if (highScore < net.players[i].currentScore) {
-						highScore = net.players[i].currentScore;
-					}
-				}
-			}
-			
-			int mostLives = 0;
-			if (net.gameOver) {
-				for (int i=0; i<net.players.Count; i++) {
-					if (net.players[i].lives > mostLives) {
-						mostLives = net.players[i].lives;
-					}
-				}
-			}
-			
-			GUI.Label(new Rect(10, vSpan,150,vSpan), "Name:");
-			GUI.Label(new Rect(160, vSpan,50,vSpan), "Frags:");
-			GUI.Label(new Rect(210, vSpan,50,vSpan), "Deaths:");
-			GUI.Label(new Rect(270, vSpan,50,vSpan), "Score:");
-			
-			if (net.CurrMatch.playerLives != 0) 
-				GUI.Label(new Rect(400, vSpan,50,vSpan), "Lives:");
-			
-			for (int i=0; i<net.players.Count; i++) {
-				GUI.color = new Color(0.8f, 0.8f, 0.8f, 1f);
-				if (net.players[i].local) GUI.color = new Color(1, 1, 1, 1f);
-				if (net.players[i].currentScore == highScore && mostLives == 0) GUI.color = new Color(UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), 1f);
-				if (net.players[i].lives == mostLives && mostLives>0) GUI.color = new Color(UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), 1f);
-				GUI.Label(new Rect(10,(i*vSpan) + 40,150,vSpan), net.players[i].name);
-				GUI.Label(new Rect(160,(i*vSpan) + 40,50,vSpan), net.players[i].kills.ToString());
-				GUI.Label(new Rect(210,(i*vSpan) + 40,50,vSpan), net.players[i].deaths.ToString());
-				GUI.Label(new Rect(270,(i*vSpan) + 40,50,vSpan), net.players[i].currentScore.ToString());
-				if (net.CurrMatch.playerLives!= 0) GUI.Label(new Rect(400, (i*vSpan) + 40,50,vSpan), net.players[i].lives.ToString());
-			}
-			
-		}
-		
-		if (net.CurrMatch.teamBased) {
-			GUI.color = new Color(1f, 0f, 0f, 1f);
-			if (net.gameOver && net.team1Score>net.team2Score) GUI.color = new Color(UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), 1f);
-			GUI.Label(new Rect(100, 20,150,20), "Team 1 Score: " + net.team1Score.ToString());
-			GUI.color = new Color(0f, 1f, 1f, 1f);
-			if (net.gameOver && net.team2Score>net.team1Score) GUI.color = new Color(UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), 1f);
-			GUI.Label(new Rect(300, 20,150,20), "Team 2 Score: " + net.team2Score.ToString());
-			
-			GUI.Label(new Rect(10, 40,150,20), "Name:");
-			GUI.Label(new Rect(160, 40,50,20), "Kills:");
-			GUI.Label(new Rect(210, 40,50,20), "Deaths:");
-			GUI.Label(new Rect(270, 40,50,20), "Score:");
-			
-			// team 1
-			int yOffset = 0;
-			GUI.Label(new Rect(10,(yOffset*20) + 60,150,20), "Team 1:");
-			yOffset++;
-			for (int i=0; i<net.players.Count; i++) {
-				GUI.color = new Color(1f, 0f, 0f, 1f);
-				if (net.players[i].team == 1) {
-					
-					if (net.players[i].local) GUI.color = new Color(1, 0.3f, 0.3f, 1f);
-					if (net.gameOver && net.team1Score>net.team2Score) GUI.color = new Color(UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), 1f);
-					
-					GUI.Label(new Rect(10,(yOffset*20) + 60,150,20), net.players[i].name);
-					GUI.Label(new Rect(160,(yOffset*20) + 60,50,20), net.players[i].kills.ToString());
-					GUI.Label(new Rect(210,(yOffset*20) + 60,50,20), net.players[i].deaths.ToString());
-					GUI.Label(new Rect(270,(yOffset*20) + 60,50,20), net.players[i].currentScore.ToString());
-					
-					yOffset++;
-				}
-			}
-			
-			// team 2
-			yOffset++;
-			GUI.Label(new Rect(10,(yOffset*20) + 60,150,20), "Team 2:");
-			yOffset++;
-			for (int i=0; i<net.players.Count; i++) {
-				GUI.color = new Color(0f, 1f, 1f, 1f);
-				if (net.players[i].team == 2) {
-					
-					if (net.players[i].local) GUI.color = new Color(0.3f, 1, 1, 1f);
-					if (net.gameOver && net.team2Score>net.team1Score) GUI.color = new Color(UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), UnityEngine.Random.Range(0.5f,1f), 1f);
-				
-					GUI.Label(new Rect(10, yOffset*20 + 60, 150, 20), net.players[i].name);
-					GUI.Label(new Rect(160, yOffset*20 + 60, 50, 20), net.players[i].kills.ToString());
-					GUI.Label(new Rect(210, yOffset*20 + 60, 50, 20), net.players[i].deaths.ToString());
-					GUI.Label(new Rect(270, yOffset*20 + 60, 50, 20), net.players[i].currentScore.ToString());
-					
-					yOffset++;
-				}
-			}
-			
-			GUI.color = Color.black;
-			yOffset++;
-			GUI.Label(new Rect(10,(yOffset*20) + 60,300,20), 
-				">> TO CHANGE TEAMS, PRESS '" + InputUser.GetKeyLabel(UserAction.SwapTeam) + "' <<");
-		}
-		
-		GUI.EndGroup();
-	}
 	
 	
 	
@@ -1232,7 +1118,7 @@ public class Hud : MonoBehaviour {
 		}else{ // connected & cursor locked
 			if (viewingScores || net.gameOver) {
 				DrawWindowBackground(true);
-				DrawScoreboard();
+				scores.Draw(window, net, vSpan);
 			}else{
 				GUI.DrawTexture(new Rect(midX-8, midY-8, 16, 16), crossHair);
 				
@@ -1387,95 +1273,101 @@ public class Hud : MonoBehaviour {
 		return false;
 	}
 
+	void menuMain() {
+		int cX = Screen.width/4; // center of item in x (aligns it to the center of the logo
+		int hS = 64; // half the horizontal span of menu item
+		int mIH = vSpan*2; // menu item height
+		var r = new Rect(cX-hS, Screen.height-mIH, hS*2, mIH); // menu rect
 		
+		GUI.DrawTexture(new Rect(0, 0, Screen.width/2, Screen.width/2 /* dimensions are so close to perfect square */), gameLogo);
+		
+		// start drawing from the bottom
+		if (!Application.isWebPlayer) {
+			if (GUI.Button(r, "Quit")) {
+				Application.Quit();
+			} /*^*/ r.y -= mIH;
+		}
+		buttonStarts(Menu.Credits, r); /*^*/ r.y -= mIH;
+		buttonStarts(Menu.Controls, r); /*^*/ r.y -= mIH;
+		buttonStarts(Menu.Avatar, r); /*^*/ r.y -= mIH;
+		if (buttonStarts(Menu.JoinGame, r)) {
+			scrollPos = Vector2.zero;
+			MasterServer.RequestHostList(net.uniqueGameName);
+			hostPings = new Ping[0];
+		} /*^*/ r.y -= mIH;
+		
+		if (buttonStarts(Menu.StartGame, r)) {
+			net.gameName = net.localPlayer.name + "'s match...of the Damned!";
+		} /*^*/ r.y -= mIH;
+	}
+
+	bool backButton(Rect br) {
+		if (GUI.Button(br, "Back...")) {
+			OfflineMenu = Menu.Main;
+			return true;
+		}
+		
+		return false;
+	}
 	
 	void offlineMenus(Rect br) {
 		Screen.lockCursor = false;
 		
-		if (OfflineMenu == Menu.Main) {
-			int cX = Screen.width/4; // center of item in x (aligns it to the center of the logo
-			int hS = 64; // half the horizontal span of menu item
-			int mIH = vSpan*2; // menu item height
-			var r = new Rect(cX-hS, Screen.height-mIH, hS*2, mIH); // menu rect
-			
-			GUI.DrawTexture(new Rect(0, 0, Screen.width/2, Screen.width/2 /* dimensions are so close to perfect square */), gameLogo);
-			
-			// start drawing from the bottom
-			if (!Application.isWebPlayer) {
-				if (GUI.Button(r, "Quit")) {
-					Application.Quit();
-				} /*^*/ r.y -= mIH;
-			}
-			buttonStarts(Menu.Credits, r); /*^*/ r.y -= mIH;
-			buttonStarts(Menu.Controls, r); /*^*/ r.y -= mIH;
-			buttonStarts(Menu.Avatar, r); /*^*/ r.y -= mIH;
-			if (buttonStarts(Menu.JoinGame, r)) {
-				scrollPos = Vector2.zero;
-				MasterServer.RequestHostList(net.uniqueGameName);
-				hostPings = new Ping[0];
-			} /*^*/ r.y -= mIH;
-
-			if (buttonStarts(Menu.StartGame, r)) {
-				net.gameName = net.localPlayer.name + "'s match...of the Damned!";
-			} /*^*/ r.y -= mIH;
-		} else if (OfflineMenu == Menu.StartGame) {
-			if (GUI.Button(br, "Back..."))
-				OfflineMenu = Menu.Main;
-			
-			MatchSetup(false);
-		} else if (OfflineMenu == Menu.JoinGame) {
-			if (GUI.Button(br, "Back..."))
-				OfflineMenu = Menu.Main;
-			
-			DrawWindowBackground();
-			JoinMenu();
-		} else if (OfflineMenu == Menu.Avatar) {
-			if (GUI.Button(br, "Back...")) {
-				OfflineMenu = Menu.Main;
-				net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
-			}
-			
-			DrawWindowBackground(true);
-			DrawMenuConfigAvatar();
-		} else if (OfflineMenu == Menu.Controls) {
-			br.x = window.xMax;
-			br.y = controGui.BottomMost;
-			if (GUI.Button(br, "Back...")) {
-				OfflineMenu = Menu.Main;
-			}
-			
-			MenuControls();
-		} else if(OfflineMenu == Menu.Credits) {
-			credits(br);
-		} else if (OfflineMenu == Menu.ConnectionError){
-			if (GUI.Button(br, "Back..."))
-				OfflineMenu = Menu.Main;
-			
-			DrawWindowBackground();
-			GUI.BeginGroup(window);
-			GUILayout.Label("Failed to Connect:");
-			GUILayout.Label(net.Error);
-			GUI.EndGroup();
-		}else if (OfflineMenu == Menu.Connecting){
-			if (GUI.Button(br, "Back...")){
-				Network.Disconnect();
-				OfflineMenu = Menu.Main;
-			}
-			
-			DrawWindowBackground();
-			GUI.BeginGroup(window);
-			GUILayout.Label("Connecting...");
-			GUI.EndGroup();
-		}else if (OfflineMenu == Menu.InitializingServer){
-			if (GUI.Button(br, "Back...")){
-				Network.Disconnect();
-				OfflineMenu = Menu.Main;
-			}
-			
-			DrawWindowBackground();
-			GUI.BeginGroup(window);
-			GUILayout.Label("Initialising Server...");
-			GUI.EndGroup();
+		switch (OfflineMenu) {
+			case Menu.Main:
+				menuMain();
+				break;
+			case Menu.StartGame:
+				backButton(br);
+				MatchSetup(false);
+				break;
+			case Menu.JoinGame:
+				backButton(br);
+				DrawWindowBackground();
+				JoinMenu();
+				break;
+			case Menu.Avatar:
+				if (backButton(br))
+					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+				
+				DrawWindowBackground(true);
+				DrawMenuConfigAvatar();
+				break;
+			case Menu.Controls:
+				br.x = window.xMax;
+				br.y = controGui.BottomMost;
+				backButton(br);
+				MenuControls();
+				break;
+			case Menu.Credits:
+				credits(br);
+				break;
+			case Menu.ConnectionError:
+				backButton(br);
+				DrawWindowBackground();
+				GUI.BeginGroup(window);
+				GUILayout.Label("Failed to Connect:");
+				GUILayout.Label(net.Error);
+				GUI.EndGroup();
+				break;
+			case Menu.Connecting:
+				if (backButton(br))
+					Network.Disconnect();
+				
+				DrawWindowBackground();
+				GUI.BeginGroup(window);
+				GUILayout.Label("Connecting...");
+				GUI.EndGroup();
+				break;
+			case Menu.InitializingServer:
+				if (backButton(br))
+					Network.Disconnect();
+				
+				DrawWindowBackground();
+				GUI.BeginGroup(window);
+				GUILayout.Label("Initialising Server...");
+				GUI.EndGroup();
+				break;
 		}
 	}
 }
