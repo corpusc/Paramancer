@@ -60,29 +60,29 @@ public class Arsenal : MonoBehaviour {
 		for (i = 0; i < Guns.Length; i++) {
 			Guns[i] = new GunData();
 			
-			Guns[i].Name = "" + (Weapon)i;
+			Guns[i].Name = "" + (Item)i;
 			Guns[i].Pic = (Texture)pics[i];
 			Guns[i].Mat = (Material)mats[i];
 			Guns[i].Prefab = (GameObject)prefabs[i];
 			
-			switch ((Weapon)i) {
-				case Weapon.Pistol: 
+			switch ((Item)i) {
+				case Item.Pistol: 
 					Guns[i].Delay = 0.15f; break; 
-				case Weapon.Grenade:  
+				case Item.Grenade:  
 					Guns[i].Delay = 0.4f; break; 
-				case Weapon.MachineGun:  
+				case Item.MachineGun:  
 					Guns[i].Delay = 0.1f; Guns[i].AutoFire = true; break; 
-				case Weapon.Rifle:  
+				case Item.Rifle:  
 					Guns[i].Delay = 2f; break; 
-				case Weapon.RocketLauncher:  
+				case Item.RocketLauncher:  
 					Guns[i].Delay = 2f; break; 
-				case Weapon.Swapper:  
+				case Item.Swapper:  
 					Guns[i].Delay = 2f; break; 
-				case Weapon.GravGun:  
+				case Item.GravGun:  
 					Guns[i].Delay = 1f; break; 
-				case Weapon.Bomb:  
+				case Item.Bomb:  
 					Guns[i].Delay = 1f; break; 
-				case Weapon.Spatula:  
+				case Item.Spatula:  
 					Guns[i].Delay = 3f; break;
 			}
 		}

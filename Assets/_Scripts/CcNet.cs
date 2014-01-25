@@ -72,22 +72,26 @@ public class CcNet : MonoBehaviour {
 	
 	
 	//-------- Network gameplay stuff ----------
-	public void SendPlayer(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, int gunA, int gunB, Vector3 playerUp, Vector3 playerForward){
+	public void SendPlayer(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
+		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward
+	) {
 		//send out a player's current properties to everyone, so they know where we are
 		networkView.RPC("SendPlayerRPC", RPCMode.Others, viewID, pos, ang, crouch, moveVec, yMove, gunA, gunB, playerUp, playerForward);
 	}
 	
 	[RPC]
-	void SendPlayerRPC(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, int gunA, int gunB, Vector3 playerUp, Vector3 playerForward, NetworkMessageInfo info){
-		//received a player's properties, let's update the local view of that player
+	void SendPlayerRPC(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
+		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward, NetworkMessageInfo info
+	) {
+		// received a player's properties, let's update the local view of that player
 		
 		lastRPCtime = Time.time;
 		
-		for (int i=0; i<players.Count; i++){
-			if (viewID == players[i].viewID && players[i].Entity != null){
+		for (int i=0; i<players.Count; i++) {
+			if (viewID == players[i].viewID && players[i].Entity != null) {
 				players[i].lastPong = Time.time;
 				players[i].Entity.UpdatePlayer(pos, ang, crouch, moveVec, yMove, 
-					info.timestamp, gunA, gunB, playerUp, playerForward);
+					info.timestamp, (Item)gunA, (Item)gunB, playerUp, playerForward);
 			}
 		}
 	}
@@ -592,35 +596,37 @@ public class CcNet : MonoBehaviour {
 		if (connected && isServer && !gameOver) {
 			for (int i=0; i<pickupPoints.Count; i++) {
 				if (!pickupPoints[i].stocked) {
-					pickupPoints[i].restockTime -= Time.deltaTime;
-					if (pickupPoints[i].restockTime <= 0f) {
-						int restockType = -1;
-						if (pickupPoints[i].pickupType == 1) restockType = CurrMatch.pickupSlot1;
-						if (pickupPoints[i].pickupType == 2) restockType = CurrMatch.pickupSlot2;
-						if (pickupPoints[i].pickupType == 3) restockType = CurrMatch.pickupSlot3;
-						if (pickupPoints[i].pickupType == 4) restockType = CurrMatch.pickupSlot4;
-						if (pickupPoints[i].pickupType == 5) restockType = CurrMatch.pickupSlot5;
-						if (restockType == -2) {
-							// random
-							restockType = Random.Range(-1, artill.Guns.Length);
-							if (restockType == -1) 
-								restockType--;
+					pickupPoints[i].RestockTime -= Time.deltaTime;
+					if (pickupPoints[i].RestockTime <= 0f) {
+						Item item = Item.None;
+						if (pickupPoints[i].SlotNum == 1) item = CurrMatch.pickupSlot1;
+						if (pickupPoints[i].SlotNum == 2) item = CurrMatch.pickupSlot2;
+						if (pickupPoints[i].SlotNum == 3) item = CurrMatch.pickupSlot3;
+						if (pickupPoints[i].SlotNum == 4) item = CurrMatch.pickupSlot4;
+						if (pickupPoints[i].SlotNum == 5) item = CurrMatch.pickupSlot5;
+						if (item == Item.Random) {
+							item = (Item)Random.Range(-1, artill.Guns.Length);
+							if (item == Item.None) 
+								item--;
 						}
 						
-						if (restockType != -1) {
-							networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, restockType);
+						if (item != Item.None) {
+							networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].Id, item);
 						}
 					}
 				}
 			}
 		}
 	}
+	
+	
+	
 	public Texture healthIcon;
 	public GameObject pickupBoxPrefab;
 	[RPC]
-	void RestockPickup(int pointID, int restockType){
+	void RestockPickup(int pointID, Item item){
 		for (int i=0; i<pickupPoints.Count; i++){
-			if (pickupPoints[i].pickupPointID == pointID){
+			if (pickupPoints[i].Id == pointID){
 				if (pickupPoints[i].stocked) return;
 				pickupPoints[i].stocked = true;
 				
@@ -630,7 +636,7 @@ public class CcNet : MonoBehaviour {
 				newPickup.transform.localScale = Vector3.one * 0.5f;
 				PickupBoxScript box = newPickup.GetComponent<PickupBoxScript>();
 				box.pickupPoint = pickupPoints[i];
-				if (restockType<0){
+				if (item < 0) {
 					//health
 					box.pickupName = "health";
 					box.iconObj.renderer.material.SetTexture("_MainTex",healthIcon);
@@ -638,11 +644,11 @@ public class CcNet : MonoBehaviour {
 					mats[0].color = Color.green;
 					box.boxObj.renderer.materials = mats;
 				}else{
-					//gun of some type
-					box.pickupName = artill.Guns[restockType].Name;
-					box.iconObj.renderer.material.SetTexture("_MainTex",artill.Guns[restockType].Pic);
+					// gun of some type
+					box.pickupName = artill.Guns[(int)item].Name;
+					box.iconObj.renderer.material.SetTexture("_MainTex",artill.Guns[(int)item].Pic);
 					Material[] mats = box.boxObj.renderer.materials;
-					mats[0] = artill.Guns[restockType].Mat;
+					mats[0] = artill.Guns[(int)item].Mat;
 					box.boxObj.renderer.materials = mats;
 				}
 			}
@@ -652,39 +658,42 @@ public class CcNet : MonoBehaviour {
 	public void UnstockPickupPoint(PickupPoint point){
 		for (int i=0; i<pickupPoints.Count; i++){
 			if (point == pickupPoints[i]){
-				networkView.RPC("UnstockRPC", RPCMode.All, pickupPoints[i].pickupPointID);
+				networkView.RPC("UnstockRPC", RPCMode.All, pickupPoints[i].Id);
 			}
 		}
 	}
 	[RPC]
 	void UnstockRPC(int pointID){
 		for (int i=0; i<pickupPoints.Count; i++){
-			if (pointID == pickupPoints[i].pickupPointID){
+			if (pointID == pickupPoints[i].Id){
 				pickupPoints[i].stocked = false;
 				if (pickupPoints[i].currentAvailablePickup != null) Destroy(pickupPoints[i].currentAvailablePickup);
-				if (isServer) pickupPoints[i].restockTime = CurrMatch.restockTime;
+				if (isServer) pickupPoints[i].RestockTime = CurrMatch.restockTime;
 			}
 		}
 	}
 	
 	[RPC]
-	void RequestPickupStocks(){
-		//a client has requested the current pickup stock info
-		for (int i=0; i<pickupPoints.Count; i++){
-			if (pickupPoints[i].stocked){
-				int restockType = -1;
-				if (pickupPoints[i].pickupType == 1) restockType = CurrMatch.pickupSlot1;
-				if (pickupPoints[i].pickupType == 2) restockType = CurrMatch.pickupSlot2;
-				if (pickupPoints[i].pickupType == 3) restockType = CurrMatch.pickupSlot3;
-				if (pickupPoints[i].pickupType == 4) restockType = CurrMatch.pickupSlot4;
-				if (pickupPoints[i].pickupType == 5) restockType = CurrMatch.pickupSlot5;
-				if (restockType == -2){
-					//random
-					restockType = Random.Range(-1,artill.Guns.Length);
-					if (restockType == -1) restockType--;
+	void RequestPickupStocks() {
+		// a client has requested the current pickup stock info
+		for (int i=0; i<pickupPoints.Count; i++) {
+			if (pickupPoints[i].stocked) {
+				Item item = Item.None;
+				if (pickupPoints[i].SlotNum == 1) item = CurrMatch.pickupSlot1;
+				if (pickupPoints[i].SlotNum == 2) item = CurrMatch.pickupSlot2;
+				if (pickupPoints[i].SlotNum == 3) item = CurrMatch.pickupSlot3;
+				if (pickupPoints[i].SlotNum == 4) item = CurrMatch.pickupSlot4;
+				if (pickupPoints[i].SlotNum == 5) item = CurrMatch.pickupSlot5;
+				
+				if (item == Item.Random) {
+					item = (Item)Random.Range(-1, artill.Guns.Length);
+					
+					if (item == Item.None) 
+						item--;
 				}
-				if (restockType != -1){
-					networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, restockType);
+				
+				if (item != Item.None) {
+					networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].Id, item);
 				}
 				
 			}
@@ -858,29 +867,29 @@ public class CcNet : MonoBehaviour {
 		players.Add(newPlayer);
 	}
 	
-	public void AssignGameModeConfig(MatchData gm, string levelName){
+	public void AssignGameModeConfig(MatchData md, string levelName){
 		CurrMatch.levelName = levelName;
 		
-		CurrMatch.Name = gm.Name;
-		CurrMatch.Descript = gm.Descript;
-		CurrMatch.winScore = gm.winScore;
-		CurrMatch.Duration = gm.Duration;
-		CurrMatch.respawnWait = gm.respawnWait;
-		CurrMatch.deathsSubtractScore = gm.deathsSubtractScore;
-		CurrMatch.killsIncreaseScore = gm.killsIncreaseScore;
-		CurrMatch.teamBased = gm.teamBased;
-		CurrMatch.allowFriendlyFire = gm.allowFriendlyFire;
-		CurrMatch.pitchBlack = gm.pitchBlack;
-		CurrMatch.restockTime = gm.restockTime;
-		CurrMatch.playerLives = gm.playerLives;
-		CurrMatch.basketball = gm.basketball;
-		CurrMatch.spawnGunA = gm.spawnGunA;
-		CurrMatch.spawnGunB = gm.spawnGunB;
-		CurrMatch.pickupSlot1 = gm.pickupSlot1;
-		CurrMatch.pickupSlot2 = gm.pickupSlot2;
-		CurrMatch.pickupSlot3 = gm.pickupSlot3;
-		CurrMatch.pickupSlot4 = gm.pickupSlot4;
-		CurrMatch.pickupSlot5 = gm.pickupSlot5;
+		CurrMatch.Name = md.Name;
+		CurrMatch.Descript = md.Descript;
+		CurrMatch.winScore = md.winScore;
+		CurrMatch.Duration = md.Duration;
+		CurrMatch.respawnWait = md.respawnWait;
+		CurrMatch.deathsSubtractScore = md.deathsSubtractScore;
+		CurrMatch.killsIncreaseScore = md.killsIncreaseScore;
+		CurrMatch.teamBased = md.teamBased;
+		CurrMatch.allowFriendlyFire = md.allowFriendlyFire;
+		CurrMatch.pitchBlack = md.pitchBlack;
+		CurrMatch.restockTime = md.restockTime;
+		CurrMatch.playerLives = md.playerLives;
+		CurrMatch.basketball = md.basketball;
+		CurrMatch.spawnGunA = md.spawnGunA;
+		CurrMatch.spawnGunB = md.spawnGunB;
+		CurrMatch.pickupSlot1 = md.pickupSlot1;
+		CurrMatch.pickupSlot2 = md.pickupSlot2;
+		CurrMatch.pickupSlot3 = md.pickupSlot3;
+		CurrMatch.pickupSlot4 = md.pickupSlot4;
+		CurrMatch.pickupSlot5 = md.pickupSlot5;
 	}
 	
 	[RPC]
@@ -925,8 +934,8 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.Name, CurrMatch.levelName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, 
 			CurrMatch.respawnWait, CurrMatch.deathsSubtractScore, CurrMatch.killsIncreaseScore, CurrMatch.teamBased, 
 			targetTeam, CurrMatch.allowFriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
-			CurrMatch.spawnGunA, CurrMatch.spawnGunB, CurrMatch.pickupSlot1, CurrMatch.pickupSlot2, 
-			CurrMatch.pickupSlot3, CurrMatch.pickupSlot4, CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
+			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
+			(int)CurrMatch.pickupSlot3, (int)CurrMatch.pickupSlot4, (int)CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
 			CurrMatch.basketball);
 	}
 	
@@ -934,7 +943,12 @@ public class CcNet : MonoBehaviour {
 	public float nextMatchTime = 0f;
 	
 	[RPC]
-	void BroadcastNewGame(NetworkViewID viewID, string matchName, string levelName, string matchDescript, int winScore, float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, int playerLives, bool newGame, bool basketball, NetworkMessageInfo info){
+	void BroadcastNewGame(NetworkViewID viewID, string matchName, string levelName, string matchDescript, int winScore, 
+		float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, 
+		int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, 
+		int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, 
+		int playerLives, bool newGame, bool basketball, NetworkMessageInfo info
+	) {
 		// we've received game info from the server
 		lastRPCtime = Time.time;
 		
@@ -975,13 +989,13 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.pitchBlack = pitchBlack;
 			CurrMatch.playerLives = playerLives;
 			CurrMatch.basketball = basketball;
-			CurrMatch.spawnGunA = spawnGunA;
-			CurrMatch.spawnGunB = spawnGunB;
-			CurrMatch.pickupSlot1 = pickupSlot1;
-			CurrMatch.pickupSlot2 = pickupSlot2;
-			CurrMatch.pickupSlot3 = pickupSlot3;
-			CurrMatch.pickupSlot4 = pickupSlot4;
-			CurrMatch.pickupSlot5 = pickupSlot5;
+			CurrMatch.spawnGunA = (Item)spawnGunA;
+			CurrMatch.spawnGunB = (Item)spawnGunB;
+			CurrMatch.pickupSlot1 = (Item)pickupSlot1;
+			CurrMatch.pickupSlot2 = (Item)pickupSlot2;
+			CurrMatch.pickupSlot3 = (Item)pickupSlot3;
+			CurrMatch.pickupSlot4 = (Item)pickupSlot4;
+			CurrMatch.pickupSlot5 = (Item)pickupSlot5;
 		}
 		
 		if (targetTeam != -1) {
@@ -1069,14 +1083,16 @@ public class CcNet : MonoBehaviour {
 			if (GameObject.Find("_PickupSpots")!=null) {
 				GameObject pickupPointHolder = GameObject.Find("_PickupSpots");
 				foreach (Transform child in pickupPointHolder.transform) {
-					int stockType = -1;
-					if (child.GetComponent<PickupPoint>().pickupType == 1) stockType = CurrMatch.pickupSlot1;
-					if (child.GetComponent<PickupPoint>().pickupType == 2) stockType = CurrMatch.pickupSlot2;
-					if (child.GetComponent<PickupPoint>().pickupType == 3) stockType = CurrMatch.pickupSlot3;
-					if (child.GetComponent<PickupPoint>().pickupType == 4) stockType = CurrMatch.pickupSlot4;
-					if (child.GetComponent<PickupPoint>().pickupType == 5) stockType = CurrMatch.pickupSlot5;
-					if (stockType != -1) {
-						pickupPoints.Add(child.GetComponent<PickupPoint>());
+					Item item = Item.None;
+					var pp = child.GetComponent<PickupPoint>();
+					if (pp.SlotNum == 1) item = CurrMatch.pickupSlot1;
+					if (pp.SlotNum == 2) item = CurrMatch.pickupSlot2;
+					if (pp.SlotNum == 3) item = CurrMatch.pickupSlot3;
+					if (pp.SlotNum == 4) item = CurrMatch.pickupSlot4;
+					if (pp.SlotNum == 5) item = CurrMatch.pickupSlot5;
+					
+					if (item != Item.None) {
+						pickupPoints.Add(pp);
 					}else{
 						Destroy(child.gameObject);
 					}

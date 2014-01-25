@@ -16,17 +16,17 @@ public class MatchData {
 	public bool teamBased = false;
 	public bool allowFriendlyFire = false;
 	public bool pitchBlack = false;
-	public int spawnGunA = 0;
-	public int spawnGunB = 1;
+	public Item spawnGunA = Item.Pistol;
+	public Item spawnGunB = Item.Grenade;
 	public float restockTime = 10f;
 	public int playerLives = 0;
 	public bool basketball = false;
 	// what is in the level pickupslots?
-	public int pickupSlot1 = 0;
-	public int pickupSlot2 = 1;
-	public int pickupSlot3 = 2;
-	public int pickupSlot4 = 3;
-	public int pickupSlot5 = -3;
+	public Item pickupSlot1 = Item.Pistol;
+	public Item pickupSlot2 = Item.Grenade;
+	public Item pickupSlot3 = Item.MachineGun;
+	public Item pickupSlot4 = Item.Rifle;
+	public Item pickupSlot5 = Item.Health;
 	
 	
 	
@@ -45,8 +45,8 @@ public class MatchData {
 				Descript = "Each player has their own, independent, changeable gravity";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 				respawnWait = 5f;
-				spawnGunB = (int)Weapon.GravGun;
-				pickupSlot5 = 4;
+				spawnGunB = Item.GravGun;
+				pickupSlot5 = Item.RocketLauncher;
 				break;
 			case Match.GrueFood:
 				Name = "Grue Food";
@@ -54,11 +54,11 @@ public class MatchData {
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 				respawnWait = 5f;
 				pitchBlack = true;
-				pickupSlot1 = 1;
-				pickupSlot2 = 2;
-				pickupSlot3 = 3;
-				pickupSlot4 = 4;
-				pickupSlot5 = 7;
+				pickupSlot1 = Item.Grenade;
+				pickupSlot2 = Item.MachineGun;
+				pickupSlot3 = Item.Rifle;
+				pickupSlot4 = Item.RocketLauncher;
+				pickupSlot5 = Item.Bomb;
 				break;
 			case Match.FFAFragMatch:
 				Name = "FFA Fragmatch";
@@ -74,7 +74,7 @@ public class MatchData {
 					"TestLevelB", "Tower" };
 				respawnWait = 5f;
 				teamBased = true;
-				pickupSlot5 = 4;
+				pickupSlot5 = Item.RocketLauncher;
 				break;
 			case Match.BBall:
 				Name = "BBall";
@@ -85,10 +85,10 @@ public class MatchData {
 				killsIncreaseScore = false;
 				teamBased = true;
 				basketball = true;
-				pickupSlot2 = 2;
-				pickupSlot3 = 3;
-				pickupSlot4 = 4;
-				pickupSlot5 = 5;
+				pickupSlot2 = Item.MachineGun;
+				pickupSlot3 = Item.Rifle;
+				pickupSlot4 = Item.RocketLauncher;
+				pickupSlot5 = Item.Swapper;
 				break;
 			case Match.YouOnlyLiveThrice:
 				Name = "YOLT! (You Only Live Thrice)";
@@ -97,7 +97,7 @@ public class MatchData {
 				Duration = 0f;
 				respawnWait = 5f;
 				killsIncreaseScore = false;
-				pickupSlot5 = 4;
+				pickupSlot5 = Item.RocketLauncher;
 				break;
 			case Match.SwapMeat:
 				Name = "Swap Meat";
@@ -105,13 +105,13 @@ public class MatchData {
 				allowedLevels = new string[] { "Furnace" , "Tower"};
 				respawnWait = 3f;
 				killsIncreaseScore = false;
-				spawnGunA = 5;
-				spawnGunB = 1;
-				pickupSlot1 = -1;
-				pickupSlot2 = -1;
-				pickupSlot3 = -1;
-				pickupSlot4 = -1;
-				pickupSlot5 = -1;
+				spawnGunA = Item.Swapper;
+				spawnGunB = Item.Grenade;
+				pickupSlot1 = Item.None;
+				pickupSlot2 = Item.None;
+				pickupSlot3 = Item.None;
+				pickupSlot4 = Item.None;
+				pickupSlot5 = Item.None;
 				break;
 			case Match.WeaponLottery:
 				Name = "Weapon Lottery";
@@ -119,14 +119,14 @@ public class MatchData {
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 				winScore = 20;
 				respawnWait = 5f;
-				spawnGunA = -2;
-				spawnGunB = -2;
+				spawnGunA = Item.Random;
+				spawnGunB = Item.Random;
 				restockTime = 2f;
-				pickupSlot1 = -2;
-				pickupSlot2 = -2;
-				pickupSlot3 = -2;
-				pickupSlot4 = -2;
-				pickupSlot5 = -2;
+				pickupSlot1 = Item.Random;
+				pickupSlot2 = Item.Random;
+				pickupSlot3 = Item.Random;
+				pickupSlot4 = Item.Random;
+				pickupSlot5 = Item.Random;
 				break;
 		}
 	}

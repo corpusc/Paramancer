@@ -77,12 +77,12 @@ public class EntityClass : MonoBehaviour {
 	public Light firstPersonLight;
 	
 	// gun related
-	public int handGun = 0;
+	public Item handGun = Item.Pistol;
 	public float handGunCooldown = 0f;
-	public int holsterGun = 1;
+	public Item holsterGun = Item.Grenade;
 	public float holsterGunCooldown = 0f;
-	public int lastKnownHandGun = -99;
-	public int lastKnownHolsterGun = -99;
+	public Item lastKnownHandGun = Item.None;
+	public Item lastKnownHolsterGun = Item.None;
 	public GameObject firstPersonGun;
 	int swapperLockTarget = -1;
 	
@@ -128,8 +128,7 @@ public class EntityClass : MonoBehaviour {
 			if (gunMesh2.renderer) 
 				gunMesh2.renderer.material = invisibleMat;
 			
-			if (handGun == 7) {
-				// bomb
+			if (handGun == Item.Bomb) {
 				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null) {
 					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
 				}
@@ -141,9 +140,9 @@ public class EntityClass : MonoBehaviour {
 			meshObj.renderer.materials = mats;
 			
 			if (handGun >= 0 && gunMesh1.renderer) 
-				gunMesh1.renderer.material = artil.Guns[handGun].Mat;
+				gunMesh1.renderer.material = artil.Guns[(int)handGun].Mat;
 			if (holsterGun >= 0 && gunMesh2.renderer) 
-				gunMesh2.renderer.material = artil.Guns[holsterGun].Mat;
+				gunMesh2.renderer.material = artil.Guns[(int)holsterGun].Mat;
 		}
 		
 		// heads
@@ -183,7 +182,7 @@ public class EntityClass : MonoBehaviour {
 				firstPersonGun.renderer.enabled = false;
 			}else{
 				firstPersonGun.renderer.enabled = true;
-				firstPersonGun.renderer.material = artil.Guns[handGun].Mat;
+				firstPersonGun.renderer.material = artil.Guns[(int)handGun].Mat;
 			}
 		}
 		
@@ -368,7 +367,7 @@ public class EntityClass : MonoBehaviour {
 						if (pickup) {
 							for (int i=0; i<artil.Guns.Length; i++) {
 								if (offeredPickup == artil.Guns[i].Name) {
-									handGun = i;
+									handGun = (Item)i;
 									handGunCooldown = 0f;
 									gunRecoil += Vector3.right * 5f;
 									gunRecoil -= Vector3.up * 5f;
@@ -519,7 +518,7 @@ public class EntityClass : MonoBehaviour {
 					
 					if (handGun >= 0 && handGunCooldown > 0f && 
 						handGunCooldown - Time.deltaTime <= 0f && 
-						artil.Guns[handGun].Delay >= 1f
+						artil.Guns[(int)handGun].Delay >= 1f
 					) 
 						PlaySound("reload");
 					
@@ -530,7 +529,7 @@ public class EntityClass : MonoBehaviour {
 					
 					hud.swapperLocked = false;
 					swapperLockTarget = -1;
-					if (handGun == 5) {
+					if (handGun == Item.Swapper) {
 						// swapper aiming
 						List<int> validSwapTargets = new List<int>();
 						
@@ -595,7 +594,7 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					// grav gun arrow
-					if (handGun == 6) {
+					if (handGun == Item.GravGun) {
 						if (gravArrowObj == null) {
 							gravArrowObj = (GameObject)GameObject.Instantiate(gravArrowPrefab);
 							//gravArrowObj.layer = 
@@ -619,24 +618,24 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if (handGun >= 0 && !User.hasBall) {
+					if (handGun >= Item.Pistol && !User.hasBall) {
 						// shooting
-						if (Input.GetKeyDown("mouse 0") && Screen.lockCursor == true && !artil.Guns[handGun].AutoFire){
+						if (Input.GetKeyDown("mouse 0") && Screen.lockCursor == true && !artil.Guns[(int)handGun].AutoFire){
 							if (handGunCooldown <= 0f) {
 								Fire();
-								handGunCooldown += artil.Guns[handGun].Delay;
+								handGunCooldown += artil.Guns[(int)handGun].Delay;
 							}
-						}else if (Input.GetKey("mouse 0") && Screen.lockCursor == true && artil.Guns[handGun].AutoFire){
+						}else if (Input.GetKey("mouse 0") && Screen.lockCursor == true && artil.Guns[(int)handGun].AutoFire){
 							if (handGunCooldown <= 0f) {
 								Fire();
-								handGunCooldown += artil.Guns[handGun].Delay;
+								handGunCooldown += artil.Guns[(int)handGun].Delay;
 							}
 						}
 					}
 					
 					if ((Input.GetKeyDown("mouse 1") || InputUser.Started(UserAction.SwapWeapon)) && Screen.lockCursor == true) {
 						// swap guns
-						int gun = handGun;
+						Item gun = handGun;
 						float tempFloat = handGunCooldown;
 						handGun = holsterGun;
 						handGunCooldown = holsterGunCooldown;
@@ -655,11 +654,11 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					if (InputUser.Started(UserAction.Suicide)) {
-						net.RegisterHitRPC("suicide",User.viewID,User.viewID,transform.position);
+						net.RegisterHitRPC("suicide", User.viewID, User.viewID, transform.position);
 					}
 					
 					moveFPGun();
-				}else{ // we dead
+				}else{ // we be dead
 					if (Camera.main.transform.parent != null) 
 						SetModelVisibility(true);
 					
@@ -731,8 +730,8 @@ public class EntityClass : MonoBehaviour {
 		if (handGun != lastKnownHandGun) {
 			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
-			if (handGun >= 0) {
-				gunMesh1 = (GameObject)GameObject.Instantiate(artil.Guns[handGun].Prefab);
+			if (handGun >= Item.Pistol) {
+				gunMesh1 = (GameObject)GameObject.Instantiate(artil.Guns[(int)handGun].Prefab);
 			}else{
 				gunMesh1 = new GameObject();
 			}
@@ -746,8 +745,8 @@ public class EntityClass : MonoBehaviour {
 				if (firstPersonGun != null) 
 					Destroy(firstPersonGun);
 				
-				if (handGun >= 0) {
-					firstPersonGun = (GameObject)GameObject.Instantiate(artil.Guns[handGun].Prefab);
+				if (handGun >= Item.Pistol) {
+					firstPersonGun = (GameObject)GameObject.Instantiate(artil.Guns[(int)handGun].Prefab);
 				}else{
 					firstPersonGun = new GameObject();
 				}
@@ -772,8 +771,8 @@ public class EntityClass : MonoBehaviour {
 			Transform gunParentB = gunMesh2.transform.parent;
 			Destroy(gunMesh2);
 			
-			if (holsterGun >= 0) {
-				gunMesh2 = (GameObject)GameObject.Instantiate(artil.Guns[holsterGun].Prefab);
+			if (holsterGun >= Item.Pistol) {
+				gunMesh2 = (GameObject)GameObject.Instantiate(artil.Guns[(int)holsterGun].Prefab);
 			}else{
 				gunMesh2 = new GameObject();
 			}
@@ -842,18 +841,18 @@ public class EntityClass : MonoBehaviour {
 		firstPersonGun.transform.localPosition += gunInertia * 0.1f;
 		
 		float recoilRest = 5f;
-		switch ((Weapon)handGun) {
-			case Weapon.Pistol:
+		switch ((Item)handGun) {
+			case Item.Pistol:
 				recoilRest = 5f; break;
-			case Weapon.Grenade:
+			case Item.Grenade:
 				recoilRest = 8f; break;
-			case Weapon.MachineGun:
+			case Item.MachineGun:
 				recoilRest = 8f; break;
-			case Weapon.Rifle:
+			case Item.Rifle:
 				recoilRest = 2f; break;
-			case Weapon.RocketLauncher:
+			case Item.RocketLauncher:
 				recoilRest = 1f; break;
-			case Weapon.Spatula:
+			case Item.Spatula:
 				recoilRest = 2f; break;
 		}
 		
@@ -874,29 +873,29 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void Fire() {
-		switch ((Weapon)handGun) {
-			case Weapon.Pistol:
+		switch ((Item)handGun) {
+			case Item.Pistol:
 				FireBullet("pistol");
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
-			case Weapon.Grenade:
+			case Item.Grenade:
 				net.Shoot("grenade", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
-			case Weapon.MachineGun:
+			case Item.MachineGun:
 				FireBullet("machinegun");
 				gunRecoil -= Vector3.forward * 2f;
 				gunRecoil += new Vector3(Random.Range(-1f,1f),Random.Range(-1f,1f),Random.Range(-1f,1f)).normalized * 0.2f;
 				break; 
-			case Weapon.Rifle:
+			case Item.Rifle:
 				FireBullet("rifle");
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Weapon.RocketLauncher:
+			case Item.RocketLauncher:
 				net.Shoot("rocketlauncher", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Weapon.Swapper:
+			case Item.Swapper:
 				if (swapperLockTarget == -1) {
 					// not locked on, we miss
 					FireBullet("swapper");
@@ -907,7 +906,7 @@ public class EntityClass : MonoBehaviour {
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Weapon.GravGun:
+			case Item.GravGun:
 				Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 				RaycastHit gravHit = new RaycastHit();
 				int gravLayer = 1<<0;
@@ -924,10 +923,10 @@ public class EntityClass : MonoBehaviour {
 				sendRPCUpdate = true;
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Weapon.Bomb:
+			case Item.Bomb:
 				net.Detonate("bomb", transform.position, User.viewID, User.viewID);
 				break; 
-			case Weapon.Spatula:
+			case Item.Spatula:
 				// FIXME: IF WE KEEP THIS, IT SHOULD BE AN INSTAGIB MELEE WEAPON
 				
 				//gunRecoil += Vector3.forward * 6f;
@@ -1032,19 +1031,19 @@ public class EntityClass : MonoBehaviour {
 		if (firstPersonGun) 
 			Destroy(firstPersonGun);
 		
-		if (net.CurrMatch.spawnGunA == -2) {
-			handGun = Random.Range(0, artil.Guns.Length);
+		if (net.CurrMatch.spawnGunA == Item.Random) {
+			handGun = (Item)Random.Range(0, artil.Guns.Length);
 		}else{
 			handGun = net.CurrMatch.spawnGunA;
 		}
-		if (net.CurrMatch.spawnGunB == -2) {
-			holsterGun = Random.Range(0, artil.Guns.Length);
+		if (net.CurrMatch.spawnGunB == Item.Random) {
+			holsterGun = (Item)Random.Range(0, artil.Guns.Length);
 		}else{
 			holsterGun = net.CurrMatch.spawnGunB;
 		}
 		
-		lastKnownHandGun = -99;
-		lastKnownHolsterGun = -99;
+		lastKnownHandGun = Item.None;
+		lastKnownHolsterGun = Item.None;
 		handGunCooldown = 0f;
 		holsterGunCooldown = 0f;
 		
@@ -1097,7 +1096,9 @@ public class EntityClass : MonoBehaviour {
 		ava.Move(transform.up * yMove * timeDelta * 5f);
 	}
 	
-	public void UpdatePlayer(Vector3 pos, Vector3 ang, bool crouch, Vector3 move, float yMovement, double time, int gunA, int gunB, Vector3 playerUp, Vector3 playerForward) {
+	public void UpdatePlayer(Vector3 pos, Vector3 ang, bool crouch, Vector3 move, float yMovement, double time, 
+		Item gunA, Item gunB, Vector3 playerUp, Vector3 playerForward
+	) {
 		transform.position = pos;
 		camHolder.transform.eulerAngles = ang;
 		camAngle = ang;

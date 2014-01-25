@@ -36,16 +36,19 @@ public enum Menu {
 	Count
 }
 
-public enum Weapon {
-	Pistol,
+public enum Item {
+	Health = -3,
+	Random = -2,
+	None = -1,
+	Pistol = 0,
 	Grenade,
-	MachineGun,
+	MachineGun, // 2
 	Rifle,
-	RocketLauncher,
+	RocketLauncher, // 4
 	Swapper,
-	GravGun,
+	GravGun, // 6
 	Bomb,
-	Spatula,
+	Spatula, // 8
 	Count
 }
 

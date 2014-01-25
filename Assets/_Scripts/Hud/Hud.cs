@@ -26,14 +26,13 @@ public class Hud : MonoBehaviour {
 	public Menu OfflineMenu = Menu.Main;
 	public Menu OnlineMenu = Menu.Controls;
 	
+	// avatar/user
 	public bool Spectating = false;
 	public int Spectatee = 0;
-	
 	public float gunACooldown = 0f;
-	public int gunA = 0;
-	public int gunB = 0;
-	
-	public float EnergyLeft = 1f; //0-1
+	public Item gunA = Item.Pistol;
+	public Item gunB = Item.Pistol;
+	public float EnergyLeft = 1f; // 0-1
 	
 	// private
 	Rect screen;
@@ -245,14 +244,14 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-	void DrawMenuConfigAvatar() {
+	void avatarSetup() {
 		GUI.BeginGroup(window);
 		
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Name: ");
 		net.localPlayer.name = GUILayout.TextField(net.localPlayer.name);
-		if (net.localPlayer.name.Length>20) 
-			net.localPlayer.name = net.localPlayer.name.Substring(0,20);
+		if (net.localPlayer.name.Length > 20) 
+			net.localPlayer.name = net.localPlayer.name.Substring(0, 20);
 		net.localPlayer.name = FormatName(net.localPlayer.name);
 		GUILayout.EndHorizontal();
 			
@@ -275,7 +274,8 @@ public class Hud : MonoBehaviour {
 				
 		if (GUILayout.Button("Head type: " + net.localPlayer.headType.ToString())) {
 			net.localPlayer.headType++;
-			if (net.localPlayer.headType>17) net.localPlayer.headType = 0;
+			if (net.localPlayer.headType > 17) 
+				net.localPlayer.headType = 0;
 		}
 		
 		if (net.localPlayer.headType == 11) GUILayout.Label("Head Credit: @Ast3c");
@@ -356,6 +356,7 @@ public class Hud : MonoBehaviour {
 		Rect r = window;
 		r.y = controGui.BottomMost;
 		DrawWindowBackground(r, true);
+		r.width /= 2;
 		r.height = vSpan + vSpan / 2;
 		GUI.Box(r, "Config:");
 		
@@ -420,6 +421,34 @@ public class Hud : MonoBehaviour {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	void slotSelect(ref Item item) {
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button("<")) 
+			item--;
+		
+		if (item < Item.Health) 
+			item = Item.Count-1;
+		
+		GUILayout.Label("Pickup Slot 2: " + item);
+		
+		if (GUILayout.Button(">")) 
+			item++;
+		
+		if (item >= Item.Count) 
+			item = Item.Health;
+		GUILayout.EndHorizontal();
+	}
 	
 	
 	
@@ -588,139 +617,42 @@ public class Hud : MonoBehaviour {
 			
 			// spawn gun A
 			GUILayout.BeginHorizontal();
+			
 			if (GUILayout.Button("<")) 
 				matches[matchId].spawnGunA--;
-			if (matches[matchId].spawnGunA<-2) 
-				matches[matchId].spawnGunA = arse.Guns.Length-1;
+			if (matches[matchId].spawnGunA < Item.Random) 
+				matches[matchId].spawnGunA = Item.Count-1;
 			
-			string gunName = "none";
-			if (matches[matchId].spawnGunA == -2) 
-				gunName = "random";
-			if (matches[matchId].spawnGunA >= 0) 
-				gunName = arse.Guns[matches[matchId].spawnGunA].Name;
-			GUILayout.Label("Spawn Gun A: " + gunName);
+			GUILayout.Label("Spawn Gun A: " + matches[matchId].spawnGunA);
+			
 			if (GUILayout.Button(">")) 
 				matches[matchId].spawnGunA++;
-			if (matches[matchId].spawnGunA >= arse.Guns.Length) 
-				matches[matchId].spawnGunA = -2;
+			if (matches[matchId].spawnGunA >= Item.Count) 
+				matches[matchId].spawnGunA = Item.Random;
 			GUILayout.EndHorizontal();
 			
 			// spawn gun B
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("<")) 
 				matches[matchId].spawnGunB--;
-			if (matches[matchId].spawnGunB < -2) 
-				matches[matchId].spawnGunB = arse.Guns.Length-1;
-			gunName = "none";
-			if (matches[matchId].spawnGunB == -2) 
-				gunName = "random";
-			if (matches[matchId].spawnGunB >= 0) 
-				gunName = arse.Guns[matches[matchId].spawnGunB].Name;
-			GUILayout.Label("Spawn Gun B: " + gunName);
+			if (matches[matchId].spawnGunB < Item.Random) 
+				matches[matchId].spawnGunB = Item.Count-1;
+			
+			GUILayout.Label("Spawn Gun B: " + matches[matchId].spawnGunB);
+			
 			if (GUILayout.Button(">")) 
 				matches[matchId].spawnGunB++;
-			if (matches[matchId].spawnGunB >= arse.Guns.Length) 
-				matches[matchId].spawnGunB = -2;
+			if (matches[matchId].spawnGunB >= Item.Count) 
+				matches[matchId].spawnGunB = Item.Random;
 			GUILayout.EndHorizontal();
 			
 			GUILayout.Label(" --- ");
 			
-			// gun slot 1
-			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) matches[matchId].pickupSlot1--;
-			if (matches[matchId].pickupSlot1<-3) matches[matchId].pickupSlot1 = arse.Guns.Length-1;
-			gunName = "none";
-			if (matches[matchId].pickupSlot1 == -2) 
-				gunName = "random";
-			if (matches[matchId].pickupSlot1 == -3) 
-				gunName = "health";
-			if (matches[matchId].pickupSlot1 >= 0) 
-				gunName = arse.Guns[matches[matchId].pickupSlot1].Name;
-			GUILayout.Label("Pickup Slot 1: " + gunName);
-			if (GUILayout.Button(">")) 
-				matches[matchId].pickupSlot1++;
-			if (matches[matchId].pickupSlot1>=arse.Guns.Length) 
-				matches[matchId].pickupSlot1 = -3;
-			GUILayout.EndHorizontal();
-			
-			// gun slot 2
-			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) matches[matchId].pickupSlot2--;
-			if (matches[matchId].pickupSlot2<-3) matches[matchId].pickupSlot2 = arse.Guns.Length-1;
-			gunName = "none";
-			if (matches[matchId].pickupSlot2==-2) gunName = "random";
-			if (matches[matchId].pickupSlot2==-3) gunName = "health";
-			if (matches[matchId].pickupSlot2>=0) gunName = arse.Guns[matches[matchId].pickupSlot2].Name;
-			GUILayout.Label("Pickup Slot 2: " + gunName);
-			if (GUILayout.Button(">")) matches[matchId].pickupSlot2++;
-			if (matches[matchId].pickupSlot2>=arse.Guns.Length) matches[matchId].pickupSlot2 = -3;
-			GUILayout.EndHorizontal();
-			
-			//gun slot 3
-			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) 
-				matches[matchId].pickupSlot3--;
-			if (matches[matchId].pickupSlot3 < -3) 
-				matches[matchId].pickupSlot3 = arse.Guns.Length-1;
-			
-			gunName = "none";
-			if (matches[matchId].pickupSlot3==-2) 
-				gunName = "random";
-			if (matches[matchId].pickupSlot3==-3) 
-				gunName = "health";
-			if (matches[matchId].pickupSlot3>=0) 
-				gunName = arse.Guns[matches[matchId].pickupSlot3].Name;
-			GUILayout.Label("Pickup Slot 3: " + gunName);
-			if (GUILayout.Button(">")) 
-				matches[matchId].pickupSlot3++;
-			if (matches[matchId].pickupSlot3>=arse.Guns.Length) 
-				matches[matchId].pickupSlot3 = -3;
-			GUILayout.EndHorizontal();
-			
-			//gun slot 4
-			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) 
-				matches[matchId].pickupSlot4--;
-			if (matches[matchId].pickupSlot4 < -3) 
-				matches[matchId].pickupSlot4 = arse.Guns.Length-1;
-			
-			gunName = "none";
-			if (matches[matchId].pickupSlot4 == -2) 
-				gunName = "random";
-			if (matches[matchId].pickupSlot4 == -3) 
-				gunName = "health";
-			if (matches[matchId].pickupSlot4 >= 0) 
-				gunName = arse.Guns[matches[matchId].pickupSlot4].Name;
-			
-			GUILayout.Label("Pickup Slot 4: " + gunName);
-			if (GUILayout.Button(">")) 
-				matches[matchId].pickupSlot4++;
-			if (matches[matchId].pickupSlot4 >= arse.Guns.Length) 
-				matches[matchId].pickupSlot4 = -3;
-			GUILayout.EndHorizontal();
-			
-			// gun slot 4
-			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<")) 
-				matches[matchId].pickupSlot5--;
-			if (matches[matchId].pickupSlot5 < -3) 
-				matches[matchId].pickupSlot5 = arse.Guns.Length-1;
-			
-			gunName = "none";
-			if (matches[matchId].pickupSlot5==-2) 
-				gunName = "random";
-			if (matches[matchId].pickupSlot5==-3) 
-				gunName = "health";
-			if (matches[matchId].pickupSlot5>=0) 
-				gunName = arse.Guns[matches[matchId].pickupSlot5].Name;
-			GUILayout.Label("Pickup Slot 5: " + gunName);
-			
-			if (GUILayout.Button(">")) 
-				matches[matchId].pickupSlot5++;
-			if (matches[matchId].pickupSlot5 >= arse.Guns.Length) 
-				matches[matchId].pickupSlot5 = -3;
-			GUILayout.EndHorizontal();
-			
+			slotSelect(ref matches[matchId].pickupSlot1);
+			slotSelect(ref matches[matchId].pickupSlot2);
+			slotSelect(ref matches[matchId].pickupSlot3);
+			slotSelect(ref matches[matchId].pickupSlot4);
+			slotSelect(ref matches[matchId].pickupSlot5);
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Restock time (seconds): ");
@@ -847,8 +779,7 @@ public class Hud : MonoBehaviour {
 			matches[i] = new MatchData((Match)i);
 	}
 
-	void loadHudPics ()
-	{
+	void loadHudPics() {
 		UnityEngine.Object[] pics = Resources.LoadAll("Pic/Hud");
 		
 		// use this temp list to setup permanent vars
@@ -1038,8 +969,7 @@ public class Hud : MonoBehaviour {
 			}else{
 				GUI.DrawTexture(new Rect(midX-8, midY-8, 16, 16), crossHair);
 				
-				if (gunA == 5) {
-					//swapper
+				if (gunA == Item.Swapper) {
 					int swapperFrame = Mathf.FloorToInt((Time.time*15f) % swapperCrosshair.Length);
 					if (!swapperLocked) 
 						swapperFrame = 0;
@@ -1086,44 +1016,45 @@ public class Hud : MonoBehaviour {
 			}
 			
 			if (Spectating) {
+				string s = "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.";
 				GUI.color = Color.black;
-				GUI.Label(new Rect(4, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
-				GUI.Label(new Rect(6, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
-				GUI.Label(new Rect(5, 4, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
-				GUI.Label(new Rect(5, 6, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
+				GUI.Label(new Rect(4, 5, 300, 60), s);
+				GUI.Label(new Rect(6, 5, 300, 60), s);
+				GUI.Label(new Rect(5, 4, 300, 60), s);
+				GUI.Label(new Rect(5, 6, 300, 60), s);
 				
 				GUI.color = gcol;
-				GUI.Label(new Rect(5, 5, 300, 60), "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.");
+				GUI.Label(new Rect(5, 5, 300, 60), s);
 				
 			}
 			
 			// weapon
 			GUI.color = new Color(0.1f, 0.1f, 0.1f, 0.7f);
 			if (gunB >= 0) 
-				GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), arse.Guns[gunB].Pic);
+				GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), arse.Guns[(int)gunB].Pic);
 			
 			GUI.color = gcol;
 			if (gunA >= 0) 
-				GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), arse.Guns[gunA].Pic);
+				GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), arse.Guns[(int)gunA].Pic);
 			
 			if (gunA >= 0) {
 				GUI.color = Color.black;
 			
-				GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
-				GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
-				GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), arse.Guns[gunA].Name);
-				GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), arse.Guns[gunA].Name);
+				GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
+				GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
+				GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), arse.Guns[(int)gunA].Name);
+				GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), arse.Guns[(int)gunA].Name);
 				
 				GUI.color = gcol;
-				GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), arse.Guns[gunA].Name);
+				GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
 			}
 			
 			// weapon cooldown
-			if (gunA >= 0) {
+			if (gunA >= Item.Pistol) {
 				GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), blackTex);
 				float coolDownPercent = 50f;
-				if (arse.Guns[gunA].Delay>0f) {
-					coolDownPercent = (gunACooldown / arse.Guns[gunA].Delay) * 50f;
+				if (arse.Guns[(int)gunA].Delay>0f) {
+					coolDownPercent = (gunACooldown / arse.Guns[(int)gunA].Delay) * 50f;
 					coolDownPercent = 50f-coolDownPercent;
 				}
 				GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), backTex);
@@ -1247,10 +1178,10 @@ public class Hud : MonoBehaviour {
 					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
 				
 				DrawWindowBackground(true);
-				DrawMenuConfigAvatar();
+				avatarSetup();
 				break;
 			case Menu.Controls:
-				br.x = window.xMax;
+				br.x = window.xMax / 2;
 				br.y = controGui.BottomMost;
 				backButton(br);
 				MenuControls();
