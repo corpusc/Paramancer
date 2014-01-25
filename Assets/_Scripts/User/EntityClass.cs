@@ -510,7 +510,8 @@ public class EntityClass : MonoBehaviour {
 					lastHealth = User.health;
 					
 					if (sendRPCUpdate) {
-						net.SendPlayer(User.viewID, transform.position, camAngle, crouched, moveVec, yMove, handGun, holsterGun, transform.up, transform.forward);
+						net.SendPlayer(User.viewID, transform.position, camAngle, crouched, moveVec, yMove, 
+							(int)handGun, (int)holsterGun, transform.up, transform.forward);
 						sendRPCUpdate = false;
 						
 						rpcCamtime = Time.time; // + 0.02f;
