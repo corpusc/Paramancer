@@ -611,7 +611,7 @@ public class CcNet : MonoBehaviour {
 						}
 						
 						if (item != Item.None) {
-							networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].Id, item);
+							networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].Id, (int)item);
 						}
 					}
 				}
@@ -624,7 +624,7 @@ public class CcNet : MonoBehaviour {
 	public Texture healthIcon;
 	public GameObject pickupBoxPrefab;
 	[RPC]
-	void RestockPickup(int pointID, Item item){
+	void RestockPickup(int pointID, int item) {
 		for (int i=0; i<pickupPoints.Count; i++){
 			if (pickupPoints[i].Id == pointID){
 				if (pickupPoints[i].stocked) return;
@@ -636,8 +636,9 @@ public class CcNet : MonoBehaviour {
 				newPickup.transform.localScale = Vector3.one * 0.5f;
 				PickupBoxScript box = newPickup.GetComponent<PickupBoxScript>();
 				box.pickupPoint = pickupPoints[i];
-				if (item < 0) {
-					//health
+				
+				if (item < (int)Item.Pistol) {
+					// health
 					box.pickupName = "health";
 					box.iconObj.renderer.material.SetTexture("_MainTex",healthIcon);
 					Material[] mats = box.boxObj.renderer.materials;
@@ -645,10 +646,10 @@ public class CcNet : MonoBehaviour {
 					box.boxObj.renderer.materials = mats;
 				}else{
 					// gun of some type
-					box.pickupName = artill.Guns[(int)item].Name;
-					box.iconObj.renderer.material.SetTexture("_MainTex",artill.Guns[(int)item].Pic);
+					box.pickupName = artill.Guns[item].Name;
+					box.iconObj.renderer.material.SetTexture("_MainTex",artill.Guns[item].Pic);
 					Material[] mats = box.boxObj.renderer.materials;
-					mats[0] = artill.Guns[(int)item].Mat;
+					mats[0] = artill.Guns[item].Mat;
 					box.boxObj.renderer.materials = mats;
 				}
 			}
@@ -656,19 +657,23 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	public void UnstockPickupPoint(PickupPoint point){
-		for (int i=0; i<pickupPoints.Count; i++){
-			if (point == pickupPoints[i]){
+		for (int i=0; i<pickupPoints.Count; i++) {
+			if (point == pickupPoints[i]) {
 				networkView.RPC("UnstockRPC", RPCMode.All, pickupPoints[i].Id);
 			}
 		}
 	}
 	[RPC]
 	void UnstockRPC(int pointID){
-		for (int i=0; i<pickupPoints.Count; i++){
-			if (pointID == pickupPoints[i].Id){
+		for (int i=0; i<pickupPoints.Count; i++) {
+			if (pointID == pickupPoints[i].Id) {
 				pickupPoints[i].stocked = false;
-				if (pickupPoints[i].currentAvailablePickup != null) Destroy(pickupPoints[i].currentAvailablePickup);
-				if (isServer) pickupPoints[i].RestockTime = CurrMatch.restockTime;
+				
+				if (pickupPoints[i].currentAvailablePickup != null) 
+					Destroy(pickupPoints[i].currentAvailablePickup);
+				
+				if (isServer) 
+					pickupPoints[i].RestockTime = CurrMatch.restockTime;
 			}
 		}
 	}
@@ -693,7 +698,7 @@ public class CcNet : MonoBehaviour {
 				}
 				
 				if (item != Item.None) {
-					networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].Id, item);
+					networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].Id, (int)item);
 				}
 				
 			}
