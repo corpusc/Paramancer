@@ -432,7 +432,7 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-	void slotSelect(ref Item item) {
+	void slotSelect(ref Item item, int slot) {
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button("<")) 
 			item--;
@@ -440,7 +440,7 @@ public class Hud : MonoBehaviour {
 		if (item < Item.Health) 
 			item = Item.Count-1;
 		
-		GUILayout.Label("Pickup Slot 2: " + item);
+		GUILayout.Label("Pickup Slot " + slot + ": " + item);
 		
 		if (GUILayout.Button(">")) 
 			item++;
@@ -455,14 +455,17 @@ public class Hud : MonoBehaviour {
 	void MatchSetup(bool serving) {
 		GUI.BeginGroup(screen);
 		
+		float w = screen.width / 3;
 		var r = screen;
 		r.height = vSpan*2;
-		GUI.Box(r, "^----_ MATCH SETUP _----^");
+		GUI.Box(r, "^----\\ MATCH SETUP /----^");
 		
 		if (!serving) {
 			// set up server
 			r = screen;
+			r.x = w;
 			r.y = vSpan*2;
+			r.width = w;
 			r.height -= vSpan*2 /* title */ + vSpan*4 /* start button height */;
 			GUILayout.BeginArea(r); {
 				GUILayout.BeginHorizontal(); {
@@ -476,11 +479,16 @@ public class Hud : MonoBehaviour {
 				} GUILayout.EndHorizontal();
 			} GUILayout.EndArea();
 					
-			// set up server connections/port
-			GUILayout.BeginArea(new Rect(305,20,290,400));
 			
-			GUILayout.Label("Max Connections: " + net.connections.ToString());
+			
+			// set up server connections/port
+			r.y += vSpan*4;
+			GUILayout.BeginArea(r);
+			
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Max Connections: " + net.connections);
 			net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32));
+			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Port: ");
@@ -651,11 +659,11 @@ public class Hud : MonoBehaviour {
 			
 			GUILayout.Label(" --- ");
 			
-			slotSelect(ref matches[matchId].pickupSlot1);
-			slotSelect(ref matches[matchId].pickupSlot2);
-			slotSelect(ref matches[matchId].pickupSlot3);
-			slotSelect(ref matches[matchId].pickupSlot4);
-			slotSelect(ref matches[matchId].pickupSlot5);
+			slotSelect(ref matches[matchId].pickupSlot1, 1);
+			slotSelect(ref matches[matchId].pickupSlot2, 2);
+			slotSelect(ref matches[matchId].pickupSlot3, 3);
+			slotSelect(ref matches[matchId].pickupSlot4, 4);
+			slotSelect(ref matches[matchId].pickupSlot5, 5);
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Restock time (seconds): ");
