@@ -56,7 +56,7 @@ public class Hud : MonoBehaviour {
 	CcNet net;
 	CcLog log;
 	Arsenal arse;
-	ControlsGui controGui;
+	Controls controls;
 	LocalUser locUser;
 
 	
@@ -66,7 +66,7 @@ public class Hud : MonoBehaviour {
 		net = GetComponent<CcNet>();
 		log = GetComponent<CcLog>();
 		arse = GetComponent<Arsenal>();
-		controGui = GetComponent<ControlsGui>();
+		controls = GetComponent<Controls>();
 		locUser = GetComponent<LocalUser>();
 		
 		// load map preview pics
@@ -113,7 +113,7 @@ public class Hud : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		controGui.enabled = false;
+		controls.enabled = false;
 		
 		// sizes of UI elements
 		screen = new Rect(0, 0, Screen.width, Screen.height);
@@ -352,9 +352,9 @@ public class Hud : MonoBehaviour {
 	private int fsWidth = 1280;
 	private int fsHeight = 720;
 	void MenuControls() {
-		controGui.enabled = true;
+		controls.enabled = true;
 		Rect r = window;
-		r.y = controGui.BottomMost;
+		r.y = controls.BottomMost;
 		DrawWindowBackground(r, true);
 		r.width /= 2;
 		r.height = vSpan + vSpan / 2;
@@ -455,20 +455,23 @@ public class Hud : MonoBehaviour {
 	void MatchSetup(bool serving) {
 		GUI.BeginGroup(screen);
 		
-		if (serving)
-			GUI.Label(new Rect(250,0,100,20), "Change game:");
-		else {
-			GUI.Label(new Rect(250,0,100,20), "Host a game:");
-				
+		var r = screen;
+		r.height = vSpan*2;
+		GUI.Box(r, "^----_ MATCH SETUP _----^");
+		
+		if (!serving) {
 			// set up server
-			GUILayout.BeginArea(new Rect(5,20,290,400)); {
+			r = screen;
+			r.y = vSpan*2;
+			r.height -= vSpan*2 /* title */ + vSpan*4 /* start button height */;
+			GUILayout.BeginArea(r); {
 				GUILayout.BeginHorizontal(); {
-					GUILayout.Label("Game Name: ");
+					GUILayout.Label("Name: ");
 					net.gameName = GUILayout.TextField(net.gameName);
 				} GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal(); {
-					GUILayout.Label("Game Password: ");
+					GUILayout.Label("Password: ");
 					net.password = GUILayout.TextField(net.password);
 				} GUILayout.EndHorizontal();
 			} GUILayout.EndArea();
@@ -918,7 +921,7 @@ public class Hud : MonoBehaviour {
 			// buttons
 			float h = button.height;
 			button.x = window.xMax;
-			button.y = controGui.BottomMost;
+			button.y = controls.BottomMost;
 	
 			if (settingUpMatch)
 				button.x -= button.width;
@@ -1182,7 +1185,7 @@ public class Hud : MonoBehaviour {
 				break;
 			case Menu.Controls:
 				br.x = window.xMax / 2;
-				br.y = controGui.BottomMost;
+				br.y = controls.BottomMost;
 				backButton(br);
 				MenuControls();
 				break;

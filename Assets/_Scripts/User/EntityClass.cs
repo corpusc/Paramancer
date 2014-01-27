@@ -89,7 +89,9 @@ public class EntityClass : MonoBehaviour {
 	// network
 	public bool isLocal = true;
 	public bool Spectating = false;
-	private int spectateInt = 0;
+	
+	// private 
+	int spectatee = 0;
 	
 	// scripts
 	public CcNet net;
@@ -323,19 +325,24 @@ public class EntityClass : MonoBehaviour {
 		AudioListener.volume = net.gameVolume;
 		
 		hud.Spectating = Spectating;
-		hud.Spectatee = spectateInt;
+		hud.Spectatee = spectatee;
 		
 		if (Spectating && isLocal){
 			if (net.players.Count>0){
-				if (firstPersonGun) firstPersonGun.renderer.enabled = false;
+				if (firstPersonGun) 
+					firstPersonGun.renderer.enabled = false;
 				
-				if (Input.GetKeyDown("mouse 0")) spectateInt++;
-				if (spectateInt>=net.players.Count) spectateInt = 0;
-				if (net.players[spectateInt].lives<=0) spectateInt++;
-				if (spectateInt>=net.players.Count) spectateInt = 0;
+				if (InputUser.Started(UserAction.Activate) ||
+					net.players[spectatee].lives <= 0
+				) {
+					spectatee++;
+					
+					if (spectatee >= net.players.Count) 
+						spectatee = 0;
+				}
 				
 				Camera.main.transform.parent = null;
-				Camera.main.transform.position = net.players[spectateInt].Entity.transform.position;
+				Camera.main.transform.position = net.players[spectatee].Entity.transform.position;
 				float invY = 1f;
 				if (locUser.LookInvert)
 					invY = -1f;
@@ -619,22 +626,35 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if (handGun >= Item.Pistol && !User.hasBall) {
-						// shooting
-						if (Input.GetKeyDown("mouse 0") && Screen.lockCursor == true && !artil.Guns[(int)handGun].AutoFire){
-							if (handGunCooldown <= 0f) {
-								Fire();
-								handGunCooldown += artil.Guns[(int)handGun].Delay;
+					if /* shooting */ 
+						(Screen.lockCursor && 
+						!User.hasBall && 
+						handGun >= Item.Pistol
+					) {
+						
+						
+						if (artil.Guns[(int)handGun].AutoFire) {
+							if /* holding */ 
+								(InputUser.Holding(UserAction.Activate)
+							) {
+								if (handGunCooldown <= 0f) {
+									Fire();
+									handGunCooldown += artil.Guns[(int)handGun].Delay;
+								}
 							}
-						}else if (Input.GetKey("mouse 0") && Screen.lockCursor == true && artil.Guns[(int)handGun].AutoFire){
-							if (handGunCooldown <= 0f) {
-								Fire();
-								handGunCooldown += artil.Guns[(int)handGun].Delay;
+						}else{
+							if /* started pressing */ 
+								(InputUser.Started(UserAction.Activate)
+							) {
+								if (handGunCooldown <= 0f) {
+									Fire();
+									handGunCooldown += artil.Guns[(int)handGun].Delay;
+								}
 							}
 						}
 					}
 					
-					if ((Input.GetKeyDown("mouse 1") || InputUser.Started(UserAction.SwapWeapon)) && Screen.lockCursor == true) {
+					if (InputUser.Started(UserAction.SwapWeapon) && Screen.lockCursor == true) {
 						// swap guns
 						Item gun = handGun;
 						float tempFloat = handGunCooldown;
@@ -649,9 +669,11 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					// ball throwing
-					if (User.hasBall && Input.GetKeyDown("mouse 0") && Screen.lockCursor == true) {
+					if (InputUser.Started(UserAction.Activate) &&
+						Screen.lockCursor && 
+						User.hasBall
+					) {
 						net.ThrowBall(Camera.main.transform.position, Camera.main.transform.forward, 20f);
-						
 					}
 					
 					if (InputUser.Started(UserAction.Suicide)) {

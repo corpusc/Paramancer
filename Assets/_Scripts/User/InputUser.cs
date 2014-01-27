@@ -54,11 +54,14 @@ public static class InputUser {
 					BindData[i].KeyCode = KeyCode.Z;
 					break;
 
-				case UserAction.Sprint:
-					BindData[i].KeyCode = KeyCode.LeftShift;
+				case UserAction.Activate:
+					BindData[i].KeyCode = KeyCode.Mouse0;
 					break;
 				case UserAction.SwapWeapon:
-					BindData[i].KeyCode = KeyCode.R;
+					BindData[i].KeyCode = KeyCode.Mouse1;
+					break;
+				case UserAction.Sprint:
+					BindData[i].KeyCode = KeyCode.LeftShift;
 					break;
 				case UserAction.GrabItem:
 					BindData[i].KeyCode = KeyCode.G;

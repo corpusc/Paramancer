@@ -60,9 +60,10 @@ public enum UserAction {
 	MoveUp,
 	MoveDown,
 	
-	Sprint,
+	Activate, // fire/activate/use whatever you are holding
 	SwapWeapon,
 	GrabItem,
+	Sprint,
 	Chat,
 	Menu,
 	Scores,
@@ -70,5 +71,4 @@ public enum UserAction {
 	Suicide,
 	
 	Count
-//	Use, // fire/activate/use whatever you are holding
 }

@@ -29,7 +29,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ControlsGui : MonoBehaviour {
+public class Controls : MonoBehaviour {
 	public int BottomMost;
 	
 	// privates
@@ -37,8 +37,8 @@ public class ControlsGui : MonoBehaviour {
 	Color purpleLight = Color.Lerp(purple, Color.white, 0.5f);
 	Color orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
 	Texture keyCap;
-	int numX = 21;
-	int numY = 6;
+	int maxX = 21;
+	int maxY = 6 + 5; // 6 for keyboard, 5 for mouse
 	int w;
 	BindData draggee = null; // user action that is attached to pointer.  it's still dragging if you're not HOLDING LMB?!
 	Vector3 mouPos; // converted Input.mousePosition to sensible coordinates
@@ -62,12 +62,13 @@ public class ControlsGui : MonoBehaviour {
 		}
 		
 		// setup temp structure for the physical layout of the keyboard
+		var n = KeyCode.None;
 		codes = new KeyCode[] {
 			KeyCode.Escape, 
 			KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6, 
 			KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12,
 			KeyCode.Print, KeyCode.ScrollLock, KeyCode.Pause, 
-			KeyCode.None, KeyCode.None, KeyCode.None, KeyCode.None, KeyCode.None, 
+			n, n, n, n, n, 
 			
 			KeyCode.BackQuote, 
 			KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, 
@@ -86,29 +87,36 @@ public class ControlsGui : MonoBehaviour {
 			KeyCode.CapsLock, 
 			KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, 
 			KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Semicolon, 
-			KeyCode.Quote, KeyCode.Return, KeyCode.None,
-			KeyCode.None, KeyCode.None, KeyCode.None,
-			KeyCode.Keypad4, KeyCode.Keypad5, KeyCode.Keypad6, KeyCode.None, 
+			KeyCode.Quote, KeyCode.Return, n,
+			n, n, n,
+			KeyCode.Keypad4, KeyCode.Keypad5, KeyCode.Keypad6, n, 
 			
 			KeyCode.LeftShift, 
 			KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, 
 			KeyCode.N, KeyCode.M, KeyCode.Comma, KeyCode.Period, 
-			KeyCode.Slash, KeyCode.RightShift, KeyCode.None, KeyCode.None,
-			KeyCode.None, KeyCode.UpArrow, KeyCode.None,
+			KeyCode.Slash, KeyCode.RightShift, n, n,
+			n, KeyCode.UpArrow, n,
 			KeyCode.Keypad1, KeyCode.Keypad2, KeyCode.Keypad3, KeyCode.KeypadEnter, 
 			
-			KeyCode.LeftControl, KeyCode.None,
+			KeyCode.LeftControl, n,
 			KeyCode.LeftWindows, 
 			KeyCode.LeftAlt, 
 			KeyCode.Space,
-			KeyCode.None, KeyCode.None,
-			KeyCode.None, KeyCode.None,
+			n, n,
+			n, n,
 			KeyCode.RightAlt, 
 			KeyCode.RightWindows,
 			KeyCode.Menu,
-			KeyCode.RightControl, KeyCode.None,
+			KeyCode.RightControl, n,
 			KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow,
-			KeyCode.Keypad0, KeyCode.None, KeyCode.KeypadPeriod, KeyCode.None, 
+			KeyCode.Keypad0, n, KeyCode.KeypadPeriod, n,
+			
+			// mouse
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
 		};
 		
 		// the more complicated mirrored structure that holds all the OTHER key data
@@ -236,17 +244,23 @@ public class ControlsGui : MonoBehaviour {
 		}
 		
 		// draw actions
-		GUI.color = purple;
 		var bd = InputUser.BindData;
 		for (int i = 0; i < bd.Length; i++) {
-			if (bd[i] != draggee)
+			if (bd[i] != draggee) {
+				// get the right color
+				if (pushingOrHoveringOver(i))
+					GUI.color = Color.cyan;
+				else
+					GUI.color = purple;
+				
 				GUI.DrawTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
+			}
 		}
 		
 		// draw key labels          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {
 			// get the right color
-			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) )
+			if (pushingOrHoveringOver(i))
 				GUI.color = purple;
 			else
 				GUI.color = Color.white;
@@ -267,6 +281,10 @@ public class ControlsGui : MonoBehaviour {
 			GUI.color = purple;
 			GUI.DrawTexture(new Rect(mouPos.x-w/2, mouPos.y/*+w/2*/, w, w), draggee.Pic);
 		}
+	}
+	
+	bool pushingOrHoveringOver(int i) {
+		return Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos);
 	}
 	
 	string getSpacedOut(string s) {
@@ -371,13 +389,13 @@ public class ControlsGui : MonoBehaviour {
 	}
 
 	void setupKeyData() {
-		w = Screen.width/(numX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
+		w = Screen.width/(maxX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
 		//int h = Screen.height/(numY+1);
 		int fKeyGap = w/3;
 		
 		int i = 0;
-		for (int y = 0; y < numY; y++) {
-			for (int x = 0; x < numX; x++) {
+		for (int y = 0; y < maxY; y++) {
+			for (int x = 0; x < maxX; x++) {
 				if (codes[i] != KeyCode.None) {
 					// setup extra wide or tall keys
 					int numExtraXCells = numNonesToTheRight(codes[i]);
@@ -416,7 +434,8 @@ public class ControlsGui : MonoBehaviour {
 				i++;
 			}
 			
-			BottomMost = y * w + w + w/2;
+			if (y < 6)
+				BottomMost = y * w + w + w/2;
 		}
 	}
 }
