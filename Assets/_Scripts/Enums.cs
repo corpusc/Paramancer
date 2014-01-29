@@ -14,10 +14,10 @@ public enum Match {
 	Count
 }
 
-public enum Menu {
+public enum HudMode {
 	// Offline
 	Main,
-	StartGame,
+	StartGame,         // (don't need both Match AND StartGame anymore?)
 	JoinGame,
 	Avatar,
 	Credits,
@@ -26,12 +26,13 @@ public enum Menu {
 	InitializingServer,
 	Wait,
 	
-	// online
+	// Online
 	Kick,
-	Match, // MatchSetup
+	Match, // MatchSetup   (don't need both Match AND StartGame anymore?)
 	
-	// both
+	// Both
 	Controls,
+	Playing, // guess its not really BOTH, until i implement single player
 	
 	Count
 }

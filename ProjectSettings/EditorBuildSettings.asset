@@ -10,16 +10,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MenuMain.unity
   - enabled: 1
-    path: Assets/_Levels/TestLevel.unity
+    path: Assets/Map/TestLevel.unity
   - enabled: 1
-    path: Assets/_Levels/TestLevelB.unity
+    path: Assets/Map/TestLevelB.unity
   - enabled: 1
-    path: Assets/_Levels/Overpass.unity
+    path: Assets/Map/Overpass.unity
   - enabled: 1
-    path: Assets/_Levels/Furnace.unity
+    path: Assets/Map/Furnace.unity
   - enabled: 1
-    path: Assets/_Levels/Conflict Room.unity
+    path: Assets/Map/Conflict Room.unity
   - enabled: 1
-    path: Assets/_Levels/The OctaDrome.unity
+    path: Assets/Map/Tower.unity
   - enabled: 1
-    path: Assets/_Levels/Tower.unity
+    path: Assets/Map/The OctaDrome.unity

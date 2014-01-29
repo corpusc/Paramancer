@@ -522,7 +522,7 @@ public class CcNet : MonoBehaviour {
 		if (connected && !isServer) {
 			if (Time.time > lastRPCtime + 30f) {
 				DisconnectNow();
-				hud.OfflineMenu = Menu.ConnectionError;
+				hud.Mode = HudMode.ConnectionError;
 				Error = "Client hasn't heard from host for 30 seconds.\n" +
 					"Probably because someone's connection sucks,\n" +
 					"or latency is crazy high.\n\n" +
@@ -1139,8 +1139,7 @@ public class CcNet : MonoBehaviour {
 			}
 			
 			networkView.RPC("RequestPickupStocks", RPCMode.Server);
-			Screen.lockCursor = true;
-			hud.OnlineMenu = Menu.Controls;
+			//hud.Mode = HudMode.Playing;
 		}
 	}
 	
@@ -1177,7 +1176,7 @@ public class CcNet : MonoBehaviour {
 			if (!connected) {
 				// we've just joined a game as host, lets create the local player and it to the RPC buffer
 				localPlayer.viewID = Network.AllocateViewID();
-				hud.OfflineMenu = Menu.Wait;
+				hud.Mode = HudMode.Wait;
 				NetVI = Network.AllocateViewID();
 				RequestGameData();
 			}
@@ -1186,7 +1185,7 @@ public class CcNet : MonoBehaviour {
 		}else if (msEvent == MasterServerEvent.RegistrationFailedNoServer || msEvent == MasterServerEvent.RegistrationFailedGameType || msEvent == MasterServerEvent.RegistrationFailedGameName){
 			Debug.Log("server registration failed, disconnecting");
 			Error = "server registration failed";
-			hud.OfflineMenu = Menu.ConnectionError;
+			hud.Mode = HudMode.ConnectionError;
 			localPlayer.viewID = new NetworkViewID();
 			NetVI = new NetworkViewID();
 			Network.Disconnect();
@@ -1198,7 +1197,7 @@ public class CcNet : MonoBehaviour {
 		connected = true;
 		// we just connected to a host, let's RPC the host and ask for the game info
 		networkView.RPC("RequestGameData", RPCMode.Server);
-		hud.OfflineMenu = Menu.Wait;
+		hud.Mode = HudMode.Wait;
 		lastRPCtime = Time.time;
 		localPlayer.viewID = Network.AllocateViewID();
 	}
@@ -1244,7 +1243,7 @@ public class CcNet : MonoBehaviour {
 		Network.Disconnect();
 		localPlayer.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
-		hud.OfflineMenu = Menu.ConnectionError;
+		hud.Mode = HudMode.ConnectionError;
 	}
 	
 	//--------- Disconnecting, quitting, kicking -----------
@@ -1274,7 +1273,7 @@ public class CcNet : MonoBehaviour {
 			}
 			players = new List<NetUser>();
 			
-			hud.OfflineMenu = Menu.Main;
+			hud.Mode = HudMode.Main;
 			Application.LoadLevel("MenuMain");
 			levelLoaded = false;
 		}
@@ -1374,7 +1373,7 @@ public class CcNet : MonoBehaviour {
 		}
 		players = new List<NetUser>();
 		
-		hud.OfflineMenu = Menu.Main;
+		hud.Mode = HudMode.Main;
 		Application.LoadLevel("MenuMain");
 		levelLoaded = false;
 	}
@@ -1399,7 +1398,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		players = new List<NetUser>();
-		hud.OfflineMenu = Menu.Main;
+		hud.Mode = HudMode.Main;
 		Application.LoadLevel("MenuMain");
 		levelLoaded = false;
 		var newMsg = new LogEntry();

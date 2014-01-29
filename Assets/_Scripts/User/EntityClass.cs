@@ -654,7 +654,7 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if (InputUser.Started(UserAction.SwapWeapon) && Screen.lockCursor == true) {
+					if (InputUser.Started(UserAction.SwapWeapon) && Screen.lockCursor) {
 						// swap guns
 						Item gun = handGun;
 						float tempFloat = handGunCooldown;

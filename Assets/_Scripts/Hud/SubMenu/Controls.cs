@@ -1,8 +1,25 @@
 ﻿// TODO
 
+// ---name ideas
+// Visual Controls/Config
+// Juicy    "     /  "   (if name emphasizes appearance, stress that its not the point....ease/fidelity of use is
+// Best. Controls. EVAR
+// Finest Control Display & Config
+// Ultimate Controls
+// * in-game controls redef
+// * a snap, even with the most complicated setups that use tons of keys.
+//		ALL ACTIONS GUARANTEED to be mapped, and closeby cuz of the swapping system
+// *  	no need to look down and plan
+// * Stress that they will have the ultimate in configuration that the gaming world has ever seen
+//		that its one area where its CHEAP to have a best-in-class solution
+// * fully configurable/customizeable
+// * FULL SOURCE CODE
+
 // ------------------absolutely necessary for 1st release
 // ******** PlayerPrefs. saving **************
 // gamepad
+// outline plain white sprites..... later versions would use RenderToTexture, but think we can handle
+// 		all the draw calls fine, for a MENU screen
 // drag keys themselves around, for foreign keyboards
 // space it to take up the whole width of screen.... offsets for groupings take the leftover pixels
 // attention grabbing text such as "Click on actions/keys to change them"
@@ -14,10 +31,14 @@
 //		smoothly move to mouse pointer on pickup, smoothly move to destination key on dropping
 //		tilting graphic variable to how fast pointer is moving?  maybe even spinning at height of craziness
 //			maybe its anchored along top edge, and physics could let it spin around
-//		size/color changes upon grab/drop
+//		size/color changes upon grab/drop.... particle puff?  single particle texture like i wanted for
+//			melodicians depressed onscreen "keys"?   like a spinning starlike particle pattern.
+//			maybe several stacked on top of each other rotating at diff speeds.  so the actions twinkle/sparkle
 
 // ------------------"hotbar" release
+// changeable size of icon, so it doesn't get close to the edges of keys
 // changeable visibility panels for left and right hand, with horizontal splitter when more than 2 rows
+// 			should it be invisible by default?  and have like a "Start" button to access all kindsa config configuration?  8)
 // gameplay hotbar
 
 // ------------------final release
@@ -30,7 +51,7 @@ using UnityEngine;
 using System.Collections;
 
 public class Controls : MonoBehaviour {
-	public int BottomMost;
+	public int BottomOfKeyboard;
 	
 	// privates
 	static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
@@ -435,7 +456,7 @@ public class Controls : MonoBehaviour {
 			}
 			
 			if (y < 6)
-				BottomMost = y * w + w + w/2;
+				BottomOfKeyboard = y * w + w + w/2;
 		}
 	}
 }

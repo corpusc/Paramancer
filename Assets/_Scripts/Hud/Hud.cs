@@ -1,3 +1,20 @@
+/// <summary>
+/// Hud.
+/// 
+/// 
+/// BOOKMARK/CONTINUATION NOTES
+/// 
+/// 
+/// ##1##   test that Action.Menu bound to another key will make things behave predictably
+/// 
+/// add back RESUME button?
+/// 
+/// OR....would it be a good enough solution that whenever its 'tryingToLockCurs', it displays
+/// a flashing string like "you MUST click on the screen for mouselook to resume / to mouselook / to aim with mouse / to aim?"
+/// </summary>
+
+
+
 using UnityEngine;
 using System;
 using System.Collections;
@@ -23,8 +40,25 @@ public class Hud : MonoBehaviour {
 	
 	// misc
 	public string offeredPickup = "";
-	public Menu OfflineMenu = Menu.Main;
-	public Menu OnlineMenu = Menu.Controls;
+	private HudMode mode = HudMode.Main;
+	public HudMode Mode {
+		get { return mode; }
+		set {
+			// task to do when LEAVING this mode
+			switch (mode) {
+				case HudMode.Playing: 
+					break;
+			}
+			
+			mode = value;
+			
+			// task to do when ENTERING this mode
+			switch (mode) {
+				case HudMode.Playing: 
+					break;
+			}
+		}
+	}
 	
 	// avatar/user
 	public bool Spectating = false;
@@ -105,9 +139,12 @@ public class Hud : MonoBehaviour {
 	}
 	
 	void Update() {
-		if (Screen.lockCursor == true && InputUser.Started(UserAction.Menu)) 
-			Screen.lockCursor = false;
-		
+		if (InputUser.Started(UserAction.Menu)) 
+			if (Mode != HudMode.Main)
+				Mode = HudMode.Main;
+			else
+				Mode = HudMode.Playing;
+			
 		if (InputUser.Started(UserAction.Scores))
 			viewingScores = !viewingScores;
 	}
@@ -125,28 +162,40 @@ public class Hud : MonoBehaviour {
 		br.width = 100; // fixme for actual string width?
 		br.height = vSpan * 2;
 		
-		// show map picture, if setting up match
-		bool settingUpMatch;
-		if ( (net.connected && OnlineMenu == Menu.Match) ||
-			(!net.connected && OfflineMenu == Menu.StartGame)
-		) {
-			for (int i=0; i<maps.Count; i++) {
-				if (maps[i].Name == matches[matchId].allowedLevels[mapId]) {
-					GUI.DrawTexture(screen, maps[i].Pic);
+		switch (Mode) {
+			case HudMode.Playing:
+				if (!Screen.lockCursor) {
+					Screen.lockCursor = true;
+				
+					int mar = 32; // margin to push in from screen dimensions
+					var r = screen;
+					r.x += mar;    r.width -= mar*2;
+					r.y += mar;   r.height -= mar*2;				
+					GUI.Button(r, "To aim with mouse,\n" +
+						"Unity REQUIRES clicking on the game\n" +
+						"screen (after ESC has been pushed).\n" +
+						"You can remap the MENU action to another key.");
 				}
-			}
-			
-			settingUpMatch = true;
-		}else
-			settingUpMatch = false;
-	
-
-		
-		if (OfflineMenu == Menu.Main || OfflineMenu == Menu.Avatar)
-			avatarView();
+				break;
+				
+			case HudMode.StartGame:
+			case HudMode.Match:
+				// show map picture
+				for (int i=0; i<maps.Count; i++) {
+					if (maps[i].Name == matches[matchId].allowedLevels[mapId]) {
+						GUI.DrawTexture(screen, maps[i].Pic);
+					}
+				}
+				break;
+				
+			case HudMode.Main:
+			case HudMode.Avatar:
+				avatarView();
+				break;
+		}
 			
 		if (net.connected)
-			onlineMenus(midX, midY, settingUpMatch);
+			onlineMenus(midX, midY);
 		else
 			offlineMenus(br);
 	}
@@ -325,7 +374,7 @@ public class Hud : MonoBehaviour {
 			if (net.players[i].viewID != net.localPlayer.viewID) {
 				GUILayout.BeginHorizontal();
 				
-				if (GUILayout.Button(Menu.Kick.ToString()))
+				if (GUILayout.Button(HudMode.Kick.ToString()))
 					net.Kick(i, false);
 
 				string pingString = "?";
@@ -354,7 +403,7 @@ public class Hud : MonoBehaviour {
 	void MenuControls() {
 		controls.enabled = true;
 		Rect r = window;
-		r.y = controls.BottomMost;
+		r.y = controls.BottomOfKeyboard;
 		DrawWindowBackground(r, true);
 		r.width /= 2;
 		r.height = vSpan + vSpan / 2;
@@ -498,7 +547,7 @@ public class Hud : MonoBehaviour {
 			GUILayout.EndArea();
 		}
 				
-		// game mode
+		// match mode
 		if (GUI.Button(new Rect(5,100,30,30), "<") ) {
 			int lastInt = matchId;
 			
@@ -687,7 +736,8 @@ public class Hud : MonoBehaviour {
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initialising server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections,net.listenPort, useNat);
-				OfflineMenu = Menu.InitializingServer;
+				Mode = HudMode.InitializingServer;
+				Screen.lockCursor = true;
 			}
 		}else{
 			if (GUI.Button(start, "Start Match!")) {
@@ -696,7 +746,7 @@ public class Hud : MonoBehaviour {
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
 				net.NetVI = Network.AllocateViewID();
 				net.RequestGameData();
-				OnlineMenu = Menu.Controls;
+				Screen.lockCursor = true;
 			}
 		}
 				
@@ -756,7 +806,7 @@ public class Hud : MonoBehaviour {
 					
 					if (GUI.Button(new Rect(5,(i*40)+2, 80,36), "Connect")){
 						Network.Connect(hostData[i],net.password);
-						OfflineMenu = Menu.Connecting;
+						Mode = HudMode.Connecting;
 					}
 			
 					GUI.Label(new Rect(100,(i*40)+2,150, 30), hostData[i].gameName);
@@ -880,7 +930,7 @@ public class Hud : MonoBehaviour {
 
 	void credits(Rect br) {
 		if (GUI.Button(br, "Back..."))
-			OfflineMenu = Menu.Main;
+			Mode = HudMode.Main;
 		
 		DrawWindowBackground();
 		
@@ -924,56 +974,51 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-	void onlineMenus (int midX, int midY, bool settingUpMatch) {
-		if (!Screen.lockCursor) {
-			// buttons
-			float h = button.height;
-			button.x = window.xMax;
-			button.y = controls.BottomMost;
-	
-			if (settingUpMatch)
-				button.x -= button.width;
-	
-			if (GUI.Button(button, "Resume")) {
-				Screen.lockCursor = true;
-				OnlineMenu = Menu.Controls;
+	void onlineMenus (int midX, int midY) {
+		if /* unpinned pointer */ (!Screen.lockCursor) {
+			switch (Mode) {
+				case HudMode.Playing:
+					break;
+				case HudMode.Kick:
+					if (net.isServer) {
+						DrawWindowBackground();
+						KickMenu();
+					}
+					break;
+				case HudMode.Match:
+					if (net.isServer) {
+						MatchSetup(true);
+					}
+					break;
+				case HudMode.Controls:
+					MenuControls();
+					break;
+				default:
+					// buttons
+					float h = button.height;
+					button.x = window.xMax;
+					button.y = controls.BottomOfKeyboard;
+					button.y += h;
+					if (GUI.Button(button, "Disconnect"))
+						net.DisconnectNow();
+					
+					// server mode buttons
+					if (net.isServer) {
+						button.y += h;
+						if (GUI.Button(button, HudMode.Controls.ToString()))
+							Mode = HudMode.Controls;
+						
+						button.y += h;
+						if (GUI.Button(button, HudMode.Match.ToString()))
+							Mode = HudMode.Match;
+						
+						button.y += h;
+						if (GUI.Button(button, HudMode.Kick.ToString()))
+							Mode = HudMode.Kick;				
+					}					
+					break;
 			}
-			
-			button.y += h;
-			if (GUI.Button(button, "Disconnect"))
-				net.DisconnectNow();
-			
-			// server mode buttons
-			if (net.isServer) {
-				button.y += h;
-				if (GUI.Button(button, Menu.Controls.ToString()))
-					OnlineMenu = Menu.Controls;
-				
-				button.y += h;
-				if (GUI.Button(button, Menu.Match.ToString()))
-					OnlineMenu = Menu.Match;
-				
-				button.y += h;
-				if (GUI.Button(button, Menu.Kick.ToString()))
-					OnlineMenu = Menu.Kick;				
-			}
-			
-			// show menus
-			if (OnlineMenu == Menu.Kick) {
-				if (net.isServer) {
-					DrawWindowBackground();
-					KickMenu();
-				}else
-					OnlineMenu = Menu.Controls;
-			}else if (OnlineMenu == Menu.Match) {
-				if (net.isServer) {
-					MatchSetup(true);
-				}else
-					OnlineMenu = Menu.Controls;
-			}else if (OnlineMenu == Menu.Controls) {
-				MenuControls();
-			}
-		}else{ // connected & cursor locked
+		}else{ // cursor locked
 			if (viewingScores || net.gameOver) {
 				DrawWindowBackground(true);
 				scores.Draw(window, net, vSpan);
@@ -995,7 +1040,7 @@ public class Hud : MonoBehaviour {
 			int healthWidthB = (int)((((float)healthWidth)/100f)*net.localPlayer.health);
 			GUI.DrawTexture(new Rect(midX-(healthWidth/2), Screen.height-13, healthWidthB, 5), backTex);
 			
-			//energy bar
+			// energy bar
 			int energyWidth = (Screen.width/3);
 			GUI.DrawTexture(new Rect(midX-(energyWidth/2)-2, Screen.height-30, healthWidth+4, 9), blackTex);
 			int energyWidthB = (int)(((float)healthWidth)*EnergyLeft);
@@ -1122,9 +1167,9 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-	bool buttonStarts(Menu menu, Rect rect) {
-		if (GUI.Button(rect, menu.ToString())) {
-			OfflineMenu = menu;
+	bool buttonStarts(HudMode hMode, Rect rect) {
+		if (GUI.Button(rect, hMode.ToString())) {
+			Mode = hMode;
 			return true;
 		}
 		
@@ -1145,23 +1190,23 @@ public class Hud : MonoBehaviour {
 				Application.Quit();
 			} /*^*/ r.y -= mIH;
 		}
-		buttonStarts(Menu.Credits, r); /*^*/ r.y -= mIH;
-		buttonStarts(Menu.Controls, r); /*^*/ r.y -= mIH;
-		buttonStarts(Menu.Avatar, r); /*^*/ r.y -= mIH;
-		if (buttonStarts(Menu.JoinGame, r)) {
+		buttonStarts(HudMode.Credits, r); /*^*/ r.y -= mIH;
+		buttonStarts(HudMode.Controls, r); /*^*/ r.y -= mIH;
+		buttonStarts(HudMode.Avatar, r); /*^*/ r.y -= mIH;
+		if (buttonStarts(HudMode.JoinGame, r)) {
 			scrollPos = Vector2.zero;
 			MasterServer.RequestHostList(net.uniqueGameName);
 			hostPings = new Ping[0];
 		} /*^*/ r.y -= mIH;
 		
-		if (buttonStarts(Menu.StartGame, r)) {
+		if (buttonStarts(HudMode.StartGame, r)) {
 			net.gameName = net.localPlayer.name + "'s match...of the Damned!";
 		} /*^*/ r.y -= mIH;
 	}
 
 	bool backButton(Rect br) {
 		if (GUI.Button(br, "Back...")) {
-			OfflineMenu = Menu.Main;
+			Mode = HudMode.Main;
 			return true;
 		}
 		
@@ -1169,38 +1214,38 @@ public class Hud : MonoBehaviour {
 	}
 	
 	void offlineMenus(Rect br) {
-		Screen.lockCursor = false;
+		//Screen.lockCursor = false;
 		
-		switch (OfflineMenu) {
-			case Menu.Main:
+		switch (Mode) {
+			case HudMode.Main:
 				menuMain();
 				break;
-			case Menu.StartGame:
+			case HudMode.StartGame:
 				backButton(br);
 				MatchSetup(false);
 				break;
-			case Menu.JoinGame:
+			case HudMode.JoinGame:
 				backButton(br);
 				DrawWindowBackground();
 				JoinMenu();
 				break;
-			case Menu.Avatar:
+			case HudMode.Avatar:
 				if (backButton(br))
 					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
 				
 				DrawWindowBackground(true);
 				avatarSetup();
 				break;
-			case Menu.Controls:
+			case HudMode.Controls:
 				br.x = window.xMax / 2;
-				br.y = controls.BottomMost;
+				br.y = controls.BottomOfKeyboard;
 				backButton(br);
 				MenuControls();
 				break;
-			case Menu.Credits:
+			case HudMode.Credits:
 				credits(br);
 				break;
-			case Menu.ConnectionError:
+			case HudMode.ConnectionError:
 				backButton(br);
 				DrawWindowBackground();
 				GUI.BeginGroup(window);
@@ -1208,7 +1253,7 @@ public class Hud : MonoBehaviour {
 				GUILayout.Label(net.Error);
 				GUI.EndGroup();
 				break;
-			case Menu.Connecting:
+			case HudMode.Connecting:
 				if (backButton(br))
 					Network.Disconnect();
 				
@@ -1217,7 +1262,7 @@ public class Hud : MonoBehaviour {
 				GUILayout.Label("Connecting...");
 				GUI.EndGroup();
 				break;
-			case Menu.InitializingServer:
+			case HudMode.InitializingServer:
 				if (backButton(br))
 					Network.Disconnect();
 				
