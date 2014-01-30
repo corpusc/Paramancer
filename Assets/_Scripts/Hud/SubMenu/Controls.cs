@@ -58,6 +58,8 @@ public class Controls : MonoBehaviour {
 	Color purpleLight = Color.Lerp(purple, Color.white, 0.5f);
 	Color orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
 	Texture keyCap;
+	Texture mousePic;
+	Rect mouseRect;
 	int maxX = 21;
 	int maxY = 6 + 5; // 6 for keyboard, 5 for mouse
 	int w;
@@ -80,6 +82,8 @@ public class Controls : MonoBehaviour {
 			
 			if (s == "KeyCap")
 				keyCap = pics[i] as Texture;
+			if (s == "5 Button Mouse")
+				mousePic = pics[i] as Texture;
 		}
 		
 		// setup temp structure for the physical layout of the keyboard
@@ -134,9 +138,9 @@ public class Controls : MonoBehaviour {
 			
 			// mouse
 			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse5, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3, n, KeyCode.Mouse6, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, n, n, n, n, n, 
 			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
 		};
 		
@@ -222,6 +226,8 @@ public class Controls : MonoBehaviour {
 		
 		oldW = Screen.width;
 		oldH = Screen.height;
+		
+		GUI.DrawTexture(mouseRect, mousePic);
 		
 		// draw keys          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {
@@ -348,6 +354,7 @@ public class Controls : MonoBehaviour {
 	string getConciseText(KeyCode kc) {
 		string text = kc.ToString();
 			
+		modifyText(ref text, "Mouse", "m");
 		modifyText(ref text, "Period", ".");
 		modifyText(ref text, "Control", "Ctl");
 		modifyText(ref text, "Page", "Pg");
@@ -437,8 +444,11 @@ public class Controls : MonoBehaviour {
 						if (x > 8) xOffs += fKeyGap;
 						if (x > 12) xOffs += fKeyGap;
 					} else {
-						if (x > 13) xOffs += fKeyGap;
-						if (x > 16) xOffs += fKeyGap;
+						if (y < 6) {
+							if (x > 13) xOffs += fKeyGap;
+							if (x > 16) xOffs += fKeyGap;
+						}
+						
 						yOffs = w/2;
 					}
 		
@@ -458,5 +468,7 @@ public class Controls : MonoBehaviour {
 			if (y < 6)
 				BottomOfKeyboard = y * w + w + w/2;
 		}
+		
+		mouseRect = new Rect(15*w, BottomOfKeyboard, 3*w, 5*w);
 	}
 }

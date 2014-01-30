@@ -14796,7 +14796,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 5
   pickupPointID: 0
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &1065030988
@@ -15201,6 +15201,49 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!1 &1080616950
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1080616951}
+  - 114: {fileID: 1080616952}
+  m_Layer: 0
+  m_Name: PickupPoint1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1080616951
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1080616950}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.887697697, y: 6.86851406, z: -12.4643326}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1266662061}
+--- !u!114 &1080616952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1080616950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupType: 1
+  pickupPointID: 3
+  RestockTime: 0
+  stocked: 0
+  currentAvailablePickup: {fileID: 0}
 --- !u!1 &1085635095
 GameObject:
   m_ObjectHideFlags: 0
@@ -17210,6 +17253,34 @@ Transform:
   m_LocalPosition: {x: -30, y: -1, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
+  m_Father: {fileID: 0}
+--- !u!1 &1266662060
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1266662061}
+  m_Layer: 0
+  m_Name: _PickupSpots
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1266662061
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1266662060}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.85046577, y: -12.7000408, z: 18.9808731}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1492875227}
+  - {fileID: 1080616951}
   m_Father: {fileID: 0}
 --- !u!1 &1280142350
 GameObject:
@@ -19829,6 +19900,49 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!1 &1492875226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1492875227}
+  - 114: {fileID: 1492875228}
+  m_Layer: 0
+  m_Name: PickupPoint2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1492875227
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1492875226}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -20.3237534, y: 5.08349657, z: 1.20101929}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1266662061}
+--- !u!114 &1492875228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1492875226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupType: 2
+  pickupPointID: 4
+  RestockTime: 0
+  stocked: 0
+  currentAvailablePickup: {fileID: 0}
 --- !u!1 &1501830663
 GameObject:
   m_ObjectHideFlags: 0
