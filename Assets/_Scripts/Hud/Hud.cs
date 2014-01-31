@@ -1,20 +1,3 @@
-/// <summary>
-/// Hud.
-/// 
-/// 
-/// BOOKMARK/CONTINUATION NOTES
-/// 
-/// 
-/// ##1##   test that Action.Menu bound to another key will make things behave predictably
-/// 
-/// add back RESUME button?
-/// 
-/// OR....would it be a good enough solution that whenever its 'tryingToLockCurs', it displays
-/// a flashing string like "you MUST click on the screen for mouselook to resume / to mouselook / to aim with mouse / to aim?"
-/// </summary>
-
-
-
 using UnityEngine;
 using System;
 using System.Collections;
@@ -44,7 +27,7 @@ public class Hud : MonoBehaviour {
 	public HudMode Mode {
 		get { return mode; }
 		set {
-			// task to do when LEAVING this mode
+			// tasks to do when LEAVING this mode
 			switch (mode) {
 				case HudMode.Playing: 
 					break;
@@ -52,7 +35,7 @@ public class Hud : MonoBehaviour {
 			
 			mode = value;
 			
-			// task to do when ENTERING this mode
+			// tasks to do when ENTERING this mode
 			switch (mode) {
 				case HudMode.Playing: 
 					break;
@@ -104,7 +87,7 @@ public class Hud : MonoBehaviour {
 		locUser = GetComponent<LocalUser>();
 		
 		// load map preview pics
-		UnityEngine.Object[] pics = Resources.LoadAll("Pic/Map");
+		UnityEngine.Object[] pics = Resources.LoadAll("Pic/MapPreview");
 		
 		// setup map configs
 		for (int i = 0; i < pics.Length; i++)
@@ -167,7 +150,7 @@ public class Hud : MonoBehaviour {
 				if (!Screen.lockCursor) {
 					Screen.lockCursor = true;
 				
-					int mar = 32; // margin to push in from screen dimensions
+					int mar = 32; // margin to push inwards from screen dimensions
 					var r = screen;
 					r.x += mar;    r.width -= mar*2;
 					r.y += mar;   r.height -= mar*2;				
@@ -943,19 +926,18 @@ public class Hud : MonoBehaviour {
 		if (GUI.Button(new Rect(400,360,200,40), "SPLAT DEATH SALAD\nHomepage"))
 			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
 		
-		GUILayout.Label("Current team:");
-		GUILayout.Label("");
+		GUILayout.Label("_____Current team_____");
 		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls & Match screens");
 		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions");
+		GUILayout.Label("_____Media authors_____");
 		GUILayout.Label("CarnagePolicy     - Sounds");
+		GUILayout.Label("Nobiax/yughues    - Textures");
 		GUILayout.Label("");
-		GUILayout.Label("This game is a fork of...");
+		GUILayout.Label("This game is a fork of (and mostly the same as, ATM)...");
 		GUILayout.Label("");
 		GUILayout.Label("~~~ SPLAT DEATH SALAD ~~~    (Version: 1.1)");
 		GUILayout.Label("");
 		GUILayout.Label("Made by Sophie Houlden.  Using Unity, for 7DFPS (June 2012)");
-		GUILayout.Label("");
-		GUILayout.Label("Don't be surprised if you have poor performance or get kicked with high ping");
 		GUILayout.Label("Click a button to visit these sites:");
 		
 //		if (Application.isWebPlayer) 
@@ -1022,16 +1004,21 @@ public class Hud : MonoBehaviour {
 			if (viewingScores || net.gameOver) {
 				DrawWindowBackground(true);
 				scores.Draw(window, net, vSpan);
-			}else{
-				GUI.DrawTexture(new Rect(midX-8, midY-8, 16, 16), crossHair);
+			}
+			
+			// 2 types of crosshairs
+			GUI.DrawTexture(new Rect(
+				midX-crossHair.width/2, 
+				midY-crossHair.height/2, 
+				crossHair.width, 
+				crossHair.height), crossHair);
+			
+			if (gunA == Item.Swapper) {
+				int swapperFrame = Mathf.FloorToInt((Time.time*15f) % swapperCrosshair.Length);
+				if (!swapperLocked) 
+					swapperFrame = 0;
 				
-				if (gunA == Item.Swapper) {
-					int swapperFrame = Mathf.FloorToInt((Time.time*15f) % swapperCrosshair.Length);
-					if (!swapperLocked) 
-						swapperFrame = 0;
-					
-					GUI.DrawTexture(new Rect(swapperCrossX-32, (Screen.height-swapperCrossY)-32, 64, 64), swapperCrosshair[swapperFrame]);
-				}
+				GUI.DrawTexture(new Rect(swapperCrossX-32, (Screen.height-swapperCrossY)-32, 64, 64), swapperCrosshair[swapperFrame]);
 			}
 			
 			// health bar
@@ -1047,9 +1034,9 @@ public class Hud : MonoBehaviour {
 			GUI.DrawTexture(new Rect(midX-(energyWidth/2), Screen.height-28, energyWidthB, 5), backTex);
 			
 			// lives
-			if (net.CurrMatch.playerLives>0) {
+			if (net.CurrMatch.playerLives > 0) {
 				int lifeCount = 0;
-				for (int i=0; i<net.players.Count; i++){
+				for (int i=0; i<net.players.Count; i++) {
 					if (net.players[i].local) lifeCount = net.players[i].lives;
 				}
 				//Debug.Log(lifeCount);
@@ -1063,12 +1050,12 @@ public class Hud : MonoBehaviour {
 			if (offeredPickup != "" && !net.autoPickup) {
 				GUI.color = Color.black;
 				string s = "Press '" + InputUser.GetKeyLabel(UserAction.GrabItem) + "' to grab " + offeredPickup.ToUpper();
-				GUI.Label(new Rect(midX-51, midY+100, 100, 60), s);
-				GUI.Label(new Rect(midX-49, midY+100, 100, 60), s);
-				GUI.Label(new Rect(midX-50, midY+101, 100, 60), s);
-				GUI.Label(new Rect(midX-50, midY+99, 100, 60), s);
+				GUI.Label(new Rect(midX-51, midY+100, 200, 60), s);
+				GUI.Label(new Rect(midX-49, midY+100, 200, 60), s);
+				GUI.Label(new Rect(midX-50, midY+101, 200, 60), s);
+				GUI.Label(new Rect(midX-50, midY+99, 200, 60), s);
 				GUI.color = gcol;
-				GUI.Label(new Rect(midX-50, midY+100, 100, 60), s);
+				GUI.Label(new Rect(midX-50, midY+100, 200, 60), s);
 			}
 			
 			if (Spectating) {

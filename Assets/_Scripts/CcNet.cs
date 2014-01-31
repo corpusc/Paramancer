@@ -1078,9 +1078,6 @@ public class CcNet : MonoBehaviour {
 	
 	void OnLevelWasLoaded() {
 		if (preppingLevel) {
-					
-			Debug.Log("preppingLevel");
-		
 			// level set up, let's play!
 			preppingLevel = false;
 			levelLoaded = true;
@@ -1115,13 +1112,6 @@ public class CcNet : MonoBehaviour {
 				foreach (Transform child in p.transform) {
 					Item item = Item.None;
 					PickupPoint pp = child.GetComponent<PickupPoint>();
-		//			Debug.Log("CurrMatch.pickupSlot1: " + CurrMatch.pickupSlot1);
-		//			Debug.Log("CurrMatch.pickupSlot2: " + CurrMatch.pickupSlot2);
-		//			Debug.Log("CurrMatch.pickupSlot3: " + CurrMatch.pickupSlot3);
-		//			Debug.Log("CurrMatch.pickupSlot4: " + CurrMatch.pickupSlot4);
-		//			Debug.Log("CurrMatch.pickupSlot5: " + CurrMatch.pickupSlot5);
-					Debug.Log("pp: " + pp);
-					Debug.Log("pp.pickupType: " + pp.pickupType);
 					if (pp.pickupType == 1) item = CurrMatch.pickupSlot1;
 					if (pp.pickupType == 2) item = CurrMatch.pickupSlot2;
 					if (pp.pickupType == 3) item = CurrMatch.pickupSlot3;

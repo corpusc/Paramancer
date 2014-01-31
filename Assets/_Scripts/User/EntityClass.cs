@@ -715,7 +715,10 @@ public class EntityClass : MonoBehaviour {
 		animObj.transform.LookAt(animObj.transform.position + lookDir,transform.up);
 		animObj.transform.localEulerAngles = new Vector3(0, animObj.transform.localEulerAngles.y, 0);
 		
-		if (User.health>0f) {
+		showCorrectGuns();
+
+		// animations
+		if (User.health > 0f) {
 			if (yMove == 0f) {
 				if (moveVec.magnitude > 0.1f) {
 					if (crouched) {
@@ -749,7 +752,30 @@ public class EntityClass : MonoBehaviour {
 			animObj.animation.Play("die");
 		}
 		
-		// show correct guns
+		// if dead, make unshootable
+		if (User.health > 0f) {
+			gameObject.layer = 8;
+		}else{
+			gameObject.layer = 2;
+		}
+		
+		// if no friendly fire & on same team, make unshootable
+		if (net.CurrMatch.teamBased && !net.CurrMatch.allowFriendlyFire) {
+			if (User.team == net.localPlayer.team) {
+				gameObject.layer = 2;
+			}
+		}
+		
+		if (User.hasBall) {
+			if (User.local && firstPersonGun && firstPersonGun.renderer) 
+				firstPersonGun.renderer.enabled = false;
+		}else{
+			if (User.local && firstPersonGun && firstPersonGun.renderer && User.health > 0f) 
+				firstPersonGun.renderer.enabled = true;
+		}
+	}
+
+	void showCorrectGuns() {
 		if (handGun != lastKnownHandGun) {
 			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
@@ -812,31 +838,6 @@ public class EntityClass : MonoBehaviour {
 				SetModelVisibility(false);
 			}
 		}
-		
-		
-		
-		
-		// if dead, make unshootable
-		if (User.health > 0f) {
-			gameObject.layer = 8;
-		}else{
-			gameObject.layer = 2;
-		}
-		
-		// if no friendly fire & on same team, make unshootable
-		if (net.CurrMatch.teamBased && !net.CurrMatch.allowFriendlyFire) {
-			if (User.team == net.localPlayer.team) {
-				gameObject.layer = 2;
-			}
-		}
-		
-		if (User.hasBall) {
-			if (User.local && firstPersonGun && firstPersonGun.renderer) 
-				firstPersonGun.renderer.enabled = false;
-		}else{
-			if (User.local && firstPersonGun && firstPersonGun.renderer && User.health > 0f) 
-				firstPersonGun.renderer.enabled = true;
-		}
 	}
 	
 	public GameObject aimBone;
@@ -844,7 +845,6 @@ public class EntityClass : MonoBehaviour {
 	private Vector3 gunRecoil = Vector3.zero;
 	private Vector3 gunRot = Vector3.zero;
 	private float gunBounce = 0f;
-	
 	void moveFPGun() {
 		if (firstPersonGun == null) 
 			return;
