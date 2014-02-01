@@ -1041,7 +1041,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 4
   pickupPointID: 8
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &92812404
@@ -1513,7 +1513,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 3
   pickupPointID: 7
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &161111956
@@ -3633,7 +3633,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 5
   pickupPointID: 4
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &321678670
@@ -8615,7 +8615,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 2
   pickupPointID: 1
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &939776392
@@ -8685,7 +8685,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 1
   pickupPointID: 5
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &949062474
@@ -10363,7 +10363,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 3
   pickupPointID: 2
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &1132670003
@@ -12628,7 +12628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 1
   pickupPointID: 0
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &1410261132
@@ -18124,7 +18124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 4
   pickupPointID: 3
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &1978329283
@@ -19248,7 +19248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupType: 2
   pickupPointID: 6
-  restockTime: 0
+  RestockTime: 0
   stocked: 0
   currentAvailablePickup: {fileID: 0}
 --- !u!1 &2078912163

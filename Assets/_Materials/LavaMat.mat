@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: LavaMat
-  m_Shader: {fileID: 6, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: []
   m_SavedProperties:
     serializedVersion: 2
@@ -16,14 +16,21 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: 3d579683db4ea4bd7bd74fba421eff5b, type: 3}
-          m_Scale: {x: 3, y: 3}
+          m_Texture: {fileID: 2800000, guid: d53080078d469644b9894bbc4902c8ad, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BumpMap
+        second:
+          m_Texture: {fileID: 2800000, guid: 0161a2886060f9b4a98e21a42223ebe8, type: 3}
+          m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
           name: _Shininess
-        second: .00999999978
+        second: .100545615
       data:
         first:
           name: _InvFade
@@ -36,11 +43,11 @@ Material:
       data:
         first:
           name: _SpecColor
-        second: {r: 0, g: 0, b: 0, a: 1}
+        second: {r: .382352948, g: .0477941185, b: .0477941185, a: 1}
       data:
         first:
           name: _Emission
-        second: {r: .417910457, g: .2016491, b: 0, a: 0}
+        second: {r: .41911763, g: .222963333, b: .0400627032, a: 0}
       data:
         first:
           name: _TintColor
