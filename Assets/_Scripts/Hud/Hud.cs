@@ -717,7 +717,7 @@ public class Hud : MonoBehaviour {
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
 				net.comment = net.CurrMatch.Name + "\n" + net.CurrMatch.levelName;
 				bool useNat = !Network.HavePublicAddress();
-				Debug.Log("Initialising server, has public address: " + Network.HavePublicAddress().ToString());
+				Debug.Log("Initializing server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections,net.listenPort, useNat);
 				Mode = HudMode.InitializingServer;
 			}
@@ -728,7 +728,6 @@ public class Hud : MonoBehaviour {
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
 				net.NetVI = Network.AllocateViewID();
 				net.RequestGameData();
-				Mode = HudMode.Playing;
 			}
 		}
 				

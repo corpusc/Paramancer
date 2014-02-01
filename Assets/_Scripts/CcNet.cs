@@ -1129,7 +1129,7 @@ public class CcNet : MonoBehaviour {
 			}
 			
 			networkView.RPC("RequestPickupStocks", RPCMode.Server);
-			//hud.Mode = HudMode.Playing;
+			hud.Mode = HudMode.Playing;
 		}
 	}
 	
@@ -1271,21 +1271,22 @@ public class CcNet : MonoBehaviour {
 	
 	
 	[RPC]
-	void PlayerLeave(NetworkViewID viewID, string name){
+	void PlayerLeave(NetworkViewID viewID, string name) {
 		lastRPCtime = Time.time;
-		Debug.Log("A player did one");
-		for (int i=0; i<players.Count; i++){
-			if (players[i].viewID == viewID){
+		
+		for (int i=0; i<players.Count; i++) {
+			if (players[i].viewID == viewID) {
 				
-				if (basketball && players[i].hasBall){
+				if (basketball && players[i].hasBall) {
 					basketball.transform.parent = null;
-					if (isServer){
+					if (isServer) {
 						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
 					}
 				}
 				
 				
-				if (players[i].Entity!= null) Destroy(players[i].Entity.gameObject);
+				if (players[i].Entity != null) 
+					Destroy(players[i].Entity.gameObject);
 				players.RemoveAt(i);
 			}
 		}
@@ -1304,43 +1305,44 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	[RPC]
-	void KickedPlayer(NetworkViewID viewID, bool autokick){
+	void KickedPlayer(NetworkViewID viewID, bool autokick) {
 		lastRPCtime = Time.time;
 		Debug.Log("A player was kicked");
-		
-		
 		string name = "???";
 		
-		for (int i=0; i<players.Count; i++){
-			if (players[i].viewID == viewID){
+		for (int i=0; i<players.Count; i++) {
+			if (players[i].viewID == viewID) {
 				
-				if (basketball && players[i].hasBall){
+				if (basketball && players[i].hasBall) {
 					basketball.transform.parent = null;
-					if (isServer){
+					
+					if (isServer) {
 						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
 					}
 				}
 				
 				name = players[i].name;
-				if (players[i].Entity!= null) Destroy(players[i].Entity.gameObject);
+				if (players[i].Entity!= null) 
+					Destroy(players[i].Entity.gameObject);
 				players.RemoveAt(i);
 			}
 		}
-		
 		
 		LogEntry newMsg = new LogEntry();
 		newMsg.Maker = "";
 		newMsg.Color = Color.grey;
 		newMsg.Text = "<< ! " + name + " was kicked ! >>";
-		if (autokick) newMsg.Text = "<< ! " + name + " was auto-kicked ! >>";
+		if (autokick) 
+			newMsg.Text = "<< ! " + name + " was auto-kicked ! >>";
 		log.Entries.Add(newMsg);
-		log.DisplayTime = Time.time+log.FadeTime;
+		log.DisplayTime = Time.time + log.FadeTime;
 		
 	}
 	
-	void OnDisconnectedFromServer(NetworkDisconnection netDis){
+	void OnDisconnectedFromServer(NetworkDisconnection netDis) {
 		Debug.Log("Disconnected from server");
-		if (isServer) return;
+		if (isServer) 
+			return;
 		
 		LogEntry newMsg = new LogEntry();
 		newMsg.Maker = "";
@@ -1358,8 +1360,9 @@ public class CcNet : MonoBehaviour {
 		NetVI = new NetworkViewID();
 				
 		Camera.main.transform.parent = null;
-		for (int i=0; i<players.Count; i++){
-			if (players[i].Entity!= null) Destroy(players[i].Entity.gameObject);
+		for (int i=0; i<players.Count; i++) {
+			if (players[i].Entity!= null) 
+				Destroy(players[i].Entity.gameObject);
 		}
 		players = new List<NetUser>();
 		
@@ -1371,18 +1374,19 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void ServerLeave() {
 		lastRPCtime = Time.time;
-		Debug.Log("THE SERVER BUGGERED OFF! HOW RUDE D:");
+		Debug.Log("THE HOST LEFT!!!");
 		
 		Network.Disconnect();
 		if (isServer) 
 			MasterServer.UnregisterHost();
+		
 		connected = false;
 		isServer = false;
 		localPlayer.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
 		Camera.main.transform.parent = null;
 		
-		for (int i=0; i<players.Count; i++){
+		for (int i=0; i<players.Count; i++) {
 			if (players[i].Entity != null) 
 				Destroy(players[i].Entity.gameObject);
 		}
@@ -1401,8 +1405,8 @@ public class CcNet : MonoBehaviour {
 	
 	
 	
-	// -------------- misc functions and stuff ----------
-	public Vector3 ColToVec(Color colIn){
+	// misc
+	public Vector3 ColToVec(Color colIn) {
 		// convert colour to a vector
 		Vector3 retVec = Vector3.zero;
 		retVec.x = colIn.r;
@@ -1410,7 +1414,7 @@ public class CcNet : MonoBehaviour {
 		retVec.z = colIn.b;
 		return retVec;
 	}
-	public Color VecToCol(Vector3 vecIn){
+	public Color VecToCol(Vector3 vecIn) {
 		// convert vector to a color
 		Color retCol = Color.white;
 		retCol.r = vecIn.x;
