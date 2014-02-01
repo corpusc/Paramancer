@@ -275,7 +275,7 @@ public class Controls : MonoBehaviour {
 		for (int i = 0; i < bd.Length; i++) {
 			if (bd[i] != draggee) {
 				// get the right color
-				if (pushingOrHoveringOver(i))
+				if (pushingOrHoveringOver(bd[i].Id))
 					GUI.color = Color.cyan;
 				else
 					GUI.color = purple;

@@ -6,21 +6,22 @@ using System.Collections;
 public class Avatar : MonoBehaviour {
 	public bool isGrounded = false;
 	public float radius = 0.5f;
-	public float height = 1.8f; //middle of head
+	public float MiddleOfHead = 1.8f;
 	public float SprintMultiplier = 2.0f;
 	
-	private bool sprinting = true;
-	private float sprintActivatedTime = 0f;
-	private const float sprintDuration = 5f;
+	// private 
+	bool sprinting = false;
+	float sprintActivatedTime = 0f;
+	const float sprintDuration = 5f;
 	
 	public void Move(Vector3 moveVector, bool StartSprint = false) {
 		// no move? no expensive spherecasts!
-		if (moveVector.magnitude <0.001f){
+		if (moveVector.magnitude < 0.001f){
 			//sprinting = false; //if the player stopped moving, they also stopped sprinting
 			return;
 		}
 		
-		//if(StartSprint) sprinting = true;
+		// sprinting
 		if (StartSprint) 
 			sprinting = !sprinting;
 		
@@ -37,27 +38,28 @@ public class Avatar : MonoBehaviour {
 		isGrounded = false;
 		Ray coreRay = new Ray(transform.position, moveVector);
 		RaycastHit coreHit = new RaycastHit();
-		Ray headRay = new Ray(transform.position + new Vector3(0f, height, 0f), moveVector);
+		Ray headRay = new Ray(transform.position + new Vector3(0f, MiddleOfHead, 0f), moveVector);
 		RaycastHit headHit = new RaycastHit();
 		int collisionLayer = 1<<0;
 		
 		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, collisionLayer)) {
 			transform.position = coreHit.point + (coreHit.normal*radius*1.1f);
-		}else if(Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, collisionLayer)){
-			transform.position = headHit.point + (headHit.normal*radius*1.1f) - new Vector3(0f, height, 0f);
+		}else if(Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, collisionLayer)) {
+			transform.position = headHit.point + (headHit.normal*radius*1.1f) - new Vector3(0f, MiddleOfHead, 0f);
 		}else{
 			transform.position += moveVector;
 		}
 		
 		Ray groundRay = new Ray(transform.position,-transform.up);
 		RaycastHit groundHit = new RaycastHit();
-		if (Physics.SphereCast(groundRay, radius, out groundHit, (height*.5f)-(radius), collisionLayer)) {
+		if (Physics.SphereCast(groundRay, radius, out groundHit, (MiddleOfHead*.5f)-(radius), collisionLayer)) {
 			isGrounded = true;
-			Vector3 standPos = groundHit.point + (groundHit.normal*radius) + (transform.up * ((height*.5f)-(radius)));
+			Vector3 standPos = groundHit.point + (groundHit.normal*radius) + (transform.up * ((MiddleOfHead*.5f)-(radius)));
 			
 			Ray standRay = new Ray(transform.position, standPos-transform.position);
 			RaycastHit standHit = new RaycastHit();
 			float standLength = Vector3.Distance(standPos, transform.position);
+			
 			if (Physics.SphereCast(standRay, radius, out standHit, standLength, collisionLayer)) {
 				standPos = standHit.point + (standHit.normal * radius*1.1f);
 			}

@@ -631,8 +631,6 @@ public class EntityClass : MonoBehaviour {
 						!User.hasBall && 
 						handGun >= Item.Pistol
 					) {
-						
-						
 						if (artil.Guns[(int)handGun].AutoFire) {
 							if /* holding */ 
 								(InputUser.Holding(UserAction.Activate)
@@ -654,7 +652,7 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if (InputUser.Started(UserAction.SwapWeapon) && Screen.lockCursor) {
+					if (InputUser.Started(UserAction.SwapWeapon) ) {
 						// swap guns
 						Item gun = handGun;
 						float tempFloat = handGunCooldown;

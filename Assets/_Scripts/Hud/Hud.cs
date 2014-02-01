@@ -720,7 +720,6 @@ public class Hud : MonoBehaviour {
 				Debug.Log("Initialising server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections,net.listenPort, useNat);
 				Mode = HudMode.InitializingServer;
-				Screen.lockCursor = true;
 			}
 		}else{
 			if (GUI.Button(start, "Start Match!")) {
@@ -729,7 +728,7 @@ public class Hud : MonoBehaviour {
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
 				net.NetVI = Network.AllocateViewID();
 				net.RequestGameData();
-				Screen.lockCursor = true;
+				Mode = HudMode.Playing;
 			}
 		}
 				
@@ -1201,8 +1200,6 @@ public class Hud : MonoBehaviour {
 	}
 	
 	void offlineMenus(Rect br) {
-		//Screen.lockCursor = false;
-		
 		switch (Mode) {
 			case HudMode.Main:
 				menuMain();
