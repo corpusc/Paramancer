@@ -79,7 +79,7 @@ public class CcNet : MonoBehaviour {
 		Application.LoadLevel("MenuMain");
 		players = new List<NetUser>();
 	}
-	public GameObject basketballPrefab;
+	GameObject basketballPrefab;
 	public GameObject fpsEntityPrefab;
 	public GameObject pickupBoxPrefab;
 	public GameObject splatPrefab;
@@ -87,18 +87,32 @@ public class CcNet : MonoBehaviour {
 	
 	
 	//-------- Network gameplay stuff ----------
-	public void SendPlayer(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
+	public void SendTINYUserUpdate(NetworkViewID viewID, UserAction action) {
+		networkView.RPC("SendTINYUserUpdateRPC", RPCMode.Others, viewID, (int)action);
+	}
+	[RPC]
+	void SendTINYUserUpdateRPC(NetworkViewID viewID, int action) {
+		lastRPCtime = Time.time;
+		
+		for (int i=0; i<players.Count; i++) {
+			if (viewID == players[i].viewID && players[i].Entity != null) {
+				players[i].lastPong = Time.time;
+				players[i].Entity.PlaySound((UserAction)action);
+			}
+		}
+	}
+	
+	public void SendUserUpdate(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
 		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward
 	) {
 		//send out a player's current properties to everyone, so they know where we are
-		networkView.RPC("SendPlayerRPC", RPCMode.Others, viewID, pos, ang, crouch, moveVec, yMove, gunA, gunB, playerUp, playerForward);
+		networkView.RPC("SendUserUpdateRPC", RPCMode.Others, viewID, pos, ang, crouch, moveVec, yMove, gunA, gunB, playerUp, playerForward);
 	}
 	[RPC]
-	void SendPlayerRPC(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
+	void SendUserUpdateRPC(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
 		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward, NetworkMessageInfo info
 	) {
 		// received a player's properties, let's update the local view of that player
-		
 		lastRPCtime = Time.time;
 		
 		for (int i=0; i<players.Count; i++) {

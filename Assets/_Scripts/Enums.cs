@@ -66,13 +66,13 @@ public enum UserAction {
 	
 	Activate, // fire/activate/use whatever you are holding
 	SwapWeapon,
-	GrabItem,
-	Sprint,
+	GrabItem, // for sound: YOINK?
+	Sprint, // for sound: something like GO SPEED RACER GO?
 	Chat,
-	Menu,
+	Menu, // for sound: "gotta change something... HOLD ON!"?
 	Scores,
-	SwapTeam,
-	Suicide,
+	SwapTeam, // for sound: "WASSUP GUYS, the other team SUCKS"?
+	Suicide, // for sound: "there's nothing left for me here!"?
 	
 	Count
 }

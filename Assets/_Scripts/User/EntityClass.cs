@@ -205,7 +205,7 @@ public class EntityClass : MonoBehaviour {
 		}
 	}
 	
-	void Start () {
+	void Start() {
 		var o = GameObject.Find("Main Program");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
@@ -235,80 +235,12 @@ public class EntityClass : MonoBehaviour {
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
-		
-		
-		
-		
-		
-		
-		
-		
 	}
 	
 	public GameObject ourKiller;
-	
 	public bool sendRPCUpdate = false;
-	
-	public AudioClip sfx_takeDamage;
-	public AudioClip sfx_jump;
-	public AudioClip sfx_land;
-	public AudioClip sfx_die;
-	public AudioClip sfx_weaponChange;
-	public AudioClip sfx_reload;
-	public AudioClip sfx_swapped;
-	public AudioClip sfx_catchBall;
-	public AudioClip sfx_gravgun;
-		
-	public void PlaySound(string sound){
-		if (sound == "takeHit"){
-			audio.clip = sfx_takeDamage;
-			audio.Play();
-		}
-		if (sound == "jump"){
-			audio.clip = sfx_jump;
-			audio.volume = 1f;
-			audio.volume = 0.2f;
-			audio.Play();
-		}
-		if (sound == "land"){
-			audio.clip = sfx_land;
-			audio.volume = 0.5f;
-			audio.Play();
-		}
-		if (sound == "die"){
-			audio.clip = sfx_die;
-			audio.volume = 1f;
-			audio.Play();
-		}
-		if (sound == "weaponChange"){
-			audio.clip = sfx_weaponChange;
-			audio.volume = 0.2f;
-			audio.Play();
-		}
-		if (sound == "reload"){
-			audio.clip = sfx_reload;
-			audio.volume = 0.2f;
-			audio.Play();
-		}
-		if (sound == "Swapped"){
-			audio.clip = sfx_swapped;
-			audio.volume = 0.4f;
-			audio.Play();
-		}
-		if (sound == "catchBall"){
-			audio.clip = sfx_catchBall;
-			audio.volume = 0.4f;
-			audio.Play();
-		}
-		if (sound == "gravgun"){
-			audio.clip = sfx_gravgun;
-			audio.volume = 0.4f;
-			audio.Play();
-		}
-	}
-	
 	private float rpcCamtime = 0f;
-	void Update () {
+	void Update() {
 		if (User.health <= 0f) {
 			// shut off bomb
 			if (gunMesh1 != null && gunMesh1.transform.Find("Flash Light") != null) {
@@ -466,7 +398,7 @@ public class EntityClass : MonoBehaviour {
 						if (InputUser.Started(UserAction.MoveUp)) {
 							yMove = 4f;
 							PlaySound("jump");
-							sendRPCUpdate = true;
+							net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
 						}
 					}else{
 						yMove -= Time.deltaTime * 10f;
@@ -514,7 +446,7 @@ public class EntityClass : MonoBehaviour {
 					lastHealth = User.health;
 					
 					if (sendRPCUpdate) {
-						net.SendPlayer(User.viewID, transform.position, camAngle, crouched, moveVec, yMove, 
+						net.SendUserUpdate(User.viewID, transform.position, camAngle, crouched, moveVec, yMove, 
 							(int)handGun, (int)holsterGun, transform.up, transform.forward);
 						sendRPCUpdate = false;
 						
@@ -661,6 +593,7 @@ public class EntityClass : MonoBehaviour {
 						gunRecoil += Vector3.right * 5f;
 						gunRecoil -= Vector3.up * 5f;
 						PlaySound("weaponChange");
+						net.SendTINYUserUpdate(User.viewID, UserAction.SwapWeapon);
 					}
 					
 					// ball throwing
@@ -1128,5 +1061,79 @@ public class EntityClass : MonoBehaviour {
 		holsterGun = gunB;
 		transform.LookAt(transform.position + playerForward ,playerUp);
 		NonLocalUpdate();
+	}
+	
+	public AudioClip sfx_takeDamage;
+	public AudioClip sfx_jump;
+	public AudioClip sfx_land;
+	public AudioClip sfx_die;
+	public AudioClip sfx_weaponChange;
+	public AudioClip sfx_reload;
+	public AudioClip sfx_swapped;
+	public AudioClip sfx_catchBall;
+	public AudioClip sfx_gravgun;
+	public void PlaySound(UserAction action) {
+		switch (action) {
+			case UserAction.MoveUp:
+				jumpSound();
+				break;
+			case UserAction.SwapWeapon:
+				swapWeaponSound();
+				break;
+		}
+	}
+	public void PlaySound(string sound) {
+		if (sound == "takeHit"){
+			audio.clip = sfx_takeDamage;
+			audio.Play();
+		}
+		if (sound == "jump"){
+			jumpSound();
+		}
+		if (sound == "land"){
+			audio.clip = sfx_land;
+			audio.volume = 0.5f;
+			audio.Play();
+		}
+		if (sound == "die"){
+			audio.clip = sfx_die;
+			audio.volume = 1f;
+			audio.Play();
+		}
+		if (sound == "weaponChange"){
+			swapWeaponSound();
+		}
+		if (sound == "reload"){
+			audio.clip = sfx_reload;
+			audio.volume = 0.2f;
+			audio.Play();
+		}
+		if (sound == "Swapped"){
+			audio.clip = sfx_swapped;
+			audio.volume = 0.4f;
+			audio.Play();
+		}
+		if (sound == "catchBall"){
+			audio.clip = sfx_catchBall;
+			audio.volume = 0.4f;
+			audio.Play();
+		}
+		if (sound == "gravgun"){
+			audio.clip = sfx_gravgun;
+			audio.volume = 0.4f;
+			audio.Play();
+		}
+	}
+	
+	void jumpSound() {
+		audio.clip = sfx_jump;
+		audio.volume = 0.2f;
+		audio.Play();
+	}
+	
+	void swapWeaponSound() {
+		audio.clip = sfx_weaponChange;
+		audio.volume = 0.2f;
+		audio.Play();
 	}
 }
