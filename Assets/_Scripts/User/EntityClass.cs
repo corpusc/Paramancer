@@ -70,7 +70,7 @@ public class EntityClass : MonoBehaviour {
 	
 	private Vector3 lastCamAngle = Vector3.zero;
 	private Vector3 lastMoveVector = Vector3.zero;
-	private bool lastCrouch = false;
+	private bool prevCrouching = false;
 	private float lastYmove = 0f;
 	private float lastHealth = 0f;
 	
@@ -309,26 +309,22 @@ public class EntityClass : MonoBehaviour {
 	
 	private float rpcCamtime = 0f;
 	void Update () {
-		
-		if (User.health <= 0f){
-			//if (handGun==7){
-				//shut off bomb
-				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null){
-					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
-				}
-				if (gunMesh2!= null && gunMesh2.transform.Find("Flash Light") != null){
-					gunMesh2.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
-				} 
-			//}
+		if (User.health <= 0f) {
+			// shut off bomb
+			if (gunMesh1 != null && gunMesh1.transform.Find("Flash Light") != null) {
+				gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
+			}
+			if (gunMesh2 != null && gunMesh2.transform.Find("Flash Light") != null) {
+				gunMesh2.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
+			} 
 		}
 		
 		AudioListener.volume = net.gameVolume;
-		
 		hud.Spectating = Spectating;
 		hud.Spectatee = spectatee;
 		
-		if (Spectating && isLocal){
-			if (net.players.Count>0){
+		if (Spectating && isLocal) {
+			if (net.players.Count > 0) {
 				if (firstPersonGun) 
 					firstPersonGun.renderer.enabled = false;
 				
@@ -467,7 +463,7 @@ public class EntityClass : MonoBehaviour {
 					
 					if (grounded) {
 						yMove = 0f;
-						if (InputUser.Holding(UserAction.MoveUp)) {
+						if (InputUser.Started(UserAction.MoveUp)) {
 							yMove = 4f;
 							PlaySound("jump");
 							sendRPCUpdate = true;
@@ -475,6 +471,7 @@ public class EntityClass : MonoBehaviour {
 					}else{
 						yMove -= Time.deltaTime * 10f;
 					}
+					
 					ava.Move(transform.up * yMove * Time.deltaTime * 5f);
 					
 					crouched = false;
@@ -491,16 +488,16 @@ public class EntityClass : MonoBehaviour {
 						transform.position = lavaHit.point+ (Vector3.up*0.35f);
 						sendRPCUpdate = true;
 						inputVector = Vector3.zero;
-						net.RegisterHit("lava", User.viewID, User.viewID, lavaHit.point);
+						net.RegisterHit(Item.Lava, User.viewID, User.viewID, lavaHit.point);
 					}
 					
 					
 					//sendRPCUpdate = false;
-					if (camAngle != lastCamAngle && Time.time>rpcCamtime) 
+					if (camAngle != lastCamAngle && Time.time > rpcCamtime) 
 						sendRPCUpdate = true;
 					if (moveVec != lastMoveVector) 
 						sendRPCUpdate = true;
-					if (crouched != lastCrouch) 
+					if (crouched != prevCrouching) 
 						sendRPCUpdate = true;
 					//if (yMove != lastYmove) sendRPCUpdate = true;
 					if (User.health != lastHealth) 
@@ -512,7 +509,7 @@ public class EntityClass : MonoBehaviour {
 					
 					lastCamAngle = camAngle;
 					lastMoveVector = moveVec;
-					lastCrouch = crouched;
+					prevCrouching = crouched;
 					lastYmove = yMove;
 					lastHealth = User.health;
 					
@@ -675,7 +672,7 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					if (InputUser.Started(UserAction.Suicide)) {
-						net.RegisterHitRPC("suicide", User.viewID, User.viewID, transform.position);
+						net.RegisterHitRPC((int)Item.Suicide, User.viewID, User.viewID, transform.position);
 					}
 					
 					moveFPGun();
@@ -894,36 +891,37 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void Fire() {
-		switch ((Item)handGun) {
+		Item it = (Item)handGun;
+		switch (it) {
 			case Item.Pistol:
-				FireBullet("pistol");
+				FireBullet(it);
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
 			case Item.Grenade:
-				net.Shoot("grenade", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
+				net.Shoot(it, Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
 			case Item.MachineGun:
-				FireBullet("machinegun");
+				FireBullet(it);
 				gunRecoil -= Vector3.forward * 2f;
 				gunRecoil += new Vector3(Random.Range(-1f,1f),Random.Range(-1f,1f),Random.Range(-1f,1f)).normalized * 0.2f;
 				break; 
 			case Item.Rifle:
-				FireBullet("rifle");
+				FireBullet(it);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.RocketLauncher:
-				net.Shoot("rocketlauncher", Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
+				net.Shoot(it, Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.Swapper:
 				if (swapperLockTarget == -1) {
 					// not locked on, we miss
-					FireBullet("swapper");
+					FireBullet(it);
 				}else{
-					//locked on, we hit
-					net.Shoot("swapper", transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true);
-					net.RegisterHit("swapper", net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
+					// locked on, we hit
+					net.Shoot(it, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true);
+					net.RegisterHit(it, net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
@@ -931,10 +929,11 @@ public class EntityClass : MonoBehaviour {
 				Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 				RaycastHit gravHit = new RaycastHit();
 				int gravLayer = 1<<0;
-				if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)){
+			
+				if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)) {
 					Vector3 lookPos = Camera.main.transform.position + Camera.main.transform.forward;
 					Quaternion tempRot = Camera.main.transform.rotation;
-					transform.LookAt(transform.position + Vector3.Cross(Camera.main.transform.forward,gravHit.normal) ,gravHit.normal);
+					transform.LookAt(transform.position + Vector3.Cross(Camera.main.transform.forward,gravHit.normal), gravHit.normal);
 					ForceLook(lookPos);
 					camHolder.transform.localEulerAngles = camAngle;
 					Camera.main.transform.rotation = tempRot;
@@ -945,7 +944,7 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.Bomb:
-				net.Detonate("bomb", transform.position, User.viewID, User.viewID);
+				net.Detonate(it, transform.position, User.viewID, User.viewID);
 				break; 
 			case Item.Spatula:
 				// FIXME: IF WE KEEP THIS, IT SHOULD BE AN INSTAGIB MELEE WEAPON
@@ -977,7 +976,7 @@ public class EntityClass : MonoBehaviour {
 		//Debug.Log("Force look: " + targetLookPos.ToString() + " ??? " + lookObj.transform.position.ToString() + " ??? " + camAngle.ToString());
 	}
 	
-	void FireBullet(string weaponType) {
+	void FireBullet(Item weapon) {
 		// fire hitscan type gun
 		Vector3 bulletStart = Camera.main.transform.position;
 		Vector3 bulletDirection = Camera.main.transform.forward;
@@ -986,7 +985,7 @@ public class EntityClass : MonoBehaviour {
 		bool registerhit = false;
 		int hitPlayer = -1;
 	
-		if (weaponType == "machinegun") {
+		if (weapon == Item.MachineGun) {
 			float shakeValue = 0.01f;
 			bulletDirection += new Vector3(Random.Range(-shakeValue,shakeValue),Random.Range(-shakeValue,shakeValue),Random.Range(-shakeValue,shakeValue));
 			bulletDirection.Normalize();
@@ -1011,19 +1010,17 @@ public class EntityClass : MonoBehaviour {
 				}
 			
 				registerhit = true;
-				//theNetwork.RegisterHit(weaponType, theNetwork.localPlayer.viewID, theNetwork.players[hitPlayer].viewID, bulletHit.point);
 			}
-		}else{
-			//miss
 		}
 	
 		gameObject.layer = 8;
 		bulletStart = transform.position;
 		bulletStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
 		// RPC the shot, regardless
-		net.Shoot(weaponType, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit);
+		net.Shoot(weapon, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit);
 	
-		if (registerhit) net.RegisterHit(weaponType, net.localPlayer.viewID, net.players[hitPlayer].viewID, bulletHit.point);
+		if (registerhit) 
+			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bulletHit.point);
 	}
 	
 	public void Respawn() {

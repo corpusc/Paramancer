@@ -93,7 +93,6 @@ public class CcNet : MonoBehaviour {
 		//send out a player's current properties to everyone, so they know where we are
 		networkView.RPC("SendPlayerRPC", RPCMode.Others, viewID, pos, ang, crouch, moveVec, yMove, gunA, gunB, playerUp, playerForward);
 	}
-	
 	[RPC]
 	void SendPlayerRPC(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
 		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward, NetworkMessageInfo info
@@ -129,21 +128,21 @@ public class CcNet : MonoBehaviour {
 		if (localPlayer.viewID == viewID) localPlayer.health = 100f;
 	}
 	
-	public void Detonate(string weaponType, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
-		//we are server and something detonated, tell everyone
-		networkView.RPC("DetonateRPC", RPCMode.All, weaponType, position, shooterID, bulletID);
+	public void Detonate(Item weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
+		// we are server and something detonated, tell everyone
+		networkView.RPC("DetonateRPC", RPCMode.All, (int)weapon, position, shooterID, bulletID);
 	}
 	[RPC]
-	void DetonateRPC(string weaponType, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
+	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		// something detonated, let the artillery script deal with it
 		lastRPCtime = Time.time;
-		artill.Detonate(weaponType, position, bulletID);
+		artill.Detonate((Item)weapon, position, bulletID);
 		
 		if (isServer) {
-			//we are server, lets check to see if anyone got hurt in the detonation
+			// we are server, lets check to see if anyone got hurt in the detonation
 			for (int i=0; i<players.Count; i++){
 				if (Vector3.Distance(position, players[i].Entity.transform.position) 
-					< artill.GetDetonationRadius(weaponType) + 0.5f
+					< artill.GetDetonationRadius((Item)weapon) + 0.5f
 				) {
 					// player in range
 					bool skip = false;
@@ -157,121 +156,119 @@ public class CcNet : MonoBehaviour {
 						
 						if (shooterIndex != -1 && players[i].team == players[shooterIndex].team) 
 							skip = true;
-						if (shooterIndex != -1 && i == shooterIndex && weaponType == "bomb") 
+						if (shooterIndex != -1 && i == shooterIndex && (Item)weapon == Item.Bomb) 
 							skip = false;
 					}
 					
 					
 					if (players[i].health > 0f && !skip) {
-						//networkView.RPC("RegisterHitRPC", RPCMode.Server, weaponType, shooterID, players[i].viewID);
-						RegisterHitRPC(weaponType, shooterID, players[i].viewID, players[i].Entity.transform.position);
+						RegisterHitRPC(weapon, shooterID, players[i].viewID, players[i].Entity.transform.position);
 					}
 				}
 			}
 		}
 	}
 	
-	public void Shoot(string weaponType, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit) {
+	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit) {
 		// we have fired a shot, let's tell everyone about it so they can see it
 		NetworkViewID bulletID = Network.AllocateViewID();
-		networkView.RPC("ShootRPC", RPCMode.All, weaponType, origin, direction, end, shooterID, bulletID, hit);
+		networkView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit);
 	}
 	[RPC]
-	void ShootRPC(string weaponType, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, NetworkMessageInfo info) {
+	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, NetworkMessageInfo info) {
 		// somebody fired a shot, let's show it
 		lastRPCtime = Time.time;
-		artill.Shoot(weaponType, origin, direction, end, shooterID, bulletID, info.timestamp, hit);
+		artill.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit);
 	}
 	
-	public void RegisterHit(string weaponType, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
-		//we hit somebody, tell the server!
+	public void RegisterHit(Item weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
 		if (gameOver) 
-			return; // well, don't tell the server if it's game over
+			return;
 		
+		// we hit somebody, tell the server!
 		if (!isServer) {
-			networkView.RPC("RegisterHitRPC", RPCMode.Server, weaponType, shooterID, victimID, hitPos);
+			networkView.RPC("RegisterHitRPC", RPCMode.Server, (int)weapon, shooterID, victimID, hitPos);
 		}else{
-			RegisterHitRPC( weaponType, shooterID, victimID, hitPos);
+			RegisterHitRPC((int)weapon, shooterID, victimID, hitPos);
 		}
 	}
 	[RPC]
-	public void RegisterHitRPC(string weaponType, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
+	public void RegisterHitRPC(int weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
 		// one player hit another
 		lastRPCtime = Time.time;
-		
-		//Debug.Log("happens!UX");
 		
 		if (gameOver) 
 			return; // no damage after game over
 		
-		int shooterIndex = -1;
-		int victimIndex = -1;
+		int si = -1; // shooter index
+		int vi = -1; // victim index
 		bool killShot = false;
 		
 		//Debug.Log("hit registered");
 		
 		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == shooterID) shooterIndex = i;
-			if (players[i].viewID == victimID) victimIndex = i;
+			if (players[i].viewID == shooterID) si = i;
+			if (players[i].viewID == victimID) vi = i;
 		}
 		
-		if (shooterIndex == -1 || victimIndex == -1 || players[victimIndex].health<=0f) return;
+		if (si == -1 || vi == -1 || players[vi].health <= 0f) 
+			return;
 		
-		if (weaponType == "swapper"){
-			networkView.RPC("SwapPlayers",RPCMode.All, shooterID, players[shooterIndex].Entity.transform.position, victimID, players[victimIndex].Entity.transform.position);
+		if ((Item)weapon == Item.Swapper){
+			networkView.RPC("SwapPlayers",RPCMode.All, shooterID, players[si].Entity.transform.position, victimID, players[vi].Entity.transform.position);
 			return;
 		}
 		
 		
 		// subtract health
-		if (shooterIndex == victimIndex && weaponType == "rocket") {
+		if (si == vi && (Item)weapon == Item.RocketMaybeJustASingle) {
 			// rocket jumping
-			players[victimIndex].health -= 30f;
+			players[vi].health -= 30f;
 		}else{
 			// normal damage
-			players[victimIndex].health -= artill.GetWeaponDamage(weaponType);
+			players[vi].health -= artill.GetWeaponDamage((Item)weapon);
 		}
 		
-		if (players[victimIndex].health <= 0f) {
+		if (players[vi].health <= 0f) {
 			//player died
-			players[victimIndex].health = 0f;
+			players[vi].health = 0f;
 			killShot = true;
 		}
 		
 		// scores
 		if (killShot) {
-			players[victimIndex].deaths++;
+			players[vi].deaths++;
 			
 			if (CurrMatch.deathsSubtractScore) 
-				players[victimIndex].currentScore--;
+				players[vi].currentScore--;
 			
-			players[shooterIndex].kills++;
+			players[si].kills++;
 			
 			if (CurrMatch.killsIncreaseScore) 
-				players[shooterIndex].currentScore++;
+				players[si].currentScore++;
 		}
 		
 		// team stuff
 		if (killShot && CurrMatch.teamBased) {
-			if (players[victimIndex].team == 1 && players[shooterIndex].team == 2 && CurrMatch.deathsSubtractScore) team1Score--;
-			if (players[victimIndex].team == 2 && players[shooterIndex].team == 1 && CurrMatch.deathsSubtractScore) team2Score--;
-			if (players[shooterIndex].team == 1 && players[victimIndex].team == 2 && CurrMatch.killsIncreaseScore) team1Score++;
-			if (players[shooterIndex].team == 2 && players[victimIndex].team == 1 && CurrMatch.killsIncreaseScore) team2Score++;
+			if (players[vi].team == 1 && players[si].team == 2 && CurrMatch.deathsSubtractScore) team1Score--;
+			if (players[vi].team == 2 && players[si].team == 1 && CurrMatch.deathsSubtractScore) team2Score--;
+			if (players[si].team == 1 && players[vi].team == 2 && CurrMatch.killsIncreaseScore) team1Score++;
+			if (players[si].team == 2 && players[vi].team == 1 && CurrMatch.killsIncreaseScore) team2Score++;
 		}
 		
 		// assign results
-		networkView.RPC("AssignPlayerStats", RPCMode.All, victimID, players[victimIndex].health, players[victimIndex].kills, players[victimIndex].deaths, players[victimIndex].currentScore);
-		networkView.RPC("AssignPlayerStats", RPCMode.All, shooterID, players[shooterIndex].health, players[shooterIndex].kills, players[shooterIndex].deaths, players[shooterIndex].currentScore);
-		
+		networkView.RPC("AssignPlayerStats", RPCMode.All, victimID, players[vi].health, players[vi].kills, players[vi].deaths, players[vi].currentScore);
+		networkView.RPC("AssignPlayerStats", RPCMode.All, shooterID, players[si].health, players[si].kills, players[si].deaths, players[si].currentScore);
+
 		if (killShot) {
-			networkView.RPC("AnnounceKill", RPCMode.All, weaponType, shooterID, victimID);
+			networkView.RPC("AnnounceKill", RPCMode.All, weapon, shooterID, victimID);
 			
 			if (CurrMatch.teamBased) 
 				networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
 		
 		// let players see hit
-		networkView.RPC("ShowHit", RPCMode.All, weaponType, hitPos, victimID);
+		networkView.RPC("ShowHit", RPCMode.All, weapon, hitPos, victimID);
 		
 		// check for game over
 		if (CurrMatch.winScore > 0) {
@@ -303,15 +300,18 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	[RPC]
-	void ShowHit(string weaponType, Vector3 hitPos, NetworkViewID viewID) {
+	void ShowHit(int weapon, Vector3 hitPos, NetworkViewID viewID) {
 		int splatcount = 4;
-		if (weaponType=="pistol") splatcount = 4;
-		if (weaponType=="grenade") splatcount = 15;
-		if (weaponType=="machinegun") splatcount = 2;
-		if (weaponType=="rifle") splatcount = 30;
-		if (weaponType=="suicide") splatcount = 30;
-		if (weaponType=="rocket") splatcount = 20;
-		if (weaponType=="bomb") splatcount = 20;
+		
+		switch ((Item)weapon) {
+			case Item.Grenade:                splatcount = 15; break;
+			case Item.MachineGun:             splatcount = 2; break;
+			case Item.Rifle:                  splatcount = 30; break;
+			case Item.RocketMaybeJustASingle: splatcount = 20; break;
+			case Item.Bomb:                   splatcount = 20; break;
+			
+			case Item.Suicide:                splatcount = 30; break;
+		}		
 		
 		for (int i=0; i<splatcount; i++) {
 			GameObject newSplat = (GameObject)GameObject.Instantiate(splatPrefab);
@@ -374,7 +374,7 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	[RPC]
-	void AnnounceKill(string weaponType, NetworkViewID shooterID, NetworkViewID victimID){
+	void AnnounceKill(int weapon, NetworkViewID shooterID, NetworkViewID victimID){
 		lastRPCtime = Time.time;
 		
 		if (localPlayer.viewID == shooterID) localPlayer.totalKills ++;
@@ -393,7 +393,7 @@ public class CcNet : MonoBehaviour {
 		
 		string shooterName = "Someone";
 		string victimName = "Someone";
-		for (int i=0; i<players.Count; i++){
+		for (int i=0; i<players.Count; i++) {
 			if (players[i].viewID == shooterID) shooterName = players[i].name;
 			if (players[i].viewID == victimID) victimName = players[i].name;
 			if (players[i].viewID == victimID) players[i].Entity.PlaySound("die");

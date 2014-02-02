@@ -51,7 +51,7 @@ public class GrenadeScript : MonoBehaviour {
 			if (Time.time > detonationTime) {
 				alive = false;
 				if (net.isServer) {
-					net.Detonate("grenade", transform.position, shooterID, viewID);
+					net.Detonate(Item.Grenade, transform.position, shooterID, viewID);
 				}
 			}
 		}else{

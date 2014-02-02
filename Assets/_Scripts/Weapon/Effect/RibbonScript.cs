@@ -65,12 +65,12 @@ public class RibbonScript: MonoBehaviour {
 		PopulateRibbonArray(transform, 0);
 		
 		//before we start to change the hierachy, lets make sure which links know what links are their children
-		for (int i=0; i<ribbon.Length; i++){
-			foreach (Transform child in ribbon[i].bone.transform){
+		for (int i=0; i<ribbon.Length; i++) {
+			foreach (Transform child in ribbon[i].bone.transform) {
 				if (child.GetComponent<UnRibbon>() == null && child.GetComponent<RibbonScript>() == null && child.gameObject.name!= "RIBBONROOT"){
 					//child is a bone in the ribbon, let's reference it
-					for (int j=0; j<ribbon.Length; j++){
-						if (ribbon[j].bone.transform == child){
+					for (int j=0; j<ribbon.Length; j++) {
+						if (ribbon[j].bone.transform == child) {
 							ribbon[i].AddChild(j);
 							ribbon[j].parentIndex = i;
 						}
@@ -104,7 +104,7 @@ public class RibbonScript: MonoBehaviour {
 		ribbon[0].bone.transform.parent = ribbon[0].boneHolder.transform;
 		
 		//do it for the rest of the ribbon
-		for (int i=1; i<ribbon.Length; i++){
+		for (int i=1; i<ribbon.Length; i++) {
 			ribbon[i].boneHolder = new GameObject();
 			ribbon[i].boneHolder.name = "RIBBON_" + i.ToString() + "_" + ribbon[0].bone.name + "& " + ribbon[i].parentIndex.ToString();
 			ribbon[i].boneHolder.transform.position = ribbon[i].bone.transform.position;
@@ -114,7 +114,7 @@ public class RibbonScript: MonoBehaviour {
 		}
 		
 		//find out how long each link is.
-		for (int i=1; i<ribbon.Length; i++){
+		for (int i=1; i<ribbon.Length; i++) {
 			ribbon[i].linkLength = Vector3.Distance(ribbon[i].boneHolder.transform.position,ribbon[ribbon[i].parentIndex].boneHolder.transform.position);
 		}
 		
@@ -122,9 +122,9 @@ public class RibbonScript: MonoBehaviour {
 		
 	}
 	
-	int CountBones(Transform parentLink){
+	int CountBones(Transform parentLink) {
 		int runningTotal = 1;
-		foreach (Transform child in parentLink){
+		foreach (Transform child in parentLink) {
 			if (child.GetComponent<UnRibbon>() == null && child.GetComponent<RibbonScript>() == null && child.gameObject.name!= "RIBBONROOT"){
 				//not another ribbon or ribbon blocker, it will be part of our array, and we count it's children too
 				runningTotal += CountBones(child);
@@ -133,7 +133,7 @@ public class RibbonScript: MonoBehaviour {
 		return runningTotal;
 	}
 	
-	int PopulateRibbonArray(Transform parentlink, int ribbonIndex){
+	int PopulateRibbonArray(Transform parentlink, int ribbonIndex) {
 		ribbon[ribbonIndex].bone = parentlink.gameObject;
 		ribbon[ribbonIndex].position = ribbon[ribbonIndex].bone.transform.position;
 		ribbonIndex++;
@@ -146,14 +146,13 @@ public class RibbonScript: MonoBehaviour {
 		return ribbonIndex;
 	}
 	
-	void FixedUpdate(){
-		if (isCompleteRoot){
-			//we are the topmost ribbon in this hierachy, let's get started!
+	void FixedUpdate() {
+		if (isCompleteRoot) { // if we are the topmost ribbon in this hierachy, let's get started!
 			RibbonAction();
 		}
 	}
 	
-	public void RibbonAction(){
+	public void RibbonAction() {
 		ActRibbonPiece(0,rootStrength);
 	}
 	
@@ -162,10 +161,10 @@ public class RibbonScript: MonoBehaviour {
 	void ActRibbonPiece(int ribbonIndex, float currentRootInfluence){
 		if (ribbonIndex>0){//don't do this to the root
 			
-			//move base on forces (yes, I do this first =p)
+			// move base on forces (yes, I do this first =p)
 			ribbon[ribbonIndex].position+= ribbon[ribbonIndex].forces;
 			
-			//our ribbons arent stretchy, make sure the distance between links isnt too great
+			// our ribbons arent stretchy, make sure the distance between links isnt too great
 			if (Vector3.Distance(ribbon[ribbon[ribbonIndex].parentIndex].position,ribbon[ribbonIndex].position)>ribbon[ribbonIndex].linkLength){
 				//gone too far, place it back
 				Vector3 oldPos = ribbon[ribbonIndex].position;
@@ -177,18 +176,18 @@ public class RibbonScript: MonoBehaviour {
 				ribbon[ribbonIndex].forces+= (ribbon[ribbonIndex].position-oldPos)*0.8f;
 			}
 			
-			//drag
+			// drag
 			ribbon[ribbonIndex].forces *= drag;
 			
-			//gravity
+			// gravity
 			ribbon[ribbonIndex].forces+= worldUp * -linkGravity;
 			
-			//root influence
+			// root influence
 			Vector3 influenceDirection = (-ribbon[0].boneHolder.transform.right*rootForceDirection.x) + (-ribbon[0].boneHolder.transform.up*rootForceDirection.y) + (-ribbon[0].boneHolder.transform.forward*rootForceDirection.z);
 			influenceDirection.Normalize();
 			ribbon[ribbonIndex].forces += influenceDirection * currentRootInfluence;
 			
-			//terminal velocity required, or shit gets crazy when moving fast
+			// terminal velocity required, or shit gets crazy when moving fast
 			if (ribbon[ribbonIndex].forces.magnitude>maxForceStrength){
 				ribbon[ribbonIndex].forces.Normalize();
 				ribbon[ribbonIndex].forces*=maxForceStrength;
@@ -196,21 +195,21 @@ public class RibbonScript: MonoBehaviour {
 			
 			
 		}else{
-			//this is the root ribbon piece, since it's movement is what everything else is determined by,
-			//we should keep track when it changes position :)
+			// this is the root ribbon piece, since it's movement is what everything else is determined by,
+			// we should keep track when it changes position :)
 			ribbon[0].position = ribbon[0].boneHolder.transform.position;
 		}
 		
-		if (ribbon[ribbonIndex].childIndeces!=null){
-			for (int i=0; i<ribbon[ribbonIndex].childIndeces.Length; i++){
-				//act on the children of this ribbon piece
+		if (ribbon[ribbonIndex].childIndeces != null) {
+			for (int i=0; i<ribbon[ribbonIndex].childIndeces.Length; i++) {
+				// act on the children of this ribbon piece
 				ActRibbonPiece(ribbon[ribbonIndex].childIndeces[i], currentRootInfluence*rootInfluence);
 			}
 		}
 		
-		if (ribbon[ribbonIndex].childRibbons!=null){
-			for (int i=0; i<ribbon[ribbonIndex].childRibbons.Length; i++){
-				//act on the children RibbonScripts of this ribbon piece
+		if (ribbon[ribbonIndex].childRibbons != null) {
+			for (int i=0; i<ribbon[ribbonIndex].childRibbons.Length; i++) {
+				// act on the children RibbonScripts of this ribbon piece
 				ribbon[ribbonIndex].childRibbons[i].RibbonAction();
 			}
 		}
@@ -218,19 +217,19 @@ public class RibbonScript: MonoBehaviour {
 	}
 	
 	
-	//all gameObjects are positioned in LateUpdate
-	void LateUpdate(){
-		if (isCompleteRoot){
+	// all gameObjects are positioned in LateUpdate
+	void LateUpdate() {
+		if (isCompleteRoot) {
 			Vector3 intervalOffset = ribbon[0].boneHolder.transform.position - ribbon[0].position;
 			RibbonPlacement(intervalOffset);
 		}
 	}
 	
-	public void RibbonPlacement(Vector3 intervalOffset){
+	public void RibbonPlacement(Vector3 intervalOffset) {
 		PlaceRibbonPiece(1, intervalOffset);
 	}
 	
-	//this function is called recursively to position each piece of the ribbon and make it's orientation suitable
+	// this function is called recursively to position each piece of the ribbon and make it's orientation suitable
 	void PlaceRibbonPiece(int ribbonIndex, Vector3 intervalOffset){
 		ribbon[ribbonIndex].boneHolder.transform.position = ribbon[ribbonIndex].position + intervalOffset;
 		ribbon[ribbonIndex].boneHolder.transform.LookAt(ribbon[ribbon[ribbonIndex].parentIndex].position + intervalOffset, ribbon[ribbon[ribbonIndex].parentIndex].boneHolder.transform.up);

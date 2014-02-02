@@ -42,6 +42,6 @@ public class RocketScript : MonoBehaviour {
 	private void detonateMaybe() {
 		enabled = false;
 		if (net.isServer)
-			net.Detonate("rocket", transform.position, shooterID, viewID);
+			net.Detonate(Item.RocketMaybeJustASingle, transform.position, shooterID, viewID);
 	}
 }
