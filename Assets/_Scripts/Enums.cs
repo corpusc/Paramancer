@@ -33,6 +33,7 @@ public enum HudMode {
 	// Both
 	Controls,
 	Playing, // guess its not really BOTH, until i implement single player
+	Editing, // guess its not really BOTH, until i implement single player
 	
 	Count
 }

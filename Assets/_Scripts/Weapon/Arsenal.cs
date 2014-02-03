@@ -34,6 +34,7 @@ public class Arsenal : MonoBehaviour {
 	void Start () {
 		net = GetComponent<CcNet>();
 		
+		// weapon media
 		// load the 3 kinds of resources that weapons need
 		int i = 0;
 		Object[] mats = Resources.LoadAll("Mat/Weap");
@@ -56,6 +57,7 @@ public class Arsenal : MonoBehaviour {
 //			i++;
 //		}
 		
+		// setup guns
 		Guns = new GunData[9];
 		for (i = 0; i < Guns.Length; i++) {
 			Guns[i] = new GunData();

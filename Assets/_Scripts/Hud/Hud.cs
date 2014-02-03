@@ -349,7 +349,7 @@ public class Hud : MonoBehaviour {
 		
 		locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Mouselook inversion");
 		GUILayout.Label("Mouse Sensitivity:");
-		locUser.mouseSensitivity = GUILayout.HorizontalSlider(locUser.mouseSensitivity,0.1f,10f);
+		locUser.mouseSensitivity = GUILayout.HorizontalSlider(locUser.mouseSensitivity, 0.1f, 10f);
 		
 		if (GUILayout.Button("Reset Mouse")){
 			locUser.LookInvert = false;

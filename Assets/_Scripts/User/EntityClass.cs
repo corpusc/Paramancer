@@ -338,10 +338,16 @@ public class EntityClass : MonoBehaviour {
 					if (locUser.LookInvert) 
 						invY = -1f;
 					
-					camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.mouseSensitivity * invY;
-					camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.mouseSensitivity;
-					if (camAngle.x>85f) camAngle.x = 85f;
-					if (camAngle.x<-85f) camAngle.x = -85f;
+					if (hud.Mode == HudMode.Playing || 
+						hud.Mode == HudMode.Editing
+					) {
+						camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.mouseSensitivity * invY;
+						camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.mouseSensitivity;
+						if (camAngle.x >  85f) 
+							camAngle.x =  85f;
+						if (camAngle.x < -85f) 
+							camAngle.x = -85f;
+					}
 					
 					camHolder.transform.localEulerAngles = camAngle;
 					bool startedSprinting = false;
