@@ -5,25 +5,8 @@ using System.Collections.Generic;
 using System.Globalization;
 
 public class Hud : MonoBehaviour {
-	// swapper
-	public int swapperCrossX = 0;
-	public int swapperCrossY = 0;
-	public bool swapperLocked = false;
-	
-	// textures
-	public Texture[] swapperCrosshair;
-	public Texture lifeIcon;
-	public Texture backTex;
-	public Texture blackTex;
-	public Texture crossHair;
-	public Texture teamRedFlag;
-	public Texture teamBlueFlag;
-	public Texture gameLogo;
-	public Texture companyLogo;
-	
 	// misc
-	public string offeredPickup = "";
-	private HudMode mode = HudMode.Main;
+	private HudMode mode = HudMode.MenuMain;
 	public HudMode Mode {
 		get { return mode; }
 		set {
@@ -43,19 +26,12 @@ public class Hud : MonoBehaviour {
 		}
 	}
 	
-	// avatar/user
-	public bool Spectating = false;
-	public int Spectatee = 0;
-	public float gunACooldown = 0f;
-	public Item gunA = Item.Pistol;
-	public Item gunB = Item.Pistol;
-	public float EnergyLeft = 1f; // 0-1
-	
 	// private
 	Rect screen;
 	bool viewingScores = false;
 	string defaultName = "Lazy Noob";
 	Scoreboard scores = new Scoreboard();
+	PlayingHud playHud = new PlayingHud();
 	
 	// UI element sizes
 	Vector2 scrollPos = Vector2.zero;
@@ -94,7 +70,6 @@ public class Hud : MonoBehaviour {
 			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
 		
 		setupMatchTypes();
-		loadHudPics();
 		
 		// make local player
 		net.localPlayer = new NetUser();
@@ -123,10 +98,12 @@ public class Hud : MonoBehaviour {
 	
 	void Update() {
 		if (InputUser.Started(UserAction.Menu)) 
-			if (Mode != HudMode.Main)
-				Mode = HudMode.Main;
-			else
+			if (Mode != HudMode.MenuMain) {
+				Mode = HudMode.MenuMain;
+				Screen.lockCursor = false;
+			}else{
 				Mode = HudMode.Playing;
+			}
 			
 		if (InputUser.Started(UserAction.Scores))
 			viewingScores = !viewingScores;
@@ -171,7 +148,7 @@ public class Hud : MonoBehaviour {
 				}
 				break;
 				
-			case HudMode.Main:
+			case HudMode.MenuMain:
 			case HudMode.Avatar:
 				avatarView();
 				break;
@@ -194,33 +171,6 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-	string TimeStringFromSecs(float totalSecs) {
-		string timeString = "";
-		int seconds = Mathf.FloorToInt(totalSecs);
-		
-		int minutes = 0;
-		while(seconds > 60) {
-			seconds -= 60;
-			minutes++;
-		}
-		
-		int hours = 0;
-		while (minutes > 60) {
-			minutes -= 60;
-			hours++;
-		}
-		
-		if (hours > 0) {
-			timeString += hours.ToString() + ":";
-			if (minutes < 10) timeString += "0";
-		}
-		timeString += minutes.ToString() + ":";
-		if (seconds < 10) timeString += "0";
-		timeString += seconds.ToString();
-		
-		return timeString;
-	}
-	
 	
 	
 	
@@ -237,7 +187,7 @@ public class Hud : MonoBehaviour {
 		if (halfWidth)
 			r.width /= 2;
 		
-		GUI.DrawTexture(r, backTex);
+		GUI.DrawTexture(r, Pics.backTex);
 		GUI.color = new Color(0.8f, 0f, 1f, 1f);
 	}
 	
@@ -783,7 +733,7 @@ public class Hud : MonoBehaviour {
 				}
 				
 				for (int i=0; i<hostData.Length; i++) {
-					GUI.DrawTexture(new Rect(5, (i*40), 550, 1), backTex);
+					GUI.DrawTexture(new Rect(5, (i*40), 550, 1), Pics.backTex);
 					
 					if (GUI.Button(new Rect(5,(i*40)+2, 80,36), "Connect")){
 						Network.Connect(hostData[i],net.password);
@@ -803,7 +753,7 @@ public class Hud : MonoBehaviour {
 						GUI.Label(new Rect(450,(i*40)+17,150, 30), "Ping: ?");
 					
 					if (i==hostData.Length-1)
-						GUI.DrawTexture(new Rect(5, (i*40)+40, 550, 1), backTex);
+						GUI.DrawTexture(new Rect(5, (i*40)+40, 550, 1), Pics.backTex);
 				}
 				
 				GUI.EndScrollView();
@@ -819,42 +769,6 @@ public class Hud : MonoBehaviour {
 		matches = new MatchData[(int)Match.Count];
 		for (int i = 0; i < matches.Length; i++)
 			matches[i] = new MatchData((Match)i);
-	}
-
-	void loadHudPics() {
-		UnityEngine.Object[] pics = Resources.LoadAll("Pic/Hud");
-		
-		// use this temp list to setup permanent vars
-		for (int i = 0; i < pics.Length; i++) {
-			var s = pics[i].name;
-			
-			switch (s) {
-				case "Health": 
-					lifeIcon = (Texture)pics[i]; 
-					break;
-				case "whiteTex": 
-					backTex = (Texture)pics[i]; 
-					break;
-				case "blackTex": 
-					blackTex = (Texture)pics[i]; 
-					break;
-				case "Crosshair": 
-					crossHair = (Texture)pics[i]; 
-					break;
-				case "Logo - CazCore": 
-					companyLogo = (Texture)pics[i]; 
-					break;
-				case "Logo - Paramancer": 
-					gameLogo = (Texture)pics[i]; 
-					break;
-				case "FlagRed": 
-					teamRedFlag = (Texture)pics[i]; 
-					break;
-				case "FlagBlue": 
-					teamBlueFlag = (Texture)pics[i]; 
-					break;
-			}
-		}
 	}
 
 	void avatarView() {
@@ -911,7 +825,7 @@ public class Hud : MonoBehaviour {
 
 	void credits(Rect br) {
 		if (GUI.Button(br, "Back..."))
-			Mode = HudMode.Main;
+			Mode = HudMode.MenuMain;
 		
 		DrawWindowBackground();
 		
@@ -943,6 +857,7 @@ public class Hud : MonoBehaviour {
 		
 		GUI.EndGroup();
 	}
+
 	
 	
 	
@@ -955,180 +870,73 @@ public class Hud : MonoBehaviour {
 	
 	
 	void onlineMenus (int midX, int midY) {
-		if /* unpinned pointer */ (!Screen.lockCursor) {
-			switch (Mode) {
-				case HudMode.Playing:
-					break;
-				case HudMode.Kick:
-					if (net.isServer) {
-						DrawWindowBackground();
-						KickMenu();
-					}
-					break;
-				case HudMode.Match:
-					if (net.isServer) {
-						MatchSetup(true);
-					}
-					break;
-				case HudMode.Controls:
-					MenuControls();
-					break;
-				default:
-					// buttons
-					float h = button.height;
-					button.x = window.xMax;
-					button.y = controls.BottomOfKeyboard;
+		switch (Mode) {
+			case HudMode.Playing:
+				playHud.Draw(net, arse, midX, midY);
+				break;
+			case HudMode.Kick:
+				if (net.isServer) {
+					DrawWindowBackground();
+					KickMenu();
+				}
+				break;
+			case HudMode.Match:
+				if (net.isServer) {
+					MatchSetup(true);
+				}
+				break;
+			case HudMode.Controls:
+				MenuControls();
+				break;
+			default: // this would be the main menu?
+				// buttons
+				float h = button.height;
+				button.x = window.xMax;
+				button.y = controls.BottomOfKeyboard;
+				
+				button.y += h;
+				if (GUI.Button(button, "PLAY"))
+					Mode = HudMode.Playing;
+			
+				button.y += h;
+				if (GUI.Button(button, "Disconnect"))
+					net.DisconnectNow();
+				
+				button.y += h;
+				if (GUI.Button(button, HudMode.Controls.ToString()))
+					Mode = HudMode.Controls;
+			
+				// server mode buttons
+				if (net.isServer) {
 					button.y += h;
-					if (GUI.Button(button, "Disconnect"))
-						net.DisconnectNow();
+					if (GUI.Button(button, HudMode.Match.ToString()))
+						Mode = HudMode.Match;
 					
-					// server mode buttons
-					if (net.isServer) {
-						button.y += h;
-						if (GUI.Button(button, HudMode.Controls.ToString()))
-							Mode = HudMode.Controls;
-						
-						button.y += h;
-						if (GUI.Button(button, HudMode.Match.ToString()))
-							Mode = HudMode.Match;
-						
-						button.y += h;
-						if (GUI.Button(button, HudMode.Kick.ToString()))
-							Mode = HudMode.Kick;				
-					}					
-					break;
-			}
-		}else{ // cursor locked
-			if (viewingScores || net.gameOver) {
-				DrawWindowBackground(true);
-				scores.Draw(window, net, vSpan);
-			}
-			
-			// 2 types of crosshairs
-			GUI.DrawTexture(new Rect(
-				midX-crossHair.width/2, 
-				midY-crossHair.height/2, 
-				crossHair.width, 
-				crossHair.height), crossHair);
-			
-			if (gunA == Item.Swapper) {
-				int swapperFrame = Mathf.FloorToInt((Time.time*15f) % swapperCrosshair.Length);
-				if (!swapperLocked) 
-					swapperFrame = 0;
-				
-				GUI.DrawTexture(new Rect(swapperCrossX-32, (Screen.height-swapperCrossY)-32, 64, 64), swapperCrosshair[swapperFrame]);
-			}
-			
-			// health bar
-			int healthWidth = (Screen.width/3);
-			GUI.DrawTexture(new Rect(midX-(healthWidth/2)-2, Screen.height-15, healthWidth+4, 9), blackTex);
-			int healthWidthB = (int)((((float)healthWidth)/100f)*net.localPlayer.health);
-			GUI.DrawTexture(new Rect(midX-(healthWidth/2), Screen.height-13, healthWidthB, 5), backTex);
-			
-			// energy bar
-			int energyWidth = (Screen.width/3);
-			GUI.DrawTexture(new Rect(midX-(energyWidth/2)-2, Screen.height-30, healthWidth+4, 9), blackTex);
-			int energyWidthB = (int)(((float)healthWidth)*EnergyLeft);
-			GUI.DrawTexture(new Rect(midX-(energyWidth/2), Screen.height-28, energyWidthB, 5), backTex);
-			
-			// lives
-			if (net.CurrMatch.playerLives > 0) {
-				int lifeCount = 0;
-				for (int i=0; i<net.players.Count; i++) {
-					if (net.players[i].local) lifeCount = net.players[i].lives;
-				}
-				//Debug.Log(lifeCount);
-				for (int i=0; i<lifeCount; i++){
-					GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), lifeIcon);
-				}
-			}
-			
-			// pickup stuff
-			Color gcol = GUI.color;
-			if (offeredPickup != "" && !net.autoPickup) {
-				GUI.color = Color.black;
-				string s = "Press '" + InputUser.GetKeyLabel(UserAction.GrabItem) + "' to grab " + offeredPickup.ToUpper();
-				GUI.Label(new Rect(midX-51, midY+100, 200, 60), s);
-				GUI.Label(new Rect(midX-49, midY+100, 200, 60), s);
-				GUI.Label(new Rect(midX-50, midY+101, 200, 60), s);
-				GUI.Label(new Rect(midX-50, midY+99, 200, 60), s);
-				GUI.color = gcol;
-				GUI.Label(new Rect(midX-50, midY+100, 200, 60), s);
-			}
-			
-			if (Spectating) {
-				string s = "Spectating: " + net.players[Spectatee].name + "\n\nYou will be able to play once this round is over.";
-				GUI.color = Color.black;
-				GUI.Label(new Rect(4, 5, 300, 60), s);
-				GUI.Label(new Rect(6, 5, 300, 60), s);
-				GUI.Label(new Rect(5, 4, 300, 60), s);
-				GUI.Label(new Rect(5, 6, 300, 60), s);
-				
-				GUI.color = gcol;
-				GUI.Label(new Rect(5, 5, 300, 60), s);
-				
-			}
-			
-			// weapon
-			GUI.color = new Color(0.1f, 0.1f, 0.1f, 0.7f);
-			if (gunB >= 0) 
-				GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), arse.Guns[(int)gunB].Pic);
-			
-			GUI.color = gcol;
-			if (gunA >= 0) 
-				GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), arse.Guns[(int)gunA].Pic);
-			
-			if (gunA >= 0) {
-				GUI.color = Color.black;
-			
-				GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
-				GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
-				GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), arse.Guns[(int)gunA].Name);
-				GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), arse.Guns[(int)gunA].Name);
-				
-				GUI.color = gcol;
-				GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
-			}
-			
-			// weapon cooldown
-			if (gunA >= Item.Pistol) {
-				GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), blackTex);
-				float coolDownPercent = 50f;
-				if (arse.Guns[(int)gunA].Delay>0f) {
-					coolDownPercent = (gunACooldown / arse.Guns[(int)gunA].Delay) * 50f;
-					coolDownPercent = 50f-coolDownPercent;
-				}
-				GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), backTex);
-			}
-			
-			GUI.color = gcol;
+					button.y += h;
+					if (GUI.Button(button, HudMode.Kick.ToString()))
+						Mode = HudMode.Kick;				
+				}					
+				break;
 		}
-		
-		Color gcolB = GUI.color;
 		
 		// team icons
+		Color gcolB = GUI.color;
 		if (net.CurrMatch.teamBased && net.localPlayer.team != 0) {
-			if /*``*/ (net.localPlayer.team == 1){
-				GUI.DrawTexture(new Rect(Screen.width-68,4,64,64),teamRedFlag);
-			} else if (net.localPlayer.team == 2){
-				GUI.DrawTexture(new Rect(Screen.width-68,4,64,64),teamBlueFlag);
+			if /*``*/ (net.localPlayer.team == 1) {
+				GUI.DrawTexture(new Rect(Screen.width-68,4,64,64), Pics.teamRedFlag);
+			} else if (net.localPlayer.team == 2) {
+				GUI.DrawTexture(new Rect(Screen.width-68,4,64,64), Pics.teamBlueFlag);
 			}
 		}
 		
-		// time
-		if (!net.gameOver) {
-			if (net.CurrMatch.Duration > 0f) {
-				// show time left
-				GUI.color = Color.black;
-				GUI.Label(new Rect(midX-11, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-				GUI.Label(new Rect(midX-9, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-				GUI.Label(new Rect(midX-10, 4, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-				GUI.Label(new Rect(midX-10, 6, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-				
-				GUI.color = gcolB;
-				GUI.Label(new Rect(midX-10, 5, 200, 30), TimeStringFromSecs(net.gameTimeLeft) );
-			}
-		}else{
+		// scoreboard
+		if (viewingScores || net.gameOver) {
+			DrawWindowBackground(true);
+			scores.Draw(window, net, vSpan);
+		}
+		
+		// time til next match
+		if (net.gameOver) {
 			string s = "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.";
 			GUI.color = Color.black;
 			GUI.Label(new Rect(midX-51, 5, 200, 30), s);
@@ -1167,7 +975,7 @@ public class Hud : MonoBehaviour {
 		int mIH = vSpan*2; // menu item height
 		var r = new Rect(cX-hS, Screen.height-mIH, hS*2, mIH); // menu rect
 		
-		GUI.DrawTexture(new Rect(0, 0, Screen.width/2, Screen.width/2 /* dimensions are so close to perfect square */), gameLogo);
+		GUI.DrawTexture(new Rect(0, 0, Screen.width/2, Screen.width/2 /* dimensions are so close to perfect square */), Pics.gameLogo);
 		
 		// start drawing from the bottom
 		if (!Application.isWebPlayer) {
@@ -1191,7 +999,7 @@ public class Hud : MonoBehaviour {
 
 	bool backButton(Rect br) {
 		if (GUI.Button(br, "Back...")) {
-			Mode = HudMode.Main;
+			Mode = HudMode.MenuMain;
 			return true;
 		}
 		
@@ -1200,7 +1008,7 @@ public class Hud : MonoBehaviour {
 	
 	void offlineMenus(Rect br) {
 		switch (Mode) {
-			case HudMode.Main:
+			case HudMode.MenuMain:
 				menuMain();
 				break;
 			case HudMode.StartGame:

@@ -209,7 +209,8 @@ public class Arsenal : MonoBehaviour {
 	void playSfx(int i, AudioClip ac) {
 		net.players[i].Entity.weaponSoundObj.audio.clip = ac;
 		
-		if (net.players[i].viewID == net.localPlayer.viewID) 
+		
+		if /* local user */ (net.players[i].viewID == net.localPlayer.viewID) 
 			net.players[i].Entity.weaponSoundObj.audio.volume = 0.3f;
 		
 		net.players[i].Entity.weaponSoundObj.audio.pitch = Random.Range(0.9f,1.1f);

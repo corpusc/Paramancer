@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class EntityClass : MonoBehaviour {
 	public NetUser User;
+	public float EnergyLeft = 1f; // 0-1
 	private CharacterController cc;
 	private Avatar ava;
 
@@ -19,6 +20,10 @@ public class EntityClass : MonoBehaviour {
 	
 	public GameObject animObj;
 	
+	// swapper
+	public int swapperCrossX = 0;
+	public int swapperCrossY = 0;
+	public bool swapperLocked = false;
 	private Vector3 swapperLock = Vector3.zero;
 	
 	private Vector3 moveVec = Vector3.zero;
@@ -89,9 +94,7 @@ public class EntityClass : MonoBehaviour {
 	// network
 	public bool isLocal = true;
 	public bool Spectating = false;
-	
-	// private 
-	int spectatee = 0;
+	public int Spectatee = 0;
 	
 	// scripts
 	public CcNet net;
@@ -252,8 +255,6 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		AudioListener.volume = net.gameVolume;
-		hud.Spectating = Spectating;
-		hud.Spectatee = spectatee;
 		
 		if (Spectating && isLocal) {
 			if (net.players.Count > 0) {
@@ -261,16 +262,16 @@ public class EntityClass : MonoBehaviour {
 					firstPersonGun.renderer.enabled = false;
 				
 				if (InputUser.Started(UserAction.Activate) ||
-					net.players[spectatee].lives <= 0
+					net.players[Spectatee].lives <= 0
 				) {
-					spectatee++;
+					Spectatee++;
 					
-					if (spectatee >= net.players.Count) 
-						spectatee = 0;
+					if (Spectatee >= net.players.Count) 
+						Spectatee = 0;
 				}
 				
 				Camera.main.transform.parent = null;
-				Camera.main.transform.position = net.players[spectatee].Entity.transform.position;
+				Camera.main.transform.position = net.players[Spectatee].Entity.transform.position;
 				float invY = 1f;
 				if (locUser.LookInvert)
 					invY = -1f;
@@ -290,7 +291,6 @@ public class EntityClass : MonoBehaviour {
 			}else{
 				Vector3 lastPos = transform.position;
 				if (User.health > 0f) {
-					hud.offeredPickup = offeredPickup;
 					if (offeredPickup != "") {
 						bool pickup = false;
 
@@ -323,9 +323,6 @@ public class EntityClass : MonoBehaviour {
 				}
 				
 				offeredPickup = "";
-				hud.gunA = handGun;
-				hud.gunACooldown = handGunCooldown;
-				hud.gunB = holsterGun;
 				
 				if (User.health > 0f) {
 					if (Camera.main.transform.parent == null) 
@@ -374,7 +371,7 @@ public class EntityClass : MonoBehaviour {
 						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 5f);
 					}
 					
-					hud.EnergyLeft = ava.GetEnergy();
+					EnergyLeft = ava.GetEnergy();
 					
 					
 					if (yMove <= 0f) {
@@ -464,7 +461,7 @@ public class EntityClass : MonoBehaviour {
 						handGunCooldown = 0f;
 					
 					
-					hud.swapperLocked = false;
+					swapperLocked = false;
 					swapperLockTarget = -1;
 					if (handGun == Item.Swapper) {
 						// swapper aiming
@@ -477,9 +474,10 @@ public class EntityClass : MonoBehaviour {
 								RaycastHit swapCheckHit = new RaycastHit();
 								int swapCheckLayer = 1<<0;
 								float swapCheckLength = Vector3.Distance(net.players[i].Entity.transform.position, Camera.main.transform.position);
+								
 								if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer) ) {
 									validSwapTargets.Add(i);
-									hud.swapperLocked = true;
+									swapperLocked = true;
 								}
 							}
 						}
@@ -494,7 +492,7 @@ public class EntityClass : MonoBehaviour {
 							}
 						}
 						
-						if (hud.swapperLocked) {
+						if (swapperLocked) {
 							// move target to locked on player
 							Vector3 screenPos = Camera.main.WorldToScreenPoint(net.players[nearestScreenspacePlayer].Entity.transform.position);
 							swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
@@ -507,8 +505,8 @@ public class EntityClass : MonoBehaviour {
 						swapperLock = new Vector3(Screen.width/2, Screen.height/2, 0);
 					}
 					
-					hud.swapperCrossX = Mathf.RoundToInt(swapperLock.x);
-					hud.swapperCrossY = Mathf.RoundToInt(swapperLock.y);
+					swapperCrossX = Mathf.RoundToInt(swapperLock.x);
+					swapperCrossY = Mathf.RoundToInt(swapperLock.y);
 					
 					// basketball arrow
 					if (net.CurrMatch.basketball) {
@@ -645,40 +643,40 @@ public class EntityClass : MonoBehaviour {
 		
 		showCorrectGuns();
 
-		// animations
-		if (User.health > 0f) {
-			if (yMove == 0f) {
-				if (moveVec.magnitude > 0.1f) {
-					if (crouched) {
-						animObj.animation.Play("crouchrun");
-					}else{
-						animObj.animation.Play("run");
-					}
-					
-					if (Vector3.Dot(moveVec, lookDir) < -0.5f) {
-						animObj.animation["crouchrun"].speed = -1;
-						animObj.animation["run"].speed = -1;
-					}else{
-						animObj.animation["crouchrun"].speed = 1;
-						animObj.animation["run"].speed = 1;
-					}
-				}else{
-					if (crouched) {
-						animObj.animation.Play("crouch");
-					}else{
-						animObj.animation.Play("idle");
-					}
-				}
-			}else{
-				if (yMove > 0f) {
-					animObj.animation.Play("rise");
-				}else{
-					animObj.animation.Play("fall");
-				}
-			}
-		}else{
-			animObj.animation.Play("die");
-		}
+//		// animations
+//		if (User.health > 0f) {
+//			if (yMove == 0f) {
+//				if (moveVec.magnitude > 0.1f) {
+//					if (crouched) {
+//						animObj.animation.Play("crouchrun");
+//					}else{
+//						animObj.animation.Play("run");
+//					}
+//					
+//					if (Vector3.Dot(moveVec, lookDir) < -0.5f) {
+//						animObj.animation["crouchrun"].speed = -1;
+//						animObj.animation["run"].speed = -1;
+//					}else{
+//						animObj.animation["crouchrun"].speed = 1;
+//						animObj.animation["run"].speed = 1;
+//					}
+//				}else{
+//					if (crouched) {
+//						animObj.animation.Play("crouch");
+//					}else{
+//						animObj.animation.Play("idle");
+//					}
+//				}
+//			}else{
+//				if (yMove > 0f) {
+//					animObj.animation.Play("rise");
+//				}else{
+//					animObj.animation.Play("fall");
+//				}
+//			}
+//		}else{
+//			animObj.animation.Play("die");
+//		}
 		
 		// if dead, make unshootable
 		if (User.health > 0f) {

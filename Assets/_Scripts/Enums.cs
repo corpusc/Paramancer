@@ -16,7 +16,7 @@ public enum Match {
 
 public enum HudMode {
 	// Offline
-	Main,
+	MenuMain,
 	StartGame,         // (don't need both Match AND StartGame anymore?)
 	JoinGame,
 	Avatar,
