@@ -131,10 +131,10 @@ public class Hud : MonoBehaviour {
 					var r = screen;
 					r.x += mar;    r.width -= mar*2;
 					r.y += mar;   r.height -= mar*2;				
-					GUI.Button(r, "To aim with mouse,\n" +
+					GUI.Button(r, "To grab mouse cursor,\n" +
 						"Unity REQUIRES clicking on the game\n" +
-						"screen (after ESC has been pushed).\n" +
-						"You can remap the MENU action to another key.");
+						"screen; after ESC has been pushed.\n" +
+						"(You can remap  MENU action to another key)");
 				}
 				break;
 				

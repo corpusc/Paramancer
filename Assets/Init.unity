@@ -255,7 +255,6 @@ MonoBehaviour:
   gunBobbing: 1
   autoPickup: 0
   gameVolume: 1
-  basketballPrefab: {fileID: 100000, guid: 8ccc6cdbf406f4006b9c39b7f41ace60, type: 2}
   fpsEntityPrefab: {fileID: 100004, guid: 89a329f693d984ee18392aeb629721c3, type: 2}
   pickupBoxPrefab: {fileID: 100002, guid: d590a367980aa41cdae42504cf74de32, type: 2}
   splatPrefab: {fileID: 100000, guid: 11fe9d174a98e4571b16186b46fee9a8, type: 2}
@@ -286,29 +285,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359f0fb783c8c814daa4c218ac0146e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swapperCrossX: 0
-  swapperCrossY: 0
-  swapperLocked: 0
-  swapperCrosshair:
-  - {fileID: 2800000, guid: 9fb953b13c5b845a2ba770cdf0ab96ab, type: 3}
-  - {fileID: 2800000, guid: ffa405fc504c146c0b631455cf27e5fc, type: 3}
-  - {fileID: 2800000, guid: ea1eb5d540de445299919905281d284f, type: 3}
-  - {fileID: 2800000, guid: 14aae30a3279d42949ac0b48618574b0, type: 3}
-  lifeIcon: {fileID: 2800000, guid: a52d15c793d054880b371d92eadd5958, type: 3}
-  backTex: {fileID: 2800000, guid: cf943808b5e3043ac828c3f9a7ff0fdc, type: 3}
-  blackTex: {fileID: 2800000, guid: aeaeeb400efa94bdb865bab57de147ab, type: 3}
-  crossHair: {fileID: 2800000, guid: ce8bf1f6283744130bc635adc1a50c4c, type: 3}
-  teamRedFlag: {fileID: 2800000, guid: d9a04b9a37664487cae18481aeacbb84, type: 3}
-  teamBlueFlag: {fileID: 2800000, guid: 9685204decc744871b9c108d9c206039, type: 3}
-  gameLogo: {fileID: 0}
-  companyLogo: {fileID: 0}
-  offeredPickup: 
-  Spectating: 0
-  Spectatee: 0
-  gunACooldown: 0
-  gunA: 0
-  gunB: 0
-  EnergyLeft: 1
 --- !u!114 &1973207298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,7 +320,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1973207290}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19da8c5804d80174c8ede6393f0e21a5, type: 3}
   m_Name: 

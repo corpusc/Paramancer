@@ -11,24 +11,6 @@ public class PlayingHud {
 		Item gunA = locEnt.handGun;
 		Item gunB = locEnt.holsterGun;
 		
-		// 2 types of crosshairs
-		GUI.DrawTexture(new Rect(
-			midX-Pics.crossHair.width/2, 
-			midY-Pics.crossHair.height/2, 
-			Pics.crossHair.width, 
-			Pics.crossHair.height), Pics.crossHair);
-		
-		if (gunA == Item.Swapper) {
-			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.swapperCrosshair.Length);
-			if (!locEnt.swapperLocked) 
-				swapperFrame = 0;
-			
-			GUI.DrawTexture(new Rect(
-				locEnt.swapperCrossX-32, 
-				(Screen.height-locEnt.swapperCrossY)-32, 64, 64), 
-				Pics.swapperCrosshair[swapperFrame]);
-		}
-		
 		// bars/meters
 		int barW = (Screen.width/3); // width
 		int barHW = barW/2; // half width
@@ -54,7 +36,8 @@ public class PlayingHud {
 		if (net.CurrMatch.playerLives > 0) {
 			int lifeCount = 0;
 			for (int i=0; i<net.players.Count; i++) {
-				if (net.players[i].local) lifeCount = net.players[i].lives;
+				if (net.players[i].local) 
+					lifeCount = net.players[i].lives;
 			}
 			
 			//Debug.Log(lifeCount);
@@ -120,6 +103,24 @@ public class PlayingHud {
 			setBarColor(coolDownPercent/50f);
 			GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), Pics.Black);
 			GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), Pics.White);
+		}
+		
+		// 2 types of crosshairs
+		GUI.DrawTexture(new Rect(
+			midX-Pics.crossHair.width/2, 
+			midY-Pics.crossHair.height/2, 
+			Pics.crossHair.width, 
+			Pics.crossHair.height), Pics.crossHair);
+		
+		if (gunA == Item.Swapper) {
+			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.swapperCrosshair.Length);
+			if (!locEnt.swapperLocked) 
+				swapperFrame = 0;
+			
+			GUI.DrawTexture(new Rect(
+				locEnt.swapperCrossX-32, 
+				(Screen.height-locEnt.swapperCrossY)-32, 64, 64), 
+				Pics.swapperCrosshair[swapperFrame]);
 		}
 		
 		GUI.color = gcol;

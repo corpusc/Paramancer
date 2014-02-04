@@ -99,124 +99,16 @@ public class EntityClass : MonoBehaviour {
 	// scripts
 	public CcNet net;
 	Hud hud; // won't need this anymore once playingHud gets drawn correctly? *****************
-	Arsenal artil;
+	Arsenal arse;
 	LocalUser locUser;
 	
 	
-	
-	public void SetModelVisibility(bool visible) {
-		Material[] mats = meshObj.renderer.materials;
-		Material newMatA = new Material(dummyAMat);
-		Material newMatB = new Material(dummyBMat);
-		Material newMatC = new Material(dummyCMat);
-		newMatA.color = User.colA;
-		newMatB.color = User.colB;
-		newMatC.color = User.colC;
-		
-		if (net.CurrMatch.teamBased) {
-			if (User.team == 1) {
-				newMatA.color = Color.red;
-			}
-			if (User.team == 2) {
-				newMatA.color = Color.cyan;
-			}
-		}
-		
-		if (!visible) {
-			mats[0] = invisibleMat;
-			mats[1] = invisibleMat;
-			mats[2] = invisibleMat;
-			meshObj.renderer.materials = mats;
-			
-			if (gunMesh1.renderer) 
-				gunMesh1.renderer.material = invisibleMat;
-			if (gunMesh2.renderer) 
-				gunMesh2.renderer.material = invisibleMat;
-			
-			if (handGun == Item.Bomb) {
-				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null) {
-					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
-				}
-			}
-		}else{
-			mats[0] = newMatA;
-			mats[1] = newMatB;
-			mats[2] = newMatC;
-			meshObj.renderer.materials = mats;
-			
-			if (handGun >= 0 && gunMesh1.renderer) 
-				gunMesh1.renderer.material = artil.Guns[(int)handGun].Mat;
-			if (holsterGun >= 0 && gunMesh2.renderer) 
-				gunMesh2.renderer.material = artil.Guns[(int)holsterGun].Mat;
-		}
-		
-		// heads
-		for (int i=0; i<heads.Length; i++) {
-			if (i!=headType) {
-				heads[i].renderer.enabled = false;
-			}
-			
-			if (!visible) {
-				heads[i].renderer.material = invisibleMat;
-			}	
-		}
-		
-		if (visible) {
-			heads[0].renderer.material = newMatA;
-			heads[1].renderer.material = boxMat;
-			heads[2].renderer.material = fishMat;
-			heads[3].renderer.material = bananaMat;
-			heads[4].renderer.material = creeperMat;
-			heads[5].renderer.material = elephantMat;
-			heads[6].renderer.material = moonMat;
-			heads[7].renderer.material = pyramidMat;
-			heads[8].renderer.material = chocoboMat;
-			heads[9].renderer.material = spikeMat;
-			heads[10].renderer.material = tentacleMat;
-			heads[11].renderer.material = robotHeadMat;
-			heads[12].renderer.material = speaceshipMat;
-			heads[13].renderer.material = enforcerMat;
-			heads[14].renderer.material = smileyMat;
-			heads[15].renderer.material = helmetMat;
-			heads[16].renderer.material = paperbagMat;
-			heads[17].renderer.material = maheadMat;
-		}
-		
-		if (firstPersonGun != null && 
-			User.local && 
-			firstPersonGun.renderer && 
-			handGun >= 0
-		) {
-			if (visible) {
-				firstPersonGun.renderer.enabled = false;
-			}else{
-				firstPersonGun.renderer.enabled = true;
-				firstPersonGun.renderer.material = artil.Guns[(int)handGun].Mat;
-			}
-		}
-		
-		if (!net.CurrMatch.pitchBlack || !User.local) {
-			firstPersonLight.enabled = false;
-		
-		}
-		
-		if (!User.local && net.CurrMatch.pitchBlack) {
-			if (net.CurrMatch.teamBased && User.team == net.localPlayer.team) {
-				firstPersonLight.enabled = true;
-				if (User.team == 1) {
-					firstPersonLight.color = Color.red;
-				}else{
-					firstPersonLight.color = Color.cyan;
-				}
-			}
-		}
-	}
 	
 	void Start() {
 		var o = GameObject.Find("Main Program");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
-		artil = o.GetComponent<Arsenal>();
+		arse = o.GetComponent<Arsenal>();
 		locUser = o.GetComponent<LocalUser>();
 		
 		if (User.local && net.CurrMatch.pitchBlack) {
@@ -248,7 +140,8 @@ public class EntityClass : MonoBehaviour {
 	public bool sendRPCUpdate = false;
 	private float rpcCamtime = 0f;
 	void Update() {
-		net.localPlayer.Entity = this;
+		if (User.local)
+			net.localPlayer.Entity = this;
 		
 		if (User.health <= 0f) {
 			// shut off bomb
@@ -306,8 +199,8 @@ public class EntityClass : MonoBehaviour {
 							pickup = true;
 						
 						if (pickup) {
-							for (int i=0; i<artil.Guns.Length; i++) {
-								if (offeredPickup == artil.Guns[i].Name) {
+							for (int i=0; i<arse.Guns.Length; i++) {
+								if (offeredPickup == arse.Guns[i].Name) {
 									handGun = (Item)i;
 									handGunCooldown = 0f;
 									gunRecoil += Vector3.right * 5f;
@@ -378,9 +271,9 @@ public class EntityClass : MonoBehaviour {
 					inputVector.Normalize();
 					
 					if (!crouched) {
-						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 10f, startedSprinting);
+						ava.Move(inputVector * Time.deltaTime * 10f, startedSprinting);
 					}else{
-						ava.Move(ReorientMove(inputVector) * Time.deltaTime * 5f);
+						ava.Move(inputVector * Time.deltaTime * 5f);
 					}
 					
 					EnergyLeft = ava.GetEnergy();
@@ -464,7 +357,7 @@ public class EntityClass : MonoBehaviour {
 					
 					if (handGun >= 0 && handGunCooldown > 0f && 
 						handGunCooldown - Time.deltaTime <= 0f && 
-						artil.Guns[(int)handGun].Delay >= 1f
+						arse.Guns[(int)handGun].Delay >= 1f
 					) 
 						PlaySound("reload");
 					
@@ -570,13 +463,13 @@ public class EntityClass : MonoBehaviour {
 						!User.hasBall && 
 						handGun >= Item.Pistol
 					) {
-						if (artil.Guns[(int)handGun].AutoFire) {
+						if (arse.Guns[(int)handGun].AutoFire) {
 							if /* holding */ 
 								(InputUser.Holding(UserAction.Activate)
 							) {
 								if (handGunCooldown <= 0f) {
 									Fire();
-									handGunCooldown += artil.Guns[(int)handGun].Delay;
+									handGunCooldown += arse.Guns[(int)handGun].Delay;
 								}
 							}
 						}else{
@@ -585,7 +478,7 @@ public class EntityClass : MonoBehaviour {
 							) {
 								if (handGunCooldown <= 0f) {
 									Fire();
-									handGunCooldown += artil.Guns[(int)handGun].Delay;
+									handGunCooldown += arse.Guns[(int)handGun].Delay;
 								}
 							}
 						}
@@ -718,7 +611,7 @@ public class EntityClass : MonoBehaviour {
 			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
 			if (handGun >= Item.Pistol) {
-				gunMesh1 = (GameObject)GameObject.Instantiate(artil.Guns[(int)handGun].Prefab);
+				gunMesh1 = (GameObject)GameObject.Instantiate(arse.Guns[(int)handGun].Prefab);
 			}else{
 				gunMesh1 = new GameObject();
 			}
@@ -733,7 +626,7 @@ public class EntityClass : MonoBehaviour {
 					Destroy(firstPersonGun);
 				
 				if (handGun >= Item.Pistol) {
-					firstPersonGun = (GameObject)GameObject.Instantiate(artil.Guns[(int)handGun].Prefab);
+					firstPersonGun = (GameObject)GameObject.Instantiate(arse.Guns[(int)handGun].Prefab);
 				}else{
 					firstPersonGun = new GameObject();
 				}
@@ -759,7 +652,7 @@ public class EntityClass : MonoBehaviour {
 			Destroy(gunMesh2);
 			
 			if (holsterGun >= Item.Pistol) {
-				gunMesh2 = (GameObject)GameObject.Instantiate(artil.Guns[(int)holsterGun].Prefab);
+				gunMesh2 = (GameObject)GameObject.Instantiate(arse.Guns[(int)holsterGun].Prefab);
 			}else{
 				gunMesh2 = new GameObject();
 			}
@@ -898,14 +791,112 @@ public class EntityClass : MonoBehaviour {
 		}
 	}
 	
-	Vector3 ReorientMove(Vector3 moveness){
-		return moveness;
+	public void SetModelVisibility(bool visible) {
+		Material[] mats = meshObj.renderer.materials;
+		Material newMatA = new Material(dummyAMat);
+		Material newMatB = new Material(dummyBMat);
+		Material newMatC = new Material(dummyCMat);
+		newMatA.color = User.colA;
+		newMatB.color = User.colB;
+		newMatC.color = User.colC;
 		
-		//Vector3 returnVec = Vector3.zero;
-		//returnVec += moveness.x * Camera.main.transform.right;
-		//returnVec += moveness.z * Camera.main.transform.forward;
-		//returnVec += moveness.y * transform.up;
-		//return returnVec;
+		if (net.CurrMatch.teamBased) {
+			if (User.team == 1) {
+				newMatA.color = Color.red;
+			}
+			if (User.team == 2) {
+				newMatA.color = Color.cyan;
+			}
+		}
+		
+		if (!visible) {
+			mats[0] = invisibleMat;
+			mats[1] = invisibleMat;
+			mats[2] = invisibleMat;
+			meshObj.renderer.materials = mats;
+			
+			if (gunMesh1.renderer) 
+				gunMesh1.renderer.material = invisibleMat;
+			if (gunMesh2.renderer) 
+				gunMesh2.renderer.material = invisibleMat;
+			
+			if (handGun == Item.Bomb) {
+				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null) {
+					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
+				}
+			}
+		}else{
+			mats[0] = newMatA;
+			mats[1] = newMatB;
+			mats[2] = newMatC;
+			meshObj.renderer.materials = mats;
+			
+			if (handGun >= 0 && gunMesh1.renderer) 
+				gunMesh1.renderer.material = arse.Guns[(int)handGun].Mat;
+			if (holsterGun >= 0 && gunMesh2.renderer) 
+				gunMesh2.renderer.material = arse.Guns[(int)holsterGun].Mat;
+		}
+		
+		// heads
+		for (int i=0; i<heads.Length; i++) {
+			if (i!=headType) {
+				heads[i].renderer.enabled = false;
+			}
+			
+			if (!visible) {
+				heads[i].renderer.material = invisibleMat;
+			}	
+		}
+		
+		if (visible) {
+			heads[0].renderer.material = newMatA;
+			heads[1].renderer.material = boxMat;
+			heads[2].renderer.material = fishMat;
+			heads[3].renderer.material = bananaMat;
+			heads[4].renderer.material = creeperMat;
+			heads[5].renderer.material = elephantMat;
+			heads[6].renderer.material = moonMat;
+			heads[7].renderer.material = pyramidMat;
+			heads[8].renderer.material = chocoboMat;
+			heads[9].renderer.material = spikeMat;
+			heads[10].renderer.material = tentacleMat;
+			heads[11].renderer.material = robotHeadMat;
+			heads[12].renderer.material = speaceshipMat;
+			heads[13].renderer.material = enforcerMat;
+			heads[14].renderer.material = smileyMat;
+			heads[15].renderer.material = helmetMat;
+			heads[16].renderer.material = paperbagMat;
+			heads[17].renderer.material = maheadMat;
+		}
+		
+		if (firstPersonGun != null && 
+			User.local && 
+			firstPersonGun.renderer && 
+			handGun >= 0
+		) {
+			if (visible) {
+				firstPersonGun.renderer.enabled = false;
+			}else{
+				firstPersonGun.renderer.enabled = true;
+				firstPersonGun.renderer.material = arse.Guns[(int)handGun].Mat;
+			}
+		}
+		
+		if (!net.CurrMatch.pitchBlack || !User.local) {
+			firstPersonLight.enabled = false;
+		
+		}
+		
+		if (!User.local && net.CurrMatch.pitchBlack) {
+			if (net.CurrMatch.teamBased && User.team == net.localPlayer.team) {
+				firstPersonLight.enabled = true;
+				if (User.team == 1) {
+					firstPersonLight.color = Color.red;
+				}else{
+					firstPersonLight.color = Color.cyan;
+				}
+			}
+		}
 	}
 	
 	public void ForceLook(Vector3 targetLookPos) {
@@ -914,8 +905,10 @@ public class EntityClass : MonoBehaviour {
 		lookObj.transform.LookAt(targetLookPos, transform.up);
 		lookObj.transform.parent = camHolder.transform.parent;
 		camAngle = lookObj.transform.localEulerAngles;
-		while (camAngle.x>85f) camAngle.x-=180f;
-		while (camAngle.x<-85f) camAngle.x+=180f;
+		while (camAngle.x > 85f) 
+			camAngle.x -= 180f;
+		while (camAngle.x < -85f) 
+			camAngle.x += 180f;
 		//Debug.Log("Force look: " + targetLookPos.ToString() + " ??? " + lookObj.transform.position.ToString() + " ??? " + camAngle.ToString());
 	}
 	
@@ -993,12 +986,12 @@ public class EntityClass : MonoBehaviour {
 			Destroy(firstPersonGun);
 		
 		if (net.CurrMatch.spawnGunA == Item.Random) {
-			handGun = (Item)Random.Range(0, artil.Guns.Length);
+			handGun = (Item)Random.Range(0, arse.Guns.Length);
 		}else{
 			handGun = net.CurrMatch.spawnGunA;
 		}
 		if (net.CurrMatch.spawnGunB == Item.Random) {
-			holsterGun = (Item)Random.Range(0, artil.Guns.Length);
+			holsterGun = (Item)Random.Range(0, arse.Guns.Length);
 		}else{
 			holsterGun = net.CurrMatch.spawnGunB;
 		}
@@ -1033,9 +1026,9 @@ public class EntityClass : MonoBehaviour {
 		lastUpdateTime = Network.time;
 		
 		if (!crouched) {
-			ava.Move(ReorientMove(moveVec) * timeDelta * 10f);
+			ava.Move(moveVec * timeDelta * 10f);
 		}else{
-			ava.Move(ReorientMove(moveVec) * timeDelta * 5f);
+			ava.Move(moveVec * timeDelta * 5f);
 		}
 		
 		if (yMove <= 0f) {
