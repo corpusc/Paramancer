@@ -187,7 +187,7 @@ public class Hud : MonoBehaviour {
 		if (halfWidth)
 			r.width /= 2;
 		
-		GUI.DrawTexture(r, Pics.backTex);
+		GUI.DrawTexture(r, Pics.White);
 		GUI.color = new Color(0.8f, 0f, 1f, 1f);
 	}
 	
@@ -733,7 +733,7 @@ public class Hud : MonoBehaviour {
 				}
 				
 				for (int i=0; i<hostData.Length; i++) {
-					GUI.DrawTexture(new Rect(5, (i*40), 550, 1), Pics.backTex);
+					GUI.DrawTexture(new Rect(5, (i*40), 550, 1), Pics.White);
 					
 					if (GUI.Button(new Rect(5,(i*40)+2, 80,36), "Connect")){
 						Network.Connect(hostData[i],net.password);
@@ -753,7 +753,7 @@ public class Hud : MonoBehaviour {
 						GUI.Label(new Rect(450,(i*40)+17,150, 30), "Ping: ?");
 					
 					if (i==hostData.Length-1)
-						GUI.DrawTexture(new Rect(5, (i*40)+40, 550, 1), Pics.backTex);
+						GUI.DrawTexture(new Rect(5, (i*40)+40, 550, 1), Pics.White);
 				}
 				
 				GUI.EndScrollView();
@@ -872,10 +872,6 @@ public class Hud : MonoBehaviour {
 	void onlineMenus (int midX, int midY) {
 		switch (Mode) {
 			case HudMode.Playing:
-		//Debug.Log("net: " + net);
-		//Debug.Log("net.localPlayer: " + net.localPlayer);
-		//Debug.Log("net.localPlayer.name: " + net.localPlayer.name);
-		Debug.Log("onlineMenus --- net.localPlayer.Entity: " + net.localPlayer.Entity);
 				playHud.Draw(net, arse, midX, midY);
 				break;
 			case HudMode.Kick:

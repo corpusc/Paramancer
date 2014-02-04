@@ -248,6 +248,8 @@ public class EntityClass : MonoBehaviour {
 	public bool sendRPCUpdate = false;
 	private float rpcCamtime = 0f;
 	void Update() {
+		net.localPlayer.Entity = this;
+		
 		if (User.health <= 0f) {
 			// shut off bomb
 			if (gunMesh1 != null && gunMesh1.transform.Find("Flash Light") != null) {
@@ -630,7 +632,7 @@ public class EntityClass : MonoBehaviour {
 				}
 			}
 		}else{
-			if (lastUpdateTime>0f) {
+			if (lastUpdateTime > 0f) {
 				NonLocalUpdate();
 			}
 		}

@@ -3,22 +3,13 @@ using System.Collections;
 
 public class PlayingHud {
 	public void Draw(CcNet net, Arsenal arse, int midX, int midY) {
-		Debug.Log("net: " + net);
-		Debug.Log("net.localPlayer: " + net.localPlayer);
-		Debug.Log("net.localPlayer.name: " + net.localPlayer.name);
-		Debug.Log("net.localPlayer.Entity: " + net.localPlayer.Entity);
-		//EntityClass locEnt = net.localPlayer.Entity;
-		EntityClass locEnt = net.localPlayer.GetComponent<EntityClass>();
-		Debug.Log("locEnt: " + locEnt);
-		//******************  we could make .Entity a property, so i can get
-		// notices (Debug.Log() ) when it changes
-		
-		if (locEnt == null)
-			return;
+		var locEnt = net.localPlayer.Entity;
+//		if (locEnt == null)
+//			return;
 		
 		var gunACooldown = locEnt.handGunCooldown;
 		Item gunA = locEnt.handGun;
-		Item gunB = locEnt.handGun;
+		Item gunB = locEnt.holsterGun;
 		
 		// 2 types of crosshairs
 		GUI.DrawTexture(new Rect(
@@ -38,17 +29,26 @@ public class PlayingHud {
 				Pics.swapperCrosshair[swapperFrame]);
 		}
 		
-		// health bar
-		int healthWidth = (Screen.width/3);
-		GUI.DrawTexture(new Rect(midX-(healthWidth/2)-2, Screen.height-15, healthWidth+4, 9), Pics.blackTex);
-		int healthWidthB = (int)((((float)healthWidth)/100f)*net.localPlayer.health);
-		GUI.DrawTexture(new Rect(midX-(healthWidth/2), Screen.height-13, healthWidthB, 5), Pics.backTex);
+		// bars/meters
+		int barW = (Screen.width/3); // width
+		int barHW = barW/2; // half width
+		int healthW = (int)((float)barW/100f * net.localPlayer.health);
+		int energyW = (int)((float)barW * locEnt.EnergyLeft);
+		int bm = 2; // black border margin
+		int hY = Screen.height-32; // health y pos
+		int eY = Screen.height-13; // energy y pos
+		int hH = 11; // health height
+		int eH = 7; // energy height
 		
+		// health bar
+		setBarColor(net.localPlayer.health/100f);
+		GUI.DrawTexture(new Rect(midX-barHW-bm, hY-bm, barW+bm*2, hH+bm*2), Pics.Black);
+		GUI.DrawTexture(new Rect(midX-barHW, hY, healthW, hH), Pics.White);
 		// energy bar
-		int energyWidth = (Screen.width/3);
-		GUI.DrawTexture(new Rect(midX-(energyWidth/2)-2, Screen.height-30, healthWidth+4, 9), Pics.blackTex);
-		int energyWidthB = (int)(((float)healthWidth) * locEnt.EnergyLeft);
-		GUI.DrawTexture(new Rect(midX-(energyWidth/2), Screen.height-28, energyWidthB, 5), Pics.backTex);
+		setBarColor(locEnt.EnergyLeft);
+		GUI.DrawTexture(new Rect(midX-barHW-bm, eY-bm, barW+bm*2, eH+bm*2), Pics.Black);
+		GUI.DrawTexture(new Rect(midX-barHW, eY, energyW, eH), Pics.White);
+		GUI.color = Color.white;
 		
 		// lives
 		if (net.CurrMatch.playerLives > 0) {
@@ -111,13 +111,15 @@ public class PlayingHud {
 		
 		// weapon cooldown
 		if (gunA >= Item.Pistol) {
-			GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), Pics.blackTex);
 			float coolDownPercent = 50f;
-			if (arse.Guns[(int)gunA].Delay>0f) {
+			if (arse.Guns[(int)gunA].Delay > 0f) {
 				coolDownPercent = (gunACooldown / arse.Guns[(int)gunA].Delay) * 50f;
 				coolDownPercent = 50f-coolDownPercent;
 			}
-			GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), Pics.backTex);
+			
+			setBarColor(coolDownPercent/50f);
+			GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), Pics.Black);
+			GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), Pics.White);
 		}
 		
 		GUI.color = gcol;
@@ -140,6 +142,13 @@ public class PlayingHud {
 	}
 	
 	
+	
+	void setBarColor(float f) {
+		if (f < 0.5f)
+			GUI.color = Color.Lerp(Color.red, Color.yellow, f*2);
+		else
+			GUI.color = Color.Lerp(Color.yellow, Color.green, (f-0.5f)*2);
+	}
 	
 	string TimeStringFromSecs(float totalSecs) {
 		string timeString = "";

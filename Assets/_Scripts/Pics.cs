@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public static class Pics {
 	// textures
 	static public Texture[] swapperCrosshair = new Texture[4];
 	static public Texture lifeIcon;
-	static public Texture backTex;
-	static public Texture blackTex;
+	static public Texture White;
+	static public Texture Black;
 	static public Texture crossHair;
 	static public Texture teamRedFlag;
 	static public Texture teamBlueFlag;
@@ -27,10 +27,10 @@ public static class Pics {
 					lifeIcon = (Texture)pics[i]; 
 					break;
 				case "whiteTex": 
-					backTex = (Texture)pics[i]; 
+					White = (Texture)pics[i]; 
 					break;
 				case "blackTex": 
-					blackTex = (Texture)pics[i]; 
+					Black = (Texture)pics[i]; 
 					break;
 				case "Crosshair": 
 					crossHair = (Texture)pics[i]; 

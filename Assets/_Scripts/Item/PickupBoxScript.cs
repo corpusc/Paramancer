@@ -21,7 +21,7 @@ public class PickupBoxScript : MonoBehaviour {
 	}
 	
 	void Update() {
-		if (localPlayer == null){
+		if (localPlayer == null) {
 			for (int i=0; i<net.players.Count; i++) {
 				if (net.localPlayer.viewID == net.players[i].viewID) {
 					localPlayer = net.players[i].Entity.gameObject;

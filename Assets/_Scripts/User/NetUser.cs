@@ -40,6 +40,7 @@ public class NetUser {
 	
 	
 	public void InstantiateEntity(GameObject fpsEntityPrefab) {
+		Debug.Log("InstantiateEntity()");
 		if (Entity != null) 
 			return;
 		
@@ -52,11 +53,11 @@ public class NetUser {
 		//fpsEntity.viewID = viewID;
 		Entity.isLocal = local;
 		Entity.User = this;
+		Debug.Log("just setup NetUser.Entity");
 		
 		if (local && lives < 0) {
 			currentScore = -99;
 			Entity.Spectating = true;
-			Debug.Log("Spectate yo");
 		}
 	}
 }

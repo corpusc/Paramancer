@@ -820,7 +820,6 @@ public class CcNet : MonoBehaviour {
 	void NewPlayer(NetworkViewID viewID, string name, Vector3 cA, Vector3 cB, Vector3 cC, int head, 
 		NetworkPlayer np, int targetTeam, int lives
 	) {
-		Debug.Log("Received player info! - " + name + " - Lives: " + lives);
 		lastRPCtime = Time.time;
 		
 		if (players.Count == 1 && CurrMatch.playerLives > 0) {
@@ -829,7 +828,6 @@ public class CcNet : MonoBehaviour {
 				gameTimeLeft = 0f;
 				gameOver = true;
 				nextMatchTime = 5f; // CHANGE ME
-				
 				networkView.RPC("AnnounceGameOver", RPCMode.Others);
 			}	
 		}
@@ -840,7 +838,6 @@ public class CcNet : MonoBehaviour {
 			if (players[i].viewID == viewID) {
 				weExist = true;
 				players[i].team = targetTeam;
-				
 				players[i].lives = lives;
 				players[i].health = 100f;
 			}
@@ -1129,6 +1126,7 @@ public class CcNet : MonoBehaviour {
 			pickupPoints = new List<PickupPoint>();
 			GameObject p = GameObject.Find("_PickupSpots");
 			if (p != null) {
+				string s = "items: ";
 				foreach (Transform child in p.transform) {
 					Item item = Item.None;
 					PickupPoint pp = child.GetComponent<PickupPoint>();
@@ -1138,7 +1136,7 @@ public class CcNet : MonoBehaviour {
 					if (pp.pickupType == 4) item = CurrMatch.pickupSlot4;
 					if (pp.pickupType == 5) item = CurrMatch.pickupSlot5;
 					
-					Debug.Log("item: " + item);
+					s += item + ", ";
 					
 					if (item != Item.None) {
 						pickupPoints.Add(pp);
@@ -1146,6 +1144,7 @@ public class CcNet : MonoBehaviour {
 						Destroy(child.gameObject);
 					}
 				}
+				Debug.Log(s);
 			}
 			
 			networkView.RPC("RequestPickupStocks", RPCMode.Server);
