@@ -872,6 +872,10 @@ public class Hud : MonoBehaviour {
 	void onlineMenus (int midX, int midY) {
 		switch (Mode) {
 			case HudMode.Playing:
+		//Debug.Log("net: " + net);
+		//Debug.Log("net.localPlayer: " + net.localPlayer);
+		//Debug.Log("net.localPlayer.name: " + net.localPlayer.name);
+		Debug.Log("onlineMenus --- net.localPlayer.Entity: " + net.localPlayer.Entity);
 				playHud.Draw(net, arse, midX, midY);
 				break;
 			case HudMode.Kick:

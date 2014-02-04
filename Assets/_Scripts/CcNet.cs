@@ -781,62 +781,63 @@ public class CcNet : MonoBehaviour {
 				players[i].team = team;
 				//players[i].Entity.SetModelVisibility(!players[i].local);
 				
-				LogEntry newMsg = new LogEntry();
-				newMsg.Maker = "";
-				newMsg.Text = "";
+				LogEntry l = new LogEntry();
+				l.Maker = "";
+				l.Text = "";
+				
 				if (team == 1) {
 					if (localPlayer.viewID == viewID){
-						newMsg.Color = Color.red;
-						newMsg.Text = "<< you defected! >>";
+						l.Color = Color.red;
+						l.Text = "<< you defected! >>";
 					}else if (localPlayer.team == 1) {
-						newMsg.Color = Color.red;
-						newMsg.Text = "<< " + players[i].name + " defected to your team! >>";
+						l.Color = Color.red;
+						l.Text = "<< " + players[i].name + " defected to your team! >>";
 					}else{
-						newMsg.Color = Color.cyan;
-						newMsg.Text = "<< " + players[i].name + " turned their back on the team! >>";
+						l.Color = Color.cyan;
+						l.Text = "<< " + players[i].name + " turned their back on the team! >>";
 					}
 				}else{
 					if (localPlayer.viewID == viewID) {
-						newMsg.Color = Color.cyan;
-						newMsg.Text = "<< you defected! >>";
+						l.Color = Color.cyan;
+						l.Text = "<< you defected! >>";
 					}else if (localPlayer.team == 2) {
-						newMsg.Color = Color.cyan;
-						newMsg.Text = "<< " + players[i].name + " defected to your team! >>";
+						l.Color = Color.cyan;
+						l.Text = "<< " + players[i].name + " defected to your team! >>";
 					}else{
-						newMsg.Color = Color.red;
-						newMsg.Text = "<< " + players[i].name + " turned their back on the team! >>";
+						l.Color = Color.red;
+						l.Text = "<< " + players[i].name + " turned their back on the team! >>";
 					}
 				}
-				log.Entries.Add(newMsg);
-				log.DisplayTime = Time.time+log.FadeTime;
+				
+				log.Entries.Add(l);
+				log.DisplayTime = Time.time + log.FadeTime;
 			}
 		}
 	}
 	
 	//-------- player joining stuff ----------
 	[RPC]
-	void NewPlayer(NetworkViewID viewID, string name, Vector3 cA, Vector3 cB, Vector3 cC, int head, NetworkPlayer np, int targetTeam, int lives){
+	void NewPlayer(NetworkViewID viewID, string name, Vector3 cA, Vector3 cB, Vector3 cC, int head, 
+		NetworkPlayer np, int targetTeam, int lives
+	) {
 		Debug.Log("Received player info! - " + name + " - Lives: " + lives);
 		lastRPCtime = Time.time;
 		
-		
-		if (players.Count==1 && CurrMatch.playerLives>0){
-			if (isServer && connected && !gameOver){
-				//this is a lives match, and now we have enough players
+		if (players.Count == 1 && CurrMatch.playerLives > 0) {
+			if (isServer && connected && !gameOver) {
+				// this is a lives match, and now we have enough players
 				gameTimeLeft = 0f;
 				gameOver = true;
-				nextMatchTime = 5f; //CHANGE ME
+				nextMatchTime = 5f; // CHANGE ME
 				
 				networkView.RPC("AnnounceGameOver", RPCMode.Others);
 			}	
 		}
 		
-		
-		
-		//this could just be a team change update at the start of the level
+		// this could just be a team change update at the start of the level
 		bool weExist = false;
-		for (int i=0; i<players.Count; i++){
-			if (players[i].viewID == viewID){
+		for (int i=0; i<players.Count; i++) {
+			if (players[i].viewID == viewID) {
 				weExist = true;
 				players[i].team = targetTeam;
 				
@@ -844,32 +845,35 @@ public class CcNet : MonoBehaviour {
 				players[i].health = 100f;
 			}
 		}
-		if (weExist) return;
 		
+		if (weExist) 
+			return;
 		
-		
-		//another player has joined, lets add them to our view of the game
+		// another player has joined, lets add them to our view of the game
 		bool localShopforLocalPeople = false;
-		if (viewID == localPlayer.viewID) localShopforLocalPeople = true;
+		if (viewID == localPlayer.viewID) 
+			localShopforLocalPeople = true;
+		
 		AddPlayer(localShopforLocalPeople, viewID, VecToCol(cA), VecToCol(cB), VecToCol(cC), head, name, np, targetTeam, lives);
 		
-		if (levelLoaded){
-			//only instantiage the actual object of the player if we are in the right level
-			//uninstantiated players are added when the level finished loading
+		if (levelLoaded) {
+			// only instantiate the actual object of the player if we are in the right level
+			// uninstantiated players are added when the level finished loading
 			players[players.Count-1].InstantiateEntity(fpsEntityPrefab);
 		}
 		
 		
-		//tell local Entity to broadcast position so new players know
+		// tell local Entity to broadcast position so new players know
 		broadcastPos = true;
-		//also let new players know the scores
+		// also let new players know the scores
 		if (isServer){
-			for (int i=0; i<players.Count; i++){
-				networkView.RPC("SharePlayerScores", RPCMode.Others, players[i].viewID, players[i].kills, players[i].deaths, players[i].currentScore);
+			for (int i=0; i<players.Count; i++) {
+				networkView.RPC("SharePlayerScores", RPCMode.Others, players[i].viewID, players[i].kills, players[i].deaths, 
+					players[i].currentScore);
 			}
+			
 			networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
-		
 		
 		if (levelLoaded){
 			LogEntry newMsg = new LogEntry();
@@ -881,40 +885,29 @@ public class CcNet : MonoBehaviour {
 		}
 	}
 	
-	void AddPlayer(bool isLocal, NetworkViewID anID, Color cA, Color cB, Color cC, int head, string name, NetworkPlayer np, int targetTeam, int lives){
+	void AddPlayer(bool isLocal, NetworkViewID anID, Color cA, Color cB, Color cC, int head, string name, 
+		NetworkPlayer np, int targetTeam, int lives
+	) {
 		NetUser newPlayer = new NetUser();
-		
 		newPlayer.colA = cA;
 		newPlayer.colB = cB;
 		newPlayer.colC = cC;
-		
 		newPlayer.headType = head;
-		
 		newPlayer.viewID = anID;
-		
 		newPlayer.local = isLocal;
-		
 		newPlayer.name = name;
-		
 		newPlayer.netPlayer = np;
-		
 		newPlayer.ping = new Ping(newPlayer.netPlayer.ipAddress);
-		
 		newPlayer.team = targetTeam;
-		
 		newPlayer.kills = 0;
 		newPlayer.deaths = 0;
 		newPlayer.currentScore = 0;
-		
-		
 		newPlayer.lives = lives;
-		
 		newPlayer.lastPong = Time.time;
-		
 		players.Add(newPlayer);
 	}
 	
-	public void AssignGameModeConfig(MatchData md, string levelName){
+	public void AssignGameModeConfig(MatchData md, string levelName) {
 		CurrMatch.levelName = levelName;
 		
 		CurrMatch.Name = md.Name;
@@ -940,25 +933,31 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	[RPC]
-	public void RequestGameData(){
+	public void RequestGameData() {
 		//a player has requested game data, pass it out.
 		lastRPCtime = Time.time;
 		
 		//also figure out which team to drop them in
 		int team1count = 0;
 		int team2count = 0;
-		for (int i=0; i<players.Count; i++){
-			if (players[i].team == 1) team1count++;
-			if (players[i].team == 2) team2count++;
+		for (int i=0; i<players.Count; i++) {
+			if (players[i].team == 1) 
+				team1count++;
+			if (players[i].team == 2) 
+				team2count++;
 		}
+		
 		int targetTeam = 0;
-		if (CurrMatch.teamBased) targetTeam = 1;
-		if (CurrMatch.teamBased && team1count>team2count) targetTeam = 2;
-		if (CurrMatch.teamBased && team2count>team1count) targetTeam = 1;
+		if (CurrMatch.teamBased) 
+			targetTeam = 1;
+		if (CurrMatch.teamBased && team1count>team2count) 
+			targetTeam = 2;
+		if (CurrMatch.teamBased && team2count>team1count) 
+			targetTeam = 1;
 		
 		//keep teams if we are already assigned to teams
-		if (serverGameChange && players.Count>0){
-			if (lastGameWasTeamBased){
+		if (serverGameChange && players.Count > 0) {
+			if (lastGameWasTeamBased) {
 				targetTeam = -1;
 			}else{
 				targetTeam = -2;
@@ -967,12 +966,12 @@ public class CcNet : MonoBehaviour {
 		lastGameWasTeamBased = false;
 		
 		int livesBroadcast = 0;
-		if (serverGameChange){
+		if (serverGameChange) {
 			gameTimeLeft = CurrMatch.Duration * 60f;
 			gameOver = false;
 			livesBroadcast = CurrMatch.playerLives;
 		}else{
-			if (CurrMatch.playerLives>0){
+			if (CurrMatch.playerLives > 0) {
 				livesBroadcast = -1;
 			}
 		}

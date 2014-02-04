@@ -98,7 +98,7 @@ public class EntityClass : MonoBehaviour {
 	
 	// scripts
 	public CcNet net;
-	Hud hud;
+	Hud hud; // won't need this anymore once playingHud gets drawn correctly? *****************
 	Arsenal artil;
 	LocalUser locUser;
 	
@@ -182,7 +182,11 @@ public class EntityClass : MonoBehaviour {
 			heads[17].renderer.material = maheadMat;
 		}
 		
-		if (firstPersonGun != null && User.local && firstPersonGun.renderer && handGun>=0) {
+		if (firstPersonGun != null && 
+			User.local && 
+			firstPersonGun.renderer && 
+			handGun >= 0
+		) {
 			if (visible) {
 				firstPersonGun.renderer.enabled = false;
 			}else{
@@ -215,7 +219,7 @@ public class EntityClass : MonoBehaviour {
 		artil = o.GetComponent<Arsenal>();
 		locUser = o.GetComponent<LocalUser>();
 		
-		if (User.local && net.CurrMatch.pitchBlack){
+		if (User.local && net.CurrMatch.pitchBlack) {
 			Camera.main.backgroundColor = Color.black;
 			RenderSettings.ambientLight = Color.black;
 		}
@@ -225,8 +229,8 @@ public class EntityClass : MonoBehaviour {
 		if (ava == null) 
 			ava = gameObject.AddComponent<Avatar>();
 		
-		if (User.lives>=0){
-			if (isLocal){
+		if (User.lives >= 0) {
+			if (isLocal) {
 				SetModelVisibility(false);
 			}else{
 				SetModelVisibility(true);

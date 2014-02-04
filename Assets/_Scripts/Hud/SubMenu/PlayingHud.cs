@@ -3,8 +3,15 @@ using System.Collections;
 
 public class PlayingHud {
 	public void Draw(CcNet net, Arsenal arse, int midX, int midY) {
-		var locEnt = net.localPlayer.Entity;
-		//var locEnt = net.localPlayer.GetComponent<EntityClass>();
+		Debug.Log("net: " + net);
+		Debug.Log("net.localPlayer: " + net.localPlayer);
+		Debug.Log("net.localPlayer.name: " + net.localPlayer.name);
+		Debug.Log("net.localPlayer.Entity: " + net.localPlayer.Entity);
+		//EntityClass locEnt = net.localPlayer.Entity;
+		EntityClass locEnt = net.localPlayer.GetComponent<EntityClass>();
+		Debug.Log("locEnt: " + locEnt);
+		//******************  we could make .Entity a property, so i can get
+		// notices (Debug.Log() ) when it changes
 		
 		if (locEnt == null)
 			return;
@@ -21,13 +28,14 @@ public class PlayingHud {
 			Pics.crossHair.height), Pics.crossHair);
 		
 		if (gunA == Item.Swapper) {
-			int swapperFrame = Mathf.FloorToInt((Time.time*15f) % Pics.swapperCrosshair.Length);
+			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.swapperCrosshair.Length);
 			if (!locEnt.swapperLocked) 
 				swapperFrame = 0;
 			
 			GUI.DrawTexture(new Rect(
 				locEnt.swapperCrossX-32, 
-				(Screen.height-locEnt.swapperCrossY)-32, 64, 64), Pics.swapperCrosshair[swapperFrame]);
+				(Screen.height-locEnt.swapperCrossY)-32, 64, 64), 
+				Pics.swapperCrosshair[swapperFrame]);
 		}
 		
 		// health bar
