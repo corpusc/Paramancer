@@ -111,7 +111,7 @@ public class PlayingHud {
 		
 		// weapon cooldown
 		if (gunA >= Item.Pistol) {
-			float coolDownPercent = 50f;
+			float coolDownPercent = 50f; // more like: 0f to 50f
 			if (arse.Guns[(int)gunA].Delay > 0f) {
 				coolDownPercent = (gunACooldown / arse.Guns[(int)gunA].Delay) * 50f;
 				coolDownPercent = 50f-coolDownPercent;

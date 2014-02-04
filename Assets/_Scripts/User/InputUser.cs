@@ -15,11 +15,7 @@ public static class InputUser {
 			var s = pics[i].name;
 		}
 		
-		
-		
-		
-		
-		// bind default keys to user actions
+		// bind default keys/pics to user actions
 		for (int i = 0; i < (int)UserAction.Count; i++) {
 			BindData[i] = new BindData();
 			BindData[i].Action = (UserAction)i;
@@ -32,56 +28,61 @@ public static class InputUser {
 			}
 			
 			BindData[i].Pic = pic;
-//			///////////  FIXME      HOOK INTO PlayerPrefs.GetSetStuffz
 			
 			switch ((UserAction)i) {
-				case UserAction.MoveForward:
-					BindData[i].KeyCode = KeyCode.E;
+				case UserAction.MoveForward: 
+					bind(i, KeyCode.E);
 					break;
 				case UserAction.MoveBackward:
-					BindData[i].KeyCode = KeyCode.D;
+					bind(i, KeyCode.D);
 					break;
 				case UserAction.MoveLeft:
-					BindData[i].KeyCode = KeyCode.S;
+					bind(i, KeyCode.S);
 					break;
 				case UserAction.MoveRight:
-					BindData[i].KeyCode = KeyCode.F;
+					bind(i, KeyCode.F);
 					break;
 				case UserAction.MoveUp:
-					BindData[i].KeyCode = KeyCode.A;
+					bind(i, KeyCode.A);
 					break;
 				case UserAction.MoveDown:
-					BindData[i].KeyCode = KeyCode.Z;
+					bind(i, KeyCode.Z);
 					break;
 
 				case UserAction.Activate:
-					BindData[i].KeyCode = KeyCode.Mouse0;
+					bind(i, KeyCode.Mouse0);
 					break;
 				case UserAction.SwapWeapon:
-					BindData[i].KeyCode = KeyCode.Mouse1;
+					bind(i, KeyCode.Mouse1);
 					break;
 				case UserAction.Sprint:
-					BindData[i].KeyCode = KeyCode.LeftShift;
+					bind(i, KeyCode.LeftShift);
 					break;
 				case UserAction.GrabItem:
-					BindData[i].KeyCode = KeyCode.G;
+					bind(i, KeyCode.G);
 					break;
 				case UserAction.Chat:
-					BindData[i].KeyCode = KeyCode.Return;
+					bind(i, KeyCode.Return);
 					break;
 				case UserAction.Menu:
-					BindData[i].KeyCode = KeyCode.Escape;
+					bind(i, KeyCode.Escape);
 					break;
 				case UserAction.Scores:
-					BindData[i].KeyCode = KeyCode.Tab;
+					bind(i, KeyCode.Tab);
 					break;
 				case UserAction.SwapTeam:
-					BindData[i].KeyCode = KeyCode.Alpha5;
+					bind(i, KeyCode.Alpha5);
 					break;
 				case UserAction.Suicide:
-					BindData[i].KeyCode = KeyCode.K;
+					bind(i, KeyCode.K);
 					break;
 			}
+		}
+	}
+	
+	public static void SaveKeyConfig() {
+		for (int i = 0; i < (int)UserAction.Count; i++) {
+			PlayerPrefs.SetInt("" + (UserAction)i, (int)BindData[i].KeyCode);
 		}
 	}
 	
@@ -112,5 +113,9 @@ public static class InputUser {
 		}
 		
 		return false;
+	}
+	
+	static void bind(int i, KeyCode kc) {
+		BindData[i].KeyCode = (KeyCode)PlayerPrefs.GetInt("" + (UserAction)i, (int)kc);
 	}
 }

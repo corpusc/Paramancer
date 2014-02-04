@@ -5,14 +5,15 @@ using System.Collections.Generic;
 using System.Globalization;
 
 public class Hud : MonoBehaviour {
-	// misc
 	private HudMode mode = HudMode.MenuMain;
 	public HudMode Mode {
 		get { return mode; }
 		set {
 			// tasks to do when LEAVING this mode
 			switch (mode) {
-				case HudMode.Playing: 
+				case HudMode.Controls:
+					InputUser.SaveKeyConfig();
+					controls.enabled = false;
 					break;
 			}
 			
@@ -20,7 +21,8 @@ public class Hud : MonoBehaviour {
 			
 			// tasks to do when ENTERING this mode
 			switch (mode) {
-				case HudMode.Playing: 
+				case HudMode.Controls: 
+					controls.enabled = true;
 					break;
 			}
 		}
@@ -110,8 +112,6 @@ public class Hud : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		controls.enabled = false;
-		
 		// sizes of UI elements
 		screen = new Rect(0, 0, Screen.width, Screen.height);
 		int midX = Screen.width/2;
@@ -334,7 +334,6 @@ public class Hud : MonoBehaviour {
 	private int fsWidth = 1280;
 	private int fsHeight = 720;
 	void MenuControls() {
-		controls.enabled = true;
 		Rect r = window;
 		r.y = controls.BottomOfKeyboard;
 		DrawWindowBackground(r, true);
