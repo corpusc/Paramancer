@@ -20,6 +20,7 @@ Library
 
 *.csproj
 *.pidb
+*.pidb.meta
 *.sln
 *.unityproj
 *.userprefs
