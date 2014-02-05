@@ -28,10 +28,11 @@ public enum HudMode {
 	
 	// Online
 	Kick,
-	Match, // MatchSetup   (don't need both Match AND StartGame anymore?)
+	MatchSetup, // MatchSetup   (don't need both Match AND StartGame anymore?)
 	
 	// Both
 	Controls,
+	Settings,
 	Playing, // guess its not really BOTH, until i implement single player
 	Editing, // guess its not really BOTH, until i implement single player
 	

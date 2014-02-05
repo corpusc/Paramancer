@@ -62,7 +62,7 @@ public class Arsenal : MonoBehaviour {
 		for (i = 0; i < Guns.Length; i++) {
 			Guns[i] = new GunData();
 			
-			Guns[i].Name = "" + (Item)i;
+			Guns[i].Name = S.GetSpacedOut("" + (Item)i);
 			Guns[i].Pic = (Texture)pics[i];
 			Guns[i].Mat = (Material)mats[i];
 			Guns[i].Prefab = (GameObject)prefabs[i];

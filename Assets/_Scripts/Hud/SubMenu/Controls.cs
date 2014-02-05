@@ -314,26 +314,12 @@ public class Controls : MonoBehaviour {
 	bool pushingOrHoveringOver(int i) {
 		return Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos);
 	}
-	
-	string getSpacedOut(string s) {
-		string ns = "";
-		// add spaces between words, determined by capital letters
-		for (int i = 0; i < s.Length; i++) {
-			if (i != 0 && s[i] >= 'A' && s[i] <= 'Z') {
-				ns += " ";
-			}
-			
-			ns += s[i];
-		}
-		
-		return ns;
-	}
-	
+
 	string targetedBind() {
 		for (int i = 0; i < InputUser.BindData.Length; i++) {
 			if ((draggee == null || InputUser.BindData[i].Id != draggee.Id) &&
 				keyData[InputUser.BindData[i].Id].Rect.Contains(mouPos) ) {
-				return getSpacedOut(InputUser.BindData[i].Action.ToString());
+				return S.GetSpacedOut(InputUser.BindData[i].Action.ToString());
 			}
 		}
 		

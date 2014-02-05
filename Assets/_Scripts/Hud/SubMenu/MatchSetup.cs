@@ -278,7 +278,11 @@ public class MatchSetup {
 				net.RequestGameData();
 			}
 		}
-		
+
+		if (GUI.Button(new Rect(0, 0, 100, vSpan * 2), "Back...")) {
+			hud.Mode = HudMode.MenuMain;
+		}
+
 		GUI.EndGroup();
 	}
 
