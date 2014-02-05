@@ -2,11 +2,13 @@
 
 // ---name ideas
 // Visual Controls/Config
-// Juicy    "     /  "   (if name emphasizes appearance, stress that its not the point....ease/fidelity of use is
+// Juicy    "     /  "   (if name emphasizes appearance, stress that its not the point....
+//					 		ease/fidelity of use is)
 // Best. Controls. EVAR
 // Finest Control Display & Config
 // Ultimate Controls
-// * in-game controls redef
+// ---marketing
+// * in-game controls redef (total replacement for InputManager?)
 // * a snap, even with the most complicated setups that use tons of keys.
 //		ALL ACTIONS GUARANTEED to be mapped, and closeby cuz of the swapping system
 // *  	no need to look down and plan
@@ -16,7 +18,6 @@
 // * FULL SOURCE CODE
 
 // ------------------absolutely necessary for 1st release
-// ******** PlayerPrefs. saving **************
 // gamepad
 // outline plain white sprites..... later versions would use RenderToTexture, but think we can handle
 // 		all the draw calls fine, for a MENU screen
@@ -26,7 +27,7 @@
 //		left click to move actions, right click to move keys.  maybe mouse in the middle and l & r texts on either side
 // ??  maybe extra text when one is picked up, telling them to place it?  prob not
 // 		ACTUALLY, just replace the initial text with the latter, while dragging something...PROBABLY!
-// mouse keys, allowing spaces for Naga/MMO thumb grids
+// visualize the spaces/possibilities for Naga/MMO thumb grids
 // animations/sounds
 //		smoothly move to mouse pointer on pickup, smoothly move to destination key on dropping
 //		tilting graphic variable to how fast pointer is moving?  maybe even spinning at height of craziness
