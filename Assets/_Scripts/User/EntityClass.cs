@@ -138,7 +138,7 @@ public class EntityClass : MonoBehaviour {
 	
 	public GameObject ourKiller;
 	public bool sendRPCUpdate = false;
-	private float rpcCamtime = 0f;
+	float rpcCamtime = 0f;
 	void Update() {
 		if (User.local)
 			net.localPlayer.Entity = this;

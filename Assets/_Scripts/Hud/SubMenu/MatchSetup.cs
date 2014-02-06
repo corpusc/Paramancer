@@ -9,6 +9,11 @@ public class MatchSetup {
 	MatchData[] matches;
 	List<MapData> maps = new List<MapData>();
 
+	// sizes, spans
+	Rect screen;
+	Rect middleVerticalStrip; // ... of the screen (minus the header and start button heights)
+	float thirdOfWidth;
+
 
 
 	public void Init() {
@@ -23,7 +28,11 @@ public class MatchSetup {
 	}
 
 	public void Draw(bool serving, CcNet net, Hud hud, int vSpan) {
-		Rect screen = new Rect(0, 0, Screen.width, Screen.height);
+		int qSpan = Screen.width / 4; // quarter of screen width span
+		Rect startButton = new Rect(qSpan, Screen.height - vSpan*4, qSpan*2, vSpan*4);
+		screen = new Rect(0, 0, Screen.width, Screen.height);
+		thirdOfWidth = screen.width / 3;
+		int lpi = vSpan + vSpan/2; // line position increment
 
 		// show map picture background
 		for (int i=0; i<maps.Count; i++) {
@@ -32,108 +41,56 @@ public class MatchSetup {
 			}
 		}
 
-		// overlay options
+		// -------------------- gui --------------------
 		GUI.BeginGroup(screen);
 		
-		float w = screen.width / 3;
-		var r = screen;
-		r.height = vSpan*2;
-		GUI.Box(r, "---\\ MATCH SETUP /---");
+		// header
+		middleVerticalStrip = screen;
+		middleVerticalStrip.height = lpi;
+		GUI.Box(middleVerticalStrip, "MATCH SETUP");
+
+		// make column of 1/3 of horizontal space (down the middle)
+		middleVerticalStrip.x = thirdOfWidth;
+		middleVerticalStrip.y = lpi;
+		middleVerticalStrip.width = thirdOfWidth;
+		middleVerticalStrip.height = Screen.height - startButton.height - lpi;
 		
+		GUILayout.BeginArea(middleVerticalStrip);
+
+		// extra STARTING options (not needed for match in progress)
 		if (!serving) {
-			// set up server
-			r = screen;
-			r.x = w;
-			r.y = vSpan*2;
-			r.width = w;
-			r.height -= vSpan*2 /* title */ + vSpan*4 /* start button height */;
-			GUILayout.BeginArea(r); {
-				GUILayout.BeginHorizontal(); {
-					GUILayout.Label("Name: ");
-					net.gameName = GUILayout.TextField(net.gameName);
-				} GUILayout.EndHorizontal();
-				
-				GUILayout.BeginHorizontal(); {
-					GUILayout.Label("Password: ");
-					net.password = GUILayout.TextField(net.password);
-				} GUILayout.EndHorizontal();
-			} GUILayout.EndArea();
-			
-			
-			
-			// set up server connections/port
-			r.y += vSpan*4;
-			GUILayout.BeginArea(r);
-			
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Max Connections: " + net.connections);
-			net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32));
-			GUILayout.EndHorizontal();
-			
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Port: ");
-			net.listenPort = S.GetInt(GUILayout.TextField(net.listenPort.ToString()));
-			GUILayout.EndHorizontal();
-			
-			GUILayout.EndArea();
+			serverSetup(net, lpi);
 		}
 		
-		// match mode
-		if (GUI.Button(new Rect(5,100,30,30), "<") ) {
-			int lastInt = matchId;
-			
-			matchId--;
-			if (matchId < 0) 
-				matchId += matches.Length;
-			
-			int levelChangeIndex = 0;
-			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
-				if (matches[matchId].allowedLevels[i] == 
-				    matches[lastInt].allowedLevels[mapId]
-				    ) 
-					levelChangeIndex = i;
-			}
-			
-			mapId = levelChangeIndex;
-		}
-		
-		if (GUI.Button(new Rect(255,100,30,30), ">") ) {
-			int lastInt = matchId;
-			
-			matchId++;
-			if (matchId >= matches.Length) 
-				matchId -= matches.Length;
-			
-			int levelChangeIndex = 0;
-			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
-				if (matches[matchId].allowedLevels[i] == matches[lastInt].allowedLevels[mapId]) 
-					levelChangeIndex = i;
-			}
-			
-			mapId = levelChangeIndex;
-		}
-		
-		GUI.Label(new Rect(60,100,200,30), "Mode: " + matches[matchId].Name);
-		
-		// game level
-		if (GUI.Button(new Rect(305,100,30,30), "<") ) {
+		// match type change might need us to show a different (allowed) map
+		selectMatchType();
+
+		// select map
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Level:");
+
+		if (GUILayout.Button("<") ) {
 			mapId--;
 			if (mapId < 0) 
 				mapId += matches[matchId].allowedLevels.Length;
 		}
-		if (GUI.Button(new Rect(555,100,30,30), ">") ) {
+		
+		GUILayout.Label(matches[matchId].allowedLevels[mapId]);
+
+		if (GUILayout.Button(">") ) {
 			mapId++;
 			if (mapId >= matches[matchId].allowedLevels.Length) 
 				mapId -= matches[matchId].allowedLevels.Length;
 		}
-		
-		GUI.Label(new Rect(360,100,200,30), "Level: " + matches[matchId].allowedLevels[mapId]);
-		
-		if (matchId != 0) { // not custom
+
+		GUILayout.EndHorizontal();
+
+		// customize button, or show all options
+		if (matchId != 0) { // if not custom
 			// description
-			GUI.Label(new Rect(5,240,590,200), matches[matchId].Name + ":\n" + matches[matchId].Descript);
+			GUILayout.Label(matches[matchId].Descript);
 			
-			if (GUI.Button(new Rect(495,240,100,25), "Customise...") ) {
+			if (GUILayout.Button("Customize Match") ) {
 				
 				int levelChangeIndex = 0;
 				for (int i=0; i<matches[0].allowedLevels.Length; i++) {
@@ -165,7 +122,7 @@ public class MatchSetup {
 				matchId = 0;
 			}
 		}else{ // custom, show options here
-			scrollPos = GUI.BeginScrollView(new Rect(5,135,590,160), scrollPos, new Rect(0,0,570,700));
+			scrollPos = GUILayout.BeginScrollView(scrollPos);
 			
 			matches[matchId].killsIncreaseScore = GUILayout.Toggle(matches[matchId].killsIncreaseScore, "Kills Increase score");
 			matches[matchId].deathsSubtractScore = GUILayout.Toggle(matches[matchId].deathsSubtractScore, "Deaths Reduce score");
@@ -250,14 +207,20 @@ public class MatchSetup {
 			matches[matchId].restockTime = S.GetInt(GUILayout.TextField(matches[matchId].restockTime.ToString()) );
 			GUILayout.EndHorizontal();
 			
-			GUI.EndScrollView();
+			GUILayout.EndScrollView();
 		}
 		
-		int qSpan = Screen.width / 4; // quarter of screen width span
-		var start = new Rect(qSpan, Screen.height - vSpan*4, qSpan*2, vSpan*4);
-		// init button
+		if (GUILayout.Button("CANCEL")) {
+			hud.Mode = HudMode.MenuMain;
+		}
+		
+		GUILayout.EndArea();
+
+
+
+		// START button
 		if (!serving) {
-			if (GUI.Button(start, "Start Game!")) {
+			if (GUI.Button(startButton, "Start Game!")) {
 				// init a server with the current game mode settings
 				net.serverGameChange = true;
 				Network.incomingPassword = net.password;
@@ -270,7 +233,7 @@ public class MatchSetup {
 				hud.Mode = HudMode.InitializingServer;
 			}
 		}else{
-			if (GUI.Button(start, "Start Match!")) {
+			if (GUI.Button(startButton, "Start Match!")) {
 				net.serverGameChange = true;
 				net.lastGameWasTeamBased = net.CurrMatch.teamBased;
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
@@ -279,11 +242,73 @@ public class MatchSetup {
 			}
 		}
 
-		if (GUI.Button(new Rect(0, 0, 100, vSpan * 2), "Back...")) {
-			hud.Mode = HudMode.MenuMain;
-		}
-
 		GUI.EndGroup();
+	}
+
+	void serverSetup(CcNet net, int lpi) {
+		GUILayout.BeginHorizontal(); {
+			GUILayout.Label("Name: ");
+			net.gameName = GUILayout.TextField(net.gameName);
+		} GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal(); {
+			GUILayout.Label("Password: ");
+			net.password = GUILayout.TextField(net.password);
+		} GUILayout.EndHorizontal();
+		
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Max Connections: " + net.connections);
+		net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32));
+		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Port: ");
+		net.listenPort = S.GetInt(GUILayout.TextField(net.listenPort.ToString ()));
+		GUILayout.EndHorizontal();
+	}
+
+	void selectMatchType() {
+		GUILayout.BeginHorizontal();
+		
+		GUILayout.Label("Mode: ");
+		
+		if (GUILayout.Button("<") ) {
+			int lastInt = matchId;
+			
+			matchId--;
+			if (matchId < 0) 
+				matchId += matches.Length;
+			
+			int mapChangeId = 0;
+			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
+				if (matches[matchId].allowedLevels[i] == 
+				    matches[lastInt].allowedLevels[mapId]
+				    ) 
+					mapChangeId = i;
+			}
+			
+			mapId = mapChangeId;
+		}
+		
+		GUILayout.Label(matches[matchId].Name);
+		
+		if (GUILayout.Button(">") ) {
+			int lastInt = matchId;
+			
+			matchId++;
+			if (matchId >= matches.Length) 
+				matchId -= matches.Length;
+			
+			int mapChangeId = 0;
+			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
+				if (matches[matchId].allowedLevels[i] == matches[lastInt].allowedLevels[mapId]) 
+					mapChangeId = i;
+			}
+			
+			mapId = mapChangeId;
+		}
+		
+		GUILayout.EndHorizontal();
 	}
 
 	void slotSelect(ref Item item, int slot) {
@@ -294,7 +319,7 @@ public class MatchSetup {
 		if (item < Item.Health) 
 			item = Item.Count-1;
 		
-		GUILayout.Label("Pickup Slot " + slot + ": " + item);
+		GUILayout.Label("Pickup Slot " + slot + S.GetSpacedOut(": " + item));
 		
 		if (GUILayout.Button(">")) 
 			item++;
