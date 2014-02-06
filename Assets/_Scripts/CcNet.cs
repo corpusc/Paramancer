@@ -16,7 +16,7 @@ public class CcNet : MonoBehaviour {
 	public string gameName = "TestSession";
 	public int connections = 32;
 	public int listenPort = 25000;
-	public string comment = "GameMode|Level";
+	public string comment = ""; // match type & map name (for server browser)
 	public string password = "";
 	public List<NetUser> players;
 	public List<PickupPoint> pickupPoints = new List<PickupPoint>();

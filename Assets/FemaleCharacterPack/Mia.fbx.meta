@@ -1,0 +1,272 @@
+fileFormatVersion: 2
+guid: b943155b96d8b2a4fbf1faf20adc46b0
+labels:
+- rig
+- charactercontroller
+- playablecharacter
+- mesh
+- rigged
+- 3D
+- model
+- character
+- animated
+- motion-capture
+- mo-cap
+- mocap
+- motion
+- animation
+- mixamo
+- lady
+- woman
+- girl
+- female
+- Human
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: RightToeBase
+    100002: RightFoot
+    100004: Geo_Low
+    100006: RightLeg
+    100008: RightUpLeg
+    100010: LeftToeBase
+    100012: LeftFoot
+    100014: LeftLeg
+    100016: LeftUpLeg
+    100018: RightHandPinky4
+    100020: RightHandPinky3
+    100022: RightHandPinky2
+    100024: RightHandPinky1
+    100026: RightHandRing4
+    100028: RightHandRing3
+    100030: RightHandRing2
+    100032: RightHandRing1
+    100034: RightHandIndex4
+    100036: RightHandIndex3
+    100038: RightHandIndex2
+    100040: RightHandIndex1
+    100042: RightHandThumb4
+    100044: RightHandThumb3
+    100046: RightHandThumb2
+    100048: RightHandThumb1
+    100050: RightHand
+    100052: RightForeArm
+    100054: RightArm
+    100056: RightShoulder
+    100058: LeftHandPinky4
+    100060: LeftHandPinky3
+    100062: LeftHandPinky2
+    100064: LeftHandPinky1
+    100066: LeftHandRing4
+    100068: LeftHandRing3
+    100070: LeftHandRing2
+    100072: LeftHandRing1
+    100074: LeftHandIndex4
+    100076: LeftHandIndex3
+    100078: LeftHandIndex2
+    100080: LeftHandIndex1
+    100082: LeftHandMiddle4
+    100084: LeftHandMiddle3
+    100086: LeftHandMiddle2
+    100088: LeftHandMiddle1
+    100090: LeftHandThumb4
+    100092: LeftHandThumb3
+    100094: LeftHandThumb2
+    100096: LeftHandThumb1
+    100098: LeftHand
+    100100: LeftForeArm
+    100102: LeftArm
+    100104: LeftShoulder
+    100106: RightLipUpper
+    100108: RightNostril
+    100110: RightCheek
+    100112: RightIOuterBrow
+    100114: RightInnerBrow
+    100116: LeftIOuterBrow
+    100118: LeftInnerBrow
+    100120: LeftEyelidUpper
+    100122: LeftEyelidLower
+    100124: LeftCheek
+    100126: LeftNostril
+    100128: LeftLipUpper
+    100130: RightLipLower
+    100132: RightLipCorner
+    100134: //RootNode
+    100136: TongueBack
+    100138: TongueTip
+    100140: LeftLipLower
+    100142: LeftLipCorner
+    100144: JawEND
+    100146: Jaw
+    100148: RightEye
+    100150: LeftEye
+    100152: HeadTop_End
+    100154: Head
+    100156: Neck1
+    100158: Neck
+    100160: Spine2
+    100162: Spine1
+    100164: Spine
+    100166: Hips
+    100168: LeftFootToeBase_End
+    100170: RightHandMiddle4
+    100172: RightFootToeBase_End
+    100174: RightEyelidLower
+    100176: RightHandMiddle1
+    100178: RightHandMiddle2
+    100180: RightHandMiddle3
+    100182: RightEyelidUpper
+    400000: RightToeBase
+    400002: RightFoot
+    400004: Geo_Low
+    400006: RightLeg
+    400008: RightUpLeg
+    400010: LeftToeBase
+    400012: LeftFoot
+    400014: LeftLeg
+    400016: LeftUpLeg
+    400018: RightHandPinky4
+    400020: RightHandPinky3
+    400022: RightHandPinky2
+    400024: RightHandPinky1
+    400026: RightHandRing4
+    400028: RightHandRing3
+    400030: RightHandRing2
+    400032: RightHandRing1
+    400034: RightHandIndex4
+    400036: RightHandIndex3
+    400038: RightHandIndex2
+    400040: RightHandIndex1
+    400042: RightHandThumb4
+    400044: RightHandThumb3
+    400046: RightHandThumb2
+    400048: RightHandThumb1
+    400050: RightHand
+    400052: RightForeArm
+    400054: RightArm
+    400056: RightShoulder
+    400058: LeftHandPinky4
+    400060: LeftHandPinky3
+    400062: LeftHandPinky2
+    400064: LeftHandPinky1
+    400066: LeftHandRing4
+    400068: LeftHandRing3
+    400070: LeftHandRing2
+    400072: LeftHandRing1
+    400074: LeftHandIndex4
+    400076: LeftHandIndex3
+    400078: LeftHandIndex2
+    400080: LeftHandIndex1
+    400082: LeftHandMiddle4
+    400084: LeftHandMiddle3
+    400086: LeftHandMiddle2
+    400088: LeftHandMiddle1
+    400090: LeftHandThumb4
+    400092: LeftHandThumb3
+    400094: LeftHandThumb2
+    400096: LeftHandThumb1
+    400098: LeftHand
+    400100: LeftForeArm
+    400102: LeftArm
+    400104: LeftShoulder
+    400106: RightLipUpper
+    400108: RightNostril
+    400110: RightCheek
+    400112: RightIOuterBrow
+    400114: RightInnerBrow
+    400116: LeftIOuterBrow
+    400118: LeftInnerBrow
+    400120: LeftEyelidUpper
+    400122: LeftEyelidLower
+    400124: LeftCheek
+    400126: LeftNostril
+    400128: LeftLipUpper
+    400130: RightLipLower
+    400132: RightLipCorner
+    400134: //RootNode
+    400136: TongueBack
+    400138: TongueTip
+    400140: LeftLipLower
+    400142: LeftLipCorner
+    400144: JawEND
+    400146: Jaw
+    400148: RightEye
+    400150: LeftEye
+    400152: HeadTop_End
+    400154: Head
+    400156: Neck1
+    400158: Neck
+    400160: Spine2
+    400162: Spine1
+    400164: Spine
+    400166: Hips
+    400168: LeftFootToeBase_End
+    400170: RightHandMiddle4
+    400172: RightFootToeBase_End
+    400174: RightEyelidLower
+    400176: RightHandMiddle1
+    400178: RightHandMiddle2
+    400180: RightHandMiddle3
+    400182: RightEyelidUpper
+    4300000: EyesGeo
+    4300002: TeethGeo
+    4300004: LashesGeo
+    4300006: HairGeo
+    4300008: BodyGeo
+    4300010: Geo_Low
+    11100000: //RootNode
+    13700000: Hips
+    13700002: Geo_Low
+  materials:
+    importMaterials: 1
+    materialName: 3
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 
