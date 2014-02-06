@@ -143,12 +143,31 @@ public class PlayingHud {
 	}
 	
 	
-	
-	void setBarColor(float f) {
-		if (f < 0.5f)
+
+	float rt; // running total of elapsed time
+	bool visible = true; // visibility; blink status
+	void setBarColor(float f) { // f should be 0f - 1f
+		rt += Time.deltaTime;
+
+		if (f < 0.5f) { // anything above halfway doesn't blink
+			if (visible) {
+				if (rt >= f) {
+					rt -= f;
+					visible = false;
+					GUI.color = Color.black;
+					return;
+				}
+			}else{
+				if (rt >= 0.2f) { // invisible for 10th of a second
+					rt -= 0.2f;
+					visible = true;
+				}
+			}
+
 			GUI.color = Color.Lerp(Color.red, Color.yellow, f*2);
-		else
+		}else{
 			GUI.color = Color.Lerp(Color.yellow, Color.green, (f-0.5f)*2);
+		}
 	}
 	
 	string TimeStringFromSecs(float totalSecs) {

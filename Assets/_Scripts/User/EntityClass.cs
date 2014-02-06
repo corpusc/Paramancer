@@ -967,15 +967,15 @@ public class EntityClass : MonoBehaviour {
 			SpawnPointScript spawns = GameObject.Find("_Spawns").GetComponent<SpawnPointScript>();
 			
 			if (!net.CurrMatch.teamBased) {
-				int randomIndex = Random.Range(0,spawns.normalSpawns.Length);
+				int randomIndex = Random.Range(0, spawns.normalSpawns.Length);
 				spawnPos = spawns.normalSpawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.normalSpawns[randomIndex].transform.eulerAngles;
 			}else if (User.team == 1) {
-				int randomIndex = Random.Range(0,spawns.team1Spawns.Length);
+				int randomIndex = Random.Range(0, spawns.team1Spawns.Length);
 				spawnPos = spawns.team1Spawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.team1Spawns[randomIndex].transform.eulerAngles;
 			}else if (User.team == 2) {
-				int randomIndex = Random.Range(0,spawns.team2Spawns.Length);
+				int randomIndex = Random.Range(0, spawns.team2Spawns.Length);
 				spawnPos = spawns.team2Spawns[randomIndex].transform.position + Vector3.up;
 				spawnAngle = spawns.team2Spawns[randomIndex].transform.eulerAngles;
 			}
@@ -990,6 +990,7 @@ public class EntityClass : MonoBehaviour {
 		}else{
 			handGun = net.CurrMatch.spawnGunA;
 		}
+
 		if (net.CurrMatch.spawnGunB == Item.Random) {
 			holsterGun = (Item)Random.Range(0, arse.Guns.Length);
 		}else{
@@ -1019,22 +1020,24 @@ public class EntityClass : MonoBehaviour {
 		if (User.health <= 0f) 
 			moveVec = Vector3.zero;
 		
-		if (cc == null) cc = GetComponent<CharacterController>();
-		if (ava == null) ava = gameObject.AddComponent<Avatar>();
+		if (cc == null) 
+			cc = GetComponent<CharacterController>();
+		if (ava == null) 
+			ava = gameObject.AddComponent<Avatar>();
 		
 		float timeDelta = (float)(Network.time - lastUpdateTime);
 		lastUpdateTime = Network.time;
 		
-		if (!crouched) {
-			ava.Move(moveVec * timeDelta * 10f);
-		}else{
+		if (crouched) {
 			ava.Move(moveVec * timeDelta * 5f);
+		}else{
+			ava.Move(moveVec * timeDelta * 10f);
 		}
 		
 		if (yMove <= 0f) {
 			ava.Move(transform.up * -0.2f);
-			
 			grounded = ava.isGrounded;
+
 			if (!grounded) 
 				ava.Move(transform.up * 0.2f);
 		}else{
@@ -1078,10 +1081,10 @@ public class EntityClass : MonoBehaviour {
 	public void PlaySound(UserAction action) {
 		switch (action) {
 			case UserAction.MoveUp:
-				jumpSound();
+				play(0.6f, sfx_jump);
 				break;
 			case UserAction.SwapWeapon:
-				swapWeaponSound();
+				play(0.6f, sfx_weaponChange);
 				break;
 		}
 	}
@@ -1091,7 +1094,7 @@ public class EntityClass : MonoBehaviour {
 			audio.Play();
 		}
 		if (sound == "jump"){
-			jumpSound();
+			play(0.2f, sfx_jump);
 		}
 		if (sound == "land"){
 			audio.clip = sfx_land;
@@ -1104,7 +1107,7 @@ public class EntityClass : MonoBehaviour {
 			audio.Play();
 		}
 		if (sound == "weaponChange"){
-			swapWeaponSound();
+			play(0.2f, sfx_weaponChange);
 		}
 		if (sound == "reload"){
 			audio.clip = sfx_reload;
@@ -1128,15 +1131,9 @@ public class EntityClass : MonoBehaviour {
 		}
 	}
 	
-	void jumpSound() {
-		audio.clip = sfx_jump;
-		audio.volume = 0.2f;
-		audio.Play();
-	}
-	
-	void swapWeaponSound() {
-		audio.clip = sfx_weaponChange;
-		audio.volume = 0.2f;
+	void play(float volume, AudioClip clip) {
+		audio.clip = clip;
+		audio.volume = volume;
 		audio.Play();
 	}
 }
