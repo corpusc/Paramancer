@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -226,7 +226,7 @@ public class MatchSetup {
 				Network.incomingPassword = net.password;
 				net.lastGameWasTeamBased = false;
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
-				net.comment = net.CurrMatch.Name + "\n" + net.CurrMatch.levelName;
+				net.MatchTypeAndMap = net.CurrMatch.Name + "\n" + net.CurrMatch.levelName;
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initializing server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections,net.listenPort, useNat);

@@ -16,7 +16,7 @@ public class CcNet : MonoBehaviour {
 	public string gameName = "TestSession";
 	public int connections = 32;
 	public int listenPort = 25000;
-	public string comment = ""; // match type & map name (for server browser)
+	public string MatchTypeAndMap = ""; // match type & map name (for server browser)
 	public string password = "";
 	public List<NetUser> players;
 	public List<PickupPoint> pickupPoints = new List<PickupPoint>();
@@ -36,10 +36,7 @@ public class CcNet : MonoBehaviour {
 	// game modes/types
 	public MatchData CurrMatch;
 	private GameObject basketball;
-	public BasketballScript GetBball() {
-		return basketball.GetComponent<BasketballScript>();
-	}
-	
+
 	// personal stuff
 	public NetUser localPlayer;
 	public bool gunBobbing = true;
@@ -54,11 +51,17 @@ public class CcNet : MonoBehaviour {
 	
 	
 	
+	public GameObject fpsEntityPrefab;
+	public GameObject pickupBoxPrefab;
+	public GameObject splatPrefab;
+	GameObject basketballPrefab;
 	void Start() {
 		DontDestroyOnLoad(this);
-		Application.targetFrameRate = 60;
+		//Application.targetFrameRate = 60; // -1 (the default) makes standalone games render as fast as they can, 
+		// and web player games to render at 50-60 frames/second depending on the platform.
+		// If vsync is set in quality setting, the target framerate is ignored
 		
-		// get access to scripts
+		// scripts
 		hud = GetComponent<Hud>();
 		log = GetComponent<CcLog>();
 		artill = GetComponent<Arsenal>();
@@ -79,13 +82,11 @@ public class CcNet : MonoBehaviour {
 		Application.LoadLevel("MenuMain");
 		players = new List<NetUser>();
 	}
-	GameObject basketballPrefab;
-	public GameObject fpsEntityPrefab;
-	public GameObject pickupBoxPrefab;
-	public GameObject splatPrefab;
-	
-	
-	
+
+	public BasketballScript GetBball() {
+		return basketball.GetComponent<BasketballScript>();
+	}
+
 	//-------- Network gameplay stuff ----------
 	public void SendTINYUserUpdate(NetworkViewID viewID, UserAction action) {
 		networkView.RPC("SendTINYUserUpdateRPC", RPCMode.Others, viewID, (int)action);
@@ -544,16 +545,13 @@ public class CcNet : MonoBehaviour {
 				DisconnectNow();
 				hud.Mode = HudMode.ConnectionError;
 				Error = "Client hasn't heard from host for 30 seconds.\n" +
-					"Probably because someone's connection sucks,\n" +
-					"or latency is crazy high.\n\n" +
-					"Play with people closer to you,\n" +
-					"& stop those damn downloads!";
+					"Probably because someone's connection sucks.";
 			}
 			
 			// remind the server we here
 			for (int i=0; i<players.Count; i++) {
 				if (players[i].local && Time.time > players[i].lastPong + 5f) {
-					networkView.RPC("PONG",RPCMode.Server,players[i].viewID);
+					networkView.RPC("PONG", RPCMode.Server,players[i].viewID);
 					players[i].lastPong = Time.time;
 				}	
 			}
@@ -747,26 +745,26 @@ public class CcNet : MonoBehaviour {
 		}
 	}
 	
-	public void AnnounceBallCapture(NetworkViewID viewID){
+	public void AnnounceBallCapture(NetworkViewID viewID) {
 		networkView.RPC("AnnounceBallCaptureRPC", RPCMode.All, viewID);
 	}
 	
 	[RPC]
-	void AnnounceBallCaptureRPC(NetworkViewID viewID){
+	void AnnounceBallCaptureRPC(NetworkViewID viewID) {
 		basketball.GetComponent<BasketballScript>().HoldBall(viewID);
 	}
 	
-	public void ThrowBall(Vector3 fromPos, Vector3 direction, float strength){
+	public void ThrowBall(Vector3 fromPos, Vector3 direction, float strength) {
 		networkView.RPC("ThrowBallRPC", RPCMode.All, fromPos, direction, strength);
 	}
 	
 	[RPC]
-	void ThrowBallRPC(Vector3 fromPos, Vector3 direction, float strength){
+	void ThrowBallRPC(Vector3 fromPos, Vector3 direction, float strength) {
 		basketball.GetComponent<BasketballScript>().Throw(fromPos,direction,strength);
 	}
 	
 	[RPC]
-	void ServerSaysHi(){
+	void ServerSaysHi() {
 		lastRPCtime = Time.time;
 	}
 	
@@ -1174,7 +1172,7 @@ public class CcNet : MonoBehaviour {
 	//------------- Connecting/Server setup --------------
 	void OnServerInitialized() {
         Debug.Log("Server initialized, now registering...");
-		MasterServer.RegisterHost(uniqueGameName, gameName, comment);
+		MasterServer.RegisterHost(uniqueGameName, gameName, MatchTypeAndMap);
     }
 	
     void OnMasterServerEvent(MasterServerEvent msEvent) {
