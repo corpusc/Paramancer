@@ -269,6 +269,8 @@ public class EntityClass : MonoBehaviour {
 					
 					//inputVector.y = 0f;
 					inputVector.Normalize();
+
+					ava.UpVector = animObj.transform.up;
 					
 					if (!crouched) {
 						ava.Move(inputVector * Time.deltaTime * 10f, startedSprinting);
@@ -1027,6 +1029,8 @@ public class EntityClass : MonoBehaviour {
 		
 		float timeDelta = (float)(Network.time - lastUpdateTime);
 		lastUpdateTime = Network.time;
+
+		ava.UpVector = animObj.transform.up;
 		
 		if (crouched) {
 			ava.Move(moveVec * timeDelta * 5f);
