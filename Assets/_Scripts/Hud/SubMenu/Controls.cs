@@ -16,11 +16,17 @@
 //		that its one area where its CHEAP to have a best-in-class solution
 // * fully configurable/customizeable
 // * FULL SOURCE CODE
+// * supports MMO thumbpads.....BUT POINTLESS TO MENTION THIS UNTIL ITS GOT HOTBAR FUNC!?!, altho maybe tease with it!
+// * maybe use current icons and start price at $5 and say its so cheap cuz i plan to upgrade icons
 
 // ------------------absolutely necessary for 1st release
-// gamepad
+// #1, use .SetPixel
+		// if more than half transparent, turn to black if any neighbor is less than half transparent
 // outline plain white sprites..... later versions would use RenderToTexture, but think we can handle
 // 		all the draw calls fine, for a MENU screen
+// reset to default keys (resetting mouse can be removed, seems senseless
+// put mouse sens and inversion on bottom of mouse graphic?  too game specific?
+// gamepad
 // drag keys themselves around, for foreign keyboards
 // space it to take up the whole width of screen.... offsets for groupings take the leftover pixels
 // attention grabbing text such as "Click on actions/keys to change them"
@@ -38,7 +44,8 @@
 
 // ------------------"hotbar" release
 // changeable size of icon, so it doesn't get close to the edges of keys
-// changeable visibility panels for left and right hand, with horizontal splitter when more than 2 rows
+// (V) Adjustable visibility rectangle, with horizontal split to shove the top and bottom rows to the top and bottom of the screen
+// (^) changeable visibility panels for left and right hand, with horizontal splitter when more than 2 rows
 // 			should it be invisible by default?  and have like a "Start" button to access all kindsa config configuration?  8)
 // gameplay hotbar
 
@@ -61,8 +68,9 @@ public class Controls : MonoBehaviour {
 	Texture keyCap;
 	Texture mousePic;
 	Rect mouseRect;
+	const int numKeyRows = 6;
 	int maxX = 21;
-	int maxY = 6 + 5; // 6 for keyboard, 5 for mouse
+	int maxY = numKeyRows + 5; // +5 rows for mouse
 	int w;
 	BindData draggee = null; // user action that is attached to pointer.  it's still dragging if you're not HOLDING LMB?!
 	Vector3 mouPos; // converted Input.mousePosition to sensible coordinates
@@ -82,10 +90,15 @@ public class Controls : MonoBehaviour {
 			var s = pics[i].name;
 			
 			if (s == "KeyCap")
-				keyCap = pics[i] as Texture;
+				keyCap = pics[i] as Texture2D;
 			if (s == "5 Button Mouse")
 				mousePic = pics[i] as Texture;
 		}
+
+//		for (int i = 0; i < 10; i++) {
+//			keyCap.SetPixel(i, i, Color.red);
+//		}
+//		keyCap.Apply();
 		
 		// setup temp structure for the physical layout of the keyboard
 		var n = KeyCode.None;
@@ -139,10 +152,10 @@ public class Controls : MonoBehaviour {
 			
 			// mouse
 			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse5, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3, n, KeyCode.Mouse6, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, n, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, n, KeyCode.Mouse5, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, 
+			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Mouse3, n, KeyCode.Mouse6, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, 
+			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Mouse4, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, 
+			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, 
 		};
 		
 		// the more complicated mirrored structure that holds all the OTHER key data
@@ -242,6 +255,12 @@ public class Controls : MonoBehaviour {
 			
 			// if slicing not needed, just draw in single call and move on to next key
 			if (or.width <= or.height) {
+				if (i > numKeyRows*maxX) {
+					var c = GUI.color;
+					c.a = 0.5f;
+					GUI.color = c;
+				}
+
 				GUI.DrawTexture(or, keyCap);
 				continue;
 			}
@@ -431,7 +450,7 @@ public class Controls : MonoBehaviour {
 						if (x > 8) xOffs += fKeyGap;
 						if (x > 12) xOffs += fKeyGap;
 					} else {
-						if (y < 6) {
+						if (y < numKeyRows) {
 							if (x > 13) xOffs += fKeyGap;
 							if (x > 16) xOffs += fKeyGap;
 						}

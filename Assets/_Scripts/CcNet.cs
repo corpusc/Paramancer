@@ -1,3 +1,26 @@
+/*
+ * ----marketing
+ * 
+ * instead of telling you how many features we got, let's talk about
+ * all the modern bullshit that we've STRIPPED AWAY FROM a formerly fun genre!
+ * 
+ * no blind, patriotic gung ho guv progoganda
+ * no virtual LARPing
+ * no pretensions of being a military pawn
+ * no limits on number of guns you can carry
+ * no mechanics/aiming penalties for fast & constant motion and jumping
+ * no slowing down to hold gun up to your eyeballs
+ * no realistic shallow hops.  you can jump/LEAP instead
+ * no restricting our weapon dynamics/mechanics/designs to be slavish 
+ * 		to real life weapons.  many more types of weapons which give lots of mechanics variety
+ * no forced spectating
+ * no forced timeout/punishment/respawn-timers....stay in the action!
+ * no loadout/selection screens..... pickup everything IN THE GAME, not in menus
+ * no forced waiting (for longer than 10 seconds?) between matches
+ * no working towards weapon unlocks
+ * ....no grinding!   you don't play games to prove your virtual work ethic!
+ */
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,8 +50,8 @@ public class CcNet : MonoBehaviour {
 	public bool serverGameChange = false;
 	public bool broadcastPos = false;
 	public bool lastGameWasTeamBased = false;
-	private float lastRPCtime = 0f;
-	private float lastServerPoketime = 0f;
+	private float latestPacket = 0f;
+	private float latestServerHeartbeat = 0f;
 	//		level
 	private bool preppingLevel = false;
 	private bool levelLoaded = false;
@@ -93,7 +116,7 @@ public class CcNet : MonoBehaviour {
 	}
 	[RPC]
 	void SendTINYUserUpdateRPC(NetworkViewID viewID, int action) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		for (int i=0; i<players.Count; i++) {
 			if (viewID == players[i].viewID && players[i].Entity != null) {
@@ -106,7 +129,7 @@ public class CcNet : MonoBehaviour {
 	public void SendUserUpdate(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
 		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward
 	) {
-		//send out a player's current properties to everyone, so they know where we are
+		// send out a player's current properties to everyone, so they know where we are
 		networkView.RPC("SendUserUpdateRPC", RPCMode.Others, viewID, pos, ang, crouch, moveVec, yMove, gunA, gunB, playerUp, playerForward);
 	}
 	[RPC]
@@ -114,7 +137,7 @@ public class CcNet : MonoBehaviour {
 		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward, NetworkMessageInfo info
 	) {
 		// received a player's properties, let's update the local view of that player
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		for (int i=0; i<players.Count; i++) {
 			if (viewID == players[i].viewID && players[i].Entity != null) {
@@ -151,7 +174,7 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		// something detonated, let the artillery script deal with it
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		artill.Detonate((Item)weapon, position, bulletID);
 		
 		if (isServer) {
@@ -193,7 +216,7 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, NetworkMessageInfo info) {
 		// somebody fired a shot, let's show it
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		artill.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit);
 	}
 	
@@ -211,7 +234,7 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	public void RegisterHitRPC(int weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
 		// one player hit another
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		if (gameOver) 
 			return; // no damage after game over
@@ -352,14 +375,14 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void AnnounceTeamScores(int score1, int score2) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		team1Score = score1;
 		team2Score = score2;
 	}
 	
 	[RPC]
 	void SharePlayerScores(NetworkViewID viewID, int kills, int deaths, int currentScore) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		for (int i=0; i<players.Count; i++){
 			if (players[i].viewID==viewID){
 				players[i].kills = kills;
@@ -371,7 +394,7 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void AssignPlayerStats(NetworkViewID viewID, float health, int kills, int deaths, int score) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		if (localPlayer.viewID == viewID) {
 			localPlayer.health = health;
 			localPlayer.kills = kills;
@@ -391,7 +414,7 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void AnnounceKill(int weapon, NetworkViewID shooterID, NetworkViewID victimID) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		if (localPlayer.viewID == shooterID) 
 			localPlayer.totalKills ++;
@@ -496,7 +519,7 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void RespawnPlayer(NetworkViewID viewID) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		if (viewID == localPlayer.viewID) {
 			for (int i=0; i<players.Count; i++) {
@@ -533,15 +556,15 @@ public class CcNet : MonoBehaviour {
 		
 		// let players know they are still connected
 		if (connected && isServer) {
-			if (Time.time > lastServerPoketime+5f) {
-				lastServerPoketime = Time.time+5f;
-				networkView.RPC("ServerSaysHi", RPCMode.All);
+			if (Time.time > latestServerHeartbeat + 9f) {
+				latestServerHeartbeat = Time.time + 9f;
+				networkView.RPC("HeartbeatFromServer", RPCMode.All);
 			}
 		}
 		
 		// are we still connected to the server?
 		if (connected && !isServer) {
-			if (Time.time > lastRPCtime + 30f) {
+			if (Time.time > latestPacket + 30f) {
 				DisconnectNow();
 				hud.Mode = HudMode.ConnectionError;
 				Error = "Client hasn't heard from host for 30 seconds.\n" +
@@ -764,13 +787,13 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	[RPC]
-	void ServerSaysHi() {
-		lastRPCtime = Time.time;
+	void HeartbeatFromServer() {
+		latestPacket = Time.time;
 	}
 	
 	[RPC]
 	void PlayerChangedTeams(NetworkViewID viewID, int team) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		for (int i=0; i<players.Count; i++) {
 			//always set model visibility on team change, that way if *you* change teams, all lights are changed
 			players[i].Entity.SetModelVisibility(!players[i].local);
@@ -818,7 +841,7 @@ public class CcNet : MonoBehaviour {
 	void NewPlayer(NetworkViewID viewID, string name, Vector3 cA, Vector3 cB, Vector3 cC, int head, 
 		NetworkPlayer np, int targetTeam, int lives
 	) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		if (players.Count == 1 && CurrMatch.playerLives > 0) {
 			if (isServer && connected && !gameOver) {
@@ -930,7 +953,7 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	public void RequestGameData() {
 		//a player has requested game data, pass it out.
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		//also figure out which team to drop them in
 		int team1count = 0;
@@ -991,7 +1014,7 @@ public class CcNet : MonoBehaviour {
 		int playerLives, bool newGame, bool basketball, NetworkMessageInfo info
 	) {
 		// we've received game info from the server
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		if (NetVI != null && 
 			NetVI == viewID && 
@@ -1205,7 +1228,7 @@ public class CcNet : MonoBehaviour {
 		// we just connected to a host, let's RPC the host and ask for the game info
 		networkView.RPC("RequestGameData", RPCMode.Server);
 		hud.Mode = HudMode.Wait;
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		localPlayer.viewID = Network.AllocateViewID();
 	}
 	
@@ -1291,7 +1314,7 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void PlayerLeave(NetworkViewID viewID, string name) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		
 		for (int i=0; i<players.Count; i++) {
 			if (players[i].viewID == viewID) {
@@ -1325,7 +1348,7 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void KickedPlayer(NetworkViewID viewID, bool autokick) {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		Debug.Log("A player was kicked");
 		string name = "???";
 		
@@ -1392,7 +1415,7 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void ServerLeave() {
-		lastRPCtime = Time.time;
+		latestPacket = Time.time;
 		Debug.Log("THE HOST LEFT!!!");
 		
 		Network.Disconnect();
