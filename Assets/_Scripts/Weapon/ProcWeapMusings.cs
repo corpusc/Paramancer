@@ -8,7 +8,7 @@ public class ProcWeapMusings : MonoBehaviour {
 // weapon option for people who just want something familiar without having to 
 //		learn or 
 //		experiment with
-//		or jump thru any extra binging/selection hoops involved with procedural weapons
+//		or jump thru any extra binding/selection hoops involved with procedural weapons
 
 
 
@@ -24,7 +24,6 @@ public class ProcWeapMusings : MonoBehaviour {
 
 
 
-//	[3:38:04 AM] Somebody (IceFlame): lol wtf
 //		[9:14:57 AM] Somebody (IceFlame): Formula for weapon power:
 //			[9:15:42 AM] Somebody (IceFlame): bps - bullets per second
 //				[9:16:17 AM] Somebody (IceFlame): dmg - damage per bullet
@@ -47,9 +46,10 @@ public class ProcWeapMusings : MonoBehaviour {
 //the mechanics are easy.  the hard part is the visuals and sounds.
 //
 //my rune system will be a bit easier, since magic can sound like anything, and produce any kind of particle effects 8)
-//[7:39:58 PM | Edited 7:44:53 PM] chattanoo: my rune system converys what a weapon/spell does via the rune graphics.  i don't wanna take the 
+//[7:39:58 PM | Edited 7:44:53 PM] chattanoo: my rune system conveys what a weapon/spell does via the rune graphics.  i don't wanna take the 
 //						time to explain (with text) how you show which of the 8 of a particular runeline it is, but its basically by different 
-//						arrangements of smaller graphics on the edges of the big rune that signifies the runeline.  the actual weapon model 
+//						arrangements of smaller graphics on the edges of the big rune that signifies the specific powerlevel/point-on-the-spectrum.  
+//                      the actual weapon model 
 //						could be just one staff.   or 9 staves at the most (since the staff appearance would just replace one of the runes)
 //					[7:44:16 PM] chattanoo: i would LIKE it to also have unique swappable staff heads, that visually displays the projectile 
 //						spew pattern, but thats not NECESSARY
@@ -69,6 +69,6 @@ public class ProcWeapMusings : MonoBehaviour {
 //but they don't even have to be all guns.  in fact, i might do NONE of them as guns, and all of them be visualized as fancy cyber/tech 
 //								gloves that faciliate PSI powers and/or "nano swarms".  which is just explaining things that look/sound 
 //								very similar to magic, as being created effects from swarms of nanobots (anarchy online did that, so 
-//								                                                         they could make scifi EverQuest weapons)
+//								                                                         they could make scifi EverQuest spells/abilities)
 //
 }
