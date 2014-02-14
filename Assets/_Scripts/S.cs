@@ -24,4 +24,16 @@ static public class S {
 		
 		return ns;
 	}
+
+	static public void GUIDrawOutlinedTexture(Rect r, Texture pic) {
+		Color prevColor = GUI.color;
+		GUI.color = Color.black;
+
+		GUI.DrawTexture(new Rect(r.x-1, r.y-1, r.width, r.height), pic);
+		GUI.DrawTexture(new Rect(r.x-1, r.y+1, r.width, r.height), pic);
+		GUI.DrawTexture(new Rect(r.x+1, r.y+1, r.width, r.height), pic);
+		GUI.DrawTexture(new Rect(r.x+1, r.y-1, r.width, r.height), pic);
+		GUI.color = prevColor;
+		GUI.DrawTexture(new Rect(r.x, r.y, r.width, r.height), pic);
+	}
 }

@@ -5,6 +5,8 @@ public class Playing {
 	BarMeter health = new BarMeter();
 	BarMeter energy = new BarMeter();
 	BarMeter coolDown = new BarMeter();
+	Texture sprint = Pics.Sprint;
+	//Texture sprint = Pics.GetFirstWith("Sprint");
 
 
 
@@ -13,29 +15,36 @@ public class Playing {
 //		if (locEnt == null)
 //			return;
 		
-		var gunACooldown = locEnt.handGunCooldown;
-		Item gunA = locEnt.handGun;
-		Item gunB = locEnt.holsterGun;
+		var gunACooldown = locEnt.GunInHandCooldown;
+		Item gunA = locEnt.GunInHand;
+		Item gunB = locEnt.GunOnBack;
 		
 		// bars/meters
-		int barW = (Screen.width/3); // width
+		// the larger bars centered along bottom of screen
+		int barW = Screen.width/3; // width of entire possible meter space
 		int barHW = barW/2; // half width
-		int healthW = (int)((float)barW/100f * net.localPlayer.health);
-		int energyW = (int)((float)barW * locEnt.EnergyLeft);
 		int bm = 2; // black border margin
-		int hY = Screen.height-32; // health y pos
-		int eY = Screen.height-13; // energy y pos
-		int hH = 11; // health height
-		int eH = 7; // energy height
-		
+		GUI.DrawTexture(new Rect(midX-barHW-bm, hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line
+		GUI.DrawTexture(new Rect(midX+barHW,    hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line
+
 		// health bar
+		int hH = 11; // health height
+		int hY = Screen.height-32; // health y pos
+		int healthW = (int)((float)barW * (1f - net.localPlayer.health/100f));
 		health.SetBarColor(net.localPlayer.health/100f);
-		GUI.DrawTexture(new Rect(midX-barHW-bm, hY-bm, barW+bm*2, hH+bm*2), Pics.Black);
-		GUI.DrawTexture(new Rect(midX-barHW, hY, healthW, hH), Pics.White);
+		GUI.DrawTexture(new Rect(midX-healthW/2-bm, hY-bm, healthW+bm*2, hH+bm*2), Pics.Black); // background/outline
+		GUI.DrawTexture(new Rect(midX-healthW/2, hY, healthW, hH), Pics.White);
+		GUI.DrawTexture(new Rect(midX-8, hY-4, 16, 16), Pics.Health);
+
 		// energy bar
+		int eH = 7; // energy height
+		int eY = Screen.height-13; // energy y pos
+		int energyW = (int)((float)barW * (1f - locEnt.EnergyLeft));
 		energy.SetBarColor(locEnt.EnergyLeft);
-		GUI.DrawTexture(new Rect(midX-barHW-bm, eY-bm, barW+bm*2, eH+bm*2), Pics.Black);
-		GUI.DrawTexture(new Rect(midX-barHW, eY, energyW, eH), Pics.White);
+		GUI.DrawTexture(new Rect(midX-energyW/2-bm, eY-bm, energyW+bm*2, eH+bm*2), Pics.Black); // background/outline
+		GUI.DrawTexture(new Rect(midX-energyW/2, eY, energyW, eH), Pics.White);
+		S.GUIDrawOutlinedTexture(new Rect(midX-8, eY-4, 16, 16), sprint);
+
 		GUI.color = Color.white;
 		
 		// lives
@@ -48,7 +57,7 @@ public class Playing {
 			
 			//Debug.Log(lifeCount);
 			for (int i=0; i<lifeCount; i++) {
-				GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), Pics.lifeIcon);
+				GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), Pics.Health);
 			}
 		}
 		

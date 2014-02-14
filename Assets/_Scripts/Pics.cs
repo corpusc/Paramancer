@@ -2,9 +2,11 @@ using UnityEngine;
 using System.Collections;
 
 public static class Pics {
+	//static public Object[] pics;
+
 	// textures
 	static public Texture[] swapperCrosshair = new Texture[4];
-	static public Texture lifeIcon;
+	static public Texture Health;
 	static public Texture White;
 	static public Texture Black;
 	static public Texture crossHair;
@@ -12,19 +14,22 @@ public static class Pics {
 	static public Texture teamBlueFlag;
 	static public Texture gameLogo;
 	static public Texture companyLogo;
-	
-	
+	static public Texture Sprint;
 
+	
+	
 	static Pics() {
-		UnityEngine.Object[] pics = Resources.LoadAll("Pic/Hud");
-		
-		// use this temp list to setup permanent vars
+		Object[] pics = Resources.LoadAll("Pic/Hud");
+
 		for (int i = 0; i < pics.Length; i++) {
 			var s = pics[i].name;
 			
 			switch (s) {
+				case "Sprint": 
+					Sprint = (Texture)pics[i]; 
+					break;
 				case "Health": 
-					lifeIcon = (Texture)pics[i]; 
+					Health = (Texture)pics[i]; 
 					break;
 				case "whiteTex": 
 					White = (Texture)pics[i]; 
@@ -58,7 +63,18 @@ public static class Pics {
 					break;				
 				case "swapper_crosshair4":
 					swapperCrosshair[3] = (Texture)pics[i];
-					break;			}
+					break;			
+			}
 		}
 	}
+	
+//	public static Texture GetFirstWith(string s) {
+//		for (int i = 0; i < pics.Length; i++) {
+//			if (s == pics[i].name)
+//				return (Texture)pics[i]; 
+//		}
+//
+//		Debug.LogError("Can't find any picture with that name!");
+//		return null;
+//	}
 }

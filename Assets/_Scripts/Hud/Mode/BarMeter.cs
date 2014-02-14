@@ -19,8 +19,12 @@ public class BarMeter {
 			
 			if (!visible)
 				GUI.color = Color.black;
-			else
+			else{
+				f -= 0.1f; // fudge factor to make it redder quicker.  otherwise  you'd almost never see pure red
+				if (f < 0)
+					f = 0;
 				GUI.color = Color.Lerp(Color.red, Color.yellow, f*2);
+			}
 		}else{
 			GUI.color = Color.Lerp(Color.yellow, Color.green, (f-0.5f)*2);
 		}
