@@ -31,7 +31,7 @@ public class Hud : MonoBehaviour {
 	bool viewingScores = false;
 	string defaultName = "Lazy Noob";
 	Scoreboard scores = new Scoreboard();
-	PlayingHud playHud = new PlayingHud();
+	Playing playHud = new Playing();
 	MatchSetup matchSetup = new MatchSetup();
 	
 	// UI element sizes

@@ -15,7 +15,7 @@ public class Avatar : MonoBehaviour {
 	float sprintActivatedTime = 0f;
 	const float sprintDuration = 5f;
 	
-	public void Move(Vector3 moveVector, bool StartSprint = false) {
+	public void Move(Vector3 moveVector, bool startSprint = false) {
 		// no move? no expensive spherecasts!
 		if (moveVector.magnitude < 0.001f){
 			//sprinting = false; //if the player stopped moving, they also stopped sprinting
@@ -23,7 +23,7 @@ public class Avatar : MonoBehaviour {
 		}
 		
 		// sprinting
-		if (StartSprint) 
+		if (startSprint) 
 			sprinting = !sprinting;
 		
 		// let's go
@@ -34,7 +34,9 @@ public class Avatar : MonoBehaviour {
 			moveVector *= SprintMultiplier;
 			sprintActivatedTime += Time.deltaTime;
 		}else 
-			sprintActivatedTime = (sprintActivatedTime - Time.deltaTime < 0f) ? 0f : (sprintActivatedTime - Time.deltaTime);
+			sprintActivatedTime = (sprintActivatedTime - Time.deltaTime < 0f) 
+				? 0f 
+				: (sprintActivatedTime - Time.deltaTime);
 		
 		isGrounded = false;
 		Ray coreRay = new Ray(transform.position, moveVector);

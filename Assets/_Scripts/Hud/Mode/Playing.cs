@@ -1,7 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayingHud {
+public class Playing {
+	BarMeter health = new BarMeter();
+	BarMeter energy = new BarMeter();
+	BarMeter coolDown = new BarMeter();
+
+
+
 	public void Draw(CcNet net, Arsenal arse, int midX, int midY) {
 		var locEnt = net.localPlayer.Entity;
 //		if (locEnt == null)
@@ -23,11 +29,11 @@ public class PlayingHud {
 		int eH = 7; // energy height
 		
 		// health bar
-		setBarColor(net.localPlayer.health/100f);
+		health.SetBarColor(net.localPlayer.health/100f);
 		GUI.DrawTexture(new Rect(midX-barHW-bm, hY-bm, barW+bm*2, hH+bm*2), Pics.Black);
 		GUI.DrawTexture(new Rect(midX-barHW, hY, healthW, hH), Pics.White);
 		// energy bar
-		setBarColor(locEnt.EnergyLeft);
+		energy.SetBarColor(locEnt.EnergyLeft);
 		GUI.DrawTexture(new Rect(midX-barHW-bm, eY-bm, barW+bm*2, eH+bm*2), Pics.Black);
 		GUI.DrawTexture(new Rect(midX-barHW, eY, energyW, eH), Pics.White);
 		GUI.color = Color.white;
@@ -100,7 +106,7 @@ public class PlayingHud {
 				coolDownPercent = 50f-coolDownPercent;
 			}
 			
-			setBarColor(coolDownPercent/50f);
+			coolDown.SetBarColor(coolDownPercent/50f);
 			GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), Pics.Black);
 			GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), Pics.White);
 		}
@@ -144,26 +150,6 @@ public class PlayingHud {
 	
 	
 
-	float rt = 0f; // running total of elapsed time
-	float blinkSpeed = 0.5f;
-	bool visible = true; // visibility; blink status
-	void setBarColor(float f) { // f should be 0f - 1f
-		rt += Time.deltaTime;
-
-		if (f < 0.5f) { // anything above halfway doesn't blink
-			if (visible)
-				if(rt > blinkSpeed) {
-					GUI.color = Color.red;
-					if(rt > 2.0f * blinkSpeed)
-					rt = 0;
-				}
-
-			GUI.color = Color.Lerp(Color.red, Color.yellow, f*2);
-		}else{
-			GUI.color = Color.Lerp(Color.yellow, Color.green, (f-0.5f)*2);
-		}
-	}
-	
 	string TimeStringFromSecs(float totalSecs) {
 		string timeString = "";
 		int seconds = Mathf.FloorToInt(totalSecs);
