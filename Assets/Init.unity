@@ -166,11 +166,11 @@ GameObject:
   - 23: {fileID: 1973207292}
   - 148: {fileID: 1973207294}
   - 114: {fileID: 1973207296}
-  - 114: {fileID: 1973207297}
   - 114: {fileID: 1973207295}
   - 114: {fileID: 1973207301}
   - 114: {fileID: 1973207298}
   - 114: {fileID: 1973207299}
+  - 114: {fileID: 1973207297}
   m_Layer: 0
   m_Name: Main Program
   m_TagString: Untagged
@@ -247,7 +247,7 @@ MonoBehaviour:
   gameName: TestSession
   connections: 32
   listenPort: 25000
-  comment: GameMode|Level
+  MatchTypeAndMap: 
   password: 
   pickupPoints: []
   team1Score: 0

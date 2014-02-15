@@ -24,12 +24,12 @@ public class Playing {
 		int barW = Screen.width/3; // width of entire possible meter space
 		int barHW = barW/2; // half width
 		int bm = 2; // black border margin
+		int hY = Screen.height-32; // health y pos
 		GUI.DrawTexture(new Rect(midX-barHW-bm, hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line
 		GUI.DrawTexture(new Rect(midX+barHW,    hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line
 
 		// health bar
 		int hH = 11; // health height
-		int hY = Screen.height-32; // health y pos
 		int healthW = (int)((float)barW * (1f - net.localPlayer.health/100f));
 		health.SetBarColor(net.localPlayer.health/100f);
 		GUI.DrawTexture(new Rect(midX-healthW/2-bm, hY-bm, healthW+bm*2, hH+bm*2), Pics.Black); // background/outline
