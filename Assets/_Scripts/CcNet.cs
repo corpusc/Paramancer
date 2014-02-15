@@ -19,6 +19,13 @@
  * no forced waiting (for longer than 10 seconds?) between matches
  * no working towards weapon unlocks
  * ....no grinding!   you don't play games to prove your virtual work ethic!
+
+-----roguelike layer
+here's an idea that would work nice in single player....and if not being religiously slavish to the original rogue....
+	have a town with a shop in an overworld, and when you come to the surface to sell junk to him, have it persist
+	between games, so later characters can buy that stuff
+
+
  */
 
 using UnityEngine;

@@ -300,7 +300,8 @@ public class Controls : MonoBehaviour {
 				else
 					GUI.color = purple;
 				
-				GUI.DrawTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
+				//GUI.DrawTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
+				S.GUIDrawOutlinedTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
 			}
 		}
 		
@@ -326,7 +327,7 @@ public class Controls : MonoBehaviour {
 		// draw action icon near pointer if it's being moved
 		if (draggee != null) {
 			GUI.color = purple;
-			GUI.DrawTexture(new Rect(mouPos.x-w/2, mouPos.y/*+w/2*/, w, w), draggee.Pic);
+			S.GUIDrawOutlinedTexture(new Rect(mouPos.x-w/2, mouPos.y/*+w/2*/, w, w), draggee.Pic, ScaleMode.ScaleToFit);
 		}
 	}
 	

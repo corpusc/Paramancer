@@ -18,7 +18,10 @@ public class BarMeter {
 			}
 			
 			if (!visible)
-				GUI.color = Color.black;
+				if (f < 0.001f) // make sure we're not dead with an all black bar & icon
+					GUI.color = Color.red;
+				else
+					GUI.color = Color.black;
 			else{
 				f -= 0.1f; // fudge factor to make it redder quicker.  otherwise  you'd almost never see pure red
 				if (f < 0)
