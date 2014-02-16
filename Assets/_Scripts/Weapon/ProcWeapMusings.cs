@@ -12,7 +12,7 @@ public class ProcWeapMusings : MonoBehaviour {
 
 
 
-// IceFlame wants a different procedural weapon system based on guns.  
+// IceFlame wants a different procedural weapon system based on guns with floating-point parameters instead of runes.  
 // and i fully support the idea if the visual design can be worked out.
 // (sounds will be another challenge, but i think that will be easier, and
 // i'd be more accepting of samey sounds than i would be for the visuals)
@@ -23,16 +23,17 @@ public class ProcWeapMusings : MonoBehaviour {
 
 
 
-
-//		[9:14:57 AM] Somebody (IceFlame): Formula for weapon power:
-//			[9:15:42 AM] Somebody (IceFlame): bps - bullets per second
-//				[9:16:17 AM] Somebody (IceFlame): dmg - damage per bullet
-//				[9:16:59 AM] Somebody (IceFlame): auto - full auto : bool
-//				[9:45:50 AM] Somebody (IceFlame): bnc - bounces
-//				[9:46:58 AM] Somebody (IceFlame): proj - projectiles launched at a time
-//				[9:51:48 AM] Somebody (IceFlame): bps * dmg * sqrt(bnc + 1) * proj * (auto ? sqrt ( bps) : 1)
-//				[9:52:37 AM] Somebody (IceFlame): You'd have a limit of, say 400 power points per weapon
-//[9:52:59 AM] Somebody (IceFlame): When making one
+//IceFlame's weapon power formula(based on (mostly)floating-point values instead of runes):
+//				bps - bullets per second
+//				dmg - damage per bullet
+//				auto - full auto : bool
+//				bnc - the amount of times a bullet bounces from wall to wall : int
+//				proj - projectiles launched at a time : int
+//				vamp - part of he damage the weapon delas that you get as health, CAN BE NEGATIVE for a weapon that deals loads of damage but costs you something, but never get down to -1.0f
+//				power = bps * dmg * sqrt(bnc + 1) * proj * (auto && bps > 1.0f ? sqrt(bps) : 1) * (vamp + 1.0f)
+//				You'd have a limit of, say 400 power points per weapon when creating one
+//				Each spawn would have a preset amount of power points that a weapon spawning on it should have
+//				So that the more dangerous spawns have more powerful weapons in them
 //[10:14:56 AM] Somebody (IceFlame): http://tesseractgamedev.wordpress.com/2012/11/24/procedural-weapon-generation-in-unity/}
 //
 //
