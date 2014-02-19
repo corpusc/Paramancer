@@ -142,11 +142,14 @@ public class Playing {
 		// 2 types of crosshairs
 		var old = GUI.matrix; // we need to store this, cuz we only want to spin the crosshairs
 		GUIUtility.RotateAroundPivot(-Camera.main.transform.rotation.eulerAngles.y, new Vector2(midX, midY));
+
+		if (gunA != Item.GravGun) {
 		GUI.DrawTexture(new Rect(
 			midX-crosshairRadius, 
 			midY-crosshairRadius, 
 			crosshairRadius*2, 
 			crosshairRadius*2), Pics.crossHair);
+		}
 
 		if (gunA == Item.Swapper) {
 			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.swapperCrosshair.Length);

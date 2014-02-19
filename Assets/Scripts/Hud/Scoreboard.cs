@@ -2,12 +2,9 @@
 using System.Collections;
 
 public class Scoreboard {
-	public void Draw(Rect r, CcNet net, int vSpan) {
-		GUI.BeginGroup(r);
-		
+	public void Draw(Rect r, CcNet net, Hud hud, int vSpan) {
 		GUI.color = Color.cyan;
-		GUI.Label(new Rect(250, 0, 100, vSpan), "Scores:");
-		
+
 		if (!net.CurrMatch.teamBased) {
 			int highScore = -9999;
 			if (net.gameOver) {
@@ -27,10 +24,10 @@ public class Scoreboard {
 				}
 			}
 			
-			GUI.Label(new Rect(10, vSpan, 150, vSpan), "Name:");
-			GUI.Label(new Rect(160, vSpan, 50, vSpan), "Frags:");
-			GUI.Label(new Rect(210, vSpan, 50, vSpan), "Deaths:");
-			GUI.Label(new Rect(270, vSpan, 50, vSpan), "Score:");
+			GUI.Label(new Rect(0, 0, 150, vSpan), "Name:");
+			GUI.Label(new Rect(150, 0, 50, vSpan), "Frags:");
+			GUI.Label(new Rect(200, 0, 50, vSpan), "Deaths:");
+			GUI.Label(new Rect(260, 0, 50, vSpan), "Score:");
 			
 			if (net.CurrMatch.playerLives != 0) 
 				GUI.Label(new Rect(400, vSpan,50,vSpan), "Lives:");
@@ -51,18 +48,24 @@ public class Scoreboard {
 						Random.Range(0.5f, 1f), 
 						Random.Range(0.5f, 1f), 1f);
 				
-				GUI.Label(new Rect(10, (i*vSpan) + 40, 150, vSpan), net.players[i].name);
-				GUI.Label(new Rect(160, (i*vSpan) + 40, 50, vSpan), net.players[i].kills.ToString());
-				GUI.Label(new Rect(210, (i*vSpan) + 40, 50, vSpan), net.players[i].deaths.ToString());
-				GUI.Label(new Rect(270, (i*vSpan) + 40, 50, vSpan), net.players[i].currentScore.ToString());
+				GUI.Label(new Rect(0, (i*vSpan) + vSpan, 150, vSpan), net.players[i].name);
+				GUI.Label(new Rect(150, (i*vSpan) + vSpan, 50, vSpan), net.players[i].kills.ToString());
+				GUI.Label(new Rect(200, (i*vSpan) + vSpan, 50, vSpan), net.players[i].deaths.ToString());
+				GUI.Label(new Rect(260, (i*vSpan) + vSpan, 50, vSpan), net.players[i].currentScore.ToString());
 				
 				if (net.CurrMatch.playerLives != 0) 
 					GUI.Label(new Rect(400, (i*vSpan) + 40, 50, vSpan), net.players[i].lives.ToString());
 			}
 			
 		}
-		
+
+
+
 		if (net.CurrMatch.teamBased) {
+			hud.DrawWindowBackground();
+
+			GUI.BeginGroup(r);
+			
 			GUI.color = new Color(1f, 0f, 0f, 1f);
 			
 			if (net.gameOver && net.team1Score>net.team2Score) 
@@ -129,8 +132,8 @@ public class Scoreboard {
 			yOffset++;
 			GUI.Label(new Rect(10,(yOffset*20) + 60,300,20), 
 				">> TO CHANGE TEAMS, PRESS '" + InputUser.GetKeyLabel(UserAction.SwapTeam) + "' <<");
+			
+			GUI.EndGroup();
 		}
-		
-		GUI.EndGroup();
 	}
 }

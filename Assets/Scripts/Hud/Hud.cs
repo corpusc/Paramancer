@@ -28,7 +28,7 @@ public class Hud : MonoBehaviour {
 	}
 	
 	// private
-	bool viewingScores = false;
+	bool viewingScores = true;
 	string defaultName = "Lazy Noob";
 	Scoreboard scores = new Scoreboard();
 	Playing playHud = new Playing();
@@ -229,15 +229,15 @@ public class Hud : MonoBehaviour {
 	
 	
 	
+
 	
 	
 	
 	
-	
-	void DrawWindowBackground(bool halfWidth = false) {
+	public void DrawWindowBackground(bool halfWidth = false) {
 		DrawWindowBackground(window, halfWidth);
 	}
-	void DrawWindowBackground(Rect r, bool halfWidth = false, bool halfHeight = false) {
+	public void DrawWindowBackground(Rect r, bool halfWidth = false, bool halfHeight = false) {
 		GUI.color = new Color(0.3f, 0f, 0.4f, 0.7f);
 		
 		if (halfWidth)
@@ -723,8 +723,7 @@ public class Hud : MonoBehaviour {
 		
 		// scoreboard
 		if (viewingScores || net.gameOver) {
-			DrawWindowBackground(true);
-			scores.Draw(window, net, vSpan);
+			scores.Draw(window, net, this, vSpan);
 		}
 		
 		// intermission countdown til next match

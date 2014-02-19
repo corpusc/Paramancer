@@ -45,7 +45,8 @@ public class MatchData {
 				Descript = "Each player has their own, independent, changeable gravity";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 				respawnWait = 5f;
-				spawnGunB = Item.GravGun;
+				spawnGunA = Item.GravGun;
+				spawnGunB = Item.Pistol;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
 			case Match.GrueFood:
