@@ -2,27 +2,33 @@ using UnityEngine;
 using System.Collections;
 
 public class BeamParticle : MonoBehaviour {
+	private Vector3 moveVec;
+	public Vector3 MoveVec {
+		get { return moveVec; }
+		set {
+			moveVec = value;
+			moveVec *= Random.Range(1f, 2f);
+		}
+	}
+
 	// private 
-	Vector3 moveVec = Vector3.zero;
 	float life = 0.8f;
 
 
 
 	void Start() {
-		//moveVec = new Vector3(Random.Range(-1f, 1f),Random.Range(-1f, 1f),Random.Range(-1f, 1f));
-		transform.localScale = Vector3.one*10 * Random.Range(0.05f, 0.08f);
+		transform.localScale = Vector3.one * Random.Range(0.5f, 0.8f);
 		life -= Random.Range(0f, 0.5f);
 		life *= 5f;
 	}
 	
 	void Update() {
-		transform.position += moveVec * Time.deltaTime * 0.2f;
+		transform.position += moveVec * Time.deltaTime;
 		transform.rotation = Camera.main.transform.rotation;
-		//moveVec.y += 8f * Time.deltaTime;
-		//moveVec.x -= (0-moveVec.x) * Time.deltaTime * -3f;
-		//moveVec.z -= (0-moveVec.z) * Time.deltaTime * -3f;
+		transform.localScale = transform.localScale * Time.deltaTime*58.5f;
 
 		life -= Time.deltaTime;
+
 		if (life <= 0f) {
 			Destroy(gameObject);
 		}

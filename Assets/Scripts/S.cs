@@ -66,7 +66,7 @@ static public class S {
 		v.z = (cos * tz) - (sin * tx);
 	}
 	
-	public static Vector3 RotateZ(this Vector3 v, float angle) {
+	public static void RotateZ(this Vector3 v, float angle) {
 		float sin = Mathf.Sin(angle);
 		float cos = Mathf.Cos(angle);
 		
@@ -74,7 +74,5 @@ static public class S {
 		float ty = v.y;
 		v.x = (cos * tx) - (sin * ty);
 		v.y = (cos * ty) + (sin * tx);
-
-		return v;
 	}
 }

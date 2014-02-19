@@ -143,7 +143,7 @@ public class Hud : MonoBehaviour {
 				break;
 
 			case HudMode.Controls:
-				drawSettings();
+				drawControlsAdjunct();
 				break;
 				
 			case HudMode.Settings:
@@ -237,11 +237,14 @@ public class Hud : MonoBehaviour {
 	void DrawWindowBackground(bool halfWidth = false) {
 		DrawWindowBackground(window, halfWidth);
 	}
-	void DrawWindowBackground(Rect r, bool halfWidth = false) {
+	void DrawWindowBackground(Rect r, bool halfWidth = false, bool halfHeight = false) {
 		GUI.color = new Color(0.3f, 0f, 0.4f, 0.7f);
 		
 		if (halfWidth)
 			r.width /= 2;
+		
+		if (halfHeight)
+			r.height /= 2;
 		
 		GUI.DrawTexture(r, Pics.White);
 		GUI.color = new Color(0.8f, 0f, 1f, 1f);
@@ -409,22 +412,12 @@ public class Hud : MonoBehaviour {
 		DrawWindowBackground(r, true);
 		r.width /= 2;
 		r.height = vSpan + vSpan / 2;
-		GUI.Box(r, "Config:");
+		GUI.Box(r, Mode + "");
 		
 		r.height = window.height;
 		GUI.BeginGroup(r);
 		
 		GUILayout.BeginArea(new Rect(5,vSpan*2,280,380));
-		
-		locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Mouselook inversion");
-		GUILayout.Label("Mouse Sensitivity:");
-		locUser.mouseSensitivity = GUILayout.HorizontalSlider(locUser.mouseSensitivity, 0.1f, 10f);
-		
-		if (GUILayout.Button("Reset Mouse")){
-			locUser.LookInvert = false;
-			locUser.mouseSensitivity = 2f;
-			log.FadeTime = 10f;
-		}
 		
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Chat messages fade time: ");
@@ -437,17 +430,13 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		fsWidth = S.GetInt(GUILayout.TextField(fsWidth.ToString()));
 		fsHeight = S.GetInt(GUILayout.TextField(fsHeight.ToString()));
-		if (GUILayout.Button("Fullscreen")){
+		if (GUILayout.Button("Fullscreen")) {
 			Screen.SetResolution(fsWidth, fsHeight, true);
 		}
 		GUILayout.EndHorizontal();
 		GUILayout.Label("Audio Volume:");
-		net.gameVolume = GUILayout.HorizontalSlider(net.gameVolume,0.0f,1f);
-		
-		
-		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
-		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
-		PlayerPrefs.SetFloat("MouseSensitivity", locUser.mouseSensitivity);
+		net.gameVolume = GUILayout.HorizontalSlider(net.gameVolume, 0.0f, 1f);
+
 		PlayerPrefs.SetFloat("textFadeTime", log.FadeTime);
 		
 		if (net.gunBobbing)
@@ -467,8 +456,35 @@ public class Hud : MonoBehaviour {
 		GUI.EndGroup();
 	}
 	
-	
-	
+	void drawControlsAdjunct() {
+		br.x = window.xMax / 2;
+		br.y = controls.BottomOfKeyboard;
+		backButton(br);
+		
+		Rect r = window;
+		r.y = controls.BottomOfKeyboard;
+		DrawWindowBackground(r, true, true);
+		r.width /= 2;
+		r.height = vSpan + vSpan / 2;
+		GUI.Box(r, Mode + "");
+
+		r.height = window.height;
+		GUI.BeginGroup(r);
+		
+		GUILayout.BeginArea(new Rect(5,vSpan*2,280,380));
+		
+		locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Mouselook inversion");
+		GUILayout.Label("Mouse Sensitivity:");
+		locUser.mouseSensitivity = GUILayout.HorizontalSlider(locUser.mouseSensitivity, 0.1f, 10f);
+		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
+		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
+		PlayerPrefs.SetFloat("MouseSensitivity", locUser.mouseSensitivity);
+
+		GUILayout.EndArea();
+		
+		GUI.EndGroup();
+	}
+
 	
 	
 	
@@ -777,8 +793,8 @@ public class Hud : MonoBehaviour {
 		}
 
 		buttonStarts(HudMode.Credits, r); /*^*/ r.y -= mIH;
-		buttonStarts(HudMode.Controls, r); /*^*/ r.y -= mIH;
 		buttonStarts(HudMode.Settings, r); /*^*/ r.y -= mIH;
+		buttonStarts(HudMode.Controls, r); /*^*/ r.y -= mIH;
 		buttonStarts(HudMode.Avatar, r); /*^*/ r.y -= mIH;
 
 		if (!net.connected) {

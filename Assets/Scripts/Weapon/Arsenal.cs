@@ -140,7 +140,7 @@ public class Arsenal : MonoBehaviour {
 		if (localFire) 
 			muzzleFlash.transform.position = localstart - (Camera.main.transform.right * 0.2f);
 		
-		// rifle/rail
+		// rifle/rail trail
 		if (weapon == Item.Rifle) {
 			Vector3 beamStart = origin;
 			if (localFire) 
@@ -151,17 +151,17 @@ public class Arsenal : MonoBehaviour {
 			if (maxLen > 160f) 
 				maxLen = 160f;
 
+			float angle = 0f;
 			float progress = 0f;
 			while (progress < maxLen) {
-				float angle = 0f;
 				var np = (GameObject)GameObject.Instantiate(BeamParticle);
-				var v = Vector3.up/2;
-				//v = v.RotateZ(angle); 
-				v = Quaternion.AngleAxis(angle, Vector3.forward) * v;
+				var v = Vector3.up/4;
+				v = Quaternion.AngleAxis(angle, Camera.main.transform.forward) * v;
 				var center = beamStart + (beamDir * progress);
 				np.transform.position = center + v;
-				progress += 0.4f;
-				angle += 4f;
+				np.GetComponent<BeamParticle>().MoveVec = v;
+				progress += 0.20f;
+				angle += 24f;
 			}
 		}
 	}

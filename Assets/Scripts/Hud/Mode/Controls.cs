@@ -324,11 +324,21 @@ public class Controls : MonoBehaviour {
 			GUI.Box(new Rect(mouPos.x-w*1.5f, mouPos.y-w/4*3, w*3, w/2), s);
 		}
 		
+		// inform user of remapping ability
+		if ((Time.time % 0.5f) > 0.25f)
+			GUI.color = Color.cyan;
+		else
+			GUI.color = Color.blue;
+		GUI.Box(new Rect(0, Screen.height-50, 300, 25), "Left-Click on actions to move them elsewhere");
+		GUI.Box(new Rect(0, Screen.height-25, 300, 25), "Right-Click on keys to swap them with others");
+
 		// draw action icon near pointer if it's being moved
 		if (draggee != null) {
 			GUI.color = purple;
 			S.GUIDrawOutlinedTexture(new Rect(mouPos.x-w/2, mouPos.y/*+w/2*/, w, w), draggee.Pic, ScaleMode.ScaleToFit);
 		}
+
+		GUI.color = Color.white;
 	}
 	
 	bool pushingOrHoveringOver(int i) {
