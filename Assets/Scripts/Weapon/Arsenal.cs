@@ -6,7 +6,7 @@ public class Arsenal : MonoBehaviour {
 	public GameObject pistolBulletPrefab;
 	public GameObject swapperBulletPrefab;
 	public GameObject grenadeBulletPrefab;
-	public GameObject rifleDissipationPrefab;
+	public GameObject BeamParticle;
 	public GameObject grenadeFlashPrefab;
 	public GameObject muzzleFlashPrefab;
 	public GameObject rocketPrefab;
@@ -138,20 +138,23 @@ public class Arsenal : MonoBehaviour {
 		muzzleFlash.transform.position = origin;
 		
 		if (localFire) 
-			muzzleFlash.transform.position = localstart 
-				- (Camera.main.transform.right * 0.2f);
+			muzzleFlash.transform.position = localstart - (Camera.main.transform.right * 0.2f);
 		
 		if (weapon == Item.Rifle) {
-			Vector3 dissipationStart = origin;
-			if (localFire) dissipationStart = localstart;
-			Vector3 dissipationDirection = (end-dissipationStart).normalized;
-			float dissipationLength = Vector3.Distance(end, dissipationStart);
-			if (dissipationLength > 40f) dissipationLength = 40f;
-			float dissipationProgress = 0f;
-			while (dissipationProgress<dissipationLength){
-				GameObject newDiss = (GameObject)GameObject.Instantiate(rifleDissipationPrefab);
-				newDiss.transform.position = dissipationStart + (dissipationDirection * dissipationProgress);
-				dissipationProgress += Random.Range(0.3f,0.7f);
+			Vector3 beamStart = origin;
+			if (localFire) 
+				beamStart = localstart;
+
+			Vector3 beamDir = (end-beamStart).normalized;
+			float maxLen = Vector3.Distance(end, beamStart);
+			if (maxLen > 160f) 
+				maxLen = 160f;
+
+			float progress = 0f;
+			while (progress < maxLen) {
+				var newDiss = (GameObject)GameObject.Instantiate(BeamParticle);
+				newDiss.transform.position = beamStart + (beamDir * progress);
+				progress += Random.Range(0.3f ,0.7f);
 			}
 		}
 	}

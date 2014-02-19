@@ -47,6 +47,22 @@ public class Playing {
 
 		GUI.color = Color.white;
 		
+		// time remaining
+		if (!net.gameOver) {
+			if (net.CurrMatch.Duration > 0f) {
+				// show time left
+				string s = TimeStringFromSecs(net.gameTimeLeft);
+				GUI.color = Color.black;
+				GUI.Label(new Rect(midX-11, 5, 200, 30), s);
+				GUI.Label(new Rect(midX-9, 5, 200, 30), s);
+				GUI.Label(new Rect(midX-10, 4, 200, 30), s);
+				GUI.Label(new Rect(midX-10, 6, 200, 30), s);
+				
+				GUI.color = Color.white;
+				GUI.Label(new Rect(midX-10, 5, 200, 30), s);
+			}
+		}
+
 		// lives
 		if (net.CurrMatch.playerLives > 0) {
 			int lifeCount = 0;
@@ -121,12 +137,14 @@ public class Playing {
 		}
 		
 		// 2 types of crosshairs
+		var old = GUI.matrix; // we need to store this, cuz we only want to spin the crosshairs
+		GUIUtility.RotateAroundPivot(-Camera.main.transform.rotation.eulerAngles.y, new Vector2(midX, midY));
 		GUI.DrawTexture(new Rect(
-			midX-Pics.crossHair.width/2, 
-			midY-Pics.crossHair.height/2, 
-			Pics.crossHair.width, 
-			Pics.crossHair.height), Pics.crossHair);
-		
+			midX-Pics.crossHair.width, 
+			midY-Pics.crossHair.height, 
+			Pics.crossHair.width*2, 
+			Pics.crossHair.height*2), Pics.crossHair);
+
 		if (gunA == Item.Swapper) {
 			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.swapperCrosshair.Length);
 			if (!locEnt.swapperLocked) 
@@ -137,24 +155,9 @@ public class Playing {
 				(Screen.height-locEnt.swapperCrossY)-32, 64, 64), 
 				Pics.swapperCrosshair[swapperFrame]);
 		}
-		
+
+		GUI.matrix = old; // done drawing spinny stuff
 		GUI.color = gcol;
-		
-		// time remaining
-		if (!net.gameOver) {
-			if (net.CurrMatch.Duration > 0f) {
-				// show time left
-				string s = TimeStringFromSecs(net.gameTimeLeft);
-				GUI.color = Color.black;
-				GUI.Label(new Rect(midX-11, 5, 200, 30), s);
-				GUI.Label(new Rect(midX-9, 5, 200, 30), s);
-				GUI.Label(new Rect(midX-10, 4, 200, 30), s);
-				GUI.Label(new Rect(midX-10, 6, 200, 30), s);
-				
-				GUI.color = Color.white;
-				GUI.Label(new Rect(midX-10, 5, 200, 30), s);
-			}
-		}
 	}
 	
 	
