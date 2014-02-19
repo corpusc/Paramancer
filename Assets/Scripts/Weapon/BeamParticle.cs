@@ -12,7 +12,7 @@ public class BeamParticle : MonoBehaviour {
 		moveVec = new Vector3(Random.Range(-1f, 1f),Random.Range(-1f, 1f),Random.Range(-1f, 1f));
 		transform.localScale = Vector3.one*10 * Random.Range(0.05f, 0.08f);
 		life -= Random.Range(0f, 0.5f);
-		life *= 2f;
+		life *= 5f;
 	}
 	
 	void Update() {

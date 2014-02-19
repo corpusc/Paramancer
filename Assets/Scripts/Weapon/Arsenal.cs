@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Arsenal : MonoBehaviour {
-	public GameObject pistolBulletPrefab;
+	public GameObject Beam;
 	public GameObject swapperBulletPrefab;
 	public GameObject grenadeBulletPrefab;
 	public GameObject BeamParticle;
@@ -119,6 +119,7 @@ public class Arsenal : MonoBehaviour {
 	void shootHitscan(Vector3 origin, Vector3 end, NetworkViewID shooterID, Item weapon) {
 		bool localFire = false;
 		Vector3 localstart = origin;
+
 		for (int i=0; i<net.players.Count; i++) {
 			if (net.players[i].viewID == shooterID && net.players[i].local){
 				localFire = true;
@@ -126,20 +127,21 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 		
-		GameObject newBullet = (GameObject)GameObject.Instantiate(pistolBulletPrefab);
-		newBullet.GetComponent<SimplePistolBullet>().start = origin;
+		var beam = (GameObject)GameObject.Instantiate(Beam);
+		beam.GetComponent<BeamEffect>().start = origin;
 		
 		if (localFire) 
-			newBullet.GetComponent<SimplePistolBullet>().start = localstart;
+			beam.GetComponent<BeamEffect>().start = localstart;
 		
-		newBullet.GetComponent<SimplePistolBullet>().end = end;
+		beam.GetComponent<BeamEffect>().end = end;
 		
-		GameObject muzzleFlash = (GameObject)GameObject.Instantiate(muzzleFlashPrefab);
+		var muzzleFlash = (GameObject)GameObject.Instantiate(muzzleFlashPrefab);
 		muzzleFlash.transform.position = origin;
 		
 		if (localFire) 
 			muzzleFlash.transform.position = localstart - (Camera.main.transform.right * 0.2f);
 		
+		// rifle/rail
 		if (weapon == Item.Rifle) {
 			Vector3 beamStart = origin;
 			if (localFire) 
@@ -152,9 +154,9 @@ public class Arsenal : MonoBehaviour {
 
 			float progress = 0f;
 			while (progress < maxLen) {
-				var newDiss = (GameObject)GameObject.Instantiate(BeamParticle);
-				newDiss.transform.position = beamStart + (beamDir * progress);
-				progress += Random.Range(0.3f ,0.7f);
+				var np = (GameObject)GameObject.Instantiate(BeamParticle);
+				np.transform.position = beamStart + (beamDir * progress);
+				progress += 0.4f;
 			}
 		}
 	}
