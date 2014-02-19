@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum Crosshair {
+	Normal,
+	Shrinking,
+	Growing,
+	Count
+}
+
 public enum Match {
 	Custom,
 	GravORama,

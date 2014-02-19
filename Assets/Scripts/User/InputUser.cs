@@ -71,7 +71,7 @@ public static class InputUser {
 					bind(i, KeyCode.Tab);
 					break;
 				case UserAction.SwapTeam:
-					bind(i, KeyCode.Alpha5);
+					bind(i, KeyCode.T);
 					break;
 				case UserAction.Suicide:
 					bind(i, KeyCode.K);

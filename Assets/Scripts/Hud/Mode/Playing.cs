@@ -9,7 +9,10 @@ public class Playing {
 	//Texture sprint = Pics.GetFirstWith("Sprint");
 
 
-
+	Crosshair status = Crosshair.Normal;
+	int crosshairRadius = 16;
+	Color prevCrossHair;
+	float prevTick;
 	public void Draw(CcNet net, Arsenal arse, int midX, int midY) {
 		var locEnt = net.localPlayer.Entity;
 //		if (locEnt == null)
@@ -140,10 +143,10 @@ public class Playing {
 		var old = GUI.matrix; // we need to store this, cuz we only want to spin the crosshairs
 		GUIUtility.RotateAroundPivot(-Camera.main.transform.rotation.eulerAngles.y, new Vector2(midX, midY));
 		GUI.DrawTexture(new Rect(
-			midX-Pics.crossHair.width, 
-			midY-Pics.crossHair.height, 
-			Pics.crossHair.width*2, 
-			Pics.crossHair.height*2), Pics.crossHair);
+			midX-crosshairRadius, 
+			midY-crosshairRadius, 
+			crosshairRadius*2, 
+			crosshairRadius*2), Pics.crossHair);
 
 		if (gunA == Item.Swapper) {
 			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.swapperCrosshair.Length);
@@ -156,6 +159,32 @@ public class Playing {
 				Pics.swapperCrosshair[swapperFrame]);
 		}
 
+		// setup var for end of cooldown crosshair animation effect
+		if (Color.green == GUI.color && // if cooldown just ended
+		    Color.green != prevCrossHair) 
+		{
+			status = Crosshair.Shrinking;
+		}
+
+		while (Time.time - prevTick > 0.008f) {
+			prevTick += 0.008f;
+
+			switch (status) {
+				case Crosshair.Shrinking:
+					crosshairRadius--;
+					if (crosshairRadius < 2)
+						status = Crosshair.Growing;
+					break;
+
+				case Crosshair.Growing:
+					crosshairRadius++;
+					if (crosshairRadius >= 16)
+						status = Crosshair.Normal;
+					break;
+			}
+		}
+
+		prevCrossHair = GUI.color;
 		GUI.matrix = old; // done drawing spinny stuff
 		GUI.color = gcol;
 	}
