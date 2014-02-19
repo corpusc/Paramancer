@@ -76,7 +76,7 @@ public class CcLog : MonoBehaviour {
 					//AddToLog(net.localPlayer.name + ":", "e.keyCode == KeyCode.Return", net.ColToVec(net.localPlayer.colA) );
 						
 					if (newEntry != "") {
-						if (net.connected) {
+						if (net.Connected) {
 							networkView.RPC("AddToLog", RPCMode.All, net.localPlayer.name + ":", newEntry, net.ColToVec(net.localPlayer.colA) );
 						}else{
 							AddToLog(net.localPlayer.name + ":", newEntry, net.ColToVec(net.localPlayer.colA) );

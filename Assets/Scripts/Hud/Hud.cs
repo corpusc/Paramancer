@@ -84,17 +84,27 @@ public class Hud : MonoBehaviour {
 		net.autoPickup = PlayerPrefs.GetInt("autoPickup", 0) == 1;
 		net.gameVolume = PlayerPrefs.GetFloat("GameVolume", 1f);
 	}
-	
+
+	float serverSearch;
 	void Update() {
+		// periodically check for servers
+		if (!net.Connected) {
+			if (serverSearch+4f < Time.time) {
+				serverSearch = Time.time;
+				lookForServer();
+			}
+		}
+
 		if (InputUser.Started(UserAction.Menu)) 
 			if (Mode != HudMode.MenuMain) {
 				Mode = HudMode.MenuMain;
 				Screen.lockCursor = false;
 			}else{
-				// the only people who will see my informative fullscreen box
+				// the only people who should see my informative fullscreen box
 				// now (about how you gotta click in the window to grab cursor)
 				// should be people running the game in the Unity IDE
-				if (net.connected && !Application.isWebPlayer)
+				// & those who hit ESC key
+				if (net.Connected && !Application.isWebPlayer)
 					Mode = HudMode.Playing;
 			}
 			
@@ -124,7 +134,7 @@ public class Hud : MonoBehaviour {
 				break;
 				
 			case HudMode.JoinGame:
-				JoinMenu();
+				joinWindow();
 				break;
 
 			case HudMode.Avatar:
@@ -135,7 +145,7 @@ public class Hud : MonoBehaviour {
 				break;
 
 			case HudMode.MenuMain:
-				if (!net.connected) {
+				if (!net.Connected) {
 					avatarView();
 				}
 
@@ -174,7 +184,7 @@ public class Hud : MonoBehaviour {
 			
 
 
-		if (net.connected)
+		if (net.Connected)
 			moveThisToPlayingHud(midX, midY);
 	}
 
@@ -288,7 +298,7 @@ public class Hud : MonoBehaviour {
 	void avatarSetup() {
 		DrawWindowBackground(true);
 
-		if (net.connected)
+		if (net.Connected)
 			GUI.Box(new Rect(0, 0, Screen.width, 80), "Currently, you have to change this while disconnected, for changes to be networked");
 
 		GUI.BeginGroup(window);
@@ -509,39 +519,49 @@ public class Hud : MonoBehaviour {
 	
 
 	Ping[] hostPings;
-	void JoinMenu() {
-		backButton(br);
-		DrawWindowBackground();
+	void lookForServer() {
+		MasterServer.RequestHostList (net.uniqueGameName);
+		hostPings = new Ping[0];
+	}
 
-		GUI.BeginGroup(window);
-				
-		GUI.Label(new Rect(250, 0, 100, 20), "Join a game:");
-		
-		GUILayout.BeginArea(new Rect(5, 20, 290, 400));
-		if (GUILayout.Button("Refresh Host List")){
-			MasterServer.RequestHostList(net.uniqueGameName);
-			hostPings = new Ping[0];
-		}
-		GUILayout.EndArea();
+	int prevNumServers = 0;
+	void joinWindow() {
+		int x = Screen.width/4;
+		int w = Screen.width/2;
+		GUILayout.BeginArea(new Rect(x, 0, w, Screen.height));
 
-		GUILayout.BeginArea(new Rect(305, 20, 290, 400));
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Game Password: ");
-			net.password = GUILayout.TextField(net.password);
-			GUILayout.EndHorizontal();
-		GUILayout.EndArea();
-		
+		// title bar
+		GUILayout.Box(S.GetSpacedOut(Mode + ""));
+
+		if (GUILayout.Button("BACK"))
+			Mode = HudMode.MenuMain;
+
+		if (GUILayout.Button("Refresh Server List"))
+			lookForServer();
+
+		// allow entering a passsword
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Game Password: ");
+		net.password = GUILayout.TextField(net.password);
+		GUILayout.EndHorizontal();
+
 		
 		HostData[] hostData = MasterServer.PollHostList();
-		
+		// play sound if number of servers goes up
+		if (prevNumServers < hostData.Length) {
+			AudioSource.PlayClipAtPoint(Sfx.Get("spacey"), Camera.main.transform.position);
+		}
+		prevNumServers = hostData.Length;
+
 		int scrollHeight = hostData.Length * 40;
 		if (scrollHeight < 350) 
 			scrollHeight = 350;
 		
-		scrollPos = GUI.BeginScrollView(new Rect(0, 50, 600, 350), 
-							scrollPos, new Rect(0, 0, 550, scrollHeight+40));
+		scrollPos = GUILayout.BeginScrollView(scrollPos);
 		
 		if (hostData.Length == 0) {
+			GUILayout.Label("...");
+			GUILayout.Label("...");
 			GUILayout.Label("No hosts found!");
 		}else{
 			if (hostPings.Length == 0) {
@@ -561,32 +581,30 @@ public class Hud : MonoBehaviour {
 		}
 		
 		for (int i=0; i<hostData.Length; i++) {
-			GUI.DrawTexture(new Rect(5, (i*40), 550, 1), Pics.White);
-			
-			if (GUI.Button(new Rect(5, (i*40)+2, 80, 36), "Connect")) {
+			GUILayout.BeginHorizontal();
+
+			if (GUILayout.Button("Connect")) {
 				Network.Connect(hostData[i],net.password);
 				Mode = HudMode.Connecting;
 			}
 	
-			GUI.Label(new Rect(100, (i*40)+2, 150, 30), hostData[i].gameName);
-			GUI.Label(new Rect(100, (i*40)+17, 150, 30), "[" + hostData[i].connectedPlayers.ToString() + "/" + hostData[i].playerLimit.ToString() + "]");
-			GUI.Label(new Rect(300, (i*40)+2, 150, 60), hostData[i].comment);
-			
+			GUILayout.Label(hostData[i].gameName);
+			GUILayout.Label("[" + hostData[i].connectedPlayers.ToString() + "/" + hostData[i].playerLimit.ToString() + "]");
+			GUILayout.Label(hostData[i].comment);
+
 			if (hostData[i].passwordProtected)
-				GUI.Label(new Rect(160, (i*40)+17, 150, 30), "[PASSWORDED]");
-			
+				GUILayout.Label("[PASSWORDED]");
+
 			if (hostPings[i].isDone)
-				GUI.Label(new Rect(450, (i*40)+17, 150, 30), "Ping: " + hostPings[i].time.ToString());
+				GUILayout.Label("Ping: " + hostPings[i].time.ToString());
 			else
-				GUI.Label(new Rect(450, (i*40)+17 ,150, 30), "Ping: ?");
+				GUILayout.Label("Ping: ?");
 			
-			if (i==hostData.Length-1)
-				GUI.DrawTexture(new Rect(5, (i*40)+40, 550, 1), Pics.White);
+			GUILayout.EndHorizontal();
 		}
 		
-		GUI.EndScrollView();
-		
-		GUI.EndGroup();	
+		GUILayout.EndScrollView();
+		GUILayout.EndArea();
 	}
 
 
@@ -778,14 +796,14 @@ public class Hud : MonoBehaviour {
 		// start drawing menu items from the bottom
 		if (!Application.isWebPlayer) {
 			if (GUI.Button(r, "Quit")) {
-				if (net.connected)
+				if (net.Connected)
 					net.DisconnectNow();
 				Application.Quit();
 			}
 			r.y -= mIH;
 		}
 
-		if (net.connected) {
+		if (net.Connected) {
 			if (GUI.Button(r, "Disconnect"))
 				net.DisconnectNow();
 			r.y -= mIH;
@@ -796,11 +814,10 @@ public class Hud : MonoBehaviour {
 		buttonStarts(HudMode.Controls, r); /*^*/ r.y -= mIH;
 		buttonStarts(HudMode.Avatar, r); /*^*/ r.y -= mIH;
 
-		if (!net.connected) {
+		if (!net.Connected) {
 			if (buttonStarts(HudMode.JoinGame, r)) {
 				scrollPos = Vector2.zero;
-				MasterServer.RequestHostList(net.uniqueGameName);
-				hostPings = new Ping[0];
+				lookForServer();
 			}
 			r.y -= mIH;
 		}
@@ -814,7 +831,7 @@ public class Hud : MonoBehaviour {
 			r.y -= mIH;
 		}
 
-		if (net.connected) {
+		if (net.Connected) {
 			if (GUI.Button(r, "RESUME"))
 				Mode = HudMode.Playing;
 			r.y -= mIH;

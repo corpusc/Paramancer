@@ -38,7 +38,7 @@ public class CcNet : MonoBehaviour {
 	// networky stuff
 	public string Error = "'Error' string init value...NO ERRORS YET!";
 	public NetworkViewID NetVI;
-	public bool connected = false;
+	public bool Connected = false;
 	public bool isServer = false;
 	// if you change the client, change this.
 	// should be unique or different types of clients will clash
@@ -470,7 +470,7 @@ public class CcNet : MonoBehaviour {
 		
 		// lives
 		if (isServer && 
-			connected && 
+			Connected && 
 			!gameOver && 
 			CurrMatch.playerLives > 0 && 
 			players.Count > 1)
@@ -552,7 +552,7 @@ public class CcNet : MonoBehaviour {
 	
 	void Update() {
 		// ping periodically
-		if (connected && Time.time > nextPingTime) {
+		if (Connected && Time.time > nextPingTime) {
 			nextPingTime = Time.time + 5f;
 			for (int i=0; i<players.Count; i++) {
 				if (!players[i].local) {
@@ -562,7 +562,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// let players know they are still connected
-		if (connected && isServer) {
+		if (Connected && isServer) {
 			if (Time.time > latestServerHeartbeat + 9f) {
 				latestServerHeartbeat = Time.time + 9f;
 				networkView.RPC("HeartbeatFromServer", RPCMode.All);
@@ -570,7 +570,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// are we still connected to the server?
-		if (connected && !isServer) {
+		if (Connected && !isServer) {
 			if (Time.time > latestPacket + 30f) {
 				DisconnectNow();
 				hud.Mode = HudMode.ConnectionError;
@@ -587,7 +587,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		if (connected && isServer) {
+		if (Connected && isServer) {
 			for (int i=0; i<players.Count; i++) {
 				if (!players[i].local) {
 					if (Time.time>players[i].lastPong + 20f) {
@@ -616,7 +616,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// change team
-		if (connected && CurrMatch.teamBased) {
+		if (Connected && CurrMatch.teamBased) {
 			if (InputUser.Started(UserAction.SwapTeam)) {
 				if (localPlayer.team == 1) {
 					localPlayer.team = 2;
@@ -637,7 +637,7 @@ public class CcNet : MonoBehaviour {
 		gameTimeLeft -= Time.deltaTime;
 		
 		// game time up?
-		if (connected && !gameOver) {
+		if (Connected && !gameOver) {
 			if (gameTimeLeft <= 0f && CurrMatch.Duration > 0f){
 				gameTimeLeft = 0f;
 				gameOver = true;
@@ -647,7 +647,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// if game over, count in next match
-		if (connected && gameOver) {
+		if (Connected && gameOver) {
 			nextMatchTime -= Time.deltaTime;
 			if (nextMatchTime <= 0f){
 				nextMatchTime = 0f;
@@ -663,7 +663,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// pickups
-		if (connected && isServer && !gameOver) {
+		if (Connected && isServer && !gameOver) {
 			for (int i=0; i<pickupPoints.Count; i++) {
 				if (!pickupPoints[i].stocked) {
 					pickupPoints[i].RestockTime -= Time.deltaTime;
@@ -851,7 +851,7 @@ public class CcNet : MonoBehaviour {
 		latestPacket = Time.time;
 		
 		if (players.Count == 1 && CurrMatch.playerLives > 0) {
-			if (isServer && connected && !gameOver) {
+			if (isServer && Connected && !gameOver) {
 				// this is a lives match, and now we have enough players
 				gameTimeLeft = 0f;
 				gameOver = true;
@@ -1210,16 +1210,19 @@ public class CcNet : MonoBehaviour {
             Debug.Log("Server registered");
 			isServer = true;
 			
-			if (!connected) {
-				// we've just joined a game as host, lets create the local player and it to the RPC buffer
+			if (!Connected) {
+				// we've just joined a game as host, lets create the local player & add it to the RPC buffer
 				localPlayer.viewID = Network.AllocateViewID();
 				hud.Mode = HudMode.Wait;
 				NetVI = Network.AllocateViewID();
 				RequestGameData();
 			}
 			
-			connected = true;
-		}else if (msEvent == MasterServerEvent.RegistrationFailedNoServer || msEvent == MasterServerEvent.RegistrationFailedGameType || msEvent == MasterServerEvent.RegistrationFailedGameName){
+			Connected = true;
+		}else if (msEvent == MasterServerEvent.RegistrationFailedNoServer || 
+		          msEvent == MasterServerEvent.RegistrationFailedGameType || 
+		          msEvent == MasterServerEvent.RegistrationFailedGameName)
+		{
 			Debug.Log("server registration failed, disconnecting");
 			Error = "server registration failed";
 			hud.Mode = HudMode.ConnectionError;
@@ -1231,7 +1234,7 @@ public class CcNet : MonoBehaviour {
 	
 	void OnConnectedToServer() {
 		Debug.Log("Connected to a server");
-		connected = true;
+		Connected = true;
 		// we just connected to a host, let's RPC the host and ask for the game info
 		networkView.RPC("RequestGameData", RPCMode.Server);
 		hud.Mode = HudMode.Wait;
@@ -1289,7 +1292,7 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	public void DisconnectNow() {
-		if (connected) {
+		if (Connected) {
 			if (!isServer) {
 				networkView.RPC("PlayerLeave", RPCMode.OthersBuffered, localPlayer.viewID, localPlayer.name);
 			}else{
@@ -1302,12 +1305,12 @@ public class CcNet : MonoBehaviour {
 			Network.Disconnect();
 			if (isServer) 
 				MasterServer.UnregisterHost();
-			connected = false;
+			Connected = false;
 			isServer = false;
 			
 			Camera.main.transform.parent = null;
 			for (int i=0; i<players.Count; i++) {
-				if (players[i].Entity!=null) 
+				if (players[i].Entity != null) 
 					Destroy(players[i].Entity.gameObject);
 			}
 			players = new List<NetUser>();
@@ -1402,7 +1405,7 @@ public class CcNet : MonoBehaviour {
 		
 		//Network.Disconnect();
 		//if (isServer) MasterServer.UnregisterHost();
-		connected = false;
+		Connected = false;
 		isServer = false;
 		
 		localPlayer.viewID = new NetworkViewID();
@@ -1429,7 +1432,7 @@ public class CcNet : MonoBehaviour {
 		if (isServer) 
 			MasterServer.UnregisterHost();
 		
-		connected = false;
+		Connected = false;
 		isServer = false;
 		localPlayer.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
