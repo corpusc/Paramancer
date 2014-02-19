@@ -663,14 +663,14 @@ public class Hud : MonoBehaviour {
 			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
 		
 		GUILayout.Label("_____Current team_____");
-		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls & Match screens");
+		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls, GUI/HUD, Weapon effects");
 		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions");
 		GUILayout.Label("");
 		GUILayout.Label("_____Media authors_____");
 		GUILayout.Label("CarnagePolicy     - Sounds");
 		GUILayout.Label("Nobiax/yughues   - Textures");
 		GUILayout.Label("");
-		GUILayout.Label("This game is a fork of (and mostly the same as, ATM)...");
+		GUILayout.Label("This game is a fork of...");
 		GUILayout.Label("");
 		GUILayout.Label("~~~ SPLAT DEATH SALAD ~~~    (Version: 1.1)");
 		GUILayout.Label("");

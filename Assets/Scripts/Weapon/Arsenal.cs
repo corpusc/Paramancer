@@ -127,17 +127,16 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 		
+		// beam
 		var beam = (GameObject)GameObject.Instantiate(Beam);
 		beam.GetComponent<BeamEffect>().start = origin;
-		
 		if (localFire) 
 			beam.GetComponent<BeamEffect>().start = localstart;
-		
 		beam.GetComponent<BeamEffect>().end = end;
 		
+		// flash
 		var muzzleFlash = (GameObject)GameObject.Instantiate(muzzleFlashPrefab);
 		muzzleFlash.transform.position = origin;
-		
 		if (localFire) 
 			muzzleFlash.transform.position = localstart - (Camera.main.transform.right * 0.2f);
 		
@@ -154,9 +153,15 @@ public class Arsenal : MonoBehaviour {
 
 			float progress = 0f;
 			while (progress < maxLen) {
+				float angle = 0f;
 				var np = (GameObject)GameObject.Instantiate(BeamParticle);
-				np.transform.position = beamStart + (beamDir * progress);
+				var v = Vector3.up/2;
+				//v = v.RotateZ(angle); 
+				v = Quaternion.AngleAxis(angle, Vector3.forward) * v;
+				var center = beamStart + (beamDir * progress);
+				np.transform.position = center + v;
 				progress += 0.4f;
+				angle += 4f;
 			}
 		}
 	}
