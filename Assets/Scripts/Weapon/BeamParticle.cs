@@ -13,6 +13,8 @@ public class BeamParticle : MonoBehaviour {
 
 	// private 
 	float life = 0.8f;
+	const float f = -0.2f;
+	Vector3 shrinkFactor = new Vector3(f, f, f);
 
 
 
@@ -25,7 +27,7 @@ public class BeamParticle : MonoBehaviour {
 	void Update() {
 		transform.position += moveVec * Time.deltaTime;
 		transform.rotation = Camera.main.transform.rotation;
-		transform.localScale = transform.localScale * Time.deltaTime*58.5f;
+		transform.localScale += Time.deltaTime * shrinkFactor;
 
 		life -= Time.deltaTime;
 
