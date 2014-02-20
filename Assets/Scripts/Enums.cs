@@ -27,7 +27,6 @@ public enum HudMode {
 	StartGame,         // (don't need both Match AND StartGame anymore?)
 	JoinGame,
 	Avatar,
-	Credits,
 	Connecting,
 	ConnectionError,
 	InitializingServer,
@@ -40,6 +39,8 @@ public enum HudMode {
 	// Both
 	Controls,
 	Settings,
+	Credits,
+	//FuturePlans,
 	Playing, // guess its not really BOTH, until i implement single player
 	Editing, // guess its not really BOTH, until i implement single player
 	

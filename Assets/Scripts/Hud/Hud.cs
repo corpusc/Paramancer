@@ -698,7 +698,7 @@ public class Hud : MonoBehaviour {
 		
 		GUILayout.Label("_____Current team_____");
 		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls, GUI/HUD, Weapon effects");
-		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions");
+		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions, Graphics");
 		GUILayout.Label("");
 		GUILayout.Label("_____Media authors_____");
 		GUILayout.Label("CarnagePolicy     - Sounds");

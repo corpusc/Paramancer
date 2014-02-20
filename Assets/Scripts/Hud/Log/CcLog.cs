@@ -105,5 +105,6 @@ public class CcLog : MonoBehaviour {
 		en.Text = s;
 		Entries.Add(en);
 		DisplayTime = Time.time + FadeTime;
+		AudioSource.PlayClipAtPoint(Sfx.Get("Chat - drip"), Camera.main.transform.position);
 	}
 }
