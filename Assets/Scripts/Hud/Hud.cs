@@ -298,8 +298,11 @@ public class Hud : MonoBehaviour {
 	void avatarSetup() {
 		DrawWindowBackground(true);
 
-		if (net.Connected)
+		if (net.Connected) {
+			S.GetShoutyColor();
 			GUI.Box(new Rect(0, 0, Screen.width, 80), "Currently, you have to change this while disconnected, for changes to be networked");
+			GUI.color = Color.white;
+		}
 
 		GUI.BeginGroup(window);
 		
@@ -746,15 +749,9 @@ public class Hud : MonoBehaviour {
 		
 		// intermission countdown til next match
 		if (net.gameOver) {
-			string s = "Next Game in: " +  Mathf.FloorToInt(net.nextMatchTime).ToString() + " seconds.";
-			GUI.color = Color.black;
-			GUI.Label(new Rect(midX-51, 5, 200, 30), s);
-			GUI.Label(new Rect(midX-49, 5, 200, 30), s);
-			GUI.Label(new Rect(midX-50, 4, 200, 30), s);
-			GUI.Label(new Rect(midX-50, 6, 200, 30), s);
-			
-			GUI.color = gcolB;
-			GUI.Label(new Rect(midX-50, 5, 200, 30), s);
+			string s = "Next Game in: " +  Mathf.FloorToInt(net.NextMatchTime).ToString() + " seconds.";
+			S.GetShoutyColor();
+			S.GUIOutlinedLabel(new Rect(midX-50, 5, 200, 30), s);
 		}
 	}
 	

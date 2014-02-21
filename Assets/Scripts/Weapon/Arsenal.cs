@@ -36,30 +36,13 @@ public class Arsenal : MonoBehaviour {
 		
 		// weapon media
 		// load the 3 kinds of resources that weapons need
-		int i = 0;
 		Object[] mats = Resources.LoadAll("Mat/Weap");
-//		foreach (var m in mats) {
-//			Debug.Log("mat: " + i + " " + m.name);
-//			i++;
-//		}
-		
-		i = 0;
 		Object[] prefabs = Resources.LoadAll("Prefab/Weap");
-//		foreach (var p in prefabs) {
-//			Debug.Log("prefab: " + i + " " + p.name);
-//			i++;
-//		}
-		
-		i = 0;
 		Object[] pics = Resources.LoadAll("Pic/Weap");
-//		foreach (var p in pics) {
-//			Debug.Log("pic: " + i + " " + p.name);
-//			i++;
-//		}
-		
+
 		// setup guns
 		Guns = new GunData[9];
-		for (i = 0; i < Guns.Length; i++) {
+		for (int i = 0; i < Guns.Length; i++) {
 			Guns[i] = new GunData();
 			
 			Guns[i].Name = S.GetSpacedOut("" + (Item)i);
@@ -69,7 +52,7 @@ public class Arsenal : MonoBehaviour {
 			
 			switch ((Item)i) {
 				case Item.Pistol: 
-					Guns[i].Delay = 0.15f; break; 
+					Guns[i].Delay = 0.3f; break; 
 				case Item.Grenade:  
 					Guns[i].Delay = 0.4f; break; 
 				case Item.MachineGun:  
@@ -77,7 +60,7 @@ public class Arsenal : MonoBehaviour {
 				case Item.Rifle:  
 					Guns[i].Delay = 2f; break; 
 				case Item.RocketLauncher:  
-					Guns[i].Delay = 2f; break; 
+					Guns[i].Delay = 1.5f; break; 
 				case Item.Swapper:  
 					Guns[i].Delay = 2f; break; 
 				case Item.GravGun:  
@@ -85,7 +68,7 @@ public class Arsenal : MonoBehaviour {
 				case Item.Bomb:  
 					Guns[i].Delay = 1f; break; 
 				case Item.Spatula:  
-					Guns[i].Delay = 3f; break;
+					Guns[i].Delay = 1f; break;
 			}
 		}
 	}
@@ -133,6 +116,8 @@ public class Arsenal : MonoBehaviour {
 		if (localFire) 
 			beam.GetComponent<BeamEffect>().start = localstart;
 		beam.GetComponent<BeamEffect>().end = end;
+		if (weapon == Item.Pistol)
+			beam.renderer.material.color = Color.white;
 		
 		// flash
 		var muzzleFlash = (GameObject)GameObject.Instantiate(muzzleFlashPrefab);

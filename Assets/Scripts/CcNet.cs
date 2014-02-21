@@ -77,14 +77,14 @@ public class CcNet : MonoBehaviour {
 	// scripts
 	CcLog log;
 	Hud hud;
-	Arsenal artill;
-	
-	
-	
-	public GameObject fpsEntityPrefab;
-	public GameObject pickupBoxPrefab;
-	public GameObject splatPrefab;
+	Arsenal arse;
+	GameObject entityPrefab;
+	GameObject pickupBoxPrefab;
+	GameObject splatPrefab;
 	GameObject basketballPrefab;
+	
+	
+	
 	void Start() {
 		DontDestroyOnLoad(this);
 		//Application.targetFrameRate = 60; // -1 (the default) makes standalone games render as fast as they can, 
@@ -94,7 +94,7 @@ public class CcNet : MonoBehaviour {
 		// scripts
 		hud = GetComponent<Hud>();
 		log = GetComponent<CcLog>();
-		artill = GetComponent<Arsenal>();
+		arse = GetComponent<Arsenal>();
 		CurrMatch = new MatchData(Match.FFAFragMatch);
 		
 		// load prefabs
@@ -102,9 +102,9 @@ public class CcNet : MonoBehaviour {
 		foreach (var p in prefabs) {
 			switch (p.name) {
 				case "Basketball": basketballPrefab = (GameObject)p; break;	
-				case "FPSEntity": fpsEntityPrefab = (GameObject)p; break;				
+				case "FPSEntity": entityPrefab = (GameObject)p; break;				
 				case "PickupBox": pickupBoxPrefab = (GameObject)p; break;	
-				case "SplateCube": splatPrefab = (GameObject)p; break;	
+				case "SplatCube": splatPrefab = (GameObject)p; break;	
 			}
 			
 		}
@@ -182,13 +182,13 @@ public class CcNet : MonoBehaviour {
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		// something detonated, let the artillery script deal with it
 		latestPacket = Time.time;
-		artill.Detonate((Item)weapon, position, bulletID);
+		arse.Detonate((Item)weapon, position, bulletID);
 		
 		if (isServer) {
 			// we are server, lets check to see if anyone got hurt in the detonation
 			for (int i=0; i<players.Count; i++){
 				if (Vector3.Distance(position, players[i].Entity.transform.position) 
-					< artill.GetDetonationRadius((Item)weapon) + 0.5f
+					< arse.GetDetonationRadius((Item)weapon) + 0.5f
 				) {
 					// player in range
 					bool skip = false;
@@ -224,7 +224,7 @@ public class CcNet : MonoBehaviour {
 	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, NetworkMessageInfo info) {
 		// somebody fired a shot, let's show it
 		latestPacket = Time.time;
-		artill.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit);
+		arse.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit);
 	}
 	
 	public void RegisterHit(Item weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
@@ -272,7 +272,7 @@ public class CcNet : MonoBehaviour {
 			players[vi].health -= 30f;
 		}else{
 			// normal damage
-			players[vi].health -= artill.GetWeaponDamage((Item)weapon);
+			players[vi].health -= arse.GetWeaponDamage((Item)weapon);
 		}
 		
 		if (players[vi].health <= 0f) {
@@ -347,19 +347,20 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void ShowHit(int weapon, Vector3 hitPos, NetworkViewID viewID) {
-		int splatcount = 4;
+		int numGibs = 4;
 		
 		switch ((Item)weapon) {
-			case Item.Grenade:                splatcount = 15; break;
-			case Item.MachineGun:             splatcount = 2; break;
-			case Item.Rifle:                  splatcount = 30; break;
-			case Item.RocketMaybeJustASingle: splatcount = 20; break;
-			case Item.Bomb:                   splatcount = 20; break;
+			case Item.Grenade:                numGibs = 15; break;
+			case Item.MachineGun:             numGibs = 2; break;
+			case Item.Rifle:                  numGibs = 30; break;
+			case Item.RocketMaybeJustASingle: numGibs = 20; break;
+			case Item.Bomb:                   numGibs = 20; break;
 			
-			case Item.Suicide:                splatcount = 30; break;
-		}		
+			case Item.Suicide:                numGibs = 30; break;
+		}
+		numGibs *= 4;
 		
-		for (int i=0; i<splatcount; i++) {
+		for (int i=0; i<numGibs; i++) {
 			GameObject newSplat = (GameObject)GameObject.Instantiate(splatPrefab);
 			newSplat.transform.position = hitPos;
 		}
@@ -377,7 +378,7 @@ public class CcNet : MonoBehaviour {
 	void AnnounceGameOver() {
 		gameTimeLeft = 0f;
 		gameOver = true;
-		nextMatchTime = 15f;
+		NextMatchTime = 15f;
 	}
 	
 	[RPC]
@@ -484,7 +485,7 @@ public class CcNet : MonoBehaviour {
 			if (livingPlayers <= 1) {
 				gameTimeLeft = 0f;
 				gameOver = true;
-				nextMatchTime = 15f;
+				NextMatchTime = 15f;
 				networkView.RPC("AnnounceGameOver", RPCMode.Others);
 			}
 		}
@@ -503,9 +504,9 @@ public class CcNet : MonoBehaviour {
 		// suicides
 		if (f == v) { // fixme.... cuz if 2 players have the same name, it will read like a suicide when it wasn't
 			switch (Random.Range(0, 5)) {
-				case 0:	return f + " went and bought the farm!";
+				case 0:	return f + " bought the farm!";
 				case 1:	return f + " changed career... to Daisy Pusher!";
-				case 2:	return f + " bit the dust!";
+				case 2:	return f + " really bit the dust!";
 				case 3:	return f + " really shot themself in the foot!";
 				case 4:	return f + " did some nice kamikaze work!";
 				default: return "....";
@@ -513,13 +514,12 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// normal frags
-		switch (Random.Range(0, 3)) {
+		switch (Random.Range(0, 5)) {
 			case 0:	return f + " really gave " + v + " what for!";
 			case 1:	return f + " fixed " + v + "'s little red wagon!";
 			case 2:	return f + " messed up " + v + " real bad!";
-//			case 3:	return f + " really gave " + v + " what for!";
-//			case 4:	return f + " really gave " + v + " what for!";
-//			case 5:	return f + " really gave " + v + " what for!";
+			case 3:	return f + " sent " + v + " to a better place!";
+			case 4:	return f + " released " + v + "'s spirit from these mortal chains!";
 			default: return "....";
 		}
 	}
@@ -642,15 +642,15 @@ public class CcNet : MonoBehaviour {
 				gameTimeLeft = 0f;
 				gameOver = true;
 				
-				nextMatchTime = 15f;
+				NextMatchTime = 15f;
 			}
 		}
 		
 		// if game over, count in next match
 		if (Connected && gameOver) {
-			nextMatchTime -= Time.deltaTime;
-			if (nextMatchTime <= 0f){
-				nextMatchTime = 0f;
+			NextMatchTime -= Time.deltaTime;
+			if (NextMatchTime <= 0f){
+				NextMatchTime = 0f;
 				
 				if (isServer) {
 					//begin next match using current settings
@@ -675,7 +675,7 @@ public class CcNet : MonoBehaviour {
 						if (pickupPoints[i].pickupType == 4) item = CurrMatch.pickupSlot4;
 						if (pickupPoints[i].pickupType == 5) item = CurrMatch.pickupSlot5;
 						if (item == Item.Random) {
-							item = (Item)Random.Range(-1, artill.Guns.Length);
+							item = (Item)Random.Range(-1, arse.Guns.Length);
 							if (item == Item.None) 
 								item--;
 						}
@@ -699,14 +699,26 @@ public class CcNet : MonoBehaviour {
 					return;
 				
 				pickupPoints[i].stocked = true;
-				
-				GameObject newPickup = (GameObject)GameObject.Instantiate(pickupBoxPrefab);
-				pickupPoints[i].currentAvailablePickup = newPickup;
-				newPickup.transform.position = pickupPoints[i].transform.position;
-				newPickup.transform.localScale = Vector3.one * 0.5f;
-				PickupBoxScript box = newPickup.GetComponent<PickupBoxScript>();
+
+				// health will be a box with its 'Health' pic on it
+				var o = pickupBoxPrefab;
+				if (item >= (int)Item.Pistol) 
+					o = arse.Guns[item].Prefab;
+
+				var n = (GameObject)GameObject.Instantiate(o);
+				pickupPoints[i].currentAvailablePickup = n;
+				n.transform.position = pickupPoints[i].transform.position;
+				n.transform.localScale = Vector3.one * 0.5f;
+
+				PickupBoxScript box;
+				if (item >= (int)Item.Pistol) {
+					box = n.AddComponent<PickupBoxScript>();
+					box.boxObj = n;
+				}else{
+					box = n.GetComponent<PickupBoxScript>();
+				}
 				box.pickupPoint = pickupPoints[i];
-				
+
 				if (item < (int)Item.Pistol) {
 					// health
 					box.pickupName = "health";
@@ -716,11 +728,11 @@ public class CcNet : MonoBehaviour {
 					box.boxObj.renderer.materials = mats;
 				}else{
 					// gun of some type
-					box.pickupName = artill.Guns[item].Name;
-					box.iconObj.renderer.material.SetTexture("_MainTex",artill.Guns[item].Pic);
-					Material[] mats = box.boxObj.renderer.materials;
-					mats[0] = artill.Guns[item].Mat;
-					box.boxObj.renderer.materials = mats;
+					box.pickupName = arse.Guns[item].Name;
+					//box.iconObj.renderer.material.SetTexture("_MainTex", arse.Guns[item].Pic);
+					//Material[] mats = box.boxObj.renderer.materials;
+					//mats[0] = arse.Guns[item].Mat;
+					//box.boxObj.renderer.materials = mats;
 				}
 			}
 		}
@@ -761,7 +773,7 @@ public class CcNet : MonoBehaviour {
 				if (pickupPoints[i].pickupType == 5) item = CurrMatch.pickupSlot5;
 				
 				if (item == Item.Random) {
-					item = (Item)Random.Range(-1, artill.Guns.Length);
+					item = (Item)Random.Range(-1, arse.Guns.Length);
 					
 					if (item == Item.None) 
 						item--;
@@ -855,7 +867,7 @@ public class CcNet : MonoBehaviour {
 				// this is a lives match, and now we have enough players
 				gameTimeLeft = 0f;
 				gameOver = true;
-				nextMatchTime = 5f; // CHANGE ME
+				NextMatchTime = 5f; // CHANGE ME
 				networkView.RPC("AnnounceGameOver", RPCMode.Others);
 			}	
 		}
@@ -884,7 +896,7 @@ public class CcNet : MonoBehaviour {
 		if (levelLoaded) {
 			// only instantiate the actual object of the player if we are in the right level
 			// uninstantiated players are added when the level finished loading
-			players[players.Count-1].InstantiateEntity(fpsEntityPrefab);
+			players[players.Count-1].InstantiateEntity(entityPrefab);
 		}
 		
 		
@@ -1011,7 +1023,7 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	public float gameTimeLeft = 0f;
-	public float nextMatchTime = 0f;
+	public float NextMatchTime = 0f;
 	
 	[RPC]
 	void BroadcastNewGame(NetworkViewID viewID, string matchName, string levelName, string matchDescript, int winScore, 
@@ -1039,7 +1051,7 @@ public class CcNet : MonoBehaviour {
 		if (!isServer) 
 			gameOver = gameIsOver;
 		
-		nextMatchTime = 15f;
+		NextMatchTime = 15f;
 		
 		// if we get to this point, it's a new game, so let's get it together!
 		NetVI = viewID;
@@ -1114,7 +1126,7 @@ public class CcNet : MonoBehaviour {
 		localPlayer.kills = 0;
 		localPlayer.deaths = 0;
 		localPlayer.currentScore = 0;
-		artill.Clear();
+		arse.Clear();
 		
 		// now let's load the level
 		preppingLevel = true;
@@ -1142,7 +1154,7 @@ public class CcNet : MonoBehaviour {
 			
 			// add fps entities for all known players
 			for (int i=0; i<players.Count; i++) {
-				players[i].InstantiateEntity(fpsEntityPrefab);
+				players[i].InstantiateEntity(entityPrefab);
 			}
 			
 			// tell everyone we're here

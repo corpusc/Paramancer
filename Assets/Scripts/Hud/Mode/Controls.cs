@@ -325,10 +325,7 @@ public class Controls : MonoBehaviour {
 		}
 		
 		// inform user of remapping ability
-		if ((Time.time % 0.5f) > 0.25f)
-			GUI.color = Color.cyan;
-		else
-			GUI.color = Color.blue;
+		S.GetShoutyColor();
 		GUI.Box(new Rect(0, Screen.height-50, 300, 25), "Left-Click on actions to move them elsewhere");
 		GUI.Box(new Rect(0, Screen.height-25, 300, 25), "Right-Click on keys to swap them with others");
 

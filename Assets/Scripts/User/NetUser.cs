@@ -39,12 +39,12 @@ public class NetUser {
 
 	
 	
-	public void InstantiateEntity(GameObject fpsEntityPrefab) {
+	public void InstantiateEntity(GameObject entityPrefab) {
 		Debug.Log("InstantiateEntity()");
 		if (Entity != null) 
 			return;
 		
-		var o = (GameObject)GameObject.Instantiate(fpsEntityPrefab);
+		var o = (GameObject)GameObject.Instantiate(entityPrefab);
 		Entity = o.GetComponent<EntityClass>();
 		Entity.colA = colA;
 		Entity.colB = colB;
