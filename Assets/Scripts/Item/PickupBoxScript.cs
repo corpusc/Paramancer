@@ -11,19 +11,26 @@ public class PickupBoxScript : MonoBehaviour {
 	CcNet net;
 	GameObject localPlayer;
 	float sinny = 0f;
-	float rotationOffset; // so that they aren't all pointed in the same direction
+	float yOff; // rotation offset, so that they aren't all pointed in the same direction
+	float zOff; // rotation offset, so that they aren't all pointed in the same direction
 	Vector3 start;
 	
 	
 	
 	void Start() {
-		net = GameObject.Find("Main Program").GetComponent<CcNet>();
+		if (pickupName == "Health") {
+			//boxObj.transform.Rotate(0, 0, Random.Range(0f, 360f));        original setting for all BOX models
+			//yOff = 90f;
+			zOff = 90f;
+		}else{
+			zOff = Random.Range(0f, 360f);
+		}
+
+		boxObj.transform.Rotate(270, yOff, zOff);
 		sinny = Random.Range(0f, 4f);
-		rotationOffset = Random.Range(0f, 360f);
-		//boxObj.transform.Rotate(0, 0, Random.Range(0f, 360f));        original setting for all BOX models
-		boxObj.transform.Rotate(270, 0, rotationOffset);
 		boxObj.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
 		start = boxObj.transform.position + Vector3.up/3;
+		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 	}
 	
 	void Update() {
@@ -45,7 +52,11 @@ public class PickupBoxScript : MonoBehaviour {
 		sinny += Time.deltaTime * 2f;
 		boxObj.transform.position = start + (Vector3.up * ((Mathf.Sin(sinny)*0.2f) + 0.3f));
 //		boxObj.transform.position = transform.position + (Vector3.up * ((Mathf.Sin(sinny)*0.1f) + 0.3f));      original setting for all BOX models
-		boxObj.transform.Rotate(0, 0, 130f * Time.deltaTime);
+
+		if (pickupName == "Health")
+			boxObj.transform.Rotate(300f * Time.deltaTime, 0, 0);
+		else
+			boxObj.transform.Rotate(0, 0, 130f * Time.deltaTime);
 	}
 	
 	public void Pickup() {

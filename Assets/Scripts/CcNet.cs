@@ -721,7 +721,7 @@ public class CcNet : MonoBehaviour {
 
 				if (item < (int)Item.Pistol) {
 					// health
-					box.pickupName = "health";
+					box.pickupName = "Health";
 					box.iconObj.renderer.material.SetTexture("_MainTex", Pics.Health);
 					Material[] mats = box.boxObj.renderer.materials;
 					mats[0].color = Color.green;

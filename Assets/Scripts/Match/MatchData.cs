@@ -8,9 +8,9 @@ public class MatchData {
 	public string[] allowedLevels;
 	// specific mode/game settings stuff
 	public string levelName; // ...to load/play in
-	public int winScore = 0;
-	public float Duration = 3f; // (negative for infinite)
-	public float respawnWait = 10f;
+	public int winScore = 30;
+	public float Duration = 8f; // (negative for infinite)
+	public float respawnWait = 3f;
 	public bool deathsSubtractScore = true;
 	public bool killsIncreaseScore = true;
 	public bool teamBased = false;
@@ -18,15 +18,15 @@ public class MatchData {
 	public bool pitchBlack = false;
 	public Item spawnGunA = Item.Pistol;
 	public Item spawnGunB = Item.Grenade;
-	public float restockTime = 10f;
+	public float restockTime = 12f;
 	public int playerLives = 0;
 	public bool basketball = false;
 	// what is in the level pickupslots?
-	public Item pickupSlot1 = Item.Pistol;
+	public Item pickupSlot1 = Item.Health;
 	public Item pickupSlot2 = Item.Grenade;
 	public Item pickupSlot3 = Item.MachineGun;
 	public Item pickupSlot4 = Item.Rifle;
-	public Item pickupSlot5 = Item.Health;
+	public Item pickupSlot5 = Item.Pistol;
 	
 	
 	

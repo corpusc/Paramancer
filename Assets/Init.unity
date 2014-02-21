@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Error: 
-  connected: 0
+  Connected: 0
   isServer: 0
   uniqueGameName: Splat Death Salad
   gameName: TestSession
@@ -259,11 +259,8 @@ MonoBehaviour:
   gunBobbing: 1
   autoPickup: 0
   gameVolume: 1
-  fpsEntityPrefab: {fileID: 100004, guid: 89a329f693d984ee18392aeb629721c3, type: 2}
-  pickupBoxPrefab: {fileID: 100002, guid: d590a367980aa41cdae42504cf74de32, type: 2}
-  splatPrefab: {fileID: 100000, guid: 11fe9d174a98e4571b16186b46fee9a8, type: 2}
   gameTimeLeft: 0
-  nextMatchTime: 0
+  NextMatchTime: 0
 --- !u!114 &1973207296
 MonoBehaviour:
   m_ObjectHideFlags: 0
