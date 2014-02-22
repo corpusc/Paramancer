@@ -152,7 +152,7 @@ public class Arsenal : MonoBehaviour {
 	}
 
 	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, 
-		NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit
+		NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit, bool sprint = false
 	) {
 		switch (weapon) {
 			case Item.Pistol:
@@ -173,6 +173,7 @@ public class Arsenal : MonoBehaviour {
 				newGrenade.GetComponent<GrenadeScript>().viewID = bulletID;
 				newGrenade.GetComponent<GrenadeScript>().shooterID = shooterID;
 				newGrenade.GetComponent<GrenadeScript>().detonationTime = 3f;
+				newGrenade.GetComponent<GrenadeScript>().throwFatser = sprint;
 				
 				activeGrenades.Add(newGrenade.GetComponent<GrenadeScript>());
 				break;

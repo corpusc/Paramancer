@@ -9,9 +9,9 @@ public class Avatar : MonoBehaviour {
 	public float MiddleOfHead = 1.8f;
 	public float SprintMultiplier = 2.0f;
 	public Vector3 UpVector = new Vector3(0.0f, 1.0f, 0.0f);
+	public bool sprinting = false;
 	
 	// private 
-	bool sprinting = false;
 	float sprintActivatedTime = 0f;
 	const float sprintDuration = 5f;
 	

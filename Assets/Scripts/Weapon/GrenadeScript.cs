@@ -9,6 +9,7 @@ public class GrenadeScript : MonoBehaviour {
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;
 	public AudioClip sfx_bounce;
+	public bool throwFatser = false;
 	
 	// private
 	bool alive = true;
@@ -23,7 +24,7 @@ public class GrenadeScript : MonoBehaviour {
 		transform.position = start;
 		lastPos = start;
 		detonationTime += Time.time;
-		moveVector = direction * 20f;
+		moveVector = direction * (throwFatser ? 40f : 20f);
 	}
 	
 	void Update () {

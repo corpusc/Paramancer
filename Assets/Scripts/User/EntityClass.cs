@@ -737,7 +737,7 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
 			case Item.Grenade:
-				net.Shoot(it, Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
+			net.Shoot(it, Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false, ava.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
 			case Item.MachineGun:

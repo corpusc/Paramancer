@@ -214,16 +214,16 @@ public class CcNet : MonoBehaviour {
 		}
 	}
 	
-	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit) {
+	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit, bool sprint = false) {
 		// we have fired a shot, let's tell everyone about it so they can see it
 		NetworkViewID bulletID = Network.AllocateViewID();
-		networkView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit);
+		networkView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit, sprint);
 	}
 	[RPC]
-	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, NetworkMessageInfo info) {
+	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, bool sprint, NetworkMessageInfo info) {
 		// somebody fired a shot, let's show it
 		latestPacket = Time.time;
-		arse.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit);
+		arse.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit, sprint);
 	}
 	
 	public void RegisterHit(Item weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
