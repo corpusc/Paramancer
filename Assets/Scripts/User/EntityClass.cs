@@ -186,8 +186,7 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		if (isLocal) {
-			if (Spectating) {
-			}else{
+			if (!Spectating) {
 				Vector3 lastPos = transform.position;
 				if (User.health > 0f) {
 					if (offeredPickup != "") {
@@ -210,7 +209,7 @@ public class EntityClass : MonoBehaviour {
 								}
 							}
 							
-							if (offeredPickup == "health" && User.health < 100f){
+							if (offeredPickup == "Health" && User.health < 100f){
 								net.ConsumeHealth(User.viewID);
 								net.localPlayer.health = 100f;
 								User.health = 100f;

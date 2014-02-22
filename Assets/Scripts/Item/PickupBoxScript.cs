@@ -11,26 +11,27 @@ public class PickupBoxScript : MonoBehaviour {
 	CcNet net;
 	GameObject localPlayer;
 	float sinny = 0f;
-	float yOff; // rotation offset, so that they aren't all pointed in the same direction
 	float zOff; // rotation offset, so that they aren't all pointed in the same direction
 	Vector3 start;
+	bool isHealth;
 	
 	
 	
 	void Start() {
 		if (pickupName == "Health") {
-			//boxObj.transform.Rotate(0, 0, Random.Range(0f, 360f));        original setting for all BOX models
-			//yOff = 90f;
+			isHealth = true;
 			zOff = 90f;
 		}else{
+			isHealth = false;
 			zOff = Random.Range(0f, 360f);
 		}
 
-		boxObj.transform.Rotate(270, yOff, zOff);
+		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		sinny = Random.Range(0f, 4f);
+		//boxObj.transform.Rotate(0, 0, Random.Range(0f, 360f));        original setting for all BOX models
+		boxObj.transform.Rotate(270, 0, zOff);
 		boxObj.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
 		start = boxObj.transform.position + Vector3.up/3;
-		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 	}
 	
 	void Update() {
@@ -41,8 +42,8 @@ public class PickupBoxScript : MonoBehaviour {
 				}
 			}
 		}else{
-			if (Vector3.Distance(localPlayer.transform.position,transform.position) < 2f && 
-				localPlayer.transform.position.y > transform.position.y-0.5f
+			if (Vector3.Distance(localPlayer.transform.position, transform.position) < 2f && 
+				localPlayer.transform.position.y > transform.position.y - 0.5f
 			) {
 				localPlayer.GetComponent<EntityClass>().offeredPickup = pickupName;
 				localPlayer.GetComponent<EntityClass>().currentOfferedPickup = this;
@@ -53,7 +54,7 @@ public class PickupBoxScript : MonoBehaviour {
 		boxObj.transform.position = start + (Vector3.up * ((Mathf.Sin(sinny)*0.2f) + 0.3f));
 //		boxObj.transform.position = transform.position + (Vector3.up * ((Mathf.Sin(sinny)*0.1f) + 0.3f));      original setting for all BOX models
 
-		if (pickupName == "Health")
+		if (isHealth)
 			boxObj.transform.Rotate(300f * Time.deltaTime, 0, 0);
 		else
 			boxObj.transform.Rotate(0, 0, 130f * Time.deltaTime);
