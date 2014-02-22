@@ -331,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3848e8111af74de08be515e2babeb1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dissPrefab: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9, type: 2}
+  particle: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

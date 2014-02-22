@@ -180,12 +180,11 @@ public class CcNet : MonoBehaviour {
 	}
 	[RPC]
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
-		// something detonated, let the artillery script deal with it
 		latestPacket = Time.time;
 		arse.Detonate((Item)weapon, position, bulletID);
 		
 		if (isServer) {
-			// we are server, lets check to see if anyone got hurt in the detonation
+			// see if anyone gets hurt
 			for (int i=0; i<players.Count; i++){
 				if (Vector3.Distance(position, players[i].Entity.transform.position) 
 					< arse.GetDetonationRadius((Item)weapon) + 0.5f

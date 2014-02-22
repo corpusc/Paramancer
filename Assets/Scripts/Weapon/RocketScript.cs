@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class RocketScript : MonoBehaviour {
-	public GameObject dissPrefab;
+	public GameObject particle;
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;
 	
@@ -20,10 +20,10 @@ public class RocketScript : MonoBehaviour {
 	void Update () {
 		if (enabled){
 			transform.position += transform.forward * Time.deltaTime * 30f;
-			var newDiss = (GameObject)GameObject.Instantiate(dissPrefab);
-			newDiss.transform.position = transform.position;
+			var np = (GameObject)GameObject.Instantiate(particle);
+			np.transform.position = transform.position;
 			var hitInfo = new RaycastHit();
-			int layerMask = (1<<0);
+			int layerMask = (1<<8) | 1;   //(1<<0);
 			var rayDirection = (transform.position - lastPos).normalized;
 			if (Physics.SphereCast(lastPos, 0.15f, rayDirection, out hitInfo, Vector3.Distance(transform.position, lastPos), layerMask)) {
 				//Debug.Log(hitInfo.collider.gameObject.name);
