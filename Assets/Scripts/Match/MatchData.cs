@@ -50,8 +50,8 @@ public class MatchData {
 				pickupSlot5 = Item.RocketLauncher;
 				break;
 			case Match.GrueFood:
-				Name = "Grue Food";
-				Descript = "It is pitch black.  You are likely to be eaten by a grue.";
+				Name = "Slender Mode";
+				Descript = "It is pitch black.  It's right behind you.";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 				respawnWait = 5f;
 				pitchBlack = true;

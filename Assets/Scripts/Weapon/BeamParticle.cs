@@ -2,10 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class BeamParticle : MonoBehaviour {
-	private Vector3 moveVec = new Vector3(
-		Random.Range(-max, max), 
-		Random.Range(-max, max), 
-		Random.Range(-max, max));
+	private Vector3 moveVec = Random.insideUnitSphere * max;
 	public Vector3 MoveVec {
 		get { return moveVec; }
 		set {
@@ -15,7 +12,7 @@ public class BeamParticle : MonoBehaviour {
 	}
 
 	// private 
-	const float max = -0.2f; // random max
+	const float max = 0.2f; // random max
 	const float f = -0.2f;
 	float life = 0.8f;
 	Vector3 shrinkFactor = new Vector3(f, f, f);
