@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class BeamParticle : MonoBehaviour {
-	private Vector3 moveVec = Random.insideUnitSphere * max;
+	private Vector3 moveVec = Random.insideUnitSphere;
 	public Vector3 MoveVec {
 		get { return moveVec; }
 		set {
@@ -10,22 +10,42 @@ public class BeamParticle : MonoBehaviour {
 			moveVec *= Random.Range(1f, 2f);
 		}
 	}
+	public float MaxSpeed = 0.2f; // random max
+	public Color StartColor = Color.blue;
+	public Color EndColor = Color.red; //always use something transparent
+	public float life = 0.8f;
+	public float f = 0.05f;
 
 	// private 
-	const float max = 0.2f; // random max
-	const float f = -0.2f;
-	float life = 0.8f;
-	Vector3 shrinkFactor = new Vector3(f, f, f);
+	Mesh mesh;
+	Vector3[] vertices;
+	Color[] colors;
+	Vector3 shrinkFactor;
+	float maxLife;
 
 
 
 	void Start() {
-		transform.localScale = Vector3.one * Random.Range(0.5f, 0.8f);
+		shrinkFactor = new Vector3(f, f, f);
+		mesh = GetComponent<MeshFilter>().mesh;
+		vertices = mesh.vertices;
+		colors = new Color[vertices.Length];
+		for (var i = 0; i < vertices.Length; i++)
+			colors[i] = StartColor;
+		mesh.colors = colors;
+		transform.localScale = Vector3.one * Random.Range(1f, 3f);
 		life -= Random.Range(0f, 0.5f);
 		life *= 5f;
+		maxLife = life;
+		moveVec *= MaxSpeed;
+		transform.rotation = Camera.main.transform.rotation;
 	}
 	
 	void Update() {
+		for (var i = 0; i < vertices.Length; i++)
+			colors[i] = Color.Lerp(EndColor, StartColor, life / maxLife);
+		mesh.colors = colors;
+
 		transform.position += moveVec * Time.deltaTime;
 		transform.rotation = Camera.main.transform.rotation;
 		transform.localScale += Time.deltaTime * shrinkFactor;

@@ -68,6 +68,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36fc7cb9551dba3439d6c5c185b0750f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxSpeed: .200000003
+  StartColor: {r: 1, g: 1, b: 0, a: .686274529}
+  EndColor: {r: 1, g: 0, b: 0, a: 0}
+  life: .800000012
+  f: .0500000007
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

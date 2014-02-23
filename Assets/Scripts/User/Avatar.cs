@@ -6,7 +6,7 @@ using System.Collections;
 public class Avatar : MonoBehaviour {
 	public bool isGrounded = false;
 	public float radius = 0.5f;
-	public float MiddleOfHead = 1.8f;
+	public float MiddleOfHead = 1.6f;
 	public float SprintMultiplier = 2.0f;
 	public Vector3 UpVector = new Vector3(0.0f, 1.0f, 0.0f);
 	public bool sprinting = false;
@@ -43,11 +43,12 @@ public class Avatar : MonoBehaviour {
 		RaycastHit coreHit = new RaycastHit();
 		Ray headRay = new Ray(transform.position + MiddleOfHead * UpVector, moveVector);
 		RaycastHit headHit = new RaycastHit();
-		int collisionLayer = 1<<0;
+		int collisionLayer = (1<<0) | (1<<8);
+		int wallCollisionLayer = 1<<0;
 		
 		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, collisionLayer)) {
 			transform.position = coreHit.point + (coreHit.normal*radius*1.1f);
-		}else if(Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, collisionLayer)) {
+		}else if(Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, wallCollisionLayer)) {
 			transform.position = headHit.point + (headHit.normal*radius*1.1f) - MiddleOfHead * UpVector;
 		}else{
 			transform.position += moveVector;
