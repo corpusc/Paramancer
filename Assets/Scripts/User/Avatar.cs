@@ -41,15 +41,13 @@ public class Avatar : MonoBehaviour {
 		isGrounded = false;
 		Ray coreRay = new Ray(transform.position, moveVector);
 		RaycastHit coreHit = new RaycastHit();
-		Ray headRay = new Ray(transform.position + MiddleOfHead * UpVector, moveVector);
-		RaycastHit headHit = new RaycastHit();
 		int collisionLayer = (1<<0) | (1<<8);
-		int wallCollisionLayer = 1<<0;
+		RaycastHit ceiling_ray = new RaycastHit();
 		
 		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, collisionLayer)) {
 			transform.position = coreHit.point + (coreHit.normal*radius*1.1f);
-		}else if(Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, wallCollisionLayer)) {
-			transform.position = headHit.point + (headHit.normal*radius*1.1f) - MiddleOfHead * UpVector;
+		}else if(Physics.Raycast(transform.position, UpVector, out ceiling_ray, MiddleOfHead, collisionLayer)) {
+			transform.position = ceiling_ray.point - MiddleOfHead * UpVector;
 		}else{
 			transform.position += moveVector;
 		}

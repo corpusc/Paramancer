@@ -15,6 +15,8 @@ public class BeamParticle : MonoBehaviour {
 	public Color EndColor = Color.red; //always use something transparent
 	public float life = 0.8f;
 	public float f = 0.05f;
+	public float MinSize = 1f;
+	public float MaxSize = 3f;
 
 	// private 
 	Mesh mesh;
@@ -33,7 +35,7 @@ public class BeamParticle : MonoBehaviour {
 		for (var i = 0; i < vertices.Length; i++)
 			colors[i] = StartColor;
 		mesh.colors = colors;
-		transform.localScale = Vector3.one * Random.Range(1f, 3f);
+		transform.localScale = Vector3.one * Random.Range(MinSize, MaxSize);
 		life -= Random.Range(0f, 0.5f);
 		life *= 5f;
 		maxLife = life;
