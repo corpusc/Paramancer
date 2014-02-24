@@ -145,10 +145,11 @@ public class Arsenal : MonoBehaviour {
 				var center = beamStart + (beamDir * progress);
 				np.transform.position = center + v;
 				np.GetComponent<BeamParticle>().MoveVec = v;
-				np.GetComponent<BeamParticle>().MinSize = 0.2f;
-				np.GetComponent<BeamParticle>().MaxSize = 0.2f;
+				np.GetComponent<BeamParticle>().MinSize = 0.4f;
+				np.GetComponent<BeamParticle>().MaxSize = 0.4f;
 				np.GetComponent<BeamParticle>().StartColor = Color.blue;
-				np.GetComponent<BeamParticle>().EndColor = Color.Lerp(Color.green, Color.clear, 1f);
+				np.GetComponent<BeamParticle>().EndColor = Color.clear;
+				np.GetComponent<BeamParticle>().ShotFromRifle = true;
 				progress += 0.20f;
 				angle += 24f;
 			}
