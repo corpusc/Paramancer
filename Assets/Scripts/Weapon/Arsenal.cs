@@ -178,7 +178,7 @@ public class Arsenal : MonoBehaviour {
 				newGrenade.GetComponent<GrenadeScript>().viewID = bulletID;
 				newGrenade.GetComponent<GrenadeScript>().shooterID = shooterID;
 				newGrenade.GetComponent<GrenadeScript>().detonationTime = 3f;
-				newGrenade.GetComponent<GrenadeScript>().throwFatser = sprint;
+				newGrenade.GetComponent<GrenadeScript>().ThrowFaster = sprint;
 				
 				activeGrenades.Add(newGrenade.GetComponent<GrenadeScript>());
 				break;

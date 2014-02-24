@@ -336,7 +336,7 @@ MonoBehaviour:
   MaxParticlesPerFrame: 15
   ExplosionParticles: 50
   ExplosionSize: .400000006
-  ForwardOffset: 1
+  ForwardOffset: 2
   Turn: 1
 --- !u!1001 &100100000
 Prefab:

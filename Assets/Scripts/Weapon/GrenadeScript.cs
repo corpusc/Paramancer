@@ -9,7 +9,8 @@ public class GrenadeScript : MonoBehaviour {
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;
 	public AudioClip sfx_bounce;
-	public bool throwFatser = false;
+	public bool ThrowFaster = false;
+	public float ForwardOffset = 1f; //prevents running into your own nade when you have lags
 	
 	// private
 	bool alive = true;
@@ -21,10 +22,10 @@ public class GrenadeScript : MonoBehaviour {
 	
 	void Start () {
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
-		transform.position = start;
+		transform.position = start + direction * ForwardOffset;
 		lastPos = start;
 		detonationTime += Time.time;
-		moveVector = direction * (throwFatser ? 40f : 20f);
+		moveVector = direction * (ThrowFaster ? 35f : 25f);
 	}
 	
 	void Update () {

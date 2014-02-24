@@ -202,6 +202,8 @@ MonoBehaviour:
   startTime: 0
   detonationTime: 0
   sfx_bounce: {fileID: 8300000, guid: 7aef0efa98e8f4ecea4d41a8cbbe5cb9, type: 3}
+  ThrowFaster: 0
+  ForwardOffset: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
