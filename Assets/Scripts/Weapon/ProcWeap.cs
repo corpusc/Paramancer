@@ -26,6 +26,23 @@ public class ProcWeap : MonoBehaviour {
 	float maxVamp = 1f;
 	//these settings are an example of something that fits within the power limit
 
+	//internal vars
+	float cooldown = 0f;
+	float barrelsRotation = 0f; //changes when weapon is shot - the shooting barrel is always the one at the top
+	int n_barrels = 4; //computed after by Start()
+
+	Vector3[] barrelPos; //relative to the weapon(also has to include rotation)
+	Vector3 barrelScale; //all barrels are of the same size
+	Vector3[] cylPos; //cylinders used in the main body of the weapon
+	Vector3[] cylScale;
+	Quaternion[] cylRotation;
+	Vector3[] cubePos;
+	Vector3[] cubeScale;
+	Quaternion[] cubeRotation;
+	Material barrelMat;
+	Material bodyMat;
+	Color shotCol = Color.green;
+
 	// Use this for initialization
 	void Start () {
 		bps = Random.Range(minBps, maxBps);
@@ -94,7 +111,7 @@ public class ProcWeap : MonoBehaviour {
 	}
 
 	float GetPower() {
-		return bps * dmg * Mathf.Sqrt(bnc + 1) * proj * (auto && bps > 1.0f ? Mathf.Sqrt(bps) : 1) * (vamp + 1.0f);
+		return bps * dmg * Mathf.Sqrt(bnc + 1) * proj * (auto && bps > 1.0f ? Mathf.Sqrt(bps) : 1) * (vamp + 1.0f) * Mathf.Sqrt(dmg);
 	}
 
 	bool RandomBool() {
