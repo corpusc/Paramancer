@@ -215,14 +215,17 @@ public class EntityClass : MonoBehaviour {
 				offeredPickup = "";
 				
 				if (User.health > 0f) {
-					if (Camera.main.transform.parent == null) 
-						SetModelVisibility(false);
+//					if (Camera.main.transform.parent == null) 
+//						SetModelVisibility(false);
 					
 					ourKiller = null;
 					Camera.main.transform.parent = camHolder.transform;
 					Camera.main.transform.localPosition = Vector3.zero;
-					//Camera.main.transform.localEulerAngles = Vector3.zero;
-					Camera.main.transform.localRotation = Quaternion.Slerp(Camera.main.transform.localRotation, Quaternion.Euler(new Vector3(0,0,0)), Time.deltaTime * 5f);
+					// this makes sure we can walk along walls/ceilings with proper mouselook orientation
+					Camera.main.transform.localRotation = Quaternion.Slerp(
+						Camera.main.transform.localRotation, 
+						Quaternion.Euler(Vector3.zero), 
+						Time.deltaTime * 5f);
 					
 					float invY = 1f;
 					if (locUser.LookInvert) 
@@ -233,10 +236,11 @@ public class EntityClass : MonoBehaviour {
 					) {
 						camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.mouseSensitivity * invY;
 						camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.mouseSensitivity;
-						if (camAngle.x >  85f) 
-							camAngle.x =  85f;
-						if (camAngle.x < -85f) 
-							camAngle.x = -85f;
+						float max = 89f; // degrees up or down limit
+						if (camAngle.x >  max) 
+							camAngle.x =  max;
+						if (camAngle.x < -max) 
+							camAngle.x = -max;
 					}
 					
 					camHolder.transform.localEulerAngles = camAngle;
@@ -788,9 +792,9 @@ public class EntityClass : MonoBehaviour {
 	
 	public void SetModelVisibility(bool visible) {
 		Material[] mats = meshObj.renderer.materials;
-		Material newMatA = new Material(dummyAMat);
-		Material newMatB = new Material(dummyBMat);
-		Material newMatC = new Material(dummyCMat);
+		var newMatA = new Material(dummyAMat);
+		var newMatB = new Material(dummyBMat);
+		var newMatC = new Material(dummyCMat);
 		newMatA.color = User.colA;
 		newMatB.color = User.colB;
 		newMatC.color = User.colC;
@@ -834,7 +838,7 @@ public class EntityClass : MonoBehaviour {
 		
 		// heads
 		for (int i=0; i<heads.Length; i++) {
-			if (i!=headType) {
+			if (i != headType) {
 				heads[i].renderer.enabled = false;
 			}
 			

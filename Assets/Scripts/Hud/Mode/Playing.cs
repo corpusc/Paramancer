@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class Playing {
+	public bool viewingScores = true;
+
+	Scoreboard scores = new Scoreboard();
 	BarMeter health = new BarMeter();
 	BarMeter energy = new BarMeter();
 	BarMeter coolDown = new BarMeter();
@@ -13,7 +16,7 @@ public class Playing {
 	int crosshairRadius = 16;
 	Color prevCrossHair;
 	float prevTick;
-	public void Draw(CcNet net, Arsenal arse, int midX, int midY) {
+	public void Draw(CcNet net, Arsenal arse, int midX, int midY, float lvs, Hud hud) {
 		var locEnt = net.localPlayer.Entity;
 //		if (locEnt == null)
 //			return;
@@ -190,9 +193,24 @@ public class Playing {
 		prevCrossHair = GUI.color;
 		GUI.matrix = old; // done drawing spinny stuff
 		GUI.color = gcol;
+
+		// team icons
+		Color gcolB = GUI.color;
+		if (net.CurrMatch.teamBased && net.localPlayer.team != 0) {
+			if /*``*/ (net.localPlayer.team == 1) {
+				GUI.DrawTexture(new Rect(Screen.width-68, 4, 64, 64), Pics.TeamRedFlag);
+			} else if (net.localPlayer.team == 2) {
+				GUI.DrawTexture(new Rect(Screen.width-68, 4, 64, 64), Pics.TeamBlueFlag);
+			}
+		}
+		
+		// scoreboard
+		if (viewingScores || net.gameOver) {
+			scores.Draw(net, hud, lvs);
+		}
 	}
 	
-	
+
 
 	string TimeStringFromSecs(float totalSecs) {
 		string timeString = "";

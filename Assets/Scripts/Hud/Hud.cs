@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Hud : MonoBehaviour {
+	public float BVS; // button vertical span
+	public float LVS; // label vertical span
 	private HudMode mode = HudMode.MenuMain;
 	public HudMode Mode {
 		get { return mode; }
@@ -26,11 +28,11 @@ public class Hud : MonoBehaviour {
 			}
 		}
 	}
-	
+
+
+
 	// private
-	bool viewingScores = true;
 	string defaultName = "Lazy Noob";
-	Scoreboard scores = new Scoreboard();
 	Playing playHud = new Playing();
 	MatchSetup matchSetup = new MatchSetup();
 	
@@ -52,7 +54,7 @@ public class Hud : MonoBehaviour {
 	
 	void Start() {
 		matchSetup.Init();
-
+		
 		// scripts
 		net = GetComponent<CcNet>();
 		log = GetComponent<CcLog>();
@@ -109,10 +111,22 @@ public class Hud : MonoBehaviour {
 			}
 			
 		if (InputUser.Started(UserAction.Scores))
-			viewingScores = !viewingScores;
+			playHud.viewingScores = !playHud.viewingScores;
 	}
 
+	bool firstTime = true;
 	void OnGUI() {
+		if (firstTime) {
+			firstTime = false;
+			// setup vertical span sizes
+			GUIStyle gs = "Button";
+			var gc = new GUIContent("Playing");
+			BVS = gs.CalcSize(gc).y;
+			gs = "Label";
+			gc = new GUIContent("Playing");
+			LVS = gs.CalcSize(gc).y;
+		}
+
 		// sizes of UI elements
 		midX = Screen.width/2;
 		midY = Screen.height/2;
@@ -124,7 +138,7 @@ public class Hud : MonoBehaviour {
 		// handle all the modes!
 		switch (Mode) {
 			case HudMode.Playing:
-				playHud.Draw(net, arse, midX, midY);
+				playHud.Draw(net, arse, midX, midY, LVS, this);
 				maybePromptClickIn();
 				break;
 				
@@ -182,10 +196,14 @@ public class Hud : MonoBehaviour {
 				break;
 		}
 			
-
-
-		if (net.Connected)
-			moveThisToPlayingHud(midX, midY);
+		// intermission countdown til next match
+		if (net.Connected && 
+		    net.gameOver) 
+		{
+			string s = "Next Game in: " +  Mathf.FloorToInt(net.NextMatchTime).ToString() + " seconds.";
+			S.GetShoutyColor();
+			S.GUIOutlinedLabel(new Rect(midX-50, 5, 200, 30), s);
+		}
 	}
 
 
@@ -691,31 +709,6 @@ public class Hud : MonoBehaviour {
 	
 	
 
-	void moveThisToPlayingHud (int midX, int midY) {
-		// team icons
-		Color gcolB = GUI.color;
-		if (net.CurrMatch.teamBased && net.localPlayer.team != 0) {
-			if /*``*/ (net.localPlayer.team == 1) {
-				GUI.DrawTexture(new Rect(Screen.width-68,4,64,64), Pics.teamRedFlag);
-			} else if (net.localPlayer.team == 2) {
-				GUI.DrawTexture(new Rect(Screen.width-68,4,64,64), Pics.teamBlueFlag);
-			}
-		}
-		
-		// scoreboard
-		if (viewingScores || net.gameOver) {
-			scores.Draw(window, net, this, vSpan);
-		}
-		
-		// intermission countdown til next match
-		if (net.gameOver) {
-			string s = "Next Game in: " +  Mathf.FloorToInt(net.NextMatchTime).ToString() + " seconds.";
-			S.GetShoutyColor();
-			S.GUIOutlinedLabel(new Rect(midX-50, 5, 200, 30), s);
-		}
-	}
-	
-	
 	
 	
 	

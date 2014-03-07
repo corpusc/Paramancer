@@ -10,8 +10,8 @@ public static class Pics {
 	static public Texture White;
 	static public Texture Black;
 	static public Texture crossHair;
-	static public Texture teamRedFlag;
-	static public Texture teamBlueFlag;
+	static public Texture TeamRedFlag;
+	static public Texture TeamBlueFlag;
 	static public Texture gameLogo;
 	static public Texture companyLogo;
 	static public Texture Sprint;
@@ -47,10 +47,10 @@ public static class Pics {
 					gameLogo = (Texture)pics[i]; 
 					break;
 				case "FlagRed": 
-					teamRedFlag = (Texture)pics[i]; 
+					TeamRedFlag = (Texture)pics[i]; 
 					break;
 				case "FlagBlue": 
-					teamBlueFlag = (Texture)pics[i]; 
+					TeamBlueFlag = (Texture)pics[i]; 
 					break;
 				case "swapper_crosshair":
 					swapperCrosshair[0] = (Texture)pics[i];

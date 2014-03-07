@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Scoreboard {
-	public void Draw(Rect r, CcNet net, Hud hud, int vSpan) {
+	public void Draw(CcNet net, Hud hud, float lvs) {
 		GUI.color = Color.cyan;
 
 		if (!net.CurrMatch.teamBased) {
@@ -24,13 +24,13 @@ public class Scoreboard {
 				}
 			}
 			
-			GUI.Label(new Rect(0, 0, 150, vSpan), "Name:");
-			GUI.Label(new Rect(150, 0, 50, vSpan), "Frags:");
-			GUI.Label(new Rect(200, 0, 50, vSpan), "Deaths:");
-			GUI.Label(new Rect(260, 0, 50, vSpan), "Score:");
+			GUI.Label(new Rect(0, 0, 150, lvs), "Name:");
+			GUI.Label(new Rect(150, 0, 50, lvs), "Frags:");
+			GUI.Label(new Rect(200, 0, 50, lvs), "Deaths:");
+			GUI.Label(new Rect(260, 0, 50, lvs), "Score:");
 			
 			if (net.CurrMatch.playerLives != 0) 
-				GUI.Label(new Rect(400, vSpan,50,vSpan), "Lives:");
+				GUI.Label(new Rect(400, lvs, 50, lvs), "Lives:");
 			
 			for (int i=0; i<net.players.Count; i++) {
 				GUI.color = new Color(0.8f, 0.8f, 0.8f, 1f);
@@ -48,13 +48,13 @@ public class Scoreboard {
 						Random.Range(0.5f, 1f), 
 						Random.Range(0.5f, 1f), 1f);
 				
-				GUI.Label(new Rect(0, (i*vSpan) + vSpan, 150, vSpan), net.players[i].name);
-				GUI.Label(new Rect(150, (i*vSpan) + vSpan, 50, vSpan), net.players[i].kills.ToString());
-				GUI.Label(new Rect(200, (i*vSpan) + vSpan, 50, vSpan), net.players[i].deaths.ToString());
-				GUI.Label(new Rect(260, (i*vSpan) + vSpan, 50, vSpan), net.players[i].currentScore.ToString());
+				GUI.Label(new Rect(0, (i*lvs) + lvs, 150, lvs), net.players[i].name);
+				GUI.Label(new Rect(150, (i*lvs) + lvs, 50, lvs), net.players[i].kills.ToString());
+				GUI.Label(new Rect(200, (i*lvs) + lvs, 50, lvs), net.players[i].deaths.ToString());
+				GUI.Label(new Rect(260, (i*lvs) + lvs, 50, lvs), net.players[i].currentScore.ToString());
 				
 				if (net.CurrMatch.playerLives != 0) 
-					GUI.Label(new Rect(400, (i*vSpan) + 40, 50, vSpan), net.players[i].lives.ToString());
+					GUI.Label(new Rect(400, (i*lvs) + 40, 50, lvs), net.players[i].lives.ToString());
 			}
 			
 		}
@@ -64,7 +64,8 @@ public class Scoreboard {
 		if (net.CurrMatch.teamBased) {
 			hud.DrawWindowBackground();
 
-			GUI.BeginGroup(r);
+			int mfse = Mathf.Min(Screen.width, Screen.height) / 3; // margin from screen edge
+			GUI.BeginGroup(new Rect(mfse, mfse, Screen.width-mfse, Screen.height-mfse));
 			
 			GUI.color = new Color(1f, 0f, 0f, 1f);
 			
@@ -97,10 +98,10 @@ public class Scoreboard {
 					if (net.gameOver && net.team1Score>net.team2Score) 
 						GUI.color = new Color(Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), 1f);
 					
-					GUI.Label(new Rect(10, (yOffset*20) + 60, 150, vSpan), net.players[i].name);
-					GUI.Label(new Rect(160, (yOffset*20) + 60, 50, vSpan), net.players[i].kills.ToString());
-					GUI.Label(new Rect(210, (yOffset*20) + 60, 50, vSpan), net.players[i].deaths.ToString());
-					GUI.Label(new Rect(270, (yOffset*20) + 60, 50, vSpan), net.players[i].currentScore.ToString());
+					GUI.Label(new Rect(10, (yOffset*20) + 60, 150, lvs), net.players[i].name);
+					GUI.Label(new Rect(160, (yOffset*20) + 60, 50, lvs), net.players[i].kills.ToString());
+					GUI.Label(new Rect(210, (yOffset*20) + 60, 50, lvs), net.players[i].deaths.ToString());
+					GUI.Label(new Rect(270, (yOffset*20) + 60, 50, lvs), net.players[i].currentScore.ToString());
 					
 					yOffset++;
 				}

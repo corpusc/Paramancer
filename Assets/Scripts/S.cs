@@ -7,6 +7,8 @@ using System.Globalization;
 
 
 static public class S {
+	const float GoldenRatio = 1.6180339887498948482f;
+
 	static public int GetInt(string v) {
 		return Convert.ToInt32(v.Trim(), new CultureInfo("en-US"));
 	}
