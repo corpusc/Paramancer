@@ -48,15 +48,7 @@ public class EntityClass : MonoBehaviour {
 	public Material pyramidMat;
 	public Material chocoboMat;
 	public Material spikeMat;
-	public Material tentacleMat;
-	public Material robotHeadMat;
-	public Material speaceshipMat;
-	public Material enforcerMat;
-	public Material smileyMat;
-	public Material helmetMat;
-	public Material paperbagMat;
-	public Material maheadMat;
-	
+
 	public Color colA;
 	public Color colB;
 	public Color colC;
@@ -862,14 +854,6 @@ public class EntityClass : MonoBehaviour {
 			heads[7].renderer.material = pyramidMat;
 			heads[8].renderer.material = chocoboMat;
 			heads[9].renderer.material = spikeMat;
-			heads[10].renderer.material = tentacleMat;
-			heads[11].renderer.material = robotHeadMat;
-			heads[12].renderer.material = speaceshipMat;
-			heads[13].renderer.material = enforcerMat;
-			heads[14].renderer.material = smileyMat;
-			heads[15].renderer.material = helmetMat;
-			heads[16].renderer.material = paperbagMat;
-			heads[17].renderer.material = maheadMat;
 		}
 		
 		if (firstPersonGun != null && 

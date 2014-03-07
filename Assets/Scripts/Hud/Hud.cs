@@ -100,7 +100,7 @@ public class Hud : MonoBehaviour {
 				Mode = HudMode.MenuMain;
 				Screen.lockCursor = false;
 			}else{
-				// the only people who should see my informative fullscreen box
+				// the only people who should see my fullscreen'ish button
 				// now (about how you gotta click in the window to grab cursor)
 				// should be people running the game in the Unity IDE
 				// & those who hit ESC key
@@ -121,7 +121,7 @@ public class Hud : MonoBehaviour {
 		br.y = window.y - br.height;
 
 
-		// handle all the modes!!!
+		// handle all the modes!
 		switch (Mode) {
 			case HudMode.Playing:
 				playHud.Draw(net, arse, midX, midY);
@@ -295,6 +295,7 @@ public class Hud : MonoBehaviour {
 	
 	
 	
+	float headSliderPos = 0f;
 	void avatarSetup() {
 		DrawWindowBackground(true);
 
@@ -315,35 +316,25 @@ public class Hud : MonoBehaviour {
 		GUILayout.EndHorizontal();
 			
 		GUILayout.Label("Colour A:");
-		net.localPlayer.colA.r = GUILayout.HorizontalSlider(net.localPlayer.colA.r,0f,1f);
-		net.localPlayer.colA.g = GUILayout.HorizontalSlider(net.localPlayer.colA.g,0f,1f);
-		net.localPlayer.colA.b = GUILayout.HorizontalSlider(net.localPlayer.colA.b,0f,1f);
+		net.localPlayer.colA.r = GUILayout.HorizontalSlider(net.localPlayer.colA.r, 0f, 1f);
+		net.localPlayer.colA.g = GUILayout.HorizontalSlider(net.localPlayer.colA.g, 0f, 1f);
+		net.localPlayer.colA.b = GUILayout.HorizontalSlider(net.localPlayer.colA.b, 0f, 1f);
 				
 		GUILayout.Label("Colour B:");
-		net.localPlayer.colB.r = GUILayout.HorizontalSlider(net.localPlayer.colB.r,0f,1f);
-		net.localPlayer.colB.g = GUILayout.HorizontalSlider(net.localPlayer.colB.g,0f,1f);
-		net.localPlayer.colB.b = GUILayout.HorizontalSlider(net.localPlayer.colB.b,0f,1f);
+		net.localPlayer.colB.r = GUILayout.HorizontalSlider(net.localPlayer.colB.r, 0f, 1f);
+		net.localPlayer.colB.g = GUILayout.HorizontalSlider(net.localPlayer.colB.g, 0f, 1f);
+		net.localPlayer.colB.b = GUILayout.HorizontalSlider(net.localPlayer.colB.b, 0f, 1f);
 		
 		GUILayout.Label("Colour C:");
-		net.localPlayer.colC.r = GUILayout.HorizontalSlider(net.localPlayer.colC.r,0f,1f);
-		net.localPlayer.colC.g = GUILayout.HorizontalSlider(net.localPlayer.colC.g,0f,1f);
-		net.localPlayer.colC.b = GUILayout.HorizontalSlider(net.localPlayer.colC.b,0f,1f);
-				
-		GUILayout.Label("");
-				
-		if (GUILayout.Button("Head type: " + net.localPlayer.headType.ToString())) {
-			net.localPlayer.headType++;
-			if (net.localPlayer.headType > 17) 
-				net.localPlayer.headType = 0;
-		}
+		net.localPlayer.colC.r = GUILayout.HorizontalSlider(net.localPlayer.colC.r, 0f, 1f);
+		net.localPlayer.colC.g = GUILayout.HorizontalSlider(net.localPlayer.colC.g, 0f, 1f);
+		net.localPlayer.colC.b = GUILayout.HorizontalSlider(net.localPlayer.colC.b, 0f, 1f);
 		
-		if (net.localPlayer.headType == 11) GUILayout.Label("Head Credit: @Ast3c");
-		if (net.localPlayer.headType == 12) GUILayout.Label("Head Credit: @IcarusTyler");
-		if (net.localPlayer.headType == 13) GUILayout.Label("Head Credit: @LeanderCorp");
-		if (net.localPlayer.headType == 14) GUILayout.Label("Head Credit: @kagai_shan");
-		if (net.localPlayer.headType == 15) GUILayout.Label("Head Credit: @Ast3c");
-		if (net.localPlayer.headType == 16) GUILayout.Label("Head Credit: @Ast3c");
-		if (net.localPlayer.headType == 17) GUILayout.Label("Head Credit: @Ast3c");
+		// head slider
+		float hss = 1f / (int)Head.Count; // head slider span
+		net.localPlayer.headType = (int)(headSliderPos / hss);
+		GUILayout.Label(S.GetSpacedOut("Head: " + (Head)net.localPlayer.headType));
+		headSliderPos = GUILayout.HorizontalSlider(headSliderPos, 0f, 1f);
 				
 		// save player
 		if (net.localPlayer.name != "" && net.localPlayer.name != " ") {
@@ -627,45 +618,14 @@ public class Hud : MonoBehaviour {
 			mats[2].color = net.localPlayer.colC;
 			GameObject.Find("NormalHead").renderer.material.color = net.localPlayer.colA;
 			
-			// heads
-			GameObject.Find("NormalHead").renderer.enabled = false;
-			GameObject.Find("CardboardBoxHead").renderer.enabled = false;
-			GameObject.Find("FishHead").renderer.enabled = false;
-			GameObject.Find("BananaHead").renderer.enabled = false;
-			GameObject.Find("CreeperHead").renderer.enabled = false;
-			GameObject.Find("ElephantHeadMesh").renderer.enabled = false;
-			GameObject.Find("MoonHead").renderer.enabled = false;
-			GameObject.Find("PyramidHead").renderer.enabled = false;
-			GameObject.Find("ChocoboHead").renderer.enabled = false;
-			GameObject.Find("SpikeHead").renderer.enabled = false;
-			GameObject.Find("TentacleRoot").renderer.enabled = false;
-			GameObject.Find("RobotHead").renderer.enabled = false;
-			GameObject.Find("head_spaceship").renderer.enabled = false;
-			GameObject.Find("enforcer_face").renderer.enabled = false;
-			GameObject.Find("SmileyHead").renderer.enabled = false;
-			GameObject.Find("Helmet").renderer.enabled = false;
-			GameObject.Find("PaperBag").renderer.enabled = false;
-			GameObject.Find("Mahead").renderer.enabled = false;
-			
-			if (net.localPlayer.headType == 0) GameObject.Find("NormalHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 1) GameObject.Find("CardboardBoxHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 2) GameObject.Find("FishHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 3) GameObject.Find("BananaHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 4) GameObject.Find("CreeperHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 5) GameObject.Find("ElephantHeadMesh").renderer.enabled = true;
-			if (net.localPlayer.headType == 6) GameObject.Find("MoonHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 7) GameObject.Find("PyramidHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 8) GameObject.Find("ChocoboHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 9) GameObject.Find("SpikeHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 10) GameObject.Find("TentacleRoot").renderer.enabled = true;
-			if (net.localPlayer.headType == 11) GameObject.Find("RobotHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 12) GameObject.Find("head_spaceship").renderer.enabled = true;
-			if (net.localPlayer.headType == 13) GameObject.Find("enforcer_face").renderer.enabled = true;
-			if (net.localPlayer.headType == 14) GameObject.Find("SmileyHead").renderer.enabled = true;
-			if (net.localPlayer.headType == 15) GameObject.Find("Helmet").renderer.enabled = true;
-			if (net.localPlayer.headType == 16) GameObject.Find("PaperBag").renderer.enabled = true;
-			if (net.localPlayer.headType == 17) GameObject.Find("Mahead").renderer.enabled = true;
-			
+			// visibility of heads 
+			for (int i = 0; i < (int)Head.Count; i++) {
+				if (i == net.localPlayer.headType)
+					GameObject.Find("" + (Head)i).renderer.enabled = true;
+				else
+					GameObject.Find("" + (Head)i).renderer.enabled = false;
+			}
+
 			GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.localPlayer.name;
 		}
 	}

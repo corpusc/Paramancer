@@ -924,23 +924,23 @@ public class CcNet : MonoBehaviour {
 	void AddPlayer(bool isLocal, NetworkViewID anID, Color cA, Color cB, Color cC, int head, string name, 
 		NetworkPlayer np, int targetTeam, int lives
 	) {
-		NetUser newPlayer = new NetUser();
-		newPlayer.colA = cA;
-		newPlayer.colB = cB;
-		newPlayer.colC = cC;
-		newPlayer.headType = head;
-		newPlayer.viewID = anID;
-		newPlayer.local = isLocal;
-		newPlayer.name = name;
-		newPlayer.netPlayer = np;
-		newPlayer.ping = new Ping(newPlayer.netPlayer.ipAddress);
-		newPlayer.team = targetTeam;
-		newPlayer.kills = 0;
-		newPlayer.deaths = 0;
-		newPlayer.currentScore = 0;
-		newPlayer.lives = lives;
-		newPlayer.lastPong = Time.time;
-		players.Add(newPlayer);
+		var u = new NetUser();
+		u.colA = cA;
+		u.colB = cB;
+		u.colC = cC;
+		u.headType = head;
+		u.viewID = anID;
+		u.local = isLocal;
+		u.name = name;
+		u.netPlayer = np;
+		u.ping = new Ping(u.netPlayer.ipAddress);
+		u.team = targetTeam;
+		u.kills = 0;
+		u.deaths = 0;
+		u.currentScore = 0;
+		u.lives = lives;
+		u.lastPong = Time.time;
+		players.Add(u);
 	}
 	
 	public void AssignGameModeConfig(MatchData md, string levelName) {

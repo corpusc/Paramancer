@@ -1,6 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum Head {
+	NormalHead,
+	CardboardBoxHead,
+	FishHead,
+	BananaHead,
+	CreeperHead,
+	ElephantHeadMesh,
+	MoonHead,
+	PyramidHead,
+	ChocoboHead,
+	SpikeHead,
+
+//	// NOT sophie's
+//  TentacleRoot,
+//	RobotHead,
+//	head_spaceship,
+//	enforcer_face,
+//	SmileyHead,
+//	Helmet,
+//	PaperBag,
+//	Mahead,
+
+	Count
+}
+
 public enum Crosshair {
 	Normal,
 	Shrinking,
