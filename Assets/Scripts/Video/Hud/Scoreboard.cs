@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Scoreboard {
@@ -132,7 +132,7 @@ public class Scoreboard {
 			GUI.color = Color.black;
 			yOffset++;
 			GUI.Label(new Rect(10,(yOffset*20) + 60,300,20), 
-				">> TO CHANGE TEAMS, PRESS '" + InputUser.GetKeyLabel(UserAction.SwapTeam) + "' <<");
+				">> TO CHANGE TEAMS, PRESS '" + CcInput.GetKeyLabel(UserAction.SwapTeam) + "' <<");
 			
 			GUI.EndGroup();
 		}

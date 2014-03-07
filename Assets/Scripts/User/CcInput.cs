@@ -1,19 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public static class InputUser {
+public static class CcInput {
 	public static BindData[] BindData = new BindData[(int)UserAction.Count];
 	
 	
 	
-	static InputUser() {
+	static CcInput() {
 		// load textures
 		Object[] pics = Resources.LoadAll("Pic/Hud/Action");
-		
-		// use this temp list to setup permanent vars
-		for (int i = 0; i < pics.Length; i++) {
-			var s = pics[i].name;
-		}
 		
 		// bind default keys/pics to user actions
 		for (int i = 0; i < (int)UserAction.Count; i++) {

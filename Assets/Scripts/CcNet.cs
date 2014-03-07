@@ -616,7 +616,7 @@ public class CcNet : MonoBehaviour {
 		
 		// change team
 		if (Connected && CurrMatch.teamBased) {
-			if (InputUser.Started(UserAction.SwapTeam)) {
+			if (CcInput.Started(UserAction.SwapTeam)) {
 				if (localPlayer.team == 1) {
 					localPlayer.team = 2;
 				}else{

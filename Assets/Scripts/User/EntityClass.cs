@@ -152,7 +152,7 @@ public class EntityClass : MonoBehaviour {
 				if (firstPersonGun) 
 					firstPersonGun.renderer.enabled = false;
 				
-				if (InputUser.Started(UserAction.Activate) ||
+				if (CcInput.Started(UserAction.Activate) ||
 					net.players[Spectatee].lives <= 0
 				) {
 					Spectatee++;
@@ -184,7 +184,7 @@ public class EntityClass : MonoBehaviour {
 					if (offeredPickup != "") {
 						bool pickup = false;
 
-						if (!net.autoPickup && InputUser.Started(UserAction.GrabItem)) 
+						if (!net.autoPickup && CcInput.Started(UserAction.GrabItem)) 
 							pickup = true;
 						if (net.autoPickup) 
 							pickup = true;
@@ -215,8 +215,8 @@ public class EntityClass : MonoBehaviour {
 				offeredPickup = "";
 				
 				if (User.health > 0f) {
-//					if (Camera.main.transform.parent == null) 
-//						SetModelVisibility(false);
+					if (Camera.main.transform.parent == null) 
+						SetModelVisibility(false);
 					
 					ourKiller = null;
 					Camera.main.transform.parent = camHolder.transform;
@@ -247,19 +247,19 @@ public class EntityClass : MonoBehaviour {
 					bool startedSprinting = false;
 					Vector3 inputVector = Vector3.zero; 
 
-					if (InputUser.Holding(UserAction.MoveForward)) 
+					if (CcInput.Holding(UserAction.MoveForward)) 
 						inputVector += animObj.transform.forward;
 					
-					if (InputUser.Holding(UserAction.MoveBackward)) 
+					if (CcInput.Holding(UserAction.MoveBackward)) 
 						inputVector -= animObj.transform.forward;
 					
-					if (InputUser.Holding(UserAction.MoveRight)) 
+					if (CcInput.Holding(UserAction.MoveRight)) 
 						inputVector += animObj.transform.right;
 					
-					if (InputUser.Holding(UserAction.MoveLeft)) 
+					if (CcInput.Holding(UserAction.MoveLeft)) 
 						inputVector -= animObj.transform.right;
 					
-					if (InputUser.Started(UserAction.Sprint)) 
+					if (CcInput.Started(UserAction.Sprint)) 
 						startedSprinting = true;
 					
 					//inputVector.y = 0f;
@@ -294,7 +294,7 @@ public class EntityClass : MonoBehaviour {
 					
 					if (grounded) {
 						yMove = 0f;
-						if (InputUser.Started(UserAction.MoveUp)) {
+						if (CcInput.Started(UserAction.MoveUp)) {
 							yMove = 4f;
 							PlaySound("jump");
 							net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
@@ -306,7 +306,7 @@ public class EntityClass : MonoBehaviour {
 					ava.Move(transform.up * yMove * Time.deltaTime * 5f);
 					
 					crouched = false;
-					if (InputUser.Holding(UserAction.MoveDown)) 
+					if (CcInput.Holding(UserAction.MoveDown)) 
 						crouched = true;
 					
 					moveVec = inputVector;
@@ -462,7 +462,7 @@ public class EntityClass : MonoBehaviour {
 					) {
 						if (arse.Guns[(int)GunInHand].AutoFire) {
 							if /* holding */ 
-								(InputUser.Holding(UserAction.Activate)
+								(CcInput.Holding(UserAction.Activate)
 							) {
 								if (GunInHandCooldown <= 0f) {
 									Fire();
@@ -471,7 +471,7 @@ public class EntityClass : MonoBehaviour {
 							}
 						}else{
 							if /* started pressing */ 
-								(InputUser.Started(UserAction.Activate)
+								(CcInput.Started(UserAction.Activate)
 							) {
 								if (GunInHandCooldown <= 0f) {
 									Fire();
@@ -481,7 +481,7 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if (InputUser.Started(UserAction.SwapWeapon) ) {
+					if (CcInput.Started(UserAction.SwapWeapon) ) {
 						// swap guns
 						Item gun = GunInHand;
 						float tempFloat = GunInHandCooldown;
@@ -497,14 +497,14 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					// ball throwing
-					if (InputUser.Started(UserAction.Activate) &&
+					if (CcInput.Started(UserAction.Activate) &&
 						Screen.lockCursor && 
 						User.hasBall
 					) {
 						net.ThrowBall(Camera.main.transform.position, Camera.main.transform.forward, 20f);
 					}
 					
-					if (InputUser.Started(UserAction.Suicide)) {
+					if (CcInput.Started(UserAction.Suicide)) {
 						net.RegisterHitRPC((int)Item.Suicide, User.viewID, User.viewID, transform.position);
 					}
 					
@@ -820,7 +820,8 @@ public class EntityClass : MonoBehaviour {
 				gunMesh2.renderer.material = invisibleMat;
 			
 			if (GunInHand == Item.Bomb) {
-				if (gunMesh1!= null && gunMesh1.transform.Find("Flash Light") != null) {
+				if (gunMesh1 != null && 
+				    gunMesh1.transform.Find("Flash Light") != null) {
 					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
 				}
 			}
@@ -860,10 +861,10 @@ public class EntityClass : MonoBehaviour {
 			heads[9].renderer.material = spikeMat;
 		}
 		
-		if (firstPersonGun != null && 
-			User.local && 
+		if (User.local && 
+		    firstPersonGun != null && 
 			firstPersonGun.renderer && 
-			GunInHand >= 0
+			GunInHand >= Item.Pistol
 		) {
 			if (visible) {
 				firstPersonGun.renderer.enabled = false;

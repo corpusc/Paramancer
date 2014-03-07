@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Playing {
@@ -87,7 +87,7 @@ public class Playing {
 		Color gcol = GUI.color;
 		if (locEnt.offeredPickup != "" && !net.autoPickup) {
 			GUI.color = Color.black;
-			string s = "Press '" + InputUser.GetKeyLabel(UserAction.GrabItem) + "' to grab " + locEnt.offeredPickup.ToUpper();
+			string s = "Press '" + CcInput.GetKeyLabel(UserAction.GrabItem) + "' to grab " + locEnt.offeredPickup.ToUpper();
 			GUI.Label(new Rect(midX-51, midY+100, 200, 60), s);
 			GUI.Label(new Rect(midX-49, midY+100, 200, 60), s);
 			GUI.Label(new Rect(midX-50, midY+101, 200, 60), s);

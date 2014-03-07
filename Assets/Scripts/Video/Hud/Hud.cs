@@ -13,7 +13,7 @@ public class Hud : MonoBehaviour {
 			// tasks to do when LEAVING this mode
 			switch (mode) {
 				case HudMode.Controls:
-					InputUser.SaveKeyConfig();
+					CcInput.SaveKeyConfig();
 					controls.enabled = false;
 					break;
 			}
@@ -97,7 +97,7 @@ public class Hud : MonoBehaviour {
 			}
 		}
 
-		if (InputUser.Started(UserAction.Menu)) 
+		if (CcInput.Started(UserAction.Menu)) 
 			if (Mode != HudMode.MenuMain) {
 				Mode = HudMode.MenuMain;
 				Screen.lockCursor = false;
@@ -110,7 +110,7 @@ public class Hud : MonoBehaviour {
 					Mode = HudMode.Playing;
 			}
 			
-		if (InputUser.Started(UserAction.Scores))
+		if (CcInput.Started(UserAction.Scores))
 			playHud.viewingScores = !playHud.viewingScores;
 	}
 

@@ -1,4 +1,4 @@
-﻿// TODO
+// TODO
 
 // ---name ideas
 // Visual Controls/Config
@@ -164,7 +164,7 @@ public class Controls : MonoBehaviour {
 			keyData[i] = new KeyData();
 		
 		// bind action/keycode bindings to key
-		var bd = InputUser.BindData;
+		var bd = CcInput.BindData;
 		for (int i = 0; i < bd.Length; i++) {
 		for (int j = 0; j < codes.Length; j++) {
 			if (bd[i].KeyCode == codes[j]) {
@@ -195,11 +195,11 @@ public class Controls : MonoBehaviour {
 			}else{ // over a valid key
 				if (draggee == null) {
 					// pick it up
-					for (int i = 0; i < InputUser.BindData.Length; i++) {
-						if (tkId == InputUser.BindData[i].Id) {
-							latestUnboundKey = InputUser.BindData[i].Id;
-							InputUser.BindData[i].Id = 9999;
-							draggee = InputUser.BindData[i];
+					for (int i = 0; i < CcInput.BindData.Length; i++) {
+						if (tkId == CcInput.BindData[i].Id) {
+							latestUnboundKey = CcInput.BindData[i].Id;
+							CcInput.BindData[i].Id = 9999;
+							draggee = CcInput.BindData[i];
 						}
 					}
 				}else{ // we were dragging
@@ -210,12 +210,12 @@ public class Controls : MonoBehaviour {
 					// if there was something else there, that's the new draggee
 					bool anotherWasBoundThere = false;
 					BindData theOther = null;
-					for (int i = 0; i < InputUser.BindData.Length; i++) {
-						if (draggee != InputUser.BindData[i] && 
-							draggee.Id == InputUser.BindData[i].Id)
+					for (int i = 0; i < CcInput.BindData.Length; i++) {
+						if (draggee != CcInput.BindData[i] && 
+							draggee.Id == CcInput.BindData[i].Id)
 						{
 							anotherWasBoundThere = true;
-							theOther = InputUser.BindData[i];
+							theOther = CcInput.BindData[i];
 						}
 					}
 					
@@ -291,7 +291,7 @@ public class Controls : MonoBehaviour {
 		}
 		
 		// draw actions
-		var bd = InputUser.BindData;
+		var bd = CcInput.BindData;
 		for (int i = 0; i < bd.Length; i++) {
 			if (bd[i] != draggee) {
 				// get the right color
@@ -343,10 +343,10 @@ public class Controls : MonoBehaviour {
 	}
 
 	string targetedBind() {
-		for (int i = 0; i < InputUser.BindData.Length; i++) {
-			if ((draggee == null || InputUser.BindData[i].Id != draggee.Id) &&
-				keyData[InputUser.BindData[i].Id].Rect.Contains(mouPos) ) {
-				return S.GetSpacedOut(InputUser.BindData[i].Action.ToString());
+		for (int i = 0; i < CcInput.BindData.Length; i++) {
+			if ((draggee == null || CcInput.BindData[i].Id != draggee.Id) &&
+				keyData[CcInput.BindData[i].Id].Rect.Contains(mouPos) ) {
+				return S.GetSpacedOut(CcInput.BindData[i].Action.ToString());
 			}
 		}
 		
