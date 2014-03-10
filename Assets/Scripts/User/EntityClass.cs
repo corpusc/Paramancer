@@ -73,7 +73,7 @@ public class EntityClass : MonoBehaviour {
 	
 	public Light firstPersonLight;
 	
-	// gun related
+	// inventory 
 	public Item GunInHand = Item.Pistol;
 	public float GunInHandCooldown = 0f;
 	public Item GunOnBack = Item.Grenade;
@@ -192,12 +192,19 @@ public class EntityClass : MonoBehaviour {
 						if (pickup) {
 							for (int i=0; i<arse.Guns.Length; i++) {
 								if (offeredPickup == arse.Guns[i].Name) {
-									GunInHand = (Item)i;
-									GunInHandCooldown = 0f;
-									gunRecoil += Vector3.right * 5f;
-									gunRecoil -= Vector3.up * 5f;
-									PlaySound("weaponChange");
-									currentOfferedPickup.Pickup();
+									if (!arse.Guns[i].Carrying) {
+										arse.Guns[i].Carrying = true;
+										GunOnBack = GunInHand;
+										gunOnBackCooldown = GunInHandCooldown;
+										
+										GunInHand = (Item)i;
+										GunInHandCooldown = 0f;
+										gunRecoil += Vector3.right * 5f;
+										gunRecoil -= Vector3.up * 5f;
+										PlaySound("weaponChange");
+										net.SendTINYUserUpdate(User.viewID, UserAction.Next);
+										currentOfferedPickup.Pickup();
+									}
 								}
 							}
 							
@@ -481,19 +488,37 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if (CcInput.Started(UserAction.SwapWeapon) ) {
-						// swap guns
+					bool next = CcInput.Started(UserAction.Next);
+					bool prev = CcInput.Started(UserAction.Previous);
+					if (next || prev) {
 						Item gun = GunInHand;
 						float tempFloat = GunInHandCooldown;
-						GunInHand = GunOnBack;
-						GunInHandCooldown = gunOnBackCooldown;
+
+						// switch to next weapon
+						while (GunInHand == gun || 
+						       !arse.Guns[(int)GunInHand].Carrying) 
+						{
+							if (next) {
+								GunInHand++;
+								if ((int)GunInHand >= arse.Guns.Length)
+									GunInHand = Item.Pistol;
+							}else{
+								GunInHand--;
+								if (GunInHand < Item.Pistol)
+								    GunInHand = (Item)arse.Guns.Length-1;
+							}
+						}
+						GunInHandCooldown = 0f;
+						// old way, which was a swap/toggle with GunOnBack
+						//GunInHand = GunOnBack;
+						//GunInHandCooldown = gunOnBackCooldown;
 						GunOnBack = gun;
 						gunOnBackCooldown = tempFloat;
 						
 						gunRecoil += Vector3.right * 5f;
 						gunRecoil -= Vector3.up * 5f;
 						PlaySound("weaponChange");
-						net.SendTINYUserUpdate(User.viewID, UserAction.SwapWeapon);
+						net.SendTINYUserUpdate(User.viewID, UserAction.Next);
 					}
 					
 					// ball throwing
@@ -996,6 +1021,12 @@ public class EntityClass : MonoBehaviour {
 
 		prevGunInHand = Item.None;
 		prevGunOnBack = Item.None;
+
+		// clear & setup inventory
+		for (int i = 0; i < arse.Guns.Length; i++)
+			arse.Guns[i].Carrying = false;
+		arse.Guns[(int)GunInHand].Carrying = true;
+		arse.Guns[(int)GunOnBack].Carrying = true;
 	}
 	
 	void LateUpdate() {
@@ -1074,7 +1105,8 @@ public class EntityClass : MonoBehaviour {
 			case UserAction.MoveUp:
 				play(0.6f, sfx_jump);
 				break;
-			case UserAction.SwapWeapon:
+			case UserAction.Next:
+			case UserAction.Previous:
 				play(0.6f, sfx_weaponChange);
 				break;
 		}

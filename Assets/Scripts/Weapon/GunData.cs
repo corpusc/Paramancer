@@ -8,5 +8,5 @@ public class GunData {
 	public GameObject Prefab;
 	public bool AutoFire = false;
 	public float Delay = 0f;
-	
+	public bool Carrying = false;	
 }

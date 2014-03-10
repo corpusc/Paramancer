@@ -100,7 +100,8 @@ public enum UserAction {
 	MoveDown,
 	
 	Activate, // fire/activate/use whatever you are holding
-	SwapWeapon,
+	Next,
+	Previous,
 	GrabItem, // for sound: YOINK?
 	Sprint, // for sound: something like GO SPEED RACER GO?
 	Chat,

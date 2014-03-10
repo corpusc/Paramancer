@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public static class CcInput {
@@ -47,8 +47,11 @@ public static class CcInput {
 				case UserAction.Activate:
 					bind(i, KeyCode.Mouse0);
 					break;
-				case UserAction.SwapWeapon:
+				case UserAction.Next:
 					bind(i, KeyCode.Mouse1);
+					break;
+				case UserAction.Previous:
+					bind(i, KeyCode.Mouse2);
 					break;
 				case UserAction.Sprint:
 					bind(i, KeyCode.LeftShift);

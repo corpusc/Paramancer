@@ -108,28 +108,7 @@ public class Playing {
 			GUI.Label(new Rect(5, 5, 300, 60), s);
 		}
 		
-		// weapon
-		GUI.color = new Color(0.1f, 0.1f, 0.1f, 0.7f);
-		if (gunB >= 0) 
-			GUI.DrawTexture(new Rect(Screen.width-80,Screen.height-95,64,64), arse.Guns[(int)gunB].Pic);
-		
-		GUI.color = gcol;
-		if (gunA >= 0) 
-			GUI.DrawTexture(new Rect(Screen.width-110,Screen.height-70,64,64), arse.Guns[(int)gunA].Pic);
-		
-		if (gunA >= 0) {
-			GUI.color = Color.black;
-		
-			GUI.Label(new Rect(Screen.width-99, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
-			GUI.Label(new Rect(Screen.width-101, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
-			GUI.Label(new Rect(Screen.width-100, Screen.height-21, 100, 30), arse.Guns[(int)gunA].Name);
-			GUI.Label(new Rect(Screen.width-100, Screen.height-19, 100, 30), arse.Guns[(int)gunA].Name);
-			
-			GUI.color = gcol;
-			GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 30), arse.Guns[(int)gunA].Name);
-		}
-		
-		// weapon cooldown
+		// weapon cooldown (atm, only used for coloring equipped item) 
 		if (gunA >= Item.Pistol) {
 			float coolDownPercent = 50f; // more like: 0f to 50f
 			if (arse.Guns[(int)gunA].Delay > 0f) {
@@ -138,10 +117,9 @@ public class Playing {
 			}
 			
 			coolDown.SetBarColor(coolDownPercent/50f);
-			GUI.DrawTexture(new Rect(Screen.width-103, Screen.height-27, 56, 8), Pics.Black);
-			GUI.DrawTexture(new Rect(Screen.width-100, Screen.height-24, Mathf.FloorToInt(coolDownPercent), 2), Pics.White);
+			// width of old cooldown bar meter was: Mathf.FloorToInt(coolDownPercent)
 		}
-		
+
 		// 2 types of crosshairs
 		var old = GUI.matrix; // we need to store this, cuz we only want to spin the crosshairs
 		GUIUtility.RotateAroundPivot(-Camera.main.transform.rotation.eulerAngles.y, new Vector2(midX, midY));
@@ -165,7 +143,7 @@ public class Playing {
 				Pics.swapperCrosshair[swapperFrame]);
 		}
 
-		// setup var for end of cooldown crosshair animation effect
+		// setup for end of cooldown crosshair animation effect
 		if (Color.green == GUI.color && // if cooldown just ended
 		    Color.green != prevCrossHair) 
 		{
@@ -178,7 +156,7 @@ public class Playing {
 			switch (status) {
 				case Crosshair.Shrinking:
 					crosshairRadius--;
-					if (crosshairRadius < 2)
+					if (crosshairRadius < 8)
 						status = Crosshair.Growing;
 					break;
 
@@ -192,6 +170,34 @@ public class Playing {
 
 		prevCrossHair = GUI.color;
 		GUI.matrix = old; // done drawing spinny stuff
+		
+		// draw carried item icons 
+		int scaleUp = 2;
+		int maxH = arse.TallestIcon * scaleUp;
+		
+		Rect r = new Rect(0, Screen.height-maxH*2, 0, maxH);
+		for (int i = 0; i < arse.Guns.Length; i++) {
+			if (!arse.Guns[i].Carrying)
+				continue;
+			
+			var g = arse.Guns[i];
+			int w = g.Pic.width*scaleUp;
+			r.width = w;
+			if /*'*/ ((Item)i == gunA) {
+				GUI.color = prevCrossHair;
+				GUI.DrawTexture(r, g.Pic);
+				S.GUIOutlinedLabel(r, g.Name); // name
+			}else if ((Item)i == gunB) {
+				GUI.color = new Color(0.15f, 0.15f, 0.15f, 0.5f); // trans grey
+				GUI.DrawTexture(r, g.Pic);
+			}else{
+				GUI.color = new Color(1f, 1f, 1f, 0.2f); // trans white
+				GUI.DrawTexture(r, g.Pic);
+			}
+			
+			r.x += w;
+		}
+
 		GUI.color = gcol;
 
 		// team icons

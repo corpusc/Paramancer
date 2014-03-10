@@ -22,6 +22,7 @@ public class Arsenal : MonoBehaviour {
 	public AudioClip sfx_bombBeep;
 	public AudioClip sfx_bombExplode;
 	
+	public int TallestIcon;
 	public GunData[] Guns;
 	
 	// private 
@@ -38,15 +39,14 @@ public class Arsenal : MonoBehaviour {
 		// load the 3 kinds of resources that weapons need
 		Object[] mats = Resources.LoadAll("Mat/Weap");
 		Object[] prefabs = Resources.LoadAll("Prefab/Weap");
-		Object[] pics = Resources.LoadAll("Pic/Weap");
+		Texture[] pics = Resources.LoadAll<Texture>("Pic/Weap");
 
 		// setup guns
 		Guns = new GunData[9];
 		for (int i = 0; i < Guns.Length; i++) {
 			Guns[i] = new GunData();
-			
 			Guns[i].Name = S.GetSpacedOut("" + (Item)i);
-			Guns[i].Pic = (Texture)pics[i];
+			Guns[i].Pic = pics[i];
 			Guns[i].Mat = (Material)mats[i];
 			Guns[i].Prefab = (GameObject)prefabs[i];
 			
@@ -70,6 +70,11 @@ public class Arsenal : MonoBehaviour {
 				case Item.Spatula:  
 					Guns[i].Delay = 1f; break;
 			}
+
+			// set tallest icon
+			int h = pics[i].height;
+			if (TallestIcon < h) 
+				TallestIcon = h;
 		}
 	}
 	
