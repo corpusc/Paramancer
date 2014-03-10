@@ -8,5 +8,6 @@ public class GunData {
 	public GameObject Prefab;
 	public bool AutoFire = false;
 	public float Delay = 0f;
+	public float Cooldown = 0f; // current progress through the ^above^ Delay
 	public bool Carrying = false;	
 }

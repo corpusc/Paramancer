@@ -21,7 +21,7 @@ public class Playing {
 //		if (locEnt == null)
 //			return;
 		
-		var gunACooldown = locEnt.GunInHandCooldown;
+		var gunACooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
 		Item gunA = locEnt.GunInHand;
 		Item gunB = locEnt.GunOnBack;
 		
@@ -83,29 +83,11 @@ public class Playing {
 			}
 		}
 		
-		// pickup stuff
+		// spectate maybe 
 		Color gcol = GUI.color;
-		if (locEnt.offeredPickup != "" && !net.autoPickup) {
-			GUI.color = Color.black;
-			string s = "Press '" + CcInput.GetKeyLabel(UserAction.GrabItem) + "' to grab " + locEnt.offeredPickup.ToUpper();
-			GUI.Label(new Rect(midX-51, midY+100, 200, 60), s);
-			GUI.Label(new Rect(midX-49, midY+100, 200, 60), s);
-			GUI.Label(new Rect(midX-50, midY+101, 200, 60), s);
-			GUI.Label(new Rect(midX-50, midY+99, 200, 60), s);
-			GUI.color = gcol;
-			GUI.Label(new Rect(midX-50, midY+100, 200, 60), s);
-		}
-		
 		if (locEnt.Spectating) {
 			string s = "Spectating: " + net.players[locEnt.Spectatee].name + "\n\nYou will be able to play once this round is over.";
-			GUI.color = Color.black;
-			GUI.Label(new Rect(4, 5, 300, 60), s);
-			GUI.Label(new Rect(6, 5, 300, 60), s);
-			GUI.Label(new Rect(5, 4, 300, 60), s);
-			GUI.Label(new Rect(5, 6, 300, 60), s);
-			
-			GUI.color = gcol;
-			GUI.Label(new Rect(5, 5, 300, 60), s);
+			S.GUIOutlinedLabel(new Rect(5, 5, 300, 60), s);
 		}
 		
 		// weapon cooldown (atm, only used for coloring equipped item) 
@@ -173,16 +155,15 @@ public class Playing {
 		
 		// draw carried item icons 
 		int scaleUp = 2;
+		int maxW = arse.WidestIcon * scaleUp;
 		int maxH = arse.TallestIcon * scaleUp;
-		
-		Rect r = new Rect(0, Screen.height-maxH*2, 0, maxH);
+
+		Rect r = new Rect(Screen.width-maxW, Screen.height-maxH, maxW, maxH);
 		for (int i = 0; i < arse.Guns.Length; i++) {
 			if (!arse.Guns[i].Carrying)
 				continue;
 			
 			var g = arse.Guns[i];
-			int w = g.Pic.width*scaleUp;
-			r.width = w;
 			if /*'*/ ((Item)i == gunA) {
 				GUI.color = prevCrossHair;
 				GUI.DrawTexture(r, g.Pic);
@@ -195,7 +176,7 @@ public class Playing {
 				GUI.DrawTexture(r, g.Pic);
 			}
 			
-			r.x += w;
+			r.y -= maxH;
 		}
 
 		GUI.color = gcol;

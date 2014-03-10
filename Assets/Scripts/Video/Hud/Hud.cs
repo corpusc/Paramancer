@@ -83,7 +83,6 @@ public class Hud : MonoBehaviour {
 		// load settings
 		log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
-		net.autoPickup = PlayerPrefs.GetInt("autoPickup", 0) == 1;
 		net.gameVolume = PlayerPrefs.GetFloat("GameVolume", 1f);
 	}
 
@@ -447,8 +446,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.EndHorizontal();
 		
 		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "Gun Bobbing");
-		net.autoPickup = GUILayout.Toggle(net.autoPickup, "Auto-Pickup");
-		
+
 		GUILayout.BeginHorizontal();
 		fsWidth = S.GetInt(GUILayout.TextField(fsWidth.ToString()));
 		fsHeight = S.GetInt(GUILayout.TextField(fsHeight.ToString()));
@@ -465,11 +463,6 @@ public class Hud : MonoBehaviour {
 			PlayerPrefs.SetInt("GunBobbing", 1);
 		else
 			PlayerPrefs.SetInt("GunBobbing", 0);
-		
-		if (net.autoPickup)
-			PlayerPrefs.SetInt("autoPickup", 1);
-		else
-			PlayerPrefs.SetInt("autoPickup", 0);
 		
 		PlayerPrefs.SetFloat("GameVolume", net.gameVolume);
 		

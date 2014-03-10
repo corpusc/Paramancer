@@ -56,9 +56,6 @@ public static class CcInput {
 				case UserAction.Sprint:
 					bind(i, KeyCode.LeftShift);
 					break;
-				case UserAction.GrabItem:
-					bind(i, KeyCode.G);
-					break;
 				case UserAction.Chat:
 					bind(i, KeyCode.Return);
 					break;
@@ -73,6 +70,45 @@ public static class CcInput {
 					break;
 				case UserAction.Suicide:
 					bind(i, KeyCode.K);
+					break;
+
+
+
+				case UserAction.Pistol:
+					bind(i, KeyCode.Alpha2);
+					loadPic(i, "0 " + (UserAction)i);
+					break;
+				case UserAction.Grenade:
+					bind(i, KeyCode.X);
+					loadPic(i, "1 " + (UserAction)i);
+					break;
+				case UserAction.MachineGun:
+					bind(i, KeyCode.Alpha3);
+					loadPic(i, "2 " + (UserAction)i);
+					break;
+				case UserAction.Rifle:
+					bind(i, KeyCode.G);
+					loadPic(i, "3 " + (UserAction)i);
+					break;
+				case UserAction.RocketLauncher:
+					bind(i, KeyCode.V);
+					loadPic(i, "4 " + (UserAction)i);
+					break;
+				case UserAction.Swapper:
+					bind(i, KeyCode.W);
+					loadPic(i, "5 " + (UserAction)i);
+					break;
+				case UserAction.GravGun:
+					bind(i, KeyCode.R);
+					loadPic(i, "6 " + (UserAction)i);
+					break;
+				case UserAction.Bomb:
+					bind(i, KeyCode.C);
+					loadPic(i, "7 " + (UserAction)i);
+					break;
+				case UserAction.Spatula:
+					bind(i, KeyCode.Alpha1);
+					loadPic(i, "8 " + (UserAction)i);
 					break;
 			}
 		}
@@ -111,6 +147,10 @@ public static class CcInput {
 		}
 		
 		return false;
+	}
+	
+	static void loadPic(int i, string s) {
+		BindData[i].Pic = Resources.Load<Texture>("Pic/Weap/" + s);
 	}
 	
 	static void bind(int i, KeyCode kc) {

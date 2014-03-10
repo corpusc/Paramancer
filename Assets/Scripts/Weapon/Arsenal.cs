@@ -22,6 +22,7 @@ public class Arsenal : MonoBehaviour {
 	public AudioClip sfx_bombBeep;
 	public AudioClip sfx_bombExplode;
 	
+	public int WidestIcon;
 	public int TallestIcon;
 	public GunData[] Guns;
 	
@@ -70,7 +71,12 @@ public class Arsenal : MonoBehaviour {
 				case Item.Spatula:  
 					Guns[i].Delay = 1f; break;
 			}
-
+			
+			// set widest icon
+			int w = pics[i].width;
+			if (WidestIcon < w) 
+				WidestIcon = w;
+			
 			// set tallest icon
 			int h = pics[i].height;
 			if (TallestIcon < h) 

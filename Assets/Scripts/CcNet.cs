@@ -70,7 +70,6 @@ public class CcNet : MonoBehaviour {
 	// personal stuff
 	public NetUser localPlayer;
 	public bool gunBobbing = true;
-	public bool autoPickup = false;
 	public float gameVolume = 1f;
 
 	// private

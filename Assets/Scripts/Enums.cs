@@ -92,6 +92,16 @@ public enum Item {
 }
 
 public enum UserAction {
+	Pistol,
+	Grenade,
+	MachineGun, // 2
+	Rifle,
+	RocketLauncher, // 4
+	Swapper,
+	GravGun, // 6
+	Bomb,
+	Spatula, // 8
+	
 	MoveForward,
 	MoveBackward,
 	MoveLeft,
@@ -102,7 +112,6 @@ public enum UserAction {
 	Activate, // fire/activate/use whatever you are holding
 	Next,
 	Previous,
-	GrabItem, // for sound: YOINK?
 	Sprint, // for sound: something like GO SPEED RACER GO?
 	Chat,
 	Menu, // for sound: "gotta change something... HOLD ON!"?
