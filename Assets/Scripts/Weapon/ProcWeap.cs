@@ -9,6 +9,9 @@ public class ProcWeap : MonoBehaviour {
 	public int bnc = 1;
 	public int proj = 2;
 	public float vamp = 0.0f;
+	//these settings are an example of something that fits within the power limit
+
+	public string name = "Non-generated procweap";
 
 	public float MinPower = 200f;
 	public float MaxPower = 250f;
@@ -24,7 +27,19 @@ public class ProcWeap : MonoBehaviour {
 	int maxProj = 3;
 	float minVamp = -0.5f;
 	float maxVamp = 1f;
-	//these settings are an example of something that fits within the power limit
+
+	//naming settings
+	float minVampName = 0.3f; //minimal vamp noticeable enough to mention it in the name
+	float minSacrificeName = -0.2f; //minimal/maximal(depends on using abs) negative vamp to include the part "sacrificial" in the name
+	float minBpsName = 3f;
+	int minDmgName = 50;
+	int minBncName = 2;
+	int minProjName = 3;
+
+	int minPartsInName = 2;
+	int maxPartsInName = 4;
+
+	string[] namePart = {"xan", "tap", "mur", "per", "nix", "hex", "su"};
 
 	//internal vars
 	float cooldown = 0f;
@@ -74,7 +89,7 @@ public class ProcWeap : MonoBehaviour {
 					vamp = Random.Range(vamp, maxVamp);
 					break;
 				default:
-					print("PROCWEAP STATGEN ERROR!");
+					print("PROCWEAP STATGEN ERROR!(power < minPower)");
 					break;
 				}
 			} else {
@@ -98,11 +113,13 @@ public class ProcWeap : MonoBehaviour {
 					vamp = Random.Range(minVamp, vamp);
 					break;
 				default:
-					print("PROCWEAP STATGEN ERROR!");
+					print("PROCWEAP STATGEN ERROR!(power > maxPower)");
 					break;
 				}
 			}
 		}
+
+		name = GetName();
 	}
 	
 	float GetPower() {
@@ -111,5 +128,41 @@ public class ProcWeap : MonoBehaviour {
 
 	bool RandomBool() {
 		return (Random.value < 0.5f);
+	}
+
+	//based on weapon stats
+	string GetName() {
+		string t = "";
+		if(vamp > minVampName) t += "vampiric";
+		else if(vamp < minSacrificeName) t += "sacrificial ";
+		if(bps > minBpsName) t += "machine ";
+		if(dmg > minDmgName) t += "hurting ";
+		if(bnc > minBncName) t += "bouncy ";
+		if(proj > minProjName) t += "splitting ";
+
+		string s = "";
+		int partsInName = Random.Range(minPartsInName, maxPartsInName);
+
+		for(int i = 0; i < partsInName; i++)
+			s += namePart[Random.Range(0, namePart.Length - 1)];
+
+		s = UppercaseFirst(s);
+		t = UppercaseFirst(t);
+
+		t += s;
+
+		return t;
+	}
+
+	static string UppercaseFirst(string s)
+	{
+		if (string.IsNullOrEmpty(s))
+		{
+			return string.Empty;
+		}
+		return char.ToUpper(s[0]) + s.Substring(1);
+	}
+
+	void Fire() {
 	}
 }
