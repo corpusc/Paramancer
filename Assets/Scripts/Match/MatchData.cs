@@ -37,23 +37,20 @@ public class MatchData {
 				Descript = "Have it your way!  All the exact settings you prefer.";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", 
 					"TestLevelB", "Tower" };
-				respawnWait = 5f;
 				break;
 			case Match.GravORama:
-				Name = "Grav-O-Rama"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
+				Name = "Bring Your Own Gravity"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
 				// Gravity Is/Gets Personal?, Personal Gravity?, Gravitaction?
 				Descript = "Each player has their own, independent, changeable gravity";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-				respawnWait = 5f;
 				spawnGunA = Item.GravGun;
 				spawnGunB = Item.Pistol;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
 			case Match.GrueFood:
-				Name = "Slender Mode";
-				Descript = "It is pitch black.  It's right behind you.";
+				Name = "Blackout";
+				Descript = "Careful when you spark one up.....your GUN that is";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
-				respawnWait = 5f;
 				pitchBlack = true;
 				pickupSlot1 = Item.Grenade;
 				pickupSlot2 = Item.MachineGun;
@@ -66,14 +63,13 @@ public class MatchData {
 				Descript = "Frag count is ALL that counts in this freestyle Free For All!";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", 
 					"TestLevelB", "Tower" };
-				respawnWait = 5f;
+				respawnWait = 1f;
 				break;
 			case Match.TeamFragMatch:
 				Name = "Team Fragmatch";
 				Descript = "Frag count is what counts, but don't hurt your mates!";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", 
 					"TestLevelB", "Tower" };
-				respawnWait = 5f;
 				teamBased = true;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
@@ -81,7 +77,6 @@ public class MatchData {
 				Name = "BBall";
 				Descript = "Shooting hoops...and GUNS!  GANGSTA!";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-				respawnWait = 5f;
 				deathsSubtractScore = false;
 				killsIncreaseScore = false;
 				teamBased = true;
@@ -96,7 +91,6 @@ public class MatchData {
 				Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 				Duration = 0f;
-				respawnWait = 5f;
 				killsIncreaseScore = false;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
@@ -104,7 +98,6 @@ public class MatchData {
 				Name = "Swap Meat";
 				Descript = "There is only the swapper gun, grenades and lava... have fun!";
 				allowedLevels = new string[] { "Furnace" , "Tower"};
-				respawnWait = 3f;
 				killsIncreaseScore = false;
 				spawnGunA = Item.Swapper;
 				spawnGunB = Item.Grenade;
@@ -119,7 +112,6 @@ public class MatchData {
 				Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 				winScore = 20;
-				respawnWait = 5f;
 				spawnGunA = Item.Random;
 				spawnGunB = Item.Random;
 				restockTime = 2f;

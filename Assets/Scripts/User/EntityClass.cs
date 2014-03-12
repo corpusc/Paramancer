@@ -88,10 +88,11 @@ public class EntityClass : MonoBehaviour {
 	
 	// scripts
 	public CcNet net;
+	// private
 	Hud hud; // won't need this anymore once playingHud gets drawn correctly? *****************
 	Arsenal arse;
 	LocalUser locUser;
-	
+
 	
 	
 	void Start() {
@@ -491,17 +492,18 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 
-					// cycle thru next/previous weapons
+					bool nex, pre;
+					CcInput.PollScrollWheel(out nex, out pre);
 					bool next = CcInput.Started(UserAction.Next);
 					bool prev = CcInput.Started(UserAction.Previous);
-					if (next || prev) {
+					if (next || prev || nex || pre) {
 						Item juggledItem = GunInHand;
 
 						// switch weapon 
 						while (GunInHand == juggledItem || 
 						       !arse.Guns[(int)GunInHand].Carrying) 
 						{
-							if (next) {
+							if (next || nex) {
 								GunInHand++;
 								if ((int)GunInHand >= arse.Guns.Length)
 									GunInHand = Item.Pistol;

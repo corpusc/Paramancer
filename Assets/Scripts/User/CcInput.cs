@@ -2,9 +2,10 @@ using UnityEngine;
 using System.Collections;
 
 public static class CcInput {
+	static float currWheel;
 	public static BindData[] BindData = new BindData[(int)UserAction.Count];
-	
-	
+
+
 	
 	static CcInput() {
 		// load textures
@@ -45,7 +46,7 @@ public static class CcInput {
 					break;
 
 				case UserAction.Activate:
-					bind(i, KeyCode.Mouse0);
+				bind(i, KeyCode.Mouse0);
 					break;
 				case UserAction.Next:
 					bind(i, KeyCode.Mouse1);
@@ -113,7 +114,17 @@ public static class CcInput {
 			}
 		}
 	}
-	
+
+	public static void PollScrollWheel(out bool wheelNext, out bool wheelPrev) {
+		wheelNext = wheelPrev = false;
+		currWheel = Input.GetAxis("Mouse ScrollWheel");
+
+		if (currWheel > 0f)
+			wheelNext = true;
+		else if (currWheel < 0f)
+			wheelPrev = true;
+	}
+
 	public static void SaveKeyConfig() {
 		for (int i = 0; i < (int)UserAction.Count; i++) {
 			PlayerPrefs.SetInt("" + (UserAction)i, (int)BindData[i].KeyCode);

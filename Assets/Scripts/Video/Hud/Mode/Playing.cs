@@ -164,15 +164,15 @@ public class Playing {
 				continue;
 			
 			var g = arse.Guns[i];
+			GUI.color = new Color(1f, 1f, 1f, 0.2f); // trans white
 			if /*'*/ ((Item)i == gunA) {
 				GUI.color = prevCrossHair;
 				GUI.DrawTexture(r, g.Pic);
 				S.GUIOutlinedLabel(r, g.Name); // name
 			}else if ((Item)i == gunB) {
-				GUI.color = new Color(0.15f, 0.15f, 0.15f, 0.5f); // trans grey
 				GUI.DrawTexture(r, g.Pic);
+				S.GUIOutlinedLabel(r, "on back"); // name
 			}else{
-				GUI.color = new Color(1f, 1f, 1f, 0.2f); // trans white
 				GUI.DrawTexture(r, g.Pic);
 			}
 			

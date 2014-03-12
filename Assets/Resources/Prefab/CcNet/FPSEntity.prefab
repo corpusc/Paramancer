@@ -2953,7 +2953,6 @@ MonoBehaviour:
   yMove: 0
   firstPersonLight: {fileID: 10800000}
   GunInHand: 0
-  GunInHandCooldown: 0
   GunOnBack: 1
   firstPersonGun: {fileID: 0}
   isLocal: 1

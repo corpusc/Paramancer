@@ -150,12 +150,26 @@ public class Controls : MonoBehaviour {
 			KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow,
 			KeyCode.Keypad0, n, KeyCode.KeypadPeriod, n,
 			
-			// mouse
+			// mouse normal
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.U, n, n, n, n, 
 			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, n, KeyCode.Mouse5, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, 
-			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Mouse3, n, KeyCode.Mouse6, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, 
-			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Mouse4, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, 
-			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3, n, KeyCode.D, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, KeyCode.Mouse5, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse6, n, n, n, n, 
+			
+//			// mouse right-handed MMO 
+//			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
+//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, n, KeyCode.Mouse5, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, 
+//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Mouse3, n, KeyCode.Mouse6, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, 
+//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Mouse4, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, 
+//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, 
+//			
+//			// mouse left-handed MMO    (both MMOs have buttons on both sides atm)
+//			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
+//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, n, KeyCode.Mouse5, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, 
+//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Mouse3, n, KeyCode.Mouse6, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, 
+//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Mouse4, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, 
+//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, 
 		};
 		
 		// the more complicated mirrored structure that holds all the OTHER key data

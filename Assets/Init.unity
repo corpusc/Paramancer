@@ -257,7 +257,6 @@ MonoBehaviour:
   broadcastPos: 0
   lastGameWasTeamBased: 0
   gunBobbing: 1
-  autoPickup: 0
   gameVolume: 1
   gameTimeLeft: 0
   NextMatchTime: 0
@@ -286,6 +285,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359f0fb783c8c814daa4c218ac0146e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BVS: 0
+  LVS: 0
 --- !u!114 &1973207298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,6 +315,8 @@ MonoBehaviour:
   sfx_swappershoot: {fileID: 8300000, guid: d28c124d7f4ba42349a9e85d3cf0e601, type: 3}
   sfx_bombBeep: {fileID: 8300000, guid: 983c3e484036e420093be50b2e4028d6, type: 3}
   sfx_bombExplode: {fileID: 8300000, guid: c3ab385101a644613b2940bcd6d0c23d, type: 3}
+  WidestIcon: 0
+  TallestIcon: 0
 --- !u!114 &1973207299
 MonoBehaviour:
   m_ObjectHideFlags: 0
