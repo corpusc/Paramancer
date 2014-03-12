@@ -39,14 +39,16 @@ public class ProcWeap : MonoBehaviour {
 	int minPartsInName = 2;
 	int maxPartsInName = 4;
 
-	string[] namePart = {"xan", "tap", "mur", "per", "nix", "hex", "su"};
+	string[] namePart = {"xan", "tap", "mur", "per", "nix", "hex", "su", "her"};
 
 	//internal vars
 	float cooldown = 0f;
-	float barrelsRotation = 0f; //changes when weapon is shot - the shooting barrel is always the one at the top
-	int n_barrels = 4; //computed after by Start()
+	float barrelsRotation = 0f; //changes when weapon is shot, so that barrels take turn to fire
+	int n_barrels = 4; //computed later by Start()
 
-	Vector3[] barrelPos; //relative to the weapon(also has to include rotation)
+	//the weapon is created facing away from the user in the z direction
+
+	Vector3[] barrelPos; //relative to the weapon(does not include weapon rotation)
 	Vector3 barrelScale; //all barrels are of the same size
 	Vector3[] cylPos; //cylinders used in the main body of the weapon
 	Vector3[] cylScale;
@@ -120,6 +122,17 @@ public class ProcWeap : MonoBehaviour {
 		}
 
 		name = GetName();
+
+		if(dmg > minDmgName) shotCol = Color.Lerp(Color.green, Color.red, (dmg - minDmgName) / (maxDmg - minDmgName));
+		else if(bnc > minBncName) shotCol = Color.Lerp(Color.blue, Color.red, (bnc - minBncName) / (maxBnc - minBncName));
+		else shotCol = Color.Lerp(Color.blue, Color.green, (vamp - minVampName) / (maxVamp - minVampName));
+		shotCol = Color.Lerp(shotCol, Color.clear, bps / maxBps);
+
+		shotCol = Color.Lerp(shotCol, new Color(Random.value, Random.value, Random.value), Random.value); //for some randomness
+
+		n_barrels = Mathf.CeilToInt(bps); //rounded up
+		barrelScale = new Vector3(0.1f, 0.1f, dmg * 0.01f);
+		barrelPos = new Vector3[n_barrels];
 	}
 	
 	float GetPower() {
