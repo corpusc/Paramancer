@@ -46,6 +46,12 @@ public class ProcWeap : MonoBehaviour {
 	float barrelsRotation = 0f; //changes when weapon is shot, so that barrels take turn to fire
 	int n_barrels = 4; //computed later by Start()
 
+	//weapon shape settings
+	float barrelDmgMultiplier = 0.01f; // barrel length scales off damage
+	float barrelOffset = 0.3f; //the distance of the barrel part from the weapon's center
+	float barrelThickness = Random.Range(0.1f, 0.2f);
+	float barrelOffCenter = Random.Range(0.2f, 0.4f);
+
 	//the weapon is created facing away from the user in the z direction
 
 	Vector3[] barrelPos; //relative to the weapon(does not include weapon rotation)
@@ -125,14 +131,24 @@ public class ProcWeap : MonoBehaviour {
 
 		if(dmg > minDmgName) shotCol = Color.Lerp(Color.green, Color.red, (dmg - minDmgName) / (maxDmg - minDmgName));
 		else if(bnc > minBncName) shotCol = Color.Lerp(Color.blue, Color.red, (bnc - minBncName) / (maxBnc - minBncName));
-		else shotCol = Color.Lerp(Color.blue, Color.green, (vamp - minVampName) / (maxVamp - minVampName));
+		else if(vamp > minVampName) shotCol = Color.Lerp(Color.blue, Color.green, (vamp - minVampName) / (maxVamp - minVampName));
 		shotCol = Color.Lerp(shotCol, Color.clear, bps / maxBps);
 
 		shotCol = Color.Lerp(shotCol, new Color(Random.value, Random.value, Random.value), Random.value); //for some randomness
 
 		n_barrels = Mathf.CeilToInt(bps); //rounded up
-		barrelScale = new Vector3(0.1f, 0.1f, dmg * 0.01f);
+		barrelScale = new Vector3(barrelThickness, barrelThickness, dmg * barrelDmgMultiplier);
 		barrelPos = new Vector3[n_barrels];
+		for(int i = 0; i < n_barrels; i++) {
+			barrelPos[i] = new Vector3(
+				Mathf.Sin(Mathf.Deg2Rad * i * 360f / n_barrels) * barrelOffCenter,
+				Mathf.Cos(Mathf.Deg2Rad * i * 360f / n_barrels) * barrelOffCenter,
+				barrelDmgMultiplier * dmg / 2f + barrelOffset);
+			//this is supposed to distribute the barrels in a circle around the middle of the weapon
+		}
+		if(vamp > 0.0f) {
+			cylPos = new Vector3[proj];
+		}
 	}
 	
 	float GetPower() {
