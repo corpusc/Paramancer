@@ -59,9 +59,10 @@ using UnityEngine;
 using System.Collections;
 
 public class Controls : MonoBehaviour {
-	public int BottomOfKeyboard;
-	
+	public int HeightOfButtonsOrKeys;
+
 	// privates
+	int bottomOfKeyboard;
 	static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
 	Color purpleLight = Color.Lerp(purple, Color.white, 0.5f);
 	Color orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
@@ -255,8 +256,14 @@ public class Controls : MonoBehaviour {
 		oldW = Screen.width;
 		oldH = Screen.height;
 		
+		var r = new Rect(0, Screen.height-HeightOfButtonsOrKeys, Screen.width, HeightOfButtonsOrKeys+w/2);
+		GUI.BeginGroup(r);
+
+		r.y = 0;
+		r.height = bottomOfKeyboard;
+		GUI.DrawTexture(r, Pics.White);
 		GUI.DrawTexture(mouseRect, mousePic);
-		
+
 		// draw keys          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {
 			// get the right color
@@ -330,7 +337,11 @@ public class Controls : MonoBehaviour {
 			// draw
 			GUI.Box(keyData[i].Rect, keyData[i].Text);
 		}
-		
+
+
+		GUI.EndGroup();
+
+
 		// draw hover text for action icons
 		string s = targetedBind();
 		if (s != null) {
@@ -448,6 +459,7 @@ public class Controls : MonoBehaviour {
 		w = Screen.width/(maxX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
 		//int h = Screen.height/(numY+1);
 		int fKeyGap = w/3;
+		HeightOfButtonsOrKeys = w * maxY + w/2;
 		
 		int i = 0;
 		for (int y = 0; y < maxY; y++) {
@@ -494,9 +506,9 @@ public class Controls : MonoBehaviour {
 			}
 			
 			if (y < 6)
-				BottomOfKeyboard = y * w + w + w/2;
+				bottomOfKeyboard = y * w + w + w/2;
 		}
 		
-		mouseRect = new Rect(15*w, BottomOfKeyboard, 3*w, 5*w);
+		mouseRect = new Rect(15*w, bottomOfKeyboard, 3*w, 5*w);
 	}
 }
