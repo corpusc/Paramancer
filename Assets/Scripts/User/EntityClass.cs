@@ -492,30 +492,32 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 
-					bool nex, pre;
-					CcInput.PollScrollWheel(out nex, out pre);
-					bool next = CcInput.Started(UserAction.Next);
-					bool prev = CcInput.Started(UserAction.Previous);
-					if (next || prev || nex || pre) {
-						Item juggledItem = GunInHand;
+					if (hud.Mode == HudMode.Playing) { // ....then allow scrollwhee to cycle weaps 
+						bool nex, pre;
+						CcInput.PollScrollWheel(out nex, out pre);
+						bool next = CcInput.Started(UserAction.Next);
+						bool prev = CcInput.Started(UserAction.Previous);
+						if (next || prev || nex || pre) {
+							Item juggledItem = GunInHand;
 
-						// switch weapon 
-						while (GunInHand == juggledItem || 
-						       !arse.Guns[(int)GunInHand].Carrying) 
-						{
-							if (next || nex) {
-								GunInHand++;
-								if ((int)GunInHand >= arse.Guns.Length)
-									GunInHand = Item.Pistol;
-							}else{
-								GunInHand--;
-								if (GunInHand < Item.Pistol)
-								    GunInHand = (Item)arse.Guns.Length-1;
+							// switch weapon 
+							while (GunInHand == juggledItem || 
+							       !arse.Guns[(int)GunInHand].Carrying) 
+							{
+								if (next || nex) {
+									GunInHand++;
+									if ((int)GunInHand >= arse.Guns.Length)
+										GunInHand = Item.Pistol;
+								}else{
+									GunInHand--;
+									if (GunInHand < Item.Pistol)
+									    GunInHand = (Item)arse.Guns.Length-1;
+								}
 							}
-						}
 
-						GunOnBack = juggledItem;
-						weaponSwitchingSoundAndVisual();
+							GunOnBack = juggledItem;
+							weaponSwitchingSoundAndVisual();
+						}
 					}
 					
 					// ball throwing

@@ -7,7 +7,9 @@ using System.Globalization;
 
 
 static public class S {
-	const float GoldenRatio = 1.6180339887498948482f;
+	public const float GoldenRatio = 1.6180339887498948482f;
+	public static Color PurpleTrans = new Color(0.3f, 0f, 0.4f, 0.6f);
+	public static Color Purple = new Color(0.8f, 0f, 1f, 1f);
 
 	static public int GetInt(string v) {
 		return Convert.ToInt32(v.Trim(), new CultureInfo("en-US"));
@@ -15,7 +17,7 @@ static public class S {
 	
 	static public string GetSpacedOut(string s) {
 		string ns = "";
-		// add spaces between words, determined by capital letters
+		// add spaces between words, determined by capital letters 
 		for (int i = 0; i < s.Length; i++) {
 			if (i != 0 && s[i] >= 'A' && s[i] <= 'Z') {
 				ns += " ";

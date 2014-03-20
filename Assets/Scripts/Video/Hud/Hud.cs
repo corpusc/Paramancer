@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Hud : MonoBehaviour {
+	public string GoToPrevMenu = "< Back <";
 	public float BVS; // button vertical span
 	public float LVS; // label vertical span
 	private HudMode mode = HudMode.MenuMain;
@@ -39,7 +40,7 @@ public class Hud : MonoBehaviour {
 	// UI element sizes
 	int midX, midY; // middle of the screen
 	Rect window = new Rect(0, 0, 600, 400); // background for most menus
-	Rect br = new Rect(0, 0, 100, 0); // back button rectangle
+	Rect backRect = new Rect(0, 0, 100, 0); // back button rectangle
 	int vSpan = 20; // fixme: hardwired vertical span of the text.  doubled in many places for button height
 	Vector2 scrollPos = Vector2.zero;
 
@@ -114,6 +115,7 @@ public class Hud : MonoBehaviour {
 	}
 
 	bool firstTime = true;
+	int oldW, oldH;
 	void OnGUI() {
 		if (firstTime) {
 			firstTime = false;
@@ -126,12 +128,21 @@ public class Hud : MonoBehaviour {
 			LVS = gs.CalcSize(gc).y;
 		}
 
-		// sizes of UI elements
-		midX = Screen.width/2;
-		midY = Screen.height/2;
-		window.y = Screen.height - window.height;
-		br.height = vSpan * 2;
-		br.y = window.y - br.height;
+		if (oldW != Screen.width ||
+		    oldH != Screen.height) 
+		{
+			oldW = Screen.width;
+			oldH = Screen.height;
+			// sizes of UI elements
+			midX = oldW/2;
+			midY = oldH/2;
+			window.width = oldW * (S.GoldenRatio / (1f + S.GoldenRatio) );
+			window.height = oldH * (S.GoldenRatio / (1f + S.GoldenRatio) );
+			window.x = (Screen.width - window.width) / 2;
+			window.y = (Screen.height - window.height) / 2;
+			backRect.height = vSpan * 2;
+			backRect.y = window.y - backRect.height;
+		}
 
 
 		// handle all the modes!
@@ -152,8 +163,6 @@ public class Hud : MonoBehaviour {
 
 			case HudMode.Avatar:
 				avatarView();
-				if (backButton(br))
-					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
 				avatarSetup();
 				break;
 
@@ -174,7 +183,7 @@ public class Hud : MonoBehaviour {
 				break;
 			
 			case HudMode.Credits:
-				credits(br);
+				credits();
 				break;
 
 			case HudMode.ConnectionError:
@@ -215,10 +224,10 @@ public class Hud : MonoBehaviour {
 
 	void drawSimpleWindow(string s, bool disconnect = true) {
 		if (disconnect) {
-			if (backButton(br))
+			if (backButton(backRect))
 				Network.Disconnect();
 		}else{
-			backButton(br);
+			backButton(backRect);
 		}
 
 		DrawWindowBackground();
@@ -247,7 +256,7 @@ public class Hud : MonoBehaviour {
 			r.y += mar;   r.height -= mar*2;				
 			GUI.Button(r, "To grab mouse cursor,\n" +
 			           "Unity REQUIRES clicking on the game\n" +
-			           "screen; after ESC has been pushed.\n" +
+			           "screen.... after ESC has been pushed.\n" +
 			           "(You can remap  MENU action to another key)");
 		}
 	}
@@ -255,7 +264,7 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-	
+
 
 	
 	
@@ -265,7 +274,7 @@ public class Hud : MonoBehaviour {
 		DrawWindowBackground(window, halfWidth);
 	}
 	public void DrawWindowBackground(Rect r, bool halfWidth = false, bool halfHeight = false) {
-		GUI.color = new Color(0.3f, 0f, 0.4f, 0.7f);
+		GUI.color = S.PurpleTrans;
 		
 		if (halfWidth)
 			r.width /= 2;
@@ -274,7 +283,7 @@ public class Hud : MonoBehaviour {
 			r.height /= 2;
 		
 		GUI.DrawTexture(r, Pics.White);
-		GUI.color = new Color(0.8f, 0f, 1f, 1f);
+		GUI.color = S.Purple;
 	}
 	
 	
@@ -306,24 +315,55 @@ public class Hud : MonoBehaviour {
 	}
 	
 	
+
+	void menuBegin(bool scrolling = true, bool startAtTop = false) {
+		var r = window;
+		if (startAtTop) {
+			r.y = 0;
+			r.height = Screen.height - controls.HeightOfButtonsOrKeys;
+		}
+
+		GUI.color = Color.white;
+		GUI.DrawTexture(r, Pics.White);
+		
+		GUILayout.BeginArea(r);
+		
+		GUI.color = Color.black;
+		GUILayout.Box(Mode + "");
+
+		if (scrolling)
+			scrollPos = GUILayout.BeginScrollView(scrollPos);
+	}
+
+	void menuEnd(bool scrolling = true) {
+		GUI.color = Color.white;
+
+		if (scrolling)
+			GUILayout.EndScrollView();
+
+		if (GUILayout.Button(GoToPrevMenu)) {
+			if (Mode == HudMode.Avatar)
+				net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+
+			Mode = HudMode.MenuMain;
+		}
+		
+		GUILayout.EndArea();
+	}
 	
-	
-	
+
 	
 	
 	
 	float headSliderPos = 0f;
 	void avatarSetup() {
-		DrawWindowBackground(true);
-
 		if (net.Connected) {
 			S.GetShoutyColor();
 			GUI.Box(new Rect(0, 0, Screen.width, 80), "Currently, you have to change this while disconnected, for changes to be networked");
-			GUI.color = Color.white;
 		}
 
-		GUI.BeginGroup(window);
-		
+		menuBegin(false);
+
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Name: ");
 		net.localPlayer.name = GUILayout.TextField(net.localPlayer.name);
@@ -331,28 +371,27 @@ public class Hud : MonoBehaviour {
 			net.localPlayer.name = net.localPlayer.name.Substring(0, 20);
 		net.localPlayer.name = FormatName(net.localPlayer.name);
 		GUILayout.EndHorizontal();
-			
-		GUILayout.Label("Colour A:");
-		net.localPlayer.colA.r = GUILayout.HorizontalSlider(net.localPlayer.colA.r, 0f, 1f);
-		net.localPlayer.colA.g = GUILayout.HorizontalSlider(net.localPlayer.colA.g, 0f, 1f);
-		net.localPlayer.colA.b = GUILayout.HorizontalSlider(net.localPlayer.colA.b, 0f, 1f);
-				
-		GUILayout.Label("Colour B:");
-		net.localPlayer.colB.r = GUILayout.HorizontalSlider(net.localPlayer.colB.r, 0f, 1f);
-		net.localPlayer.colB.g = GUILayout.HorizontalSlider(net.localPlayer.colB.g, 0f, 1f);
-		net.localPlayer.colB.b = GUILayout.HorizontalSlider(net.localPlayer.colB.b, 0f, 1f);
-		
-		GUILayout.Label("Colour C:");
-		net.localPlayer.colC.r = GUILayout.HorizontalSlider(net.localPlayer.colC.r, 0f, 1f);
-		net.localPlayer.colC.g = GUILayout.HorizontalSlider(net.localPlayer.colC.g, 0f, 1f);
-		net.localPlayer.colC.b = GUILayout.HorizontalSlider(net.localPlayer.colC.b, 0f, 1f);
+
+		scrollPos = GUILayout.BeginScrollView(scrollPos);
 		
 		// head slider
 		float hss = 1f / (int)Head.Count; // head slider span
 		net.localPlayer.headType = (int)(headSliderPos / hss);
-		GUILayout.Label(S.GetSpacedOut("Head: " + (Head)net.localPlayer.headType));
+		GUILayout.Label(S.GetSpacedOut("" + (Head)net.localPlayer.headType));
 		headSliderPos = GUILayout.HorizontalSlider(headSliderPos, 0f, 1f);
-				
+
+		GUILayout.Label("");
+		
+		// colour sliders
+		colSlider(ref net.localPlayer.colA, "**** Colour A ****");
+		colSlider(ref net.localPlayer.colB, "**** Colour B ****");
+		colSlider(ref net.localPlayer.colC, "**** Colour C ****");
+		GUI.color = Color.white;
+
+		GUILayout.EndScrollView();
+
+		menuEnd(false);
+
 		// save player
 		if (net.localPlayer.name != "" && net.localPlayer.name != " ") {
 			PlayerPrefs.SetString("PlayerName", net.localPlayer.name);
@@ -370,10 +409,19 @@ public class Hud : MonoBehaviour {
 		PlayerPrefs.SetFloat("PlayerColC_R", net.localPlayer.colC.r);
 		PlayerPrefs.SetFloat("PlayerColC_G", net.localPlayer.colC.g);
 		PlayerPrefs.SetFloat("PlayerColC_B", net.localPlayer.colC.b);
-		
-		GUI.EndGroup();
 	}
-	
+
+	void colSlider(ref Color c, string s) {
+		GUI.color = c;
+		GUILayout.Label(s);
+
+		GUI.color = Color.red;
+		c.r = GUILayout.HorizontalSlider(c.r, 0f, 1f);
+		GUI.color = Color.green;
+		c.g = GUILayout.HorizontalSlider(c.g, 0f, 1f);
+		GUI.color = Color.blue;
+		c.b = GUILayout.HorizontalSlider(c.b, 0f, 1f);
+	}	
 	
 	
 	
@@ -384,7 +432,7 @@ public class Hud : MonoBehaviour {
 	
 	void KickMenu() {
 		if (net.isServer) { // do we need to check?   can't get here if not server?
-			backButton(br);
+			backButton(backRect);
 			DrawWindowBackground();
 
 			GUI.BeginGroup(window);
@@ -424,24 +472,10 @@ public class Hud : MonoBehaviour {
 	int fsWidth = 1280;
 	int fsHeight = 720;
 	void drawSettings() {
-		br.x = window.xMax / 2;
-		br.y = controls.BottomOfKeyboard;
-		backButton(br);
+		menuBegin();
 
-		Rect r = window;
-		r.y = controls.BottomOfKeyboard;
-		DrawWindowBackground(r, true);
-		r.width /= 2;
-		r.height = vSpan + vSpan / 2;
-		GUI.Box(r, Mode + "");
-		
-		r.height = window.height;
-		GUI.BeginGroup(r);
-		
-		GUILayout.BeginArea(new Rect(5,vSpan*2,280,380));
-		
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("Chat messages fade time: ");
+		GUILayout.Label("Chat/Log fade time: ");
 		log.FadeTime = (float)S.GetInt(GUILayout.TextField(log.FadeTime.ToString()));
 		GUILayout.EndHorizontal();
 		
@@ -454,6 +488,7 @@ public class Hud : MonoBehaviour {
 			Screen.SetResolution(fsWidth, fsHeight, true);
 		}
 		GUILayout.EndHorizontal();
+
 		GUILayout.Label("Audio Volume:");
 		net.gameVolume = GUILayout.HorizontalSlider(net.gameVolume, 0.0f, 1f);
 
@@ -466,38 +501,30 @@ public class Hud : MonoBehaviour {
 		
 		PlayerPrefs.SetFloat("GameVolume", net.gameVolume);
 		
-		GUILayout.EndArea();
-		
-		GUI.EndGroup();
+		menuEnd();
 	}
 	
 	void drawControlsAdjunct() {
-		br.x = window.xMax / 2;
-		br.y = controls.BottomOfKeyboard;
-		backButton(br);
-		
-		Rect r = window;
-		r.y = controls.BottomOfKeyboard;
-		DrawWindowBackground(r, true, true);
-		r.width /= 2;
-		r.height = vSpan + vSpan / 2;
-		GUI.Box(r, Mode + "");
+		menuBegin(true, true);
 
-		r.height = window.height;
-		GUI.BeginGroup(r);
-		
-		GUILayout.BeginArea(new Rect(5,vSpan*2,280,380));
-		
 		locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Mouselook inversion");
 		GUILayout.Label("Mouse Sensitivity:");
 		locUser.mouseSensitivity = GUILayout.HorizontalSlider(locUser.mouseSensitivity, 0.1f, 10f);
+
+		GUILayout.BeginHorizontal();
+		GUILayout.Button("Mouse Left");
+		GUILayout.Button("Mouse Right");
+		GUILayout.Button("MMO Mouse Left");
+		GUILayout.Button("MMO Mouse Right");
+		GUILayout.Button("GamePad");
+		GUILayout.Button("Hydra");
+		GUILayout.EndHorizontal();
+
+		menuEnd();
+
 		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
 		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
 		PlayerPrefs.SetFloat("MouseSensitivity", locUser.mouseSensitivity);
-
-		GUILayout.EndArea();
-		
-		GUI.EndGroup();
 	}
 
 	
@@ -538,7 +565,7 @@ public class Hud : MonoBehaviour {
 		// title bar
 		GUILayout.Box(S.GetSpacedOut(Mode + ""));
 
-		if (GUILayout.Button("BACK"))
+		if (GUILayout.Button(GoToPrevMenu))
 			Mode = HudMode.MenuMain;
 
 		if (GUILayout.Button("Refresh Server List"))
@@ -654,22 +681,9 @@ public class Hud : MonoBehaviour {
 
 
 
+	void credits() {
+		menuBegin();
 
-	void credits(Rect br) {
-		if (GUI.Button(br, "Back..."))
-			Mode = HudMode.MenuMain;
-		
-		DrawWindowBackground();
-		
-		GUI.BeginGroup(window);
-		
-		if (GUI.Button(new Rect(0,360,200,40), "Sophie Houlden"))
-			Application.OpenURL("http://sophiehoulden.com");
-		if (GUI.Button(new Rect(200,360,200,40), "7DFPS"))
-			Application.OpenURL("http://7dfps.org");
-		if (GUI.Button(new Rect(400,360,200,40), "SPLAT DEATH SALAD\nHomepage"))
-			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
-		
 		GUILayout.Label("_____Current team_____");
 		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls, GUI/HUD, Weapon effects");
 		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions, Graphics");
@@ -683,12 +697,21 @@ public class Hud : MonoBehaviour {
 		GUILayout.Label("~~~ SPLAT DEATH SALAD ~~~    (Version: 1.1)");
 		GUILayout.Label("");
 		GUILayout.Label("Made by Sophie Houlden.  Using Unity, for 7DFPS (June 2012)");
-		GUILayout.Label("Click a button to visit these sites:");
+		GUILayout.Label("Click below to visit these sites:");
 		
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button("Sophie Houlden"))
+			Application.OpenURL("http://sophiehoulden.com");
+		if (GUILayout.Button("7DFPS"))
+			Application.OpenURL("http://7dfps.org");
+		if (GUILayout.Button("SPLAT DEATH SALAD\nHomepage"))
+			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
+		GUILayout.EndHorizontal();
+
 //		if (Application.isWebPlayer) 
 //			GUILayout.Label("*** Visit the homepage for standalone client downloads (win/mac) ***");
-		
-		GUI.EndGroup();
+
+		menuEnd();
 	}
 
 	
@@ -787,7 +810,7 @@ public class Hud : MonoBehaviour {
 	}
 
 	bool backButton(Rect r) {
-		if (GUI.Button(r, "Back...")) {
+		if (GUI.Button(r, "  <  ")) {
 			Mode = HudMode.MenuMain;
 			return true;
 		}

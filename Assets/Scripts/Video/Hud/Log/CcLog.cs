@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class CcLog : MonoBehaviour {
 	public List<LogEntry> Entries = new List<LogEntry>();
-	public float FadeTime = 10f;
+	public float FadeTime = 20f;
 	public float DisplayTime = -100;
 	public bool Typing = false;
 
