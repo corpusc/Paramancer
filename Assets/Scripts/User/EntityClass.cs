@@ -1106,6 +1106,17 @@ public class EntityClass : MonoBehaviour {
 	public AudioClip sfx_swapped;
 	public AudioClip sfx_catchBall;
 	public AudioClip sfx_gravgun;
+
+	public AudioClip DoubleKillAnnouncement;
+	public AudioClip TripleKillAnnouncement;
+	public AudioClip QuadraKillAnnouncement;
+	public AudioClip PentaKillAnnouncement;
+	public AudioClip HexaKillAnnouncement;
+	public AudioClip GodlikeAnnouncement;
+	public AudioClip FirstFragAnnouncement;
+	public AudioClip TakeLeadAnnouncement;
+	public AudioClip WinAnnouncement;
+	public AudioClip LoseAnnouncement;
 	public void PlaySound(UserAction action) {
 		switch (action) {
 			case UserAction.MoveUp:
