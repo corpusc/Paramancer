@@ -8,6 +8,10 @@ public class EntityClass : MonoBehaviour {
 	private CharacterController cc;
 	private Avatar ava;
 
+	//amount of kills in multi-kill
+	public int multi_kill = 0;
+	public float last_kill = 0f;
+
 	// cam
 	public GameObject camHolder;
 	private Vector3 camAngle;
@@ -125,6 +129,9 @@ public class EntityClass : MonoBehaviour {
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
+
+		DoubleKillAnnouncement = (AudioClip)Resources.Load("Resources/SFX/Announcement/double_kill.wav");
+		CountdownAnnouncement = (AudioClip)Resources.Load("Resources/SFX/Announcement/countdown.wav");
 	}
 	
 	public GameObject ourKiller;
@@ -143,6 +150,9 @@ public class EntityClass : MonoBehaviour {
 				gunMesh2.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
 			} 
 		}
+
+		if(Time.time - last_kill > 10f)
+			multi_kill = 0;
 		
 		AudioListener.volume = net.gameVolume;
 		
@@ -1113,8 +1123,16 @@ public class EntityClass : MonoBehaviour {
 	public AudioClip GodlikeAnnouncement;
 	public AudioClip FirstFragAnnouncement;
 	public AudioClip TakeLeadAnnouncement;
+	public AudioClip LoseLeadAnnouncement;
 	public AudioClip WinAnnouncement;
 	public AudioClip LoseAnnouncement;
+	public AudioClip CountdownAnnouncement;
+	public AudioClip TwoMinutesAnnouncement;
+	public AudioClip OneMinuteAnnouncement;
+	public AudioClip ThirtySecondsAnnouncement;
+	public AudioClip AlmostOverAnnouncement;
+	public AudioClip RocketDeniedAnnouncement;
+
 	public void PlaySound(UserAction action) {
 		switch (action) {
 			case UserAction.MoveUp:
@@ -1165,6 +1183,76 @@ public class EntityClass : MonoBehaviour {
 		if (sound == "gravgun"){
 			audio.clip = sfx_gravgun;
 			audio.volume = 0.4f;
+			audio.Play();
+		}
+		if(sound == "doubleKill") {
+			audio.clip = DoubleKillAnnouncement;
+			audio.Play();
+		}
+		if(sound == "tripleKill") {
+			audio.clip = TripleKillAnnouncement;
+			audio.Play();
+		}
+		if(sound == "quadraKill") {
+			audio.clip = QuadraKillAnnouncement;
+			audio.Play();
+		}
+		if(sound == "pentaKill") {
+			audio.clip = PentaKillAnnouncement;
+			audio.Play();
+		}
+		if(sound == "hexaKill") {
+			audio.clip = HexaKillAnnouncement;
+			audio.Play();
+		}
+		if(sound == "godlike") {
+			audio.clip = GodlikeAnnouncement;
+			audio.Play();
+		}
+		if(sound == "firstFrag") {
+			audio.clip = FirstFragAnnouncement;
+			audio.Play();
+		}
+		if(sound == "takeLead") {
+			audio.clip = TakeLeadAnnouncement;
+			audio.Play();
+		}
+		if(sound == "loseLead") {
+			audio.clip = LoseLeadAnnouncement;
+			audio.Play();
+		}
+		if(sound == "win") {
+			audio.clip = WinAnnouncement;
+			audio.Play();
+		}
+		if(sound == "lose") {
+			audio.clip = LoseAnnouncement;
+			audio.Play();
+		}
+		if(sound == "countdown") {
+			audio.clip = CountdownAnnouncement;
+			audio.volume = 0.9f;
+			audio.Play();
+			print("Countdown attempt in PlaySound().");
+		}
+		if(sound == "2_minutes") {
+			audio.clip = TwoMinutesAnnouncement;
+			audio.Play();
+		}
+		if(sound == "1_minute") {
+			audio.clip = OneMinuteAnnouncement;
+			audio.Play();
+		}
+		if(sound == "30_seconds") {
+			audio.clip = ThirtySecondsAnnouncement;
+			audio.Play();
+		}
+		if(sound == "almostOver") {
+			audio.clip = AlmostOverAnnouncement;
+			audio.Play();
+		}
+		if(sound == "rocketDenied") {
+			audio.clip = RocketDeniedAnnouncement;
 			audio.Play();
 		}
 	}

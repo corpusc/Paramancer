@@ -2,7 +2,76 @@ fileFormatVersion: 2
 guid: 1a326850e50db4542b78ac465ce05eae
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - camHolder: {instanceID: 0}
+  - weaponSoundObj: {instanceID: 0}
+  - currentOfferedPickup: {instanceID: 0}
+  - animObj: {instanceID: 0}
+  - gravArrowPrefab: {instanceID: 0}
+  - bballArrowPrefab: {instanceID: 0}
+  - invisibleMat: {instanceID: 0}
+  - gunMat: {instanceID: 0}
+  - dummyAMat: {instanceID: 0}
+  - dummyBMat: {instanceID: 0}
+  - dummyCMat: {instanceID: 0}
+  - boxMat: {instanceID: 0}
+  - fishMat: {instanceID: 0}
+  - bananaMat: {instanceID: 0}
+  - creeperMat: {instanceID: 0}
+  - elephantMat: {instanceID: 0}
+  - moonMat: {instanceID: 0}
+  - pyramidMat: {instanceID: 0}
+  - chocoboMat: {instanceID: 0}
+  - spikeMat: {instanceID: 0}
+  - meshObj: {instanceID: 0}
+  - gunMesh1: {instanceID: 0}
+  - gunMesh2: {instanceID: 0}
+  - firstPersonLight: {instanceID: 0}
+  - firstPersonGun: {instanceID: 0}
+  - net: {instanceID: 0}
+  - ourKiller: {instanceID: 0}
+  - aimBone: {instanceID: 0}
+  - sfx_takeDamage: {instanceID: 0}
+  - sfx_jump: {instanceID: 0}
+  - sfx_land: {instanceID: 0}
+  - sfx_die: {instanceID: 0}
+  - sfx_weaponChange: {instanceID: 0}
+  - sfx_reload: {instanceID: 0}
+  - sfx_swapped: {instanceID: 0}
+  - sfx_catchBall: {instanceID: 0}
+  - sfx_gravgun: {instanceID: 0}
+  - DoubleKillAnnouncement: {fileID: 8300000, guid: 09105d9b9429efc40ad5c383240c11ba,
+      type: 3}
+  - TripleKillAnnouncement: {fileID: 8300000, guid: bbfc09e1f3e89b242913e84f288c1a0c,
+      type: 3}
+  - QuadraKillAnnouncement: {fileID: 8300000, guid: 8036861bc020a8148933806753c154f2,
+      type: 3}
+  - PentaKillAnnouncement: {fileID: 8300000, guid: bda3e447193480043811946ce0b3c233,
+      type: 3}
+  - HexaKillAnnouncement: {fileID: 8300000, guid: a7a3dd02497b17544a53cd34085a7b69,
+      type: 3}
+  - GodlikeAnnouncement: {fileID: 8300000, guid: e1037b22e8ad6984498e0ad73f2dbd72,
+      type: 3}
+  - FirstFragAnnouncement: {fileID: 8300000, guid: 7d149f4c4769d9f4ebf0b3375a0620a3,
+      type: 3}
+  - TakeLeadAnnouncement: {fileID: 8300000, guid: e911be3f427a28947baa47dc45a0f5e0,
+      type: 3}
+  - LoseLeadAnnouncement: {fileID: 8300000, guid: be0025c891baf564798d8d632453852a,
+      type: 3}
+  - WinAnnouncement: {fileID: 8300000, guid: 08778cdc7ed31ba42981aac76ee894b3, type: 3}
+  - LoseAnnouncement: {fileID: 8300000, guid: 0b03bff4058f67741b49906c9a7ec96e, type: 3}
+  - CountdownAnnouncement: {fileID: 8300000, guid: 669770583f95a3b469616e9a50ed61cb,
+      type: 3}
+  - TwoMinutesAnnouncement: {fileID: 8300000, guid: 1ea218d78a9d2c24692f1b9ccbe42e7b,
+      type: 3}
+  - OneMinuteAnnouncement: {fileID: 8300000, guid: 14919c27858d0ea4e9d296b38ce4b8b2,
+      type: 3}
+  - ThirtySecondsAnnouncement: {fileID: 8300000, guid: 9baa996f16991024ba4d2d105ab580a3,
+      type: 3}
+  - AlmostOverAnnouncement: {fileID: 8300000, guid: 16ac80fdfec74f64bbced12220a09fe7,
+      type: 3}
+  - RocketDeniedAnnouncement: {fileID: 8300000, guid: 72a4b3f6291c8a84a9c59207ebc6ad8e,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

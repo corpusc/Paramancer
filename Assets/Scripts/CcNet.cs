@@ -72,6 +72,12 @@ public class CcNet : MonoBehaviour {
 	public bool gunBobbing = true;
 	public float gameVolume = 1f;
 
+	bool twoMinsAnnounced = false;
+	bool oneMinAnnounced = false;
+	bool thirtySecsAnnounced = false;
+	bool almostOverAnnounced = false;
+	bool countdownAnnounced = false;
+
 	// private
 	// scripts
 	CcLog log;
@@ -440,10 +446,37 @@ public class CcNet : MonoBehaviour {
 		
 		string shooterName = "Someone";
 		string victimName = "Someone";
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == shooterID) shooterName = players[i].name;
+		int fraggerID = 0;
+
+		for(int i = 0; i < players.Count; i++) {
+			if (players[i].viewID == shooterID) {
+				shooterName = players[i].name;
+				fraggerID = i;
+			}
 			if (players[i].viewID == victimID) victimName = players[i].name;
-			if (players[i].viewID == victimID) players[i].Entity.PlaySound("die");
+		}
+
+		for (int i=0; i<players.Count; i++) {
+			if (players[i].viewID == victimID) players[i].Entity.PlaySound("die"); //play the dying sound to the victim, and the ***kill announcement to everyone else
+			else {
+				switch(players[fraggerID].Entity.multi_kill) {
+				case 1: players[i].Entity.PlaySound("doubleKill");
+					break;
+				case 2: players[i].Entity.PlaySound("tripleKill");
+					break;
+				case 3: players[i].Entity.PlaySound("quadraKill");
+					break;
+				case 4: players[i].Entity.PlaySound("pentaKill");
+					break;
+				case 5: players[i].Entity.PlaySound("hexaKill");
+					break;
+				case 6: players[i].Entity.PlaySound("godlike");
+					break;
+				default: break;
+				}
+				players[fraggerID].Entity.multi_kill++;
+				players[fraggerID].Entity.last_kill = Time.time;
+			}
 			
 			// lives
 			if (players[i].viewID == victimID) {
@@ -633,6 +666,35 @@ public class CcNet : MonoBehaviour {
 		
 		// count time!
 		gameTimeLeft -= Time.deltaTime;
+		if(isServer) {
+			if(gameTimeLeft < 120f && !twoMinsAnnounced) {
+				for(int i = 0; i < players.Count; i++)
+				players[i].Entity.PlaySound("2_minutes");
+				twoMinsAnnounced = true;
+			}
+			else if(gameTimeLeft < 60f && !oneMinAnnounced) {
+				for(int i = 0; i < players.Count; i++)
+				players[i].Entity.PlaySound("1_minute");
+				oneMinAnnounced = true;
+			}
+			else if(gameTimeLeft < 30f && !thirtySecsAnnounced) {
+				for(int i = 0; i < players.Count; i++)
+				players[i].Entity.PlaySound("30_seconds");
+				thirtySecsAnnounced = true;
+			}
+			else if(gameTimeLeft < 10f && !almostOverAnnounced) {
+				for(int i = 0; i < players.Count; i++)
+				players[i].Entity.PlaySound("almostOver");
+				almostOverAnnounced = true;
+			}
+				
+			if(!countdownAnnounced) {
+				for(int i = 0; i < players.Count; i++)
+				players[i].Entity.PlaySound("countdown");
+				countdownAnnounced = true;
+				print("Attempted to play countdown.");
+			}
+		}
 		
 		// game time up?
 		if (Connected && !gameOver) {
@@ -1054,6 +1116,12 @@ public class CcNet : MonoBehaviour {
 		// if we get to this point, it's a new game, so let's get it together!
 		NetVI = viewID;
 		serverGameChange = false;
+
+		twoMinsAnnounced = false;
+		oneMinAnnounced = false;
+		thirtySecsAnnounced = false;
+		almostOverAnnounced = false;
+		countdownAnnounced = false;
 		
 		if (!isServer) {
 			// lets update the local game settings
