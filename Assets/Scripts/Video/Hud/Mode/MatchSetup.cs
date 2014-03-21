@@ -32,7 +32,6 @@ public class MatchSetup {
 		Rect startButton = new Rect(qSpan, Screen.height - vSpan*4, qSpan*2, vSpan*4);
 		screen = new Rect(0, 0, Screen.width, Screen.height);
 		thirdOfWidth = screen.width / 3;
-		int lpi = vSpan + vSpan/2; // line position increment
 
 		// show map picture background
 		for (int i=0; i<maps.Count; i++) {
@@ -44,22 +43,21 @@ public class MatchSetup {
 		// -------------------- gui --------------------
 		GUI.BeginGroup(screen);
 		
-		// header
 		middleVerticalStrip = screen;
-		middleVerticalStrip.height = lpi;
-		GUI.Box(middleVerticalStrip, "MATCH SETUP");
 
 		// make column of 1/3 of horizontal space (down the middle)
 		middleVerticalStrip.x = thirdOfWidth;
-		middleVerticalStrip.y = lpi;
 		middleVerticalStrip.width = thirdOfWidth;
-		middleVerticalStrip.height = Screen.height - startButton.height - lpi;
+		middleVerticalStrip.height = Screen.height - startButton.height;
 		
 		GUILayout.BeginArea(middleVerticalStrip);
 
+		// header
+		GUILayout.Box("MATCH SETUP");
+
 		// extra STARTING options (not needed for match in progress)
 		if (!serving) {
-			serverSetup(net, hud, lpi);
+			serverSetup(net, hud);
 		}
 		
 		// match type change might need us to show a different (allowed) map
@@ -127,35 +125,46 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 		}else{ // custom, show options here
+			hud.CategoryHeader("Custom Settings");
+
 			scrollPos = GUILayout.BeginScrollView(scrollPos);
 			
+			// checkbox toggles 
 			matches[matchId].killsIncreaseScore = GUILayout.Toggle(matches[matchId].killsIncreaseScore, "Kills Increase score");
 			matches[matchId].deathsSubtractScore = GUILayout.Toggle(matches[matchId].deathsSubtractScore, "Deaths Reduce score");
+			matches[matchId].pitchBlack = GUILayout.Toggle(matches[matchId].pitchBlack, "Pitch Black");
+			matches[matchId].teamBased = GUILayout.Toggle(matches[matchId].teamBased, "Team Based");
+
+			if (matches[matchId].teamBased) {
+				matches[matchId].allowFriendlyFire = GUILayout.Toggle(matches[matchId].allowFriendlyFire, "Allow Friendly Fire");
+				matches[matchId].basketball = GUILayout.Toggle(matches[matchId].basketball, "Basketball");
+			}
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Respawn Time: ");
 			matches[matchId].respawnWait = S.GetInt( GUILayout.TextField(matches[matchId].respawnWait.ToString()) );
+			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
-			matches[matchId].teamBased = GUILayout.Toggle(matches[matchId].teamBased, "Team Based");
-			
-			if (matches[matchId].teamBased)
-				matches[matchId].basketball = GUILayout.Toggle(matches[matchId].basketball, "Basketball");
-			else
-				matches[matchId].basketball = false;
-			
-			
-			matches[matchId].allowFriendlyFire = GUILayout.Toggle(matches[matchId].allowFriendlyFire, "Allow Friendly Fire");
-			
-			matches[matchId].pitchBlack = GUILayout.Toggle(matches[matchId].pitchBlack, "Pitch Black");
-			
-			GUILayout.Label(" --- Round end conditions (set to 0 to ignore) --- ");
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Restock time (seconds): ");
+			matches[matchId].restockTime = S.GetInt(GUILayout.TextField(matches[matchId].restockTime.ToString()) );
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+
+			GUILayout.Label("");
+
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Box("End conditions (0 == ignore)");
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Round Time (minutes): ");
 			matches[matchId].Duration = S.GetInt( GUILayout.TextField(matches[matchId].Duration.ToString()) );
 			GUILayout.EndHorizontal();
-			
+
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Winning score: ");
 			matches[matchId].winScore = S.GetInt( GUILayout.TextField(matches[matchId].winScore.ToString()) );
@@ -166,7 +175,7 @@ public class MatchSetup {
 			matches[matchId].playerLives = S.GetInt( GUILayout.TextField(matches[matchId].playerLives.ToString()) );
 			GUILayout.EndHorizontal();
 			
-			GUILayout.Label(" --- Weapon Settings --- ");
+			GUILayout.Label("");
 			
 			// spawn gun A
 			GUILayout.BeginHorizontal();
@@ -199,19 +208,14 @@ public class MatchSetup {
 				matches[matchId].spawnGunB = Item.Random;
 			GUILayout.EndHorizontal();
 			
-			GUILayout.Label(" --- ");
+			GUILayout.Label("");
 			
 			slotSelect(ref matches[matchId].pickupSlot1, 1);
 			slotSelect(ref matches[matchId].pickupSlot2, 2);
 			slotSelect(ref matches[matchId].pickupSlot3, 3);
 			slotSelect(ref matches[matchId].pickupSlot4, 4);
 			slotSelect(ref matches[matchId].pickupSlot5, 5);
-			
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Restock time (seconds): ");
-			matches[matchId].restockTime = S.GetInt(GUILayout.TextField(matches[matchId].restockTime.ToString()) );
-			GUILayout.EndHorizontal();
-			
+
 			GUILayout.EndScrollView();
 		}
 		
@@ -250,7 +254,7 @@ public class MatchSetup {
 		GUI.EndGroup();
 	}
 
-	void serverSetup(CcNet net, Hud hud, int lpi) {
+	void serverSetup(CcNet net, Hud hud) {
 		GUILayout.BeginHorizontal(); {
 			GUILayout.Label("Name: ");
 			net.gameName = GUILayout.TextField(net.gameName);

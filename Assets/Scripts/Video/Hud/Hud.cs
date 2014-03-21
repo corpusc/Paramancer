@@ -358,7 +358,7 @@ public class Hud : MonoBehaviour {
 	
 	
 
-	static void categoryHeader(string s, bool wantCentering = true, bool spacing = true) {
+	public void CategoryHeader(string s, bool wantCentering = true, bool spacing = true) {
 		int catSpan = 150; // category header span 
 		
 		if (spacing)
@@ -431,7 +431,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.EndHorizontal();
 
 		// avatar settings
-		categoryHeader("Avatar");
+		CategoryHeader("Avatar");
 		GUILayout.BeginHorizontal();
 		SizedLabel("Name:   ");
 		net.localPlayer.name = GUILayout.TextField(net.localPlayer.name);
@@ -748,15 +748,15 @@ public class Hud : MonoBehaviour {
 	void credits() {
 		menuBegin();
 
-		categoryHeader("Current team", false, false);
+		CategoryHeader("Current team", false, false);
 		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls, GUI/HUD, Weapon effects");
 		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions, Graphics");
 
-		categoryHeader("Media authors", false);
+		CategoryHeader("Media authors", false);
 		GUILayout.Label("CarnagePolicy     - Sounds");
 		GUILayout.Label("Nobiax/yughues   - Textures");
 
-		categoryHeader("Engine", false);
+		CategoryHeader("Engine", false);
 		GUILayout.Label("This is an extensively remodeled fork of a #7DFPS game");
 		GUILayout.Label("by Sophie Houlden.  Click below to visit her sites:");
 
