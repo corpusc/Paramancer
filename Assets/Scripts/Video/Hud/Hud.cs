@@ -763,7 +763,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button("Sophie Houlden"))
 			Application.OpenURL("http://sophiehoulden.com");
-		if (GUILayout.Button("SDS Homepage"))
+		if (GUILayout.Button("Splat Death Salad Homepage"))
 			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
 		GUILayout.EndHorizontal();
 

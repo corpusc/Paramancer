@@ -168,7 +168,11 @@ public class Playing {
 			if /*'*/ ((Item)i == gunA) {
 				GUI.color = prevCrossHair;
 				GUI.DrawTexture(r, g.Pic);
-				S.GUIOutlinedLabel(r, g.Name); // name
+				float w = hud.GetWidth(g.Name) + 5;
+				var forName = r;
+				forName.x = Screen.width - w;
+				forName.width = w;
+				S.GUIOutlinedLabel(forName, g.Name); // name
 			}else if ((Item)i == gunB) {
 				GUI.DrawTexture(r, g.Pic);
 				S.GUIOutlinedLabel(r, "on back"); // name
