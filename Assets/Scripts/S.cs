@@ -8,8 +8,9 @@ using System.Globalization;
 
 static public class S {
 	public const float GoldenRatio = 1.6180339887498948482f;
-	public static Color PurpleTrans = new Color(0.3f, 0f, 0.4f, 0.6f);
+	public static Color PurpleTRANS = new Color(0.3f, 0f, 0.4f, 0.6f);
 	public static Color Purple = new Color(0.8f, 0f, 1f, 1f);
+	public static Color WhiteTRANS = new Color(1f, 1f, 1f, 0.35f);
 
 	static public int GetInt(string v) {
 		return Convert.ToInt32(v.Trim(), new CultureInfo("en-US"));

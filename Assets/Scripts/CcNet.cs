@@ -70,7 +70,7 @@ public class CcNet : MonoBehaviour {
 	// personal stuff
 	public NetUser localPlayer;
 	public bool gunBobbing = true;
-	public float gameVolume = 1f;
+	public float VolumeMaster = 1f;
 
 	bool twoMinsAnnounced = false;
 	bool oneMinAnnounced = false;

@@ -51,7 +51,6 @@ public enum HudMode {
 	MenuMain,
 	StartGame,         // (don't need both Match AND StartGame anymore?)
 	JoinGame,
-	Avatar,
 	Connecting,
 	ConnectionError,
 	InitializingServer,

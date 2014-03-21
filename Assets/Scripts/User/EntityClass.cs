@@ -154,7 +154,7 @@ public class EntityClass : MonoBehaviour {
 		if(Time.time - last_kill > 10f)
 			multi_kill = 0;
 		
-		AudioListener.volume = net.gameVolume;
+		AudioListener.volume = net.VolumeMaster;
 		
 		if (Spectating && isLocal) {
 			if (net.players.Count > 0) {
