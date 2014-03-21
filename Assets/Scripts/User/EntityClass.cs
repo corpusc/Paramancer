@@ -175,8 +175,8 @@ public class EntityClass : MonoBehaviour {
 				float invY = 1f;
 				if (locUser.LookInvert)
 					invY = -1f;
-				camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.mouseSensitivity * invY;
-				camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.mouseSensitivity;
+				camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.LookSensitivity * invY;
+				camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.LookSensitivity;
 				if (camAngle.x>85f) camAngle.x = 85f;
 				if (camAngle.x<-85f) camAngle.x = -85f;
 				Camera.main.transform.eulerAngles = camAngle;
@@ -239,8 +239,8 @@ public class EntityClass : MonoBehaviour {
 					if (hud.Mode == HudMode.Playing || 
 						hud.Mode == HudMode.Editing
 					) {
-						camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.mouseSensitivity * invY;
-						camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.mouseSensitivity;
+						camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.LookSensitivity * invY;
+						camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.LookSensitivity;
 						float max = 89f; // degrees up or down limit
 						if (camAngle.x >  max) 
 							camAngle.x =  max;

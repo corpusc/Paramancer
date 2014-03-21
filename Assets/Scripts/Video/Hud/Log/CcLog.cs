@@ -64,6 +64,9 @@ public class CcLog : MonoBehaviour {
 					//AddToLog(net.localPlayer.name + ":", "e.keyCode == KeyCode.Escape", net.ColToVec(net.localPlayer.colA) );
 					break;
 				case KeyCode.Return:
+					//if (hud.Mode != HudMode.Playing)
+						//break;
+
 					if (e.type != EventType.KeyDown) {
 						//AddToLog(net.localPlayer.name + ":", "goto default;", net.ColToVec(net.localPlayer.colA) );
 						goto default; // without this (was originally a break;) 

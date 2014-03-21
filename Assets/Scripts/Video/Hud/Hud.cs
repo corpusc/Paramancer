@@ -197,7 +197,7 @@ public class Hud : MonoBehaviour {
 				break;
 
 			// server
-			case HudMode.Kick:
+			case HudMode.KickAPlayer:
 				kickWindow();
 				break;
 		}
@@ -327,7 +327,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginArea(r);
 		
 		GUI.color = Color.white;
-		GUILayout.Box(Mode + "");
+		GUILayout.Box(S.GetSpacedOut(Mode + ""));
 
 		if (scrolling)
 			scrollPos = GUILayout.BeginScrollView(scrollPos);
@@ -358,10 +358,12 @@ public class Hud : MonoBehaviour {
 	
 	
 
-	static void lineDownThenHeader(string s, bool wantCentering = true) {
+	static void categoryHeader(string s, bool wantCentering = true, bool spacing = true) {
 		int catSpan = 150; // category header span 
 		
-		GUILayout.Label("");
+		if (spacing)
+			GUILayout.Label("");
+
 		GUILayout.BeginHorizontal();
 
 		if (wantCentering) 
@@ -375,7 +377,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.EndHorizontal();
 	}
 
-	void sizedLabel(string s) {
+	public void SizedLabel(string s) {
 		GUILayout.Label(s, GUILayout.MaxWidth(GetWidth(s)));
 	}
 
@@ -393,47 +395,51 @@ public class Hud : MonoBehaviour {
 		menuBegin();
 
 		// misc settings 
-		GUILayout.BeginHorizontal();
-		sizedLabel("Chat/Log fade time:   ");
-		log.FadeTime = (float)S.GetInt(GUILayout.TextField(log.FadeTime.ToString()));
-		GUILayout.EndHorizontal();
-		
+		// gun bob 
 		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "Gun Bobbing");
-		
-		// graphics
-		lineDownThenHeader("Graphics");
-		GUILayout.BeginHorizontal();
-		fsWidth = S.GetInt(GUILayout.TextField(fsWidth.ToString()));
-		fsHeight = S.GetInt(GUILayout.TextField(fsHeight.ToString()));
-		if (GUILayout.Button("Fullscreen")) {
-			Screen.SetResolution(fsWidth, fsHeight, true);
-		}
-		GUILayout.EndHorizontal();
-		
-		// audio
-		lineDownThenHeader("Audio");
-		GUILayout.BeginHorizontal();
-		sizedLabel("Master Volume:   ");
-		net.VolumeMaster = GUILayout.HorizontalSlider(net.VolumeMaster, 0.0f, 1f);
-		GUILayout.EndHorizontal();
-        PlayerPrefs.SetFloat("GameVolume", net.VolumeMaster);
-
-		PlayerPrefs.SetFloat("textFadeTime", log.FadeTime);
-		
 		if (net.gunBobbing)
 			PlayerPrefs.SetInt("GunBobbing", 1);
 		else
 			PlayerPrefs.SetInt("GunBobbing", 0);
 
-		// avatar settings
-		lineDownThenHeader("Avatar");
+		// chat fade
 		GUILayout.BeginHorizontal();
-		sizedLabel("Name: ");
+		SizedLabel("Chat/Log fade time:   ");
+		log.FadeTime = (float)S.GetInt(GUILayout.TextField(log.FadeTime.ToString()));
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+		PlayerPrefs.SetFloat("textFadeTime", log.FadeTime);
+
+		// audio
+		//categoryHeader("Audio");
+		GUILayout.BeginHorizontal();
+		SizedLabel("Master Volume:   ");
+		net.VolumeMaster = GUILayout.HorizontalSlider(net.VolumeMaster, 0.0f, 1f);
+		GUILayout.EndHorizontal();
+		PlayerPrefs.SetFloat("GameVolume", net.VolumeMaster);
+
+		// graphics
+		//categoryHeader("Graphics");
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button("Change to "))
+			Screen.SetResolution(fsWidth, fsHeight, true);
+		GUILayout.Label("Fullscreen resolution of");
+		fsWidth = S.GetInt(GUILayout.TextField(fsWidth.ToString()));
+		GUILayout.Label("X");
+		fsHeight = S.GetInt(GUILayout.TextField(fsHeight.ToString()));
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+
+		// avatar settings
+		categoryHeader("Avatar");
+		GUILayout.BeginHorizontal();
+		SizedLabel("Name:   ");
 		net.localPlayer.name = GUILayout.TextField(net.localPlayer.name);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
 		if (net.localPlayer.name.Length > 20) 
 			net.localPlayer.name = net.localPlayer.name.Substring(0, 20);
 		net.localPlayer.name = FormatName(net.localPlayer.name);
-		GUILayout.EndHorizontal();
 
 		innerScrollPos = GUILayout.BeginScrollView(innerScrollPos);
 		
@@ -446,12 +452,17 @@ public class Hud : MonoBehaviour {
 		headSliderPos = GUILayout.HorizontalSlider(headSliderPos, 0f, 1f);
 		GUILayout.EndHorizontal();
 
-		GUILayout.Label("");
-		
 		// colour sliders
-		colSlider(ref net.localPlayer.colA, "**** Colour A ****");
-		colSlider(ref net.localPlayer.colB, "**** Colour B ****");
-		colSlider(ref net.localPlayer.colC, "**** Colour C ****");
+		GUILayout.BeginHorizontal();
+		GUI.color = net.localPlayer.colA;
+		GUILayout.Box("**** Colour A ****");
+		GUI.color = net.localPlayer.colB;
+		GUILayout.Box("**** Colour B ****");
+		GUI.color = net.localPlayer.colC; 
+		GUILayout.Box("**** Colour C ****");
+		GUILayout.EndHorizontal();
+
+		colorSliders();
 		GUI.color = Color.white;
 
 		GUILayout.EndScrollView();
@@ -477,16 +488,35 @@ public class Hud : MonoBehaviour {
 		PlayerPrefs.SetFloat("PlayerColC_B", net.localPlayer.colC.b);
 	}
 
-	void colSlider(ref Color c, string s) {
-		GUI.color = c;
-		GUILayout.Label(s);
+	void colorSliders() {
+		GUILayout.BeginHorizontal();
 
 		GUI.color = Color.red;
-		c.r = GUILayout.HorizontalSlider(c.r, 0f, 1f);
+		net.localPlayer.colA.r = GUILayout.HorizontalSlider(net.localPlayer.colA.r, 0f, 1f);
+		net.localPlayer.colB.r = GUILayout.HorizontalSlider(net.localPlayer.colB.r, 0f, 1f);
+		net.localPlayer.colC.r = GUILayout.HorizontalSlider(net.localPlayer.colC.r, 0f, 1f);
+		
+		GUILayout.EndHorizontal();
+
+
+		GUILayout.BeginHorizontal();
+		
 		GUI.color = Color.green;
-		c.g = GUILayout.HorizontalSlider(c.g, 0f, 1f);
+		net.localPlayer.colA.g = GUILayout.HorizontalSlider(net.localPlayer.colA.g, 0f, 1f);
+		net.localPlayer.colB.g = GUILayout.HorizontalSlider(net.localPlayer.colB.g, 0f, 1f);
+		net.localPlayer.colC.g = GUILayout.HorizontalSlider(net.localPlayer.colC.g, 0f, 1f);
+		
+		GUILayout.EndHorizontal();
+
+
+		GUILayout.BeginHorizontal();
+		
 		GUI.color = Color.blue;
-		c.b = GUILayout.HorizontalSlider(c.b, 0f, 1f);
+		net.localPlayer.colA.b = GUILayout.HorizontalSlider(net.localPlayer.colA.b, 0f, 1f);
+		net.localPlayer.colB.b = GUILayout.HorizontalSlider(net.localPlayer.colB.b, 0f, 1f);
+		net.localPlayer.colC.b = GUILayout.HorizontalSlider(net.localPlayer.colC.b, 0f, 1f);
+
+		GUILayout.EndHorizontal();
 	}	
 	
 	
@@ -504,8 +534,10 @@ public class Hud : MonoBehaviour {
 				if (net.players[i].viewID != net.localPlayer.viewID) {
 					GUILayout.BeginHorizontal();
 					
-					if (GUILayout.Button(HudMode.Kick.ToString()))
+					if (GUILayout.Button(HudMode.KickAPlayer.ToString())) {
 						net.Kick(i, false);
+						break;
+					}
 
 					string pingString = "?";
 					if (net.players[i].ping.isDone) 
@@ -540,24 +572,26 @@ public class Hud : MonoBehaviour {
 	void drawControlsAdjunct() {
 		menuBegin(true, true);
 
-		locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Mouselook inversion");
-		GUILayout.Label("Mouse Sensitivity:");
-		locUser.mouseSensitivity = GUILayout.HorizontalSlider(locUser.mouseSensitivity, 0.1f, 10f);
+		locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Look inversion");
+		GUILayout.BeginHorizontal();
+		SizedLabel("Look sensitivity:     ");
+		locUser.LookSensitivity = GUILayout.HorizontalSlider(locUser.LookSensitivity, 0.1f, 10f);
+		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
-		GUILayout.Button("Mouse Left");
-		GUILayout.Button("Mouse Right");
-		GUILayout.Button("MMO Mouse Left");
-		GUILayout.Button("MMO Mouse Right");
 		GUILayout.Button("GamePad");
 		GUILayout.Button("Hydra");
+		GUILayout.Button("Mouse L");
+		GUILayout.Button("Mouse R");
+		GUILayout.Button("MMO Mouse L");
+		GUILayout.Button("MMO Mouse R");
 		GUILayout.EndHorizontal();
 
 		menuEnd();
 
 		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
 		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
-		PlayerPrefs.SetFloat("MouseSensitivity", locUser.mouseSensitivity);
+		PlayerPrefs.SetFloat("MouseSensitivity", locUser.LookSensitivity);
 	}
 
 	
@@ -714,15 +748,15 @@ public class Hud : MonoBehaviour {
 	void credits() {
 		menuBegin();
 
-		lineDownThenHeader("Current team", false);
+		categoryHeader("Current team", false, false);
 		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls, GUI/HUD, Weapon effects");
 		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions, Graphics");
 
-		lineDownThenHeader("Media authors", false);
+		categoryHeader("Media authors", false);
 		GUILayout.Label("CarnagePolicy     - Sounds");
 		GUILayout.Label("Nobiax/yughues   - Textures");
 
-		lineDownThenHeader("Engine", false);
+		categoryHeader("Engine", false);
 		GUILayout.Label("This is an extensively remodeled fork of a #7DFPS game");
 		GUILayout.Label("by Sophie Houlden.  Click below to visit her sites:");
 
@@ -814,7 +848,7 @@ public class Hud : MonoBehaviour {
 
 		// server mode buttons
 		if (net.isServer) {
-			buttonStarts(HudMode.Kick, r);
+			buttonStarts(HudMode.KickAPlayer, r);
 			r.y -= mIH;
 
 			buttonStarts(HudMode.MatchSetup, r);

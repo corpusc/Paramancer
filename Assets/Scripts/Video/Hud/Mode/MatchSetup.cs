@@ -59,7 +59,7 @@ public class MatchSetup {
 
 		// extra STARTING options (not needed for match in progress)
 		if (!serving) {
-			serverSetup(net, lpi);
+			serverSetup(net, hud, lpi);
 		}
 		
 		// match type change might need us to show a different (allowed) map
@@ -67,6 +67,7 @@ public class MatchSetup {
 
 		// select map
 		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
 		GUILayout.Label("Level:");
 
 		if (GUILayout.Button("<") ) {
@@ -82,6 +83,7 @@ public class MatchSetup {
 			if (mapId >= matches[matchId].allowedLevels.Length) 
 				mapId -= matches[matchId].allowedLevels.Length;
 		}
+		GUILayout.FlexibleSpace();
 
 		GUILayout.EndHorizontal();
 
@@ -90,8 +92,9 @@ public class MatchSetup {
 			// description
 			GUILayout.Label(matches[matchId].Descript);
 			
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("Customize Match") ) {
-				
 				int levelChangeIndex = 0;
 				for (int i=0; i<matches[0].allowedLevels.Length; i++) {
 					if (matches[0].allowedLevels[i] == matches[matchId].allowedLevels[mapId]) 
@@ -121,6 +124,8 @@ public class MatchSetup {
 				
 				matchId = 0;
 			}
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
 		}else{ // custom, show options here
 			scrollPos = GUILayout.BeginScrollView(scrollPos);
 			
@@ -245,31 +250,35 @@ public class MatchSetup {
 		GUI.EndGroup();
 	}
 
-	void serverSetup(CcNet net, int lpi) {
+	void serverSetup(CcNet net, Hud hud, int lpi) {
 		GUILayout.BeginHorizontal(); {
 			GUILayout.Label("Name: ");
 			net.gameName = GUILayout.TextField(net.gameName);
+			GUILayout.FlexibleSpace();
 		} GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal(); {
 			GUILayout.Label("Password: ");
 			net.password = GUILayout.TextField(net.password);
+			GUILayout.FlexibleSpace();
 		} GUILayout.EndHorizontal();
-		
-		GUILayout.BeginHorizontal();
-		GUILayout.Label("Max Connections: " + net.connections);
-		net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32));
-		GUILayout.EndHorizontal();
-		
+
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Port: ");
 		net.listenPort = S.GetInt(GUILayout.TextField(net.listenPort.ToString ()));
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginHorizontal();
+		hud.SizedLabel("Max Connections: " + net.connections);
+		net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32));
 		GUILayout.EndHorizontal();
 	}
 
 	void selectMatchType() {
 		GUILayout.BeginHorizontal();
 		
+		GUILayout.FlexibleSpace();
 		GUILayout.Label("Mode: ");
 		
 		if (GUILayout.Button("<") ) {
@@ -307,7 +316,8 @@ public class MatchSetup {
 			
 			mapId = mapChangeId;
 		}
-		
+		GUILayout.FlexibleSpace();
+
 		GUILayout.EndHorizontal();
 	}
 

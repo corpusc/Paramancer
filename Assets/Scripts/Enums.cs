@@ -57,7 +57,7 @@ public enum HudMode {
 	Wait,
 	
 	// Online
-	Kick,
+	KickAPlayer,
 	MatchSetup, // MatchSetup   (don't need both Match AND StartGame anymore?)
 	
 	// Both
