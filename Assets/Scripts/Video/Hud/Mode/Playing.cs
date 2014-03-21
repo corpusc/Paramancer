@@ -168,7 +168,7 @@ public class Playing {
 			if /*'*/ ((Item)i == gunA) {
 				GUI.color = prevCrossHair;
 				GUI.DrawTexture(r, g.Pic);
-				float w = hud.GetWidth(g.Name) + 5;
+				float w = hud.GetWidthLabel(g.Name) + 5;
 				var forName = r;
 				forName.x = Screen.width - w;
 				forName.width = w;

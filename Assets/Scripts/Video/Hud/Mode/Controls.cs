@@ -62,6 +62,7 @@ public class Controls : MonoBehaviour {
 	public int HeightOfButtonsOrKeys;
 
 	// privates
+	Hud hud;
 	int bottomOfKeyboard;
 	static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
 	Color purpleLight = Color.Lerp(purple, Color.white, 0.5f);
@@ -83,6 +84,8 @@ public class Controls : MonoBehaviour {
 	
 	
 	void Start() {
+		hud = GetComponent<Hud>();
+
 		// load textures
 		Object[] pics = Resources.LoadAll("Pic/Hud/Controls");
 		
@@ -346,13 +349,17 @@ public class Controls : MonoBehaviour {
 		string s = targetedBind();
 		if (s != null) {
 			GUI.color = Color.cyan;
-			GUI.Box(new Rect(mouPos.x-w*1.5f, mouPos.y-w/4*3, w*3, w/2), s);
+			float wid = hud.GetWidthBox(s);
+			GUI.Box(new Rect(
+				mouPos.x-wid/2, mouPos.y-hud.VSpanBox*1.5f, 
+				wid,                     hud.VSpanBox
+			), s);
 		}
 		
 		// inform user of remapping ability
 		S.GetShoutyColor();
-		GUI.Box(new Rect(0, Screen.height-50, 300, 25), "Left-Click on actions to move them elsewhere");
-		GUI.Box(new Rect(0, Screen.height-25, 300, 25), "Right-Click on keys to swap them with others");
+		GUI.Label(new Rect(0, Screen.height-50, 300, 25), "Left-Click on actions to move them elsewhere");
+		GUI.Label(new Rect(0, Screen.height-25, 300, 25), "Right-Click on keys to swap them with others");
 
 		// draw action icon near pointer if it's being moved
 		if (draggee != null) {

@@ -5,10 +5,12 @@ using System.Collections.Generic;
 
 public class Hud : MonoBehaviour {
 	public string GoToPrevMenu = "<< Back <<";
+	// gui 
 	public GUIStyle GS;
 	public GUIContent GC;
-	public float BVSpan; // button vertical span
-	public float LVSpan; // label vertical span
+	public float VSpanBox; // box vertical span
+	public float VSpanButton; // button vertical span
+	public float VSpanLabel; // label vertical span
 	private HudMode mode = HudMode.MenuMain;
 	public HudMode Mode {
 		get { return mode; }
@@ -31,7 +33,6 @@ public class Hud : MonoBehaviour {
 			}
 		}
 	}
-
 
 
 	// private
@@ -124,10 +125,12 @@ public class Hud : MonoBehaviour {
 
 			// setup vertical span sizes
 			GC = new GUIContent("Playing");
+			GS = "Box";
+			VSpanBox = GS.CalcSize(GC).y;
 			GS = "Button";
-			BVSpan = GS.CalcSize(GC).y;
+			VSpanButton = GS.CalcSize(GC).y;
 			GS = "Label";
-			LVSpan = GS.CalcSize(GC).y;
+			VSpanLabel = GS.CalcSize(GC).y;
 		}
 
 		if (oldW != Screen.width ||
@@ -150,7 +153,7 @@ public class Hud : MonoBehaviour {
 		// handle all the modes!
 		switch (Mode) {
 			case HudMode.Playing:
-				playHud.Draw(net, arse, midX, midY, LVSpan, this);
+				playHud.Draw(net, arse, midX, midY, VSpanLabel, this);
 				maybePromptClickIn();
 				break;
 				
@@ -378,7 +381,7 @@ public class Hud : MonoBehaviour {
 	}
 
 	public void SizedLabel(string s) {
-		GUILayout.Label(s, GUILayout.MaxWidth(GetWidth(s)));
+		GUILayout.Label(s, GUILayout.MaxWidth(GetWidthLabel(s)));
 	}
 
 	int fsWidth = 1280;
@@ -447,7 +450,7 @@ public class Hud : MonoBehaviour {
 		float hss = 1f / (int)Head.Count; // head slider span
 		net.localPlayer.headType = (int)(headSliderPos / hss);
 		GUILayout.BeginHorizontal();
-		float w = GetWidth(S.GetSpacedOut("" + Head.ElephantHeadMesh));
+		float w = GetWidthLabel(S.GetSpacedOut("" + Head.ElephantHeadMesh));
 		GUILayout.Label(S.GetSpacedOut("" + (Head)net.localPlayer.headType), GUILayout.MaxWidth(w));
 		headSliderPos = GUILayout.HorizontalSlider(headSliderPos, 0f, 1f);
 		GUILayout.EndHorizontal();
@@ -572,26 +575,41 @@ public class Hud : MonoBehaviour {
 	void drawControlsAdjunct() {
 		menuBegin(true, true);
 
-		locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Look inversion");
 		GUILayout.BeginHorizontal();
-		SizedLabel("Look sensitivity:     ");
-		locUser.LookSensitivity = GUILayout.HorizontalSlider(locUser.LookSensitivity, 0.1f, 10f);
+		if (GUILayout.Button(GoToPrevMenu)) {
+			if (Mode == HudMode.Settings)
+				net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+			
+			Mode = HudMode.MenuMain;
+		}
+		GUILayout.FlexibleSpace();
+		/**/locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Look inversion", GUILayout.ExpandWidth(false));
+		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
+		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
+		GUILayout.FlexibleSpace();
+		GUILayout.Label("Look sensitivity:", GUILayout.ExpandWidth(false));
+		locUser.LookSensitivity = GUILayout.HorizontalSlider(locUser.LookSensitivity, 0.1f, 10f, GUILayout.MinWidth(196));
+		PlayerPrefs.SetFloat("MouseSensitivity", locUser.LookSensitivity);
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
 		GUILayout.Button("GamePad");
 		GUILayout.Button("Hydra");
-		GUILayout.Button("Mouse L");
-		GUILayout.Button("Mouse R");
-		GUILayout.Button("MMO Mouse L");
-		GUILayout.Button("MMO Mouse R");
+		GUILayout.Button("MouseL");
+		GUILayout.Button("MouseR");
+		GUILayout.Button("MMOL");
+		GUILayout.Button("MMOR");
 		GUILayout.EndHorizontal();
 
-		menuEnd();
 
-		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
-		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
-		PlayerPrefs.SetFloat("MouseSensitivity", locUser.LookSensitivity);
+
+
+
+		// menu end stuff 
+		GUI.color = Color.white;
+		GUILayout.EndScrollView();
+		
+		GUILayout.EndArea();
 	}
 
 	
@@ -876,7 +894,20 @@ public class Hud : MonoBehaviour {
 		return false;
 	}
 	
-	public float GetWidth(string s) {
+	public float GetWidthBox(string s) {
+		GS = "Box";
+		GC = new GUIContent(s);
+		return GS.CalcSize(GC).x;
+	}
+	
+	public float GetWidthButton(string s) {
+		GS = "Button";
+		GC = new GUIContent(s);
+		return GS.CalcSize(GC).x;
+	}
+	
+	public float GetWidthLabel(string s) {
+		GS = "Label";
 		GC = new GUIContent(s);
 		return GS.CalcSize(GC).x;
 	}
