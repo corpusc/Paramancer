@@ -45,7 +45,7 @@ public class GrenadeScript : MonoBehaviour {
 				layerMask)
 			) {
 				if (hitInfo.collider.GetType() == typeof(CharacterController)) {
-					// i like players being able to hurt themselves with careless grenade tosses,
+					// i like players being able to hurt theirselves with careless grenade tosses,
 					// but some kinda FIXME needed for insta self kills while throwing and sprinting forward?
 					maybeDetonate();
 				}else{

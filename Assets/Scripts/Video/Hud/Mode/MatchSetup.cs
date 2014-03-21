@@ -68,22 +68,21 @@ public class MatchSetup {
 
 		// select map
 		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
-		GUILayout.Label("Level:");
 
 		if (GUILayout.Button("<") ) {
 			mapId--;
 			if (mapId < 0) 
 				mapId += matches[matchId].allowedLevels.Length;
 		}
-		
-		GUILayout.Label(matches[matchId].allowedLevels[mapId]);
 
 		if (GUILayout.Button(">") ) {
 			mapId++;
 			if (mapId >= matches[matchId].allowedLevels.Length) 
 				mapId -= matches[matchId].allowedLevels.Length;
 		}
+
+		GUILayout.Label("Map:");
+		GUILayout.Label(matches[matchId].allowedLevels[mapId]);
 		GUILayout.FlexibleSpace();
 
 		GUILayout.EndHorizontal();
@@ -189,13 +188,13 @@ public class MatchSetup {
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Box("End conditions (0 == ignore)");
+			GUILayout.Box("Limits (0 ignores)");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Round Time (minutes): ");
+			GUILayout.Label("Round Time (mins): ");
 			matches[matchId].Duration = S.GetInt( GUILayout.TextField(matches[matchId].Duration.ToString()) );
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
@@ -263,7 +262,7 @@ public class MatchSetup {
 			GUILayout.EndScrollView();
 		}
 		
-		if (GUILayout.Button("CANCEL")) {
+		if (GUILayout.Button("CANCEL"/*, GUILayout.ExpandWidth(false)*/)) {
 			hud.Mode = HudMode.MenuMain;
 		}
 		
@@ -329,9 +328,6 @@ public class MatchSetup {
 	void selectMatchType() {
 		GUILayout.BeginHorizontal();
 		
-		GUILayout.FlexibleSpace();
-		GUILayout.Label("Mode: ");
-		
 		if (GUILayout.Button("<") ) {
 			int lastInt = matchId;
 			
@@ -350,8 +346,6 @@ public class MatchSetup {
 			mapId = mapChangeId;
 		}
 		
-		GUILayout.Label(matches[matchId].Name);
-		
 		if (GUILayout.Button(">") ) {
 			int lastInt = matchId;
 			
@@ -367,7 +361,13 @@ public class MatchSetup {
 			
 			mapId = mapChangeId;
 		}
+
+
+		GUILayout.Label("Mode: ");
+		GUILayout.Label(matches[matchId].Name);
 		GUILayout.FlexibleSpace();
+		
+
 
 		GUILayout.EndHorizontal();
 	}

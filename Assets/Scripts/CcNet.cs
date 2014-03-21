@@ -538,7 +538,7 @@ public class CcNet : MonoBehaviour {
 				case 0:	return f + " bought the farm!";
 				case 1:	return f + " changed career... to Daisy Pusher!";
 				case 2:	return f + " really bit the dust!";
-				case 3:	return f + " really shot themself in the foot!";
+				case 3:	return f + " really shot himself in the foot!";
 				case 4:	return f + " did some nice kamikaze work!";
 				default: return "....";
 			}
