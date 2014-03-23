@@ -494,7 +494,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		
+		// obituary text 
 		var le = new LogEntry();
 		le.Maker = "";
 		le.Color = Color.red;

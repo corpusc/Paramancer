@@ -764,37 +764,42 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void Fire() {
-		Item it = (Item)GunInHand;
-		switch (it) {
+		var ct = Camera.main.transform;
+		Item gun = (Item)GunInHand;
+
+		switch (gun) {
 			case Item.Pistol:
-				FireBullet(it);
+				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
 			case Item.Grenade:
-				net.Shoot(it, Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false, ava.sprinting);
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, ava.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
 			case Item.MachineGun:
-				FireBullet(it);
+				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 2f;
-				gunRecoil += new Vector3(Random.Range(-1f,1f),Random.Range(-1f,1f),Random.Range(-1f,1f)).normalized * 0.2f;
+				gunRecoil += new Vector3(
+					Random.Range(-1f, 1f),
+					Random.Range(-1f, 1f),
+					Random.Range(-1f, 1f)).normalized * 0.2f;
 				break; 
 			case Item.Rifle:
-				FireBullet(it);
+				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.RocketLauncher:
-				net.Shoot(it, Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false);
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.Swapper:
 				if (swapperLockTarget == -1) {
 					// not locked on, we miss
-					FireBullet(it);
+					FireBullet(gun);
 				}else{
 					// locked on, we hit
-					net.Shoot(it, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true);
-					net.RegisterHit(it, net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
+					net.Shoot(gun, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true);
+					net.RegisterHit(gun, net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
@@ -817,7 +822,7 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.Bomb:
-				net.Detonate(it, transform.position, User.viewID, User.viewID);
+				net.Detonate(gun, transform.position, User.viewID, User.viewID);
 				break; 
 			case Item.Spatula:
 				// FIXME: IF WE KEEP THIS, IT SHOULD BE AN INSTAGIB MELEE WEAPON
