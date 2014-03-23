@@ -263,7 +263,7 @@ public class MatchSetup {
 		}
 		
 		if (GUILayout.Button("CANCEL"/*, GUILayout.ExpandWidth(false)*/)) {
-			hud.Mode = HudMode.MenuMain;
+			hud.Mode = HudMode.MainMenu;
 		}
 		
 		GUILayout.EndArea();
@@ -281,7 +281,7 @@ public class MatchSetup {
 				net.MatchTypeAndMap = net.CurrMatch.Name + "\n" + net.CurrMatch.levelName;
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initializing server, has public address: " + Network.HavePublicAddress().ToString());
-				Network.InitializeServer(net.connections,net.listenPort, useNat);
+				Network.InitializeServer(net.connections, net.listenPort, useNat);
 				hud.Mode = HudMode.InitializingServer;
 			}
 		}else{

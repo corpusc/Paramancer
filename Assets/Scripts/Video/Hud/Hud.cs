@@ -11,7 +11,7 @@ public class Hud : MonoBehaviour {
 	public float VSpanBox; // box vertical span
 	public float VSpanButton; // button vertical span
 	public float VSpanLabel; // label vertical span
-	private HudMode mode = HudMode.MenuMain;
+	private HudMode mode = HudMode.MainMenu;
 	public HudMode Mode {
 		get { return mode; }
 		set {
@@ -43,8 +43,7 @@ public class Hud : MonoBehaviour {
 	// UI element sizes
 	int midX, midY; // middle of the screen
 	Rect window = new Rect(0, 0, 600, 400); // background for most menus
-	Rect backRect = new Rect(0, 0, 100, 0); // back button rectangle
-	int vSpan = 20; // fixme: hardwired vertical span of the text.  doubled in many places for button height
+	int vSpan = 20; // FIXME: hardwired vertical span of the text.  doubled in many places for button height
 	Vector2 scrollPos = Vector2.zero;
 
 	// scripts
@@ -87,7 +86,7 @@ public class Hud : MonoBehaviour {
 		// load settings
 		log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
-		net.VolumeMaster = PlayerPrefs.GetFloat("GameVolume", 1f);
+		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
 	}
 
 	float serverSearch;
@@ -101,8 +100,8 @@ public class Hud : MonoBehaviour {
 		}
 
 		if (CcInput.Started(UserAction.Menu)) 
-			if (Mode != HudMode.MenuMain) {
-				Mode = HudMode.MenuMain;
+			if (Mode != HudMode.MainMenu) {
+				Mode = HudMode.MainMenu;
 				Screen.lockCursor = false;
 			}else{
 				// the only people who should see my fullscreen'ish button
@@ -145,8 +144,6 @@ public class Hud : MonoBehaviour {
 			window.height = oldH * (S.GoldenRatio / (1f + S.GoldenRatio) );
 			window.x = (Screen.width - window.width) / 2;
 			window.y = (Screen.height - window.height) / 2;
-			backRect.height = vSpan * 2;
-			backRect.y = window.y - backRect.height;
 		}
 
 
@@ -166,7 +163,7 @@ public class Hud : MonoBehaviour {
 				joinWindow();
 				break;
 
-			case HudMode.MenuMain:
+			case HudMode.MainMenu:
 				if (!net.Connected) {
 					avatarView();
 				}
@@ -188,15 +185,15 @@ public class Hud : MonoBehaviour {
 				break;
 
 			case HudMode.ConnectionError:
-				drawSimpleWindow("Failed to Connect ----> " + net.Error, false);
+				drawSimpleWindow(net.Error, Color.red);
 				break;
 
 			case HudMode.Connecting:
-				drawSimpleWindow("Connecting...");
+				drawSimpleWindow("", Color.yellow);
 				break;
 
 			case HudMode.InitializingServer:
-				drawSimpleWindow("Initialising Server...");
+				drawSimpleWindow("", S.WhiteTRANS);
 				break;
 
 			// server
@@ -223,18 +220,10 @@ public class Hud : MonoBehaviour {
 
 
 
-	void drawSimpleWindow(string s, bool disconnect = true) {
-		if (disconnect) {
-			if (backButton(backRect))
-				Network.Disconnect();
-		}else{
-			backButton(backRect);
-		}
-
-		DrawWindowBackground();
-		GUI.BeginGroup(window);
+	void drawSimpleWindow(string s, Color col) {
+		menuBegin(col);
 		GUILayout.Label(s);
-		GUI.EndGroup();
+		menuEnd();
 	}
 
 
@@ -316,15 +305,18 @@ public class Hud : MonoBehaviour {
 	}
 	
 	
-
 	void menuBegin(bool scrolling = true, bool startAtTop = false) {
+		menuBegin(S.WhiteTRANS, scrolling, startAtTop);
+	}
+	void menuBegin(Color col, bool scrolling = true, bool startAtTop = false) {
 		var r = window;
+
 		if (startAtTop) {
 			r.y = 0;
 			r.height = Screen.height - controls.HeightOfButtonsOrKeys;
 		}
 
-		GUI.color = S.WhiteTRANS;
+		GUI.color = col;
 		GUI.DrawTexture(r, Pics.White);
 		
 		GUILayout.BeginArea(r);
@@ -343,10 +335,16 @@ public class Hud : MonoBehaviour {
 			GUILayout.EndScrollView();
 
 		if (GUILayout.Button(GoToPrevMenu)) {
-			if (Mode == HudMode.Settings)
-				net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+			switch (Mode) {
+				case HudMode.ConnectionError:
+					Network.Disconnect();
+					break;
+				case HudMode.Settings:
+					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+					break;
+			}
 
-			Mode = HudMode.MenuMain;
+			Mode = HudMode.MainMenu;
 		}
 		
 		GUILayout.EndArea();
@@ -417,9 +415,9 @@ public class Hud : MonoBehaviour {
 		//categoryHeader("Audio");
 		GUILayout.BeginHorizontal();
 		SizedLabel("Master Volume:   ");
-		net.VolumeMaster = GUILayout.HorizontalSlider(net.VolumeMaster, 0.0f, 1f);
+		Sfx.VolumeMaster = GUILayout.HorizontalSlider(Sfx.VolumeMaster, 0.0f, 1f);
 		GUILayout.EndHorizontal();
-		PlayerPrefs.SetFloat("GameVolume", net.VolumeMaster);
+		PlayerPrefs.SetFloat("MasterVolume", Sfx.VolumeMaster);
 
 		// graphics
 		//categoryHeader("Graphics");
@@ -531,7 +529,7 @@ public class Hud : MonoBehaviour {
 	
 	void kickWindow() {
 		if (net.isServer) {
-			menuBegin();
+			menuBegin(Color.red);
 
 			for (int i=0; i<net.players.Count; i++) {
 				if (net.players[i].viewID != net.localPlayer.viewID) {
@@ -573,14 +571,14 @@ public class Hud : MonoBehaviour {
 	
 	
 	void drawControlsAdjunct() {
-		menuBegin(true, true);
+		menuBegin(S.WhiteTRANS, true, true);
 
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(GoToPrevMenu)) {
 			if (Mode == HudMode.Settings)
 				net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
 			
-			Mode = HudMode.MenuMain;
+			Mode = HudMode.MainMenu;
 		}
 		GUILayout.FlexibleSpace();
 		/**/locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Look inversion", GUILayout.ExpandWidth(false));
@@ -589,7 +587,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.FlexibleSpace();
 		GUILayout.Label("Look sensitivity:", GUILayout.ExpandWidth(false));
 		locUser.LookSensitivity = GUILayout.HorizontalSlider(locUser.LookSensitivity, 0.1f, 10f, GUILayout.MinWidth(196));
-		PlayerPrefs.SetFloat("MouseSensitivity", locUser.LookSensitivity);
+		PlayerPrefs.SetFloat("LookSensitivity", locUser.LookSensitivity);
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
@@ -651,7 +649,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.Box(S.GetSpacedOut(Mode + ""));
 
 		if (GUILayout.Button(GoToPrevMenu))
-			Mode = HudMode.MenuMain;
+			Mode = HudMode.MainMenu;
 
 		// allow entering a passsword
 		GUILayout.BeginHorizontal();
@@ -663,7 +661,7 @@ public class Hud : MonoBehaviour {
 		HostData[] hostData = MasterServer.PollHostList();
 		// play sound if number of servers goes up
 		if (prevNumServers < hostData.Length) {
-			AudioSource.PlayClipAtPoint(Sfx.Get("spacey"), Camera.main.transform.position);
+			Sfx.PlayOmni("spacey");
 		}
 		prevNumServers = hostData.Length;
 
@@ -885,15 +883,6 @@ public class Hud : MonoBehaviour {
 		}
 	}
 
-	bool backButton(Rect r) {
-		if (GUI.Button(r, "  <  ")) {
-			Mode = HudMode.MenuMain;
-			return true;
-		}
-		
-		return false;
-	}
-	
 	public float GetWidthBox(string s) {
 		GS = "Box";
 		GC = new GUIContent(s);

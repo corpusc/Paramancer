@@ -31,14 +31,15 @@ public class NetUser {
 	public Ping ping;
 	public float lastPong = 0f;
 	public int team = 0;
-	// 			frag tallies
+	// 			frag related
+	public GameObject FraggedBy = null;	
 	public int kills;
 	public int totalKills;
 	public int deaths;
 	public int totalDeaths;
 
-	
-	
+
+
 	public void InstantiateEntity(GameObject entityPrefab) {
 		Debug.Log("InstantiateEntity()");
 		if (Entity != null) 

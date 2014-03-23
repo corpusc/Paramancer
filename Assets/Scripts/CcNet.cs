@@ -70,7 +70,6 @@ public class CcNet : MonoBehaviour {
 	// personal stuff
 	public NetUser localPlayer;
 	public bool gunBobbing = true;
-	public float VolumeMaster = 1f;
 
 	bool twoMinsAnnounced = false;
 	bool oneMinAnnounced = false;
@@ -425,79 +424,53 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	[RPC]
-	void AnnounceKill(int weapon, NetworkViewID shooterID, NetworkViewID victimID) {
+	void AnnounceKill(int weapon, NetworkViewID fraggerID, NetworkViewID victimID) {
 		latestPacket = Time.time;
 		
-		if (localPlayer.viewID == shooterID) 
-			localPlayer.totalKills ++;
-		if (localPlayer.viewID == victimID) 
-			localPlayer.totalDeaths ++;
-		
-		if (localPlayer.viewID == victimID) {
-			for (int i=0; i<players.Count; i++) {
-				if (players[i].viewID == shooterID) {
-					for (int k=0; k<players.Count; k++) {
-						if (players[k].viewID == localPlayer.viewID)
-							players[k].Entity.ourKiller = players[i].Entity.gameObject;
-					}
-				}
-			}
-		}
-		
-		string shooterName = "Someone";
+		// setup names & ids for relevant players 
+		int fraggerIdx = 0;
+		int victimIdx = 0;
+		string fraggerName = "Someone";
 		string victimName = "Someone";
-		int fraggerID = 0;
-
 		for(int i = 0; i < players.Count; i++) {
-			if (players[i].viewID == shooterID) {
-				shooterName = players[i].name;
-				fraggerID = i;
-			}
-			if (players[i].viewID == victimID) victimName = players[i].name;
-		}
-
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == victimID) players[i].Entity.PlaySound("die"); //play the dying sound to the victim, and the ***kill announcement to everyone else
-			else {
-				switch(players[fraggerID].Entity.multi_kill) {
-				case 1: players[i].Entity.PlaySound("doubleKill");
-					break;
-				case 2: players[i].Entity.PlaySound("tripleKill");
-					break;
-				case 3: players[i].Entity.PlaySound("quadraKill");
-					break;
-				case 4: players[i].Entity.PlaySound("pentaKill");
-					break;
-				case 5: players[i].Entity.PlaySound("hexaKill");
-					break;
-				case 6: players[i].Entity.PlaySound("godlike");
-					break;
-				default: break;
-				}
-				players[fraggerID].Entity.multi_kill++;
-				players[fraggerID].Entity.last_kill = Time.time;
+			if (players[i].viewID == fraggerID) { // if this is the fragger 
+				players[i].Entity.MultiFragCount++;
+				players[i].Entity.PrevFrag = Time.time;
+				handleMultiFrag(i);
+				fraggerName = players[i].name;
+				fraggerIdx = i;
 			}
 			
-			// lives
-			if (players[i].viewID == victimID) {
+			if (players[i].viewID == victimID) { // if this is the victim 
+				victimName = players[i].name;
+				victimIdx = i;
+				players[i].Entity.PlaySound("die");
+
+				// lives
 				players[i].lives--;
-				if (players[i].lives <= 0 && 
-					players[i].local && 
-					CurrMatch.playerLives > 0)
+				if (CurrMatch.playerLives > 0 &&
+				    players[i].lives <= 0 && 
+				    players[i].local)
 				{
-					// spectate
 					players[i].Entity.Spectating = true;
 				}
-			}
-			
-			// basketball
-			if (players[i].viewID == victimID) {
+
+				// basketball
 				if (CurrMatch.basketball && players[i].hasBall) {
 					players[i].hasBall = false;
+
 					if (isServer)
 						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
 				}
 			}
+		}
+		
+		// set some unused?! totals
+		if (localPlayer.viewID == fraggerID) 
+			localPlayer.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz?
+		if (localPlayer.viewID == victimID) { // if local player was the victim 
+			localPlayer.totalDeaths++;
+			localPlayer.FraggedBy = players[fraggerIdx].Entity.gameObject;
 		}
 		
 		// lives
@@ -525,15 +498,28 @@ public class CcNet : MonoBehaviour {
 		var le = new LogEntry();
 		le.Maker = "";
 		le.Color = Color.red;
-		le.Text = getObituary(shooterName, victimName);
+		le.Text = getObituary(fraggerName, fraggerIdx, victimName, victimIdx);
 		log.Entries.Add(le);
 		log.DisplayTime = Time.time+log.FadeTime;
 		
 	}
+
+	void handleMultiFrag(int i) {
+		switch (players[i].Entity.MultiFragCount) {
+			case 0: break;
+			case 1: break;
+			case 2: players[i].Entity.PlaySound("doubleKill"); break;
+			case 3: players[i].Entity.PlaySound("tripleKill"); break;
+			case 4: players[i].Entity.PlaySound("quadraKill"); break;
+			case 5: players[i].Entity.PlaySound("pentaKill"); break;
+			case 6: players[i].Entity.PlaySound("hexaKill"); break;
+			default: players[i].Entity.PlaySound("godlike"); break;
+		}
+	}
 	
-	private string getObituary(string f, string v) { // fragger, victim
+	private string getObituary(string f, int fId, string v, int vId) { // fragger, victim
 		// suicides
-		if (f == v) { // fixme.... cuz if 2 players have the same name, it will read like a suicide when it wasn't
+		if (fId == vId) {
 			switch (Random.Range(0, 5)) {
 				case 0:	return f + " bought the farm!";
 				case 1:	return f + " changed career... to Daisy Pusher!";
@@ -1393,7 +1379,7 @@ public class CcNet : MonoBehaviour {
 			}
 			players = new List<NetUser>();
 			
-			hud.Mode = HudMode.MenuMain;
+			hud.Mode = HudMode.MainMenu;
 			Application.LoadLevel("MenuMain");
 			levelLoaded = false;
 		}
@@ -1496,7 +1482,7 @@ public class CcNet : MonoBehaviour {
 		}
 		players = new List<NetUser>();
 		
-		hud.Mode = HudMode.MenuMain;
+		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel("MenuMain");
 		levelLoaded = false;
 	}
@@ -1522,7 +1508,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		players = new List<NetUser>();
-		hud.Mode = HudMode.MenuMain;
+		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel("MenuMain");
 		levelLoaded = false;
 		var newMsg = new LogEntry();

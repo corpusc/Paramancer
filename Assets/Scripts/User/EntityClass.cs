@@ -8,9 +8,9 @@ public class EntityClass : MonoBehaviour {
 	private CharacterController cc;
 	private Avatar ava;
 
-	//amount of kills in multi-kill
-	public int multi_kill = 0;
-	public float last_kill = 0f;
+	// amount of kills in multi-kill
+	public int MultiFragCount = 0;
+	public float PrevFrag = 0f;
 
 	// cam
 	public GameObject camHolder;
@@ -134,7 +134,6 @@ public class EntityClass : MonoBehaviour {
 		CountdownAnnouncement = (AudioClip)Resources.Load("Resources/SFX/Announcement/countdown.wav");
 	}
 	
-	public GameObject ourKiller;
 	public bool sendRPCUpdate = false;
 	float rpcCamtime = 0f;
 	void Update() {
@@ -151,11 +150,9 @@ public class EntityClass : MonoBehaviour {
 			} 
 		}
 
-		if(Time.time - last_kill > 10f)
-			multi_kill = 0;
-		
-		AudioListener.volume = net.VolumeMaster;
-		
+		if (Time.time - PrevFrag > 10f)
+			MultiFragCount = 0;
+
 		if (Spectating && isLocal) {
 			if (net.players.Count > 0) {
 				if (firstPersonGun) 
@@ -223,7 +220,7 @@ public class EntityClass : MonoBehaviour {
 					if (Camera.main.transform.parent == null) 
 						SetModelVisibility(false);
 					
-					ourKiller = null;
+					net.localPlayer.FraggedBy = null;
 					Camera.main.transform.parent = camHolder.transform;
 					Camera.main.transform.localPosition = Vector3.zero;
 					// this makes sure we can walk along walls/ceilings with proper mouselook orientation
@@ -502,7 +499,7 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 
-					if (hud.Mode == HudMode.Playing) { // ....then allow scrollwhee to cycle weaps 
+					if (hud.Mode == HudMode.Playing) { // ....then allow scrollwheel to cycle weaps/items 
 						bool nex, pre;
 						CcInput.PollScrollWheel(out nex, out pre);
 						bool next = CcInput.Started(UserAction.Next);
@@ -547,10 +544,10 @@ public class EntityClass : MonoBehaviour {
 					if (Camera.main.transform.parent != null) 
 						SetModelVisibility(true);
 					
-					if (ourKiller != null) {
+					if (net.localPlayer.FraggedBy != null) {
 						Camera.main.transform.parent = null;
 						Camera.main.transform.position = transform.position - animObj.transform.forward;
-						Camera.main.transform.LookAt(ourKiller.transform.position,transform.up);
+						Camera.main.transform.LookAt(net.localPlayer.FraggedBy.transform.position, transform.up);
 						Camera.main.transform.Translate(0, 0, -2f);
 					}
 				}
@@ -774,7 +771,7 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
 			case Item.Grenade:
-			net.Shoot(it, Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false, ava.sprinting);
+				net.Shoot(it, Camera.main.transform.position, Camera.main.transform.forward, Camera.main.transform.position + Camera.main.transform.forward, net.localPlayer.viewID, false, ava.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
 			case Item.MachineGun:
@@ -1135,7 +1132,7 @@ public class EntityClass : MonoBehaviour {
 	public AudioClip AlmostOverAnnouncement;
 	public AudioClip RocketDeniedAnnouncement;
 
-	public void PlaySound(UserAction action) {
+	public void PlaySound(UserAction action) { // i believe atm, this is only used by network "tiny updates" 
 		switch (action) {
 			case UserAction.MoveUp:
 				play(0.6f, sfx_jump);
@@ -1147,12 +1144,14 @@ public class EntityClass : MonoBehaviour {
 		}
 	}
 	public void PlaySound(string sound) {
+		if (sound == "jump") // FIXME with their final forms 
+			play(0.2f, sfx_jump);
+		if (sound == "weaponChange")
+			play(0.2f, sfx_weaponChange);
+
 		if (sound == "takeHit"){
 			audio.clip = sfx_takeDamage;
 			audio.Play();
-		}
-		if (sound == "jump"){
-			play(0.2f, sfx_jump);
 		}
 		if (sound == "land"){
 			audio.clip = sfx_land;
@@ -1163,9 +1162,6 @@ public class EntityClass : MonoBehaviour {
 			audio.clip = sfx_die;
 			audio.volume = 1f;
 			audio.Play();
-		}
-		if (sound == "weaponChange"){
-			play(0.2f, sfx_weaponChange);
 		}
 		if (sound == "reload"){
 			audio.clip = sfx_reload;
