@@ -12,6 +12,9 @@ public class EntityClass : MonoBehaviour {
 	public int MultiFragCount = 0;
 	public float PrevFrag = 0f;
 
+	float sprintRelease = 0f;
+	float maxSprintRelease = 0.3f;
+
 	// cam
 	public GameObject camHolder;
 	private Vector3 camAngle;
@@ -244,9 +247,15 @@ public class EntityClass : MonoBehaviour {
 						if (camAngle.x < -max) 
 							camAngle.x = -max;
 					}
+
+					if (CcInput.Started(UserAction.Sprint)) {
+						ava.sprinting = !ava.sprinting;
+						sprintRelease = 0f;
+					}
+
+					sprintRelease += Time.deltaTime;
 					
 					camHolder.transform.localEulerAngles = camAngle;
-					bool startedSprinting = false;
 					Vector3 inputVector = Vector3.zero; 
 
 					if (CcInput.Holding(UserAction.MoveForward)) 
@@ -260,9 +269,12 @@ public class EntityClass : MonoBehaviour {
 					
 					if (CcInput.Holding(UserAction.MoveLeft)) 
 						inputVector -= animObj.transform.right;
-					
-					if (CcInput.Started(UserAction.Sprint)) 
-						startedSprinting = true;
+
+					if(inputVector != Vector3.zero)
+						sprintRelease = 0f;
+
+					if(sprintRelease > maxSprintRelease)
+						ava.sprinting = false;
 					
 					//inputVector.y = 0f;
 					inputVector.Normalize();
@@ -270,7 +282,7 @@ public class EntityClass : MonoBehaviour {
 					ava.UpVector = animObj.transform.up;
 					
 					if (!crouched) {
-						ava.Move(inputVector * Time.deltaTime * 10f, startedSprinting);
+						ava.Move(inputVector * Time.deltaTime * 10f);
 					}else{
 						ava.Move(inputVector * Time.deltaTime * 5f);
 					}
