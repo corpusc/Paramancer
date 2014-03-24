@@ -76,7 +76,7 @@ public class ProcWeap : MonoBehaviour {
 		vamp = Random.Range(minVamp, maxVamp);
 
 		for(int i = 0; (GetPower() < MinPower || GetPower() > MaxPower) && i < 100; i++) {
-			if(GetPower() < MinPower) {
+			if (GetPower() < MinPower) {
 				switch(Random.Range(0, 5)) {
 				case 0:
 					bps = Random.Range(bps, maxBps);
@@ -129,30 +129,36 @@ public class ProcWeap : MonoBehaviour {
 
 		name = GetName();
 
-		if(dmg > minDmgName) shotCol = Color.Lerp(Color.green, Color.red, (dmg - minDmgName) / (maxDmg - minDmgName));
-		else if(bnc > minBncName) shotCol = Color.Lerp(Color.blue, Color.red, (bnc - minBncName) / (maxBnc - minBncName));
-		else if(vamp > minVampName) shotCol = Color.Lerp(Color.blue, Color.green, (vamp - minVampName) / (maxVamp - minVampName));
+		if (dmg > minDmgName) 
+			shotCol = Color.Lerp(Color.green, Color.red, (dmg - minDmgName) / (maxDmg - minDmgName));
+		else if (bnc > minBncName) 
+			shotCol = Color.Lerp(Color.blue, Color.red, (bnc - minBncName) / (maxBnc - minBncName));
+		else if (vamp > minVampName) 
+			shotCol = Color.Lerp(Color.blue, Color.green, (vamp - minVampName) / (maxVamp - minVampName));
+
 		shotCol = Color.Lerp(shotCol, Color.clear, bps / maxBps);
+		shotCol = Color.Lerp(shotCol, new Color(Random.value, Random.value, Random.value), Random.value); // for some randomness
 
-		shotCol = Color.Lerp(shotCol, new Color(Random.value, Random.value, Random.value), Random.value); //for some randomness
-
-		n_barrels = Mathf.CeilToInt(bps); //rounded up
+		n_barrels = Mathf.CeilToInt(bps); // rounded up
 		barrelScale = new Vector3(barrelThickness, barrelThickness, dmg * barrelDmgMultiplier);
 		barrelPos = new Vector3[n_barrels];
+
 		for(int i = 0; i < n_barrels; i++) {
+			// this is supposed to distribute the barrels in a circle around the middle of the weapon
 			barrelPos[i] = new Vector3(
 				Mathf.Sin(Mathf.Deg2Rad * i * 360f / n_barrels) * barrelOffCenter,
 				Mathf.Cos(Mathf.Deg2Rad * i * 360f / n_barrels) * barrelOffCenter,
 				barrelDmgMultiplier * dmg / 2f + barrelOffset);
-			//this is supposed to distribute the barrels in a circle around the middle of the weapon
 		}
-		if(vamp > 0.0f) {
+		if (vamp > 0.0f) {
 			cylPos = new Vector3[proj];
 		}
 	}
 	
 	float GetPower() {
-		return bps * dmg * Mathf.Sqrt(bnc + 1) * proj * (auto && bps > 1.0f ? Mathf.Sqrt(bps) : 1) * (vamp + 1.0f) * Mathf.Sqrt(dmg);
+		return bps * dmg * Mathf.Sqrt(bnc + 1) * proj * 
+			(auto && bps > 1.0f ? Mathf.Sqrt(bps) : 1) * 
+			(vamp + 1.0f) * Mathf.Sqrt(dmg);
 	}
 
 	bool RandomBool() {
@@ -162,12 +168,18 @@ public class ProcWeap : MonoBehaviour {
 	//based on weapon stats
 	string GetName() {
 		string t = "";
-		if(vamp > minVampName) t += "vampiric";
-		else if(vamp < minSacrificeName) t += "sacrificial ";
-		if(bps > minBpsName) t += "machine ";
-		if(dmg > minDmgName) t += "hurting ";
-		if(bnc > minBncName) t += "bouncy ";
-		if(proj > minProjName) t += "splitting ";
+		if (vamp > minVampName) 
+			t += "vampiric";
+		else if (vamp < minSacrificeName) 
+			t += "sacrificial ";
+		if (bps > minBpsName) 
+			t += "machine ";
+		if (dmg > minDmgName) 
+			t += "hurting ";
+		if (bnc > minBncName) 
+			t += "bouncy ";
+		if (proj > minProjName) 
+			t += "splitting ";
 
 		string s = "";
 		int partsInName = Random.Range(minPartsInName, maxPartsInName);
@@ -177,18 +189,15 @@ public class ProcWeap : MonoBehaviour {
 
 		s = UppercaseFirst(s);
 		t = UppercaseFirst(t);
-
 		t += s;
-
 		return t;
 	}
 
-	static string UppercaseFirst(string s)
-	{
-		if (string.IsNullOrEmpty(s))
-		{
+	static string UppercaseFirst(string s) {
+		if (string.IsNullOrEmpty(s)) {
 			return string.Empty;
 		}
+
 		return char.ToUpper(s[0]) + s.Substring(1);
 	}
 

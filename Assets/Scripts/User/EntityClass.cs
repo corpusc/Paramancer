@@ -4,18 +4,19 @@ using System.Collections.Generic;
 
 public class EntityClass : MonoBehaviour {
 	public NetUser User;
-	public float EnergyLeft = 1f; // 0-1
 	private CharacterController cc;
 	private Avatar ava;
 
-	// amount of kills in multi-kill
+	// frag 
 	public int MultiFragCount = 0;
 	public float PrevFrag = 0f;
 
+	// sprinting 
+	public float EnergyLeft = 1f; // 0-1
 	float sprintRelease = 0f;
 	float maxSprintRelease = 0.3f;
 
-	// cam
+	// cam 
 	public GameObject camHolder;
 	private Vector3 camAngle;
 	
@@ -27,7 +28,7 @@ public class EntityClass : MonoBehaviour {
 	
 	public GameObject animObj;
 	
-	// swapper
+	// swapper 
 	public int swapperCrossX = 0;
 	public int swapperCrossY = 0;
 	public bool swapperLocked = false;
@@ -41,6 +42,7 @@ public class EntityClass : MonoBehaviour {
 	public GameObject bballArrowPrefab;
 	private GameObject bballArrowObj;
 	
+	// FIXME: resources that should be loaded elsewhere 
 	public Material invisibleMat;
 	public Material gunMat;
 	public Material dummyAMat;
@@ -55,7 +57,9 @@ public class EntityClass : MonoBehaviour {
 	public Material pyramidMat;
 	public Material chocoboMat;
 	public Material spikeMat;
+	public GameObject[] heads;
 
+	// avatar settings 
 	public Color colA;
 	public Color colB;
 	public Color colC;
@@ -64,8 +68,6 @@ public class EntityClass : MonoBehaviour {
 	public GameObject meshObj;
 	public GameObject gunMesh1;
 	public GameObject gunMesh2;
-	
-	public GameObject[] heads;
 	
 	public bool grounded;
 	public float yMove = 0f;
@@ -270,10 +272,10 @@ public class EntityClass : MonoBehaviour {
 					if (CcInput.Holding(UserAction.MoveLeft)) 
 						inputVector -= animObj.transform.right;
 
-					if(inputVector != Vector3.zero)
+					if (inputVector != Vector3.zero)
 						sprintRelease = 0f;
 
-					if(sprintRelease > maxSprintRelease)
+					if (sprintRelease > maxSprintRelease)
 						ava.sprinting = false;
 					
 					//inputVector.y = 0f;
@@ -1200,73 +1202,73 @@ public class EntityClass : MonoBehaviour {
 			audio.volume = 0.4f;
 			audio.Play();
 		}
-		if(sound == "doubleKill") {
+		if (sound == "doubleKill") {
 			audio.clip = DoubleKillAnnouncement;
 			audio.Play();
 		}
-		if(sound == "tripleKill") {
+		if (sound == "tripleKill") {
 			audio.clip = TripleKillAnnouncement;
 			audio.Play();
 		}
-		if(sound == "quadraKill") {
+		if (sound == "quadraKill") {
 			audio.clip = QuadraKillAnnouncement;
 			audio.Play();
 		}
-		if(sound == "pentaKill") {
+		if (sound == "pentaKill") {
 			audio.clip = PentaKillAnnouncement;
 			audio.Play();
 		}
-		if(sound == "hexaKill") {
+		if (sound == "hexaKill") {
 			audio.clip = HexaKillAnnouncement;
 			audio.Play();
 		}
-		if(sound == "godlike") {
+		if (sound == "godlike") {
 			audio.clip = GodlikeAnnouncement;
 			audio.Play();
 		}
-		if(sound == "firstFrag") {
+		if (sound == "firstFrag") {
 			audio.clip = FirstFragAnnouncement;
 			audio.Play();
 		}
-		if(sound == "takeLead") {
+		if (sound == "takeLead") {
 			audio.clip = TakeLeadAnnouncement;
 			audio.Play();
 		}
-		if(sound == "loseLead") {
+		if (sound == "loseLead") {
 			audio.clip = LoseLeadAnnouncement;
 			audio.Play();
 		}
-		if(sound == "win") {
+		if (sound == "win") {
 			audio.clip = WinAnnouncement;
 			audio.Play();
 		}
-		if(sound == "lose") {
+		if (sound == "lose") {
 			audio.clip = LoseAnnouncement;
 			audio.Play();
 		}
-		if(sound == "countdown") {
+		if (sound == "countdown") {
 			audio.clip = CountdownAnnouncement;
 			audio.volume = 0.9f;
 			audio.Play();
 			print("Countdown attempt in PlaySound().");
 		}
-		if(sound == "2_minutes") {
+		if (sound == "2_minutes") {
 			audio.clip = TwoMinutesAnnouncement;
 			audio.Play();
 		}
-		if(sound == "1_minute") {
+		if (sound == "1_minute") {
 			audio.clip = OneMinuteAnnouncement;
 			audio.Play();
 		}
-		if(sound == "30_seconds") {
+		if (sound == "30_seconds") {
 			audio.clip = ThirtySecondsAnnouncement;
 			audio.Play();
 		}
-		if(sound == "almostOver") {
+		if (sound == "almostOver") {
 			audio.clip = AlmostOverAnnouncement;
 			audio.Play();
 		}
-		if(sound == "rocketDenied") {
+		if (sound == "rocketDenied") {
 			audio.clip = RocketDeniedAnnouncement;
 			audio.Play();
 		}

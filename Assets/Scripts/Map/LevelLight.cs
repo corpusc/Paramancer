@@ -19,8 +19,10 @@ public class LevelLight : MonoBehaviour {
 	
 	
 	void Start () {
-		if (GameObject.Find("Main Program") != null) {
-			if (GameObject.Find("Main Program").GetComponent<CcNet>().CurrMatch.pitchBlack) {
+		var mp = GameObject.Find("Main Program");
+
+		if (mp != null) {
+			if (mp.GetComponent<CcNet>().CurrMatch.pitchBlack) {
 				if (!litInPitchBlack) 
 					light.enabled = false;
 			}else{
@@ -36,7 +38,7 @@ public class LevelLight : MonoBehaviour {
 	
 	void Update() {
 		if (MovingRandomly) {
-			if(Random.Range(0, DirChangeTime) == 0) {
+			if (Random.Range(0, DirChangeTime) == 0) {
 				dir.x = Random.Range(-MaxSpeed, MaxSpeed);
 				dir.y = Random.Range(-MaxSpeed, MaxSpeed);
 				dir.z = Random.Range(-MaxSpeed, MaxSpeed);

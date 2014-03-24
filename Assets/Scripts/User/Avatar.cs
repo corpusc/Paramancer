@@ -47,7 +47,7 @@ public class Avatar : MonoBehaviour {
 		
 		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, collisionLayer)) {
 			transform.position = coreHit.point + (coreHit.normal*radius*1.1f);
-		}else if(Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, collisionLayer) &&
+		}else if (Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, collisionLayer) &&
 		         !Physics.Raycast(transform.position + MiddleOfHead * UpVector, -UpVector, MiddleOfHead, collisionLayer)) {
 			transform.position = headHit.point + (headHit.normal*radius*1.1f) - MiddleOfHead * UpVector;
 		}else{

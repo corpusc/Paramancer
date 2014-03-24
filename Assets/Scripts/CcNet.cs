@@ -338,7 +338,7 @@ public class CcNet : MonoBehaviour {
 					players[i].Entity.sendRPCUpdate = true;
 					players[i].Entity.PlaySound("Swapped");
 					players[i].Entity.ForceLook(shooterPos);
-				}else if(players[i].viewID == victimID) {
+				}else if (players[i].viewID == victimID) {
 					players[i].Entity.transform.position = shooterPos;
 					players[i].Entity.sendRPCUpdate = true;
 					players[i].Entity.PlaySound("Swapped");
@@ -652,29 +652,29 @@ public class CcNet : MonoBehaviour {
 		
 		// count time!
 		gameTimeLeft -= Time.deltaTime;
-		if(isServer) {
-			if(gameTimeLeft < 120f && !twoMinsAnnounced) {
+		if (isServer) {
+			if (gameTimeLeft < 120f && !twoMinsAnnounced) {
 				for(int i = 0; i < players.Count; i++)
 				players[i].Entity.PlaySound("2_minutes");
 				twoMinsAnnounced = true;
 			}
-			else if(gameTimeLeft < 60f && !oneMinAnnounced) {
+			else if (gameTimeLeft < 60f && !oneMinAnnounced) {
 				for(int i = 0; i < players.Count; i++)
 				players[i].Entity.PlaySound("1_minute");
 				oneMinAnnounced = true;
 			}
-			else if(gameTimeLeft < 30f && !thirtySecsAnnounced) {
+			else if (gameTimeLeft < 30f && !thirtySecsAnnounced) {
 				for(int i = 0; i < players.Count; i++)
 				players[i].Entity.PlaySound("30_seconds");
 				thirtySecsAnnounced = true;
 			}
-			else if(gameTimeLeft < 10f && !almostOverAnnounced) {
+			else if (gameTimeLeft < 10f && !almostOverAnnounced) {
 				for(int i = 0; i < players.Count; i++)
 				players[i].Entity.PlaySound("almostOver");
 				almostOverAnnounced = true;
 			}
 				
-			if(!countdownAnnounced) {
+			if (!countdownAnnounced) {
 				for(int i = 0; i < players.Count; i++)
 				players[i].Entity.PlaySound("countdown");
 				countdownAnnounced = true;

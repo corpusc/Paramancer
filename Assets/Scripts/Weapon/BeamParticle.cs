@@ -12,12 +12,12 @@ public class BeamParticle : MonoBehaviour {
 	}
 	public float MaxSpeed = 0.2f; // random max
 	public Color StartColor = Color.blue;
-	public Color EndColor = Color.red; //always use something transparent
+	public Color EndColor = Color.red; // always use something transparent
 	public float life = 0.8f;
 	public float f = 0.05f;
 	public float MinSize = 1f;
 	public float MaxSize = 3f;
-	public bool ShotFromRifle = false; //use a different particle if yes
+	public bool ShotFromRifle = false; // use a different particle if yes
 
 	// private 
 	Mesh mesh;
@@ -30,7 +30,7 @@ public class BeamParticle : MonoBehaviour {
 
 	void Start() {
 		shrinkFactor = new Vector3(f, f, f);
-		if(ShotFromRifle){
+		if (ShotFromRifle) {
 			renderer.material = (Material)Resources.Load("Mat/Weap/RifleParticle", typeof(Material));
 		}
 		mesh = GetComponent<MeshFilter>().mesh;
