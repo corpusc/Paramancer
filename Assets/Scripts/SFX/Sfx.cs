@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 using System.Collections.Generic;
 
 
@@ -62,12 +62,16 @@ public static class Sfx {
 
 		switch (s) {
 			case "Announce":
-				foreach (var ac in aClips) {
-					var path = AssetDatabase.GetAssetPath(ac);
-					var aImp = AssetImporter.GetAtPath(path) as AudioImporter;
-					aImp.threeD = false;
-					AssetDatabase.ImportAsset(path);
-				}
+				// hmmm, guess we want them to be 3D afterall....to at least hear what it sounds like
+				// with announcements coming from the player who achieved something (like a MultiFrag)
+
+				// make all these non-locational (2D)
+//				foreach (var ac in aClips) {
+//					var path = AssetDatabase.GetAssetPath(ac);
+//					var aImp = AssetImporter.GetAtPath(path) as AudioImporter;
+//					aImp.threeD = false;
+//					AssetDatabase.ImportAsset(path);
+//				}
 				break;
 		}
 		

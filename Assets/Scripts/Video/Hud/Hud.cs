@@ -591,6 +591,8 @@ public class Hud : MonoBehaviour {
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
+		if (GUILayout.Button("Default Keys"))
+			CcInput.SetDefaultBinds();
 		GUILayout.Button("GamePad");
 		GUILayout.Button("Hydra");
 		GUILayout.Button("MouseL");

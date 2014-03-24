@@ -155,11 +155,11 @@ public class Controls : MonoBehaviour {
 			KeyCode.Keypad0, n, KeyCode.KeypadPeriod, n,
 			
 			// mouse normal
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.U, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
 			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3, n, KeyCode.D, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, KeyCode.Mouse5, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse6, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3, n, KeyCode.Mouse5, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, KeyCode.Mouse6, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
 			
 //			// mouse right-handed MMO 
 //			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
@@ -259,11 +259,11 @@ public class Controls : MonoBehaviour {
 		oldW = Screen.width;
 		oldH = Screen.height;
 		
-		var r = new Rect(0, Screen.height-HeightOfButtonsOrKeys, Screen.width, HeightOfButtonsOrKeys+w/2);
+		var r = new Rect(0, 0, Screen.width, Screen.height);
 		GUI.BeginGroup(r);
 
-		r.y = 0;
-		r.height = bottomOfKeyboard;
+		r.y = Screen.height - HeightOfButtonsOrKeys;
+		r.height = 6 * w + (w/2);
 		GUI.DrawTexture(r, Pics.White);
 		GUI.DrawTexture(mouseRect, mousePic);
 
@@ -467,6 +467,7 @@ public class Controls : MonoBehaviour {
 		//int h = Screen.height/(numY+1);
 		int fKeyGap = w/3;
 		HeightOfButtonsOrKeys = w * maxY + w/2;
+		int topOfKeys = Screen.height - HeightOfButtonsOrKeys;
 		
 		int i = 0;
 		for (int y = 0; y < maxY; y++) {
@@ -504,7 +505,7 @@ public class Controls : MonoBehaviour {
 					keyData[i].Text = getConciseText(codes[i]);
 					keyData[i].Rect = new Rect(
 						x * w + xOffs,
-						y * w + yOffs,
+						y * w + yOffs + topOfKeys,
 						w + w * numExtraXCells, 
 						w + w * numExtraYCells);
 				}
@@ -513,7 +514,7 @@ public class Controls : MonoBehaviour {
 			}
 			
 			if (y < 6)
-				bottomOfKeyboard = y * w + w + w/2;
+				bottomOfKeyboard = y * w + w + w/2 + topOfKeys;
 		}
 		
 		mouseRect = new Rect(15*w, bottomOfKeyboard, 3*w, 5*w);
