@@ -77,6 +77,8 @@ public class CcNet : MonoBehaviour {
 	bool almostOverAnnounced = false;
 	bool countdownAnnounced = false;
 
+	float gameStartTime = 0f;
+
 	// private
 	// scripts
 	CcLog log;
@@ -233,6 +235,8 @@ public class CcNet : MonoBehaviour {
 	public void RegisterHit(Item weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
 		if (gameOver) 
 			return;
+		if (Time.time < gameStartTime)
+			return;
 		
 		// we hit somebody, tell the server!
 		if (!isServer) {
@@ -248,6 +252,8 @@ public class CcNet : MonoBehaviour {
 		
 		if (gameOver) 
 			return; // no damage after game over
+		if (Time.time < gameStartTime)
+			return;
 		
 		int si = -1; // shooter index
 		int vi = -1; // victim index
@@ -649,7 +655,15 @@ public class CcNet : MonoBehaviour {
 				}
 			}
 		}
-		
+
+		if (!countdownAnnounced) {
+			gameStartTime = Time.time + 5f; //so that you can't deal damage before "FIGHT!"
+			countdownAnnounced = true;
+			if (isServer) {
+				Sfx.PlayOmni("321Fight");
+			}
+		}
+
 		// time announcements 
 		gameTimeLeft -= Time.deltaTime;
 		if (isServer) {
@@ -668,12 +682,6 @@ public class CcNet : MonoBehaviour {
 			else if (gameTimeLeft < 10f && !almostOverAnnounced) {
 				Sfx.PlayOmni("AlmostOver");
 				almostOverAnnounced = true;
-			}
-				
-			if (!countdownAnnounced) {
-				Sfx.PlayOmni("321Fight");
-				countdownAnnounced = true;
-				print("Attempted to play countdown.");
 			}
 		}
 		
@@ -1047,6 +1055,11 @@ public class CcNet : MonoBehaviour {
 		if (serverGameChange) {
 			gameTimeLeft = CurrMatch.Duration * 60f;
 			gameOver = false;
+			countdownAnnounced = false;
+			twoMinsAnnounced = false;
+			oneMinAnnounced = false;
+			thirtySecsAnnounced = false;
+			almostOverAnnounced = false;
 			livesBroadcast = CurrMatch.playerLives;
 		}else{
 			if (CurrMatch.playerLives > 0) {
@@ -1089,7 +1102,7 @@ public class CcNet : MonoBehaviour {
 			for (int i=0; i<players.Count; i++)
 				players[i].lives = playerLives;
 		
-		if (!isServer) 
+		if (!isServer)
 			gameOver = gameIsOver;
 		
 		NextMatchTime = 15f;
