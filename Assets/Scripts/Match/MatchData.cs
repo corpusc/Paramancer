@@ -9,8 +9,8 @@ public class MatchData {
 	// specific mode/game settings stuff
 	public string levelName; // ...to load/play in
 	public int winScore = 30;
-	public float Duration = 1.2f; // (negative for infinite)
-	public float respawnWait = 3f;
+	public float Duration = 2.2f; // (negative for infinite)
+	public float respawnWait = 2f;
 	public bool deathsSubtractScore = true;
 	public bool killsIncreaseScore = true;
 	public bool teamBased = false;

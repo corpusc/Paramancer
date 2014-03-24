@@ -373,7 +373,7 @@ public class CcNet : MonoBehaviour {
 				players[i].local && 
 				players[i].health > 0f
 			) 
-				players[i].Entity.PlaySound("takeHit");
+				players[i].Entity.PlaySound("TakeDamage");
 		}
 	}
 	
@@ -444,7 +444,7 @@ public class CcNet : MonoBehaviour {
 			if (players[i].viewID == victimID) { // if this is the victim 
 				victimName = players[i].name;
 				victimIdx = i;
-				players[i].Entity.PlaySound("die");
+				players[i].Entity.PlaySound("Die");
 
 				// lives
 				players[i].lives--;
@@ -508,12 +508,12 @@ public class CcNet : MonoBehaviour {
 		switch (players[i].Entity.MultiFragCount) {
 			case 0: break;
 			case 1: break;
-			case 2: players[i].Entity.PlaySound("doubleKill"); break;
-			case 3: players[i].Entity.PlaySound("tripleKill"); break;
-			case 4: players[i].Entity.PlaySound("quadraKill"); break;
-			case 5: players[i].Entity.PlaySound("pentaKill"); break;
-			case 6: players[i].Entity.PlaySound("hexaKill"); break;
-			default: players[i].Entity.PlaySound("godlike"); break;
+			case 2: players[i].Entity.PlaySound("DoubleKill"); break;
+			case 3: players[i].Entity.PlaySound("TripleKill"); break;
+			case 4: players[i].Entity.PlaySound("QuadraKill"); break;
+			case 5: players[i].Entity.PlaySound("PentaKill"); break;
+			case 6: players[i].Entity.PlaySound("HexaKill"); break;
+			default: players[i].Entity.PlaySound("Godlike"); break;
 		}
 	}
 	
@@ -632,7 +632,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		// change team
+		// change team 
 		if (Connected && CurrMatch.teamBased) {
 			if (CcInput.Started(UserAction.SwapTeam)) {
 				if (localPlayer.team == 1) {
@@ -650,39 +650,34 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		// count time!
+		// time announcements 
 		gameTimeLeft -= Time.deltaTime;
 		if (isServer) {
 			if (gameTimeLeft < 120f && !twoMinsAnnounced) {
-				for(int i = 0; i < players.Count; i++)
-				players[i].Entity.PlaySound("2_minutes");
+				Sfx.PlayOmni("RemainingMins2");
 				twoMinsAnnounced = true;
 			}
 			else if (gameTimeLeft < 60f && !oneMinAnnounced) {
-				for(int i = 0; i < players.Count; i++)
-				players[i].Entity.PlaySound("1_minute");
+				Sfx.PlayOmni("RemainingMins1");
 				oneMinAnnounced = true;
 			}
 			else if (gameTimeLeft < 30f && !thirtySecsAnnounced) {
-				for(int i = 0; i < players.Count; i++)
-				players[i].Entity.PlaySound("30_seconds");
+				Sfx.PlayOmni("RemainingSecs30");
 				thirtySecsAnnounced = true;
 			}
 			else if (gameTimeLeft < 10f && !almostOverAnnounced) {
-				for(int i = 0; i < players.Count; i++)
-				players[i].Entity.PlaySound("almostOver");
+				Sfx.PlayOmni("AlmostOver");
 				almostOverAnnounced = true;
 			}
 				
 			if (!countdownAnnounced) {
-				for(int i = 0; i < players.Count; i++)
-				players[i].Entity.PlaySound("countdown");
+				Sfx.PlayOmni("321Fight");
 				countdownAnnounced = true;
 				print("Attempted to play countdown.");
 			}
 		}
 		
-		// game time up?
+		// game time up? 
 		if (Connected && !gameOver) {
 			if (gameTimeLeft <= 0f && CurrMatch.Duration > 0f){
 				gameTimeLeft = 0f;
@@ -692,7 +687,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		// if game over, count in next match
+		// if game over, count in next match 
 		if (Connected && gameOver) {
 			NextMatchTime -= Time.deltaTime;
 			if (NextMatchTime <= 0f){

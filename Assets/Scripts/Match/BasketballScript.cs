@@ -59,7 +59,7 @@ public class BasketballScript : MonoBehaviour {
 				transform.parent = theNetwork.players[i].Entity.gunMesh1.transform.parent;
 				transform.localPosition = (-Vector3.right * 0.7f) + (Vector3.forward * 0.2f);
 				
-				theNetwork.players[i].Entity.PlaySound("catchBall");
+				theNetwork.players[i].Entity.PlaySound("Catch");
 			}
 		}
 	}

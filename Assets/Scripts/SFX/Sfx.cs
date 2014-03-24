@@ -19,11 +19,13 @@ public static class Sfx {
 
 
 	static Sfx() {
-		handleFolder("Misc");
 		handleFolder("Announce");
+		handleFolder("Av");
+		handleFolder("Misc");
+		handleFolder("Shoot");
 	}
 
-	public static void PlayOmni(string s) { // seemingly positionless sound 
+	public static void PlayOmni(string s) { // seemingly positionless sound.  FIXME? cuz that requires unchecking 3D/threeD?
 		AudioSource.PlayClipAtPoint(Get(s), Camera.main.transform.position);
 	}
 	
@@ -34,8 +36,16 @@ public static class Sfx {
 		Debug.LogError("______ COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
 		return null;
 	}
+
+	public static CcClip GetCc(string s) { // hash lookups in a Dictionary are fast right? 
+		if (clips.ContainsKey(s))
+			return clips[s];
+		
+		Debug.LogError("______ COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
+		return null;
+	}
 	
-	public static AudioClip GetFirstWith(string s) { // this is slow i think 
+	public static AudioClip GetFirstWith(string s) { // this is slow i think.  iterating thru key/value pairs 
 		foreach (var pair in clips) {
 			if (pair.Value.Clip.name.Contains(s))
 				return pair.Value.Clip;
@@ -47,21 +57,35 @@ public static class Sfx {
 
 	static void handleFolder(string s) {
 		string feedback = "";
-		var aClips = Resources.LoadAll<AudioClip>("Sfx/" + s);
 
-		if (s == "Announce") {
-			foreach (var ac in aClips) {
-				var path = AssetDatabase.GetAssetPath(ac);
-				var aImp = AssetImporter.GetAtPath(path) as AudioImporter;
-				aImp.threeD = false;
-				AssetDatabase.ImportAsset(path);
-			}
+		var aClips = Resources.LoadAll<AudioClip>("SFX/" + s);
+
+		switch (s) {
+			case "Announce":
+				foreach (var ac in aClips) {
+					var path = AssetDatabase.GetAssetPath(ac);
+					var aImp = AssetImporter.GetAtPath(path) as AudioImporter;
+					aImp.threeD = false;
+					AssetDatabase.ImportAsset(path);
+				}
+				break;
 		}
 		
+		// add to the master collection that includes files from all folders 
 		foreach (var cl in aClips) {
 			var nc = new CcClip();
 			nc.Clip = cl;
 			nc.Tags.Add(s);
+			switch (cl.name) {
+				case "boing": nc.Volume = 0.2f;	break;
+				case "Catch": nc.Volume = 0.4f; break;
+				case "click": nc.Volume = 0.2f; break;
+				case "Die": nc.Volume = 1f; break;
+				case "GravGun": nc.Volume = 0.4f; break;
+				case "guncocked": nc.Volume = 0.2f; break;
+				case "Land": nc.Volume = 0.5f; break;
+				case "Swapped": nc.Volume = 0.4f; break;
+			}
 			clips.Add(cl.name, nc);
 			feedback += cl.name + " ";
 		}

@@ -130,13 +130,10 @@ public class EntityClass : MonoBehaviour {
 			
 			Respawn();
 		}else{
-			//we joined as a spectator
+			// we joined as a spectator
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
-
-		DoubleKillAnnouncement = (AudioClip)Resources.Load("Resources/SFX/Announcement/double_kill.wav");
-		CountdownAnnouncement = (AudioClip)Resources.Load("Resources/SFX/Announcement/countdown.wav");
 	}
 	
 	public bool sendRPCUpdate = false;
@@ -213,7 +210,7 @@ public class EntityClass : MonoBehaviour {
 							net.ConsumeHealth(User.viewID);
 							net.localPlayer.health = 100f;
 							User.health = 100f;
-							PlaySound("weaponChange");
+							PlaySound("guncocked");
 							currentOfferedPickup.Pickup();
 						}
 					}
@@ -301,7 +298,7 @@ public class EntityClass : MonoBehaviour {
 							ava.Move(transform.up * 0.2f);
 						
 						if (!landed && grounded) {
-							PlaySound("land");
+							PlaySound("Land");
 							sendRPCUpdate = true;
 						}
 					}else{
@@ -312,7 +309,7 @@ public class EntityClass : MonoBehaviour {
 						yMove = 0f;
 						if (CcInput.Started(UserAction.MoveUp)) {
 							yMove = 4f;
-							PlaySound("jump");
+							PlaySound("boing");
 							net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
 						}
 					}else{
@@ -374,7 +371,7 @@ public class EntityClass : MonoBehaviour {
 					    gun.Cooldown - Time.deltaTime <= 0f && 
 						gun.Delay >= 1f
 					) 
-						PlaySound("reload");
+						PlaySound("click");
 					
 					gun.Cooldown -= Time.deltaTime;
 					if (gun.Cooldown < 0f) 
@@ -651,7 +648,7 @@ public class EntityClass : MonoBehaviour {
 	void weaponSwitchingSoundAndVisual() {
 		gunRecoil += Vector3.right * 5f;
 		gunRecoil -= Vector3.up * 5f;
-		PlaySound("weaponChange");
+		PlaySound("guncocked");
 		net.SendTINYUserUpdate(User.viewID, UserAction.Next);
 	}
 
@@ -829,7 +826,7 @@ public class EntityClass : MonoBehaviour {
 					ForceLook(lookPos);
 					camHolder.transform.localEulerAngles = camAngle;
 					Camera.main.transform.rotation = tempRot;
-					PlaySound("gravgun");
+					PlaySound("GravGun");
 				}
 				
 				sendRPCUpdate = true;
@@ -1123,158 +1120,22 @@ public class EntityClass : MonoBehaviour {
 		NonLocalUpdate();
 	}
 	
-	public AudioClip sfx_takeDamage;
-	public AudioClip sfx_jump;
-	public AudioClip sfx_land;
-	public AudioClip sfx_die;
-	public AudioClip sfx_weaponChange;
-	public AudioClip sfx_reload;
-	public AudioClip sfx_swapped;
-	public AudioClip sfx_catchBall;
-	public AudioClip sfx_gravgun;
-
-	public AudioClip DoubleKillAnnouncement;
-	public AudioClip TripleKillAnnouncement;
-	public AudioClip QuadraKillAnnouncement;
-	public AudioClip PentaKillAnnouncement;
-	public AudioClip HexaKillAnnouncement;
-	public AudioClip GodlikeAnnouncement;
-	public AudioClip FirstFragAnnouncement;
-	public AudioClip TakeLeadAnnouncement;
-	public AudioClip LoseLeadAnnouncement;
-	public AudioClip WinAnnouncement;
-	public AudioClip LoseAnnouncement;
-	public AudioClip CountdownAnnouncement;
-	public AudioClip TwoMinutesAnnouncement;
-	public AudioClip OneMinuteAnnouncement;
-	public AudioClip ThirtySecondsAnnouncement;
-	public AudioClip AlmostOverAnnouncement;
-	public AudioClip RocketDeniedAnnouncement;
-
 	public void PlaySound(UserAction action) { // i believe atm, this is only used by network "tiny updates" 
 		switch (action) {
 			case UserAction.MoveUp:
-				play(0.6f, sfx_jump);
+				PlaySound(0.6f, Sfx.Get("boing"));
 				break;
 			case UserAction.Next:
 			case UserAction.Previous:
-				play(0.6f, sfx_weaponChange);
+				PlaySound(0.6f, Sfx.Get("guncocked"));
 				break;
 		}
 	}
-	public void PlaySound(string sound) {
-		if (sound == "jump") // FIXME with their final forms 
-			play(0.2f, sfx_jump);
-		if (sound == "weaponChange")
-			play(0.2f, sfx_weaponChange);
-
-		if (sound == "takeHit"){
-			audio.clip = sfx_takeDamage;
-			audio.Play();
-		}
-		if (sound == "land"){
-			audio.clip = sfx_land;
-			audio.volume = 0.5f;
-			audio.Play();
-		}
-		if (sound == "die"){
-			audio.clip = sfx_die;
-			audio.volume = 1f;
-			audio.Play();
-		}
-		if (sound == "reload"){
-			audio.clip = sfx_reload;
-			audio.volume = 0.2f;
-			audio.Play();
-		}
-		if (sound == "Swapped"){
-			audio.clip = sfx_swapped;
-			audio.volume = 0.4f;
-			audio.Play();
-		}
-		if (sound == "catchBall"){
-			audio.clip = sfx_catchBall;
-			audio.volume = 0.4f;
-			audio.Play();
-		}
-		if (sound == "gravgun"){
-			audio.clip = sfx_gravgun;
-			audio.volume = 0.4f;
-			audio.Play();
-		}
-		if (sound == "doubleKill") {
-			audio.clip = DoubleKillAnnouncement;
-			audio.Play();
-		}
-		if (sound == "tripleKill") {
-			audio.clip = TripleKillAnnouncement;
-			audio.Play();
-		}
-		if (sound == "quadraKill") {
-			audio.clip = QuadraKillAnnouncement;
-			audio.Play();
-		}
-		if (sound == "pentaKill") {
-			audio.clip = PentaKillAnnouncement;
-			audio.Play();
-		}
-		if (sound == "hexaKill") {
-			audio.clip = HexaKillAnnouncement;
-			audio.Play();
-		}
-		if (sound == "godlike") {
-			audio.clip = GodlikeAnnouncement;
-			audio.Play();
-		}
-		if (sound == "firstFrag") {
-			audio.clip = FirstFragAnnouncement;
-			audio.Play();
-		}
-		if (sound == "takeLead") {
-			audio.clip = TakeLeadAnnouncement;
-			audio.Play();
-		}
-		if (sound == "loseLead") {
-			audio.clip = LoseLeadAnnouncement;
-			audio.Play();
-		}
-		if (sound == "win") {
-			audio.clip = WinAnnouncement;
-			audio.Play();
-		}
-		if (sound == "lose") {
-			audio.clip = LoseAnnouncement;
-			audio.Play();
-		}
-		if (sound == "countdown") {
-			audio.clip = CountdownAnnouncement;
-			audio.volume = 0.9f;
-			audio.Play();
-			print("Countdown attempt in PlaySound().");
-		}
-		if (sound == "2_minutes") {
-			audio.clip = TwoMinutesAnnouncement;
-			audio.Play();
-		}
-		if (sound == "1_minute") {
-			audio.clip = OneMinuteAnnouncement;
-			audio.Play();
-		}
-		if (sound == "30_seconds") {
-			audio.clip = ThirtySecondsAnnouncement;
-			audio.Play();
-		}
-		if (sound == "almostOver") {
-			audio.clip = AlmostOverAnnouncement;
-			audio.Play();
-		}
-		if (sound == "rocketDenied") {
-			audio.clip = RocketDeniedAnnouncement;
-			audio.Play();
-		}
+	public void PlaySound(string s) {
+		CcClip cc = Sfx.GetCc(s);
+		PlaySound(cc.Volume, cc.Clip);
 	}
-	
-	void play(float volume, AudioClip clip) {
+	public void PlaySound(float volume, AudioClip clip) {
 		audio.clip = clip;
 		audio.volume = volume;
 		audio.Play();
