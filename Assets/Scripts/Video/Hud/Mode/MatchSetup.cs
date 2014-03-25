@@ -195,7 +195,7 @@ public class MatchSetup {
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("Round Time (mins): ");
-			matches[matchId].Duration = S.GetInt( GUILayout.TextField(matches[matchId].Duration.ToString()) );
+			matches[matchId].Duration = (float)S.GetDouble( GUILayout.TextField(matches[matchId].Duration.ToString()) );
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
@@ -333,7 +333,7 @@ public class MatchSetup {
 			
 			matchId--;
 			if (matchId < 0) 
-				matchId += matches.Length;
+				matchId = matches.Length - 1;
 			
 			int mapChangeId = 0;
 			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
@@ -351,7 +351,7 @@ public class MatchSetup {
 			
 			matchId++;
 			if (matchId >= matches.Length) 
-				matchId -= matches.Length;
+				matchId = 0;
 			
 			int mapChangeId = 0;
 			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {

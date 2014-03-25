@@ -13,11 +13,15 @@ static public class S {
 	public static Color WhiteTRANS = new Color(1f, 1f, 1f, 0.35f);
 	public static Color PurpleTRANS = new Color(0.3f, 0f, 0.4f, 0.6f);
 	public static Color Purple = new Color(0.8f, 0f, 1f, 1f);
-
+	
 	static public int GetInt(string v) {
 		return Convert.ToInt32(v.Trim(), new CultureInfo("en-US"));
 	}
 	
+	static public double GetDouble(string v) {
+		return Convert.ToDouble(v.Trim(), new CultureInfo("en-US"));
+	}
+
 	static public string GetSpacedOut(string s) {
 		string ns = "";
 		// add spaces between words, determined by capital letters 
