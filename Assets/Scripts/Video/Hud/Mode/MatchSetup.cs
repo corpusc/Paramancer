@@ -194,21 +194,21 @@ public class MatchSetup {
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Round Time (mins): ");
+			GUILayout.Label("Frags: ");
+			matches[matchId].winScore = S.GetInt( GUILayout.TextField(matches[matchId].winScore.ToString()) );
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("Time (mins): ");
 			matches[matchId].Duration = (float)S.GetDouble( GUILayout.TextField(matches[matchId].Duration.ToString()) );
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Winning score: ");
-			matches[matchId].winScore = S.GetInt( GUILayout.TextField(matches[matchId].winScore.ToString()) );
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-			
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("Player Lives: ");
+			GUILayout.Label("Lives: ");
 			matches[matchId].playerLives = S.GetInt( GUILayout.TextField(matches[matchId].playerLives.ToString()) );
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
