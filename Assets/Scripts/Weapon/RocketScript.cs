@@ -8,7 +8,8 @@ public class RocketScript : MonoBehaviour {
 	public int ExplosionParticles = 50;
 	public float ExplosionSize = 0.4f;
 	public float ForwardOffset = 1f; //prevents running into your own rocket when you have lags
-	public float Turn = 1f;
+	public float Turn = 3f;
+	public bool Turning = false;
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;
 	
@@ -26,7 +27,8 @@ public class RocketScript : MonoBehaviour {
 	
 	void Update () {
 		if (enabled){
-			transform.forward = Vector3.Normalize(transform.forward + Random.insideUnitSphere * Time.deltaTime * Turn);
+			if (Turning)
+				transform.forward = Vector3.Normalize(transform.forward + Random.insideUnitSphere * Time.deltaTime * Turn);
 			Vector3 moveForward = transform.forward * Time.deltaTime * 600f / (life < 16f ? 1f : Mathf.Pow(life - 15f, 2f));
 			transform.position += moveForward;
 			int c_pts = Random.Range(MinParticlesPerFrame, MaxParticlesPerFrame);

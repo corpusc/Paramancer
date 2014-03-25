@@ -168,7 +168,7 @@ public class Arsenal : MonoBehaviour {
 	}
 
 	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, 
-		NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit, bool sprint = false
+		NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit, bool alt, bool sprint = false
 	) {
 		switch (weapon) {
 			case Item.Pistol:
@@ -195,6 +195,17 @@ public class Arsenal : MonoBehaviour {
 				break;
 			
 			case Item.RocketLauncher:
+			if (alt) {
+				for (int i = 0; i < 3; i++) {
+					GameObject newRocket = (GameObject)GameObject.Instantiate(rocketPrefab);
+					newRocket.transform.position = origin;
+					newRocket.transform.LookAt(origin + direction);
+					newRocket.GetComponent<RocketScript>().viewID = bulletID;
+					newRocket.GetComponent<RocketScript>().shooterID = shooterID;
+					newRocket.GetComponent<RocketScript>().Turning = true;
+					
+					activeRockets.Add(newRocket.GetComponent<RocketScript>());
+				} } else {
 				GameObject newRocket = (GameObject)GameObject.Instantiate(rocketPrefab);
 				newRocket.transform.position = origin;
 				newRocket.transform.LookAt(origin + direction);
@@ -202,6 +213,7 @@ public class Arsenal : MonoBehaviour {
 				newRocket.GetComponent<RocketScript>().shooterID = shooterID;
 				
 				activeRockets.Add(newRocket.GetComponent<RocketScript>());
+			}
 				break;
 		}
 		

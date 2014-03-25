@@ -466,7 +466,7 @@ public class EntityClass : MonoBehaviour {
 								(CcInput.Holding(UserAction.Activate)
 							) {
 								if (gun.Cooldown <= 0f) {
-									Fire();
+									Fire(false);
 									gun.Cooldown += gun.Delay;
 								}
 							}
@@ -475,10 +475,16 @@ public class EntityClass : MonoBehaviour {
 								(CcInput.Started(UserAction.Activate)
 							) {
 								if (gun.Cooldown <= 0f) {
-									Fire();
+									Fire(false);
 									gun.Cooldown += gun.Delay;
 								}
 							}
+							if (CcInput.Started(UserAction.AltFire))
+							if (gun.Cooldown <= 0f) {
+								//print ("Attempted to altfire.");
+								Fire(true);
+								gun.Cooldown += gun.Delay;
+								}
 						}
 					}
 					
@@ -760,7 +766,7 @@ public class EntityClass : MonoBehaviour {
 		}
 	}
 	
-	void Fire() {
+	void Fire(bool alt) {
 		var ct = Camera.main.transform;
 		Item gun = (Item)GunInHand;
 
@@ -770,7 +776,7 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
 			case Item.Grenade:
-				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, ava.sprinting);
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, ava.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
 			case Item.MachineGun:
@@ -786,7 +792,8 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.RocketLauncher:
-				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false);
+			//print ("Rocket launcher shot, alt = " + (alt ? "1" : "0"));
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.Swapper:
@@ -795,7 +802,7 @@ public class EntityClass : MonoBehaviour {
 					FireBullet(gun);
 				}else{
 					// locked on, we hit
-					net.Shoot(gun, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true);
+					net.Shoot(gun, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true, alt);
 					net.RegisterHit(gun, net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
 				}
 				gunRecoil -= Vector3.forward * 5f;
@@ -987,7 +994,7 @@ public class EntityClass : MonoBehaviour {
 		bulletStart = transform.position;
 		bulletStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
 		// RPC the shot, regardless
-		net.Shoot(weapon, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit);
+		net.Shoot(weapon, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit, false);
 	
 		if (registerhit) 
 			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bulletHit.point);

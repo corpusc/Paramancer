@@ -109,8 +109,11 @@ public static class CcInput {
 				case UserAction.Next:
 					bind(i, KeyCode.Mouse1);
 					break;
-				case UserAction.Previous:
+				case UserAction.AltFire:
 					bind(i, KeyCode.Mouse2);
+					break;
+				case UserAction.Previous:
+					bind(i, KeyCode.P);
 					break;
 				case UserAction.Sprint:
 					bind(i, KeyCode.LeftShift);
