@@ -91,9 +91,9 @@ public static class Sfx {
 				case "Swapped": nc.Volume = 0.4f; break;
 			}
 			clips.Add(cl.name, nc);
-			feedback += cl.name + " ";
+			feedback += cl.name + ",  ";
 		}
 
-		Debug.Log("______" + s + "______ = " + feedback);
+		Debug.Log("______ SFX/" + s + " ______ " + feedback.TrimEnd(',', ' '));
 	}
 }

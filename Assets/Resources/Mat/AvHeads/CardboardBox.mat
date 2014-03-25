@@ -6,9 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: ChocoboMat
+  m_Name: CardboardBox
   m_Shader: {fileID: 7, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: []
+  m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -24,4 +25,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: .800000012, g: .708899975, b: .147, a: 1}
+        second: {r: .800000012, g: .488200009, b: .134000003, a: 1}

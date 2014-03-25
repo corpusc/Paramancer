@@ -43,20 +43,6 @@ public class EntityClass : MonoBehaviour {
 	private GameObject bballArrowObj;
 	
 	// FIXME: resources that should be loaded elsewhere 
-	public Material invisibleMat;
-	public Material gunMat;
-	public Material dummyAMat;
-	public Material dummyBMat;
-	public Material dummyCMat;
-	public Material boxMat;
-	public Material fishMat;
-	public Material bananaMat;
-	public Material creeperMat;
-	public Material elephantMat;
-	public Material moonMat;
-	public Material pyramidMat;
-	public Material chocoboMat;
-	public Material spikeMat;
 	public GameObject[] heads;
 
 	// avatar settings 
@@ -846,9 +832,11 @@ public class EntityClass : MonoBehaviour {
 	
 	public void SetModelVisibility(bool visible) {
 		Material[] mats = meshObj.renderer.materials;
-		var newMatA = new Material(dummyAMat);
-		var newMatB = new Material(dummyBMat);
-		var newMatC = new Material(dummyCMat);
+		var inv = Mats.Get("InvisibleShadow");
+
+		var newMatA = new Material(Mats.Get("ColorA"));
+		var newMatB = new Material(Mats.Get("ColorB"));
+		var newMatC = new Material(Mats.Get("ColorC"));
 		newMatA.color = User.colA;
 		newMatB.color = User.colB;
 		newMatC.color = User.colC;
@@ -863,15 +851,15 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		if (!visible) {
-			mats[0] = invisibleMat;
-			mats[1] = invisibleMat;
-			mats[2] = invisibleMat;
+			mats[0] = inv;
+			mats[1] = inv;
+			mats[2] = inv;
 			meshObj.renderer.materials = mats;
 			
 			if (gunMesh1.renderer) 
-				gunMesh1.renderer.material = invisibleMat;
+				gunMesh1.renderer.material = inv;
 			if (gunMesh2.renderer) 
-				gunMesh2.renderer.material = invisibleMat;
+				gunMesh2.renderer.material = inv;
 			
 			if (GunInHand == Item.Bomb) {
 				if (gunMesh1 != null && 
@@ -898,21 +886,21 @@ public class EntityClass : MonoBehaviour {
 			}
 			
 			if (!visible) {
-				heads[i].renderer.material = invisibleMat;
+				heads[i].renderer.material = inv;
 			}	
 		}
 		
 		if (visible) {
 			heads[0].renderer.material = newMatA;
-			heads[1].renderer.material = boxMat;
-			heads[2].renderer.material = fishMat;
-			heads[3].renderer.material = bananaMat;
-			heads[4].renderer.material = creeperMat;
-			heads[5].renderer.material = elephantMat;
-			heads[6].renderer.material = moonMat;
-			heads[7].renderer.material = pyramidMat;
-			heads[8].renderer.material = chocoboMat;
-			heads[9].renderer.material = spikeMat;
+			heads[1].renderer.material = Mats.Get("CardboardBox");
+			heads[2].renderer.material = Mats.Get("Fish");
+			heads[3].renderer.material = Mats.Get("Banana");
+			heads[4].renderer.material = Mats.Get("Creeper");
+			heads[5].renderer.material = Mats.Get("Elephant");
+			heads[6].renderer.material = Mats.Get("MoonTM0360");
+			heads[7].renderer.material = Mats.Get("Pyramid");
+			heads[8].renderer.material = Mats.Get("Chocobo");
+			heads[9].renderer.material = Mats.Get("Spike");
 		}
 		
 		if (User.local && 

@@ -6,9 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: BananaMat
+  m_Name: Elephant
   m_Shader: {fileID: 7, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: []
+  m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -24,4 +25,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: .800000012, g: .655600011, b: 0, a: 1}
+        second: {r: .69982177, g: .731110394, b: .768656731, a: 1}

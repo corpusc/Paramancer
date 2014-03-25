@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Scoreboard {
 	public void Draw(CcNet net, Hud hud, float lvs) {
-		GUI.color = Color.cyan;
+		GUI.color = Color.grey;
 
 		if (!net.CurrMatch.teamBased) {
 			int highScore = -9999;

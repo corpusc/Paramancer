@@ -6,9 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: InvisibleShadowMat
-  m_Shader: {fileID: 4800000, guid: 5ad813d3ffb7a47d2af06286360a89e7, type: 3}
+  m_Name: Spike
+  m_Shader: {fileID: 3, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: []
+  m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -22,10 +23,14 @@ Material:
     m_Floats:
       data:
         first:
-          name: _test
-        second: 7.2357502
+          name: _Shininess
+        second: .10446693
     m_Colors:
       data:
         first:
           name: _Color
-        second: {r: 1, g: 1, b: 1, a: 1}
+        second: {r: .371407896, g: .386880457, b: .425373137, a: 1}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: .679104447, g: 1, b: .959607601, a: 1}
