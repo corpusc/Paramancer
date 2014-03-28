@@ -14,7 +14,7 @@ public class EntityClass : MonoBehaviour {
 	// sprinting 
 	public float EnergyLeft = 1f; // 0-1
 	float sprintRelease = 0f;
-	float maxSprintRelease = 0.3f;
+	float maxSprintRelease = 0.7f;
 
 	// cam 
 	public GameObject camHolder;
