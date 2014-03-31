@@ -7,7 +7,7 @@ public class MenuCamera : MonoBehaviour {
 	// private
 	float currAng = 180f; // current angle 
 	float moveSpeed = 30f;
-	float height = 2f;
+	float height = 1.5f;
 	Vector3 lookAtOffset;
 	float lookAtSpeed = 0.13f;
 	float maxOffset = 2f;
@@ -28,7 +28,7 @@ public class MenuCamera : MonoBehaviour {
 
 		lookAtOffset = new Vector3(
 			Mathf.Sin(Mathf.Deg2Rad * currAng * lookAtSpeed), 
-			Mathf.PingPong(currAng * 0.003f, 0.5f), 
+			Mathf.Sin(currAng * 0.3f * Mathf.Deg2Rad) * 0.3f, 
 			Mathf.Sin(Mathf.Deg2Rad * currAng * lookAtSpeed)
 		) * maxOffset;
 

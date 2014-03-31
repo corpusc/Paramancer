@@ -171,6 +171,7 @@ MonoBehaviour:
   Forms: 0
   MaxOverride: .5
   MinFormWidth: 1
+  MaxFormWidth: 200
 --- !u!1 &725311463
 GameObject:
   m_ObjectHideFlags: 0

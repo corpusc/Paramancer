@@ -10,6 +10,10 @@ public class RocketScript : MonoBehaviour {
 	public float ForwardOffset = 1f; //prevents running into your own rocket when you have lags
 	public float Turn = 3f;
 	public bool Turning = false;
+	public float MinParticleSpeed = 5f;
+	public float MaxParticleSpeed = 8f;
+	public float PMR = 1f; //Particle Movement Randomness
+	public float ExplosionSpeed = 8f;
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;
 	
@@ -32,12 +36,34 @@ public class RocketScript : MonoBehaviour {
 			Vector3 moveForward = transform.forward * Time.deltaTime * 600f / (life < 16f ? 1f : Mathf.Pow(life - 15f, 2f));
 			transform.position += moveForward;
 			int c_pts = Random.Range(MinParticlesPerFrame, MaxParticlesPerFrame);
-			for(int i = 0; i < c_pts; i++){
-				var np = (GameObject)GameObject.Instantiate(particle);
-				float offMagn = moveForward.magnitude / 2f;
-				Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
-				np.transform.position = transform.position + offset;
-			}
+			if(Turning)
+				for (int i = 0; i < c_pts; i++) {
+					var np = (GameObject)GameObject.Instantiate(particle);
+					float offMagn = moveForward.magnitude / 2f;
+					Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
+					np.transform.position = transform.position + offset;
+					np.GetComponent<BeamParticle>().MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
+					np.GetComponent<BeamParticle>().life = 0.5f;
+					np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.yellow, Color.blue, Random.value);
+					np.GetComponent<BeamParticle>().UseMidColor = true;
+					np.GetComponent<BeamParticle>().MidColor = Color.Lerp(Color.red, Color.green, Random.Range(0f, 0.5f));
+					np.GetComponent<BeamParticle>().MidColorPos = Random.Range(0.4f, 0.6f);
+					np.GetComponent<BeamParticle>().EndColor = Color.clear;
+				}
+			else
+				for (int i = 0; i < c_pts; i++) {
+					var np = (GameObject)GameObject.Instantiate(particle);
+					float offMagn = moveForward.magnitude / 2f;
+					Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
+					np.transform.position = transform.position + offset;
+					np.GetComponent<BeamParticle>().MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
+					np.GetComponent<BeamParticle>().life = 0.5f;
+					np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.white, Color.yellow, Random.value);
+					np.GetComponent<BeamParticle>().UseMidColor = true;
+					np.GetComponent<BeamParticle>().MidColor = Color.Lerp(Color.red, Color.black, Random.Range(0f, 0.5f));
+					np.GetComponent<BeamParticle>().MidColorPos = Random.Range(0.4f, 0.6f);
+					np.GetComponent<BeamParticle>().EndColor = Color.clear;
+				}
 			var hitInfo = new RaycastHit();
 			int layerMask = (1<<8) | 1;   //(1<<0);
 			var rayDirection = (transform.position - lastPos).normalized;
@@ -59,11 +85,14 @@ public class RocketScript : MonoBehaviour {
 		for(int i = 0; i < ExplosionParticles; i++){
 			var np = (GameObject)GameObject.Instantiate(particle);
 			np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos;
-			np.GetComponent<BeamParticle>().MaxSpeed = 0.6f;
+			np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
 			np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.red, Color.yellow, Random.Range(0f, 1f));
 			np.GetComponent<BeamParticle>().EndColor = Color.Lerp(Color.Lerp(Color.red, Color.clear, 1f), Color.Lerp(Color.black, Color.clear, 1f), Random.Range(0f, 1f));
-			np.GetComponent<BeamParticle>().life = 1.5f;
-			np.GetComponent<BeamParticle>().f = 0.1f;
+			np.GetComponent<BeamParticle>().life = 0.5f;
+			np.GetComponent<BeamParticle>().f = 1f;
+			np.GetComponent<BeamParticle>().MinSize = 6f;
+			np.GetComponent<BeamParticle>().MaxSize = 8f;
+			np.GetComponent<BeamParticle>().acceleration = 0.1f;
 		}
 		enabled = false;
 		if (net.isServer)

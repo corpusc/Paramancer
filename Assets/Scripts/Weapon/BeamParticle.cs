@@ -12,12 +12,16 @@ public class BeamParticle : MonoBehaviour {
 	}
 	public float MaxSpeed = 0.2f; // random max
 	public Color StartColor = Color.blue;
+	public Color MidColor = Color.green;
+	public bool UseMidColor = false;
+	public float MidColorPos = 0.5f; // reaches midcolor at maxlife * MidColorPos
 	public Color EndColor = Color.red; // always use something transparent
 	public float life = 0.8f;
 	public float f = 0.05f;
 	public float MinSize = 1f;
 	public float MaxSize = 3f;
 	public bool ShotFromRifle = false; // use a different particle if yes
+	public float acceleration = 1f; //multiply the speed byt this
 
 	// private 
 	Mesh mesh;
@@ -48,14 +52,25 @@ public class BeamParticle : MonoBehaviour {
 	}
 	
 	void Update() {
+		if(UseMidColor) {
+			if(life > maxLife * MidColorPos)
+				for (var i = 0; i < vertices.Length; i++) {
+				colors[i] = Color.Lerp(MidColor, StartColor, (life - maxLife * MidColorPos) / (maxLife * MidColorPos));
+			}
+			else for (var i = 0; i < vertices.Length; i++) {
+				colors[i] = Color.Lerp(EndColor, MidColor, life / (maxLife * MidColorPos));
+			}
+		} else {
 		for (var i = 0; i < vertices.Length; i++)
 			colors[i] = Color.Lerp(EndColor, StartColor, life / maxLife);
+		}
 		mesh.colors = colors;
 
 		transform.position += moveVec * Time.deltaTime;
 		transform.rotation = Camera.main.transform.rotation;
 		transform.localScale += Time.deltaTime * shrinkFactor;
 
+		moveVec *= Mathf.Pow(acceleration, Time.deltaTime);
 		life -= Time.deltaTime;
 
 		if (life <= 0f) {

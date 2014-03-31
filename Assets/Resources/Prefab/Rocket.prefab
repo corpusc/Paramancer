@@ -334,10 +334,15 @@ MonoBehaviour:
   particle: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9, type: 2}
   MinParticlesPerFrame: 10
   MaxParticlesPerFrame: 15
-  ExplosionParticles: 50
+  ExplosionParticles: 100
   ExplosionSize: .400000006
   ForwardOffset: 2
   Turn: 1
+  Turning: 0
+  MinParticleSpeed: 10
+  MaxParticleSpeed: 15
+  PMR: 2
+  ExplosionSpeed: 20
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

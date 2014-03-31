@@ -8,21 +8,12 @@ public class RlikePlane : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		lev = (RoguelikeLevel)this.GetComponent("RoguelikeLevel");
-		lev.MapSize.x = 128;
-		lev.MapSize.y = 128;
-		lev.Forms = 1;
-		lev.Block = new bool[128, 128];
+		lev.MapSize.x = 1024;
+		lev.MapSize.y = 1024;
+		lev.Forms = 50;
+		lev.Block = new bool[1024, 1024];
 		lev.Build();
-		/*
-		Vec2i a;
-		Vec2i b;
-		a.x = 0;
-		a.y = 0;
-		b.x = 13;
-		b.y = 16;
-		lev.fillRect(a, b);
-		*/
-		Texture2D texture = new Texture2D(128, 128);
+		Texture2D texture = new Texture2D(1024, 1024);
 		renderer.material.mainTexture = texture;
 		int y = 0;
 		while (y < texture.height) {
