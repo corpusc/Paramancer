@@ -277,7 +277,7 @@ public class CcNet : MonoBehaviour {
 		
 		
 		// subtract health
-		if (si == vi && (Item)weapon == Item.RocketMaybeJustASingle) {
+		if (si == vi && (Item)weapon == Item.RocketProjectile) {
 			// rocket jumping
 			players[vi].health -= 30f;
 		}else{
@@ -363,7 +363,7 @@ public class CcNet : MonoBehaviour {
 			case Item.Grenade:                numGibs = 15; break;
 			case Item.MachineGun:             numGibs = 2; break;
 			case Item.Rifle:                  numGibs = 30; break;
-			case Item.RocketMaybeJustASingle: numGibs = 20; break;
+			case Item.RocketProjectile: numGibs = 20; break;
 			case Item.Bomb:                   numGibs = 20; break;
 			
 			case Item.Suicide:                numGibs = 30; break;

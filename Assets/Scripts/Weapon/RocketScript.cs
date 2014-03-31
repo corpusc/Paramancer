@@ -96,6 +96,6 @@ public class RocketScript : MonoBehaviour {
 		}
 		enabled = false;
 		if (net.isServer)
-			net.Detonate(Item.RocketMaybeJustASingle, transform.position, shooterID, viewID);
+			net.Detonate(Item.RocketProjectile, transform.position, shooterID, viewID);
 	}
 }

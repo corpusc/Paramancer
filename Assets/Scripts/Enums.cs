@@ -75,7 +75,7 @@ public enum HudMode {
 }
 
 public enum Item {
-	RocketMaybeJustASingle = -6, // this was "rocket" when stringized, NOT "rocketlauncher"
+	RocketProjectile = -6, // this was "rocket" when stringized, NOT "rocketlauncher"
 	Lava = -5, // not really an item, should be moved?
 	Suicide = -4, // not really an item, should be moved?
 	Health = -3,

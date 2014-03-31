@@ -249,7 +249,7 @@ public class Arsenal : MonoBehaviour {
 			case Item.Grenade:        return 70f;
 			case Item.MachineGun:     return 15f;
 			case Item.Rifle:          return 105f;
-			case Item.RocketMaybeJustASingle: return 70f;
+			case Item.RocketProjectile: return 70f;
 			
 			case Item.Lava:           return 9999f;
 			case Item.Bomb:           return 9999f;
@@ -304,7 +304,7 @@ public class Arsenal : MonoBehaviour {
 						if (Vector3.Distance(
 							net.players[k].Entity.transform.position, 
 							activeRockets[i].transform.position) 
-							< GetDetonationRadius(Item.RocketLauncher)
+							< GetDetonationRadius(Item.RocketProjectile)
 						) {
 							if (net.players[k].Entity.transform.position.y > activeRockets[i].transform.position.y) {
 								if (activeRockets[i].shooterID == net.players[k].viewID){
@@ -335,7 +335,7 @@ public class Arsenal : MonoBehaviour {
 	public float GetDetonationRadius(Item weapon) {
 		switch (weapon) {
 			case Item.Grenade:        return 4;
-			case Item.RocketMaybeJustASingle: return 4;
+			case Item.RocketProjectile: return 4;
 			case Item.Bomb:           return 10;
 		}
 		
