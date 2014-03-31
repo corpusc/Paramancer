@@ -106,11 +106,11 @@ public static class CcInput {
 				case UserAction.Activate:
 					bind(i, KeyCode.Mouse0);
 					break;
-				case UserAction.Next:
+				case UserAction.Alt:
 					bind(i, KeyCode.Mouse1);
 					break;
-				case UserAction.AltFire:
-					bind(i, KeyCode.Mouse2);
+				case UserAction.Next:
+					bind(i, KeyCode.N);
 					break;
 				case UserAction.Previous:
 					bind(i, KeyCode.P);

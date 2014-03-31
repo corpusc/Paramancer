@@ -13,7 +13,10 @@ static public class S {
 	public static Color WhiteTRANS = new Color(1f, 1f, 1f, 0.35f);
 	public static Color PurpleTRANS = new Color(0.3f, 0f, 0.4f, 0.6f);
 	public static Color Purple = new Color(0.8f, 0f, 1f, 1f);
-	
+	//static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
+	public static Color PurpleLight = Color.Lerp(Purple, Color.white, 0.5f);
+	public static Color Orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
+
 	static public int GetInt(string v) {
 		return Convert.ToInt32(v.Trim(), new CultureInfo("en-US"));
 	}
@@ -56,6 +59,11 @@ static public class S {
 	}
 	
 	static public void GUIDrawOutlinedTexture(Rect r, Texture pic, ScaleMode scaleMode = ScaleMode.StretchToFill) {
+		if (pic == null) {
+			Debug.LogError("Trying to draw with null Texture: " + pic.name);
+			return;
+		}
+
 		Color prevColor = GUI.color;
 		GUI.color = Color.black;
 		

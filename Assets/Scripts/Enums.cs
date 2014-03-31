@@ -109,7 +109,7 @@ public enum UserAction {
 	MoveDown,
 	
 	Activate, // fire/activate/use whatever you are holding
-	AltFire,
+	Alt,
 	Next,
 	Previous,
 	Sprint, // for sound: something like GO SPEED RACER GO?

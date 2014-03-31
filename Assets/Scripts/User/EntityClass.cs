@@ -479,7 +479,7 @@ public class EntityClass : MonoBehaviour {
 									gun.Cooldown += gun.Delay;
 								}
 							}
-							if (CcInput.Started(UserAction.AltFire))
+							if (CcInput.Started(UserAction.Alt))
 							if (gun.Cooldown <= 0f) {
 								//print ("Attempted to altfire.");
 								Fire(true);

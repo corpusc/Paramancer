@@ -7,6 +7,7 @@
 // Best. Controls. EVAR
 // Finest Control Display & Config
 // Ultimate Controls
+
 // ---marketing
 // * in-game controls redef (total replacement for InputManager?)
 // * a snap, even with the most complicated setups that use tons of keys.
@@ -64,16 +65,13 @@ public class Controls : MonoBehaviour {
 	// privates
 	Hud hud;
 	int bottomOfKeyboard;
-	static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
-	Color purpleLight = Color.Lerp(purple, Color.white, 0.5f);
-	Color orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
 	Texture keyCap;
 	Texture mousePic;
 	Rect mouseRect;
 	const int numKeyRows = 6;
 	int maxX = 21;
 	int maxY = numKeyRows + 5; // +5 rows for mouse
-	int w;
+	int span;
 	BindData draggee = null; // user action that is attached to pointer.  it's still dragging if you're not HOLDING LMB?!
 	Vector3 mouPos; // converted Input.mousePosition to sensible coordinates
 	// VVVVV matching indices VVVVVVV
@@ -216,7 +214,7 @@ public class Controls : MonoBehaviour {
 					for (int i = 0; i < CcInput.BindData.Length; i++) {
 						if (tkId == CcInput.BindData[i].Id) {
 							latestUnboundKey = CcInput.BindData[i].Id;
-							CcInput.BindData[i].Id = 9999;
+							//CcInput.BindData[i].Id = 9999;       FIXME?   why the fuck did i do this?  some concern that was never finished i guess 
 							draggee = CcInput.BindData[i];
 						}
 					}
@@ -263,7 +261,7 @@ public class Controls : MonoBehaviour {
 		GUI.BeginGroup(r);
 
 		r.y = Screen.height - HeightOfButtonsOrKeys;
-		r.height = 6 * w + (w/2);
+		r.height = 6 * span + (span/2);
 		GUI.DrawTexture(r, Pics.White);
 		GUI.DrawTexture(mouseRect, mousePic);
 
@@ -271,7 +269,7 @@ public class Controls : MonoBehaviour {
 		for (int i = 0; i < keyData.Length; i++) {
 			// get the right color
 			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) ) {
-				GUI.color = purpleLight;
+				GUI.color = S.PurpleLight;
 			}else
 				GUI.color = Color.white;
 				
@@ -322,10 +320,11 @@ public class Controls : MonoBehaviour {
 				if (pushingOrHoveringOver(bd[i].Id))
 					GUI.color = Color.cyan;
 				else
-					GUI.color = purple;
+					GUI.color = S.Purple;
 				
 				//GUI.DrawTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
 				S.GUIDrawOutlinedTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
+				//Debug.Log("drew an action icon");
 			}
 		}
 		
@@ -333,11 +332,11 @@ public class Controls : MonoBehaviour {
 		for (int i = 0; i < keyData.Length; i++) {
 			// get the right color
 			if (pushingOrHoveringOver(i))
-				GUI.color = purple;
+				GUI.color = S.Purple;
 			else
 				GUI.color = Color.white;
 				
-			// draw
+			// draw 
 			GUI.Box(keyData[i].Rect, keyData[i].Text);
 		}
 
@@ -345,7 +344,7 @@ public class Controls : MonoBehaviour {
 		GUI.EndGroup();
 
 
-		// draw hover text for action icons
+		// hover text for action icons 
 		string s = targetedBind();
 		if (s != null) {
 			GUI.color = Color.cyan;
@@ -356,21 +355,24 @@ public class Controls : MonoBehaviour {
 			), s);
 		}
 		
-		// inform user of remapping ability
+		// inform user of remapping abilities 
 		S.GetShoutyColor();
 		GUI.Label(new Rect(0, Screen.height-50, 300, 25), "Left-Click on actions to move them elsewhere");
 		GUI.Label(new Rect(0, Screen.height-25, 300, 25), "Right-Click on keys to swap them with others");
 
-		// draw action icon near pointer if it's being moved
+		// draw action icon near pointer if it's being moved 
 		if (draggee != null) {
-			GUI.color = purple;
-			S.GUIDrawOutlinedTexture(new Rect(mouPos.x-w/2, mouPos.y/*+w/2*/, w, w), draggee.Pic, ScaleMode.ScaleToFit);
+			GUI.color = S.Purple;
+			S.GUIDrawOutlinedTexture(new Rect(mouPos.x-span/2, mouPos.y/*+span/2*/, span, span), draggee.Pic, ScaleMode.ScaleToFit);
 		}
 
 		GUI.color = Color.white;
 	}
 	
 	bool pushingOrHoveringOver(int i) {
+		if (i >= (int)KeyCode.Mouse6)
+			Debug.Log("pushingOrHoveringOver() - i: " + i + "      (KeyCode)i: " + (KeyCode)i);
+
 		return Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos);
 	}
 
@@ -463,10 +465,10 @@ public class Controls : MonoBehaviour {
 	}
 
 	void setupKeyData() {
-		w = Screen.width/(maxX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
+		span = Screen.width/(maxX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
 		//int h = Screen.height/(numY+1);
-		int fKeyGap = w/3;
-		HeightOfButtonsOrKeys = w * maxY + w/2;
+		int fKeyGap = span/3;
+		HeightOfButtonsOrKeys = span * maxY + span/2;
 		int topOfKeys = Screen.height - HeightOfButtonsOrKeys;
 		
 		int i = 0;
@@ -497,26 +499,26 @@ public class Controls : MonoBehaviour {
 							if (x > 16) xOffs += fKeyGap;
 						}
 						
-						yOffs = w/2;
+						yOffs = span/2;
 					}
 		
 					// set key data
 					keyData[i].KeyCode = codes[i];
 					keyData[i].Text = getConciseText(codes[i]);
 					keyData[i].Rect = new Rect(
-						x * w + xOffs,
-						y * w + yOffs + topOfKeys,
-						w + w * numExtraXCells, 
-						w + w * numExtraYCells);
+						x * span + xOffs,
+						y * span + yOffs + topOfKeys,
+						span + span * numExtraXCells, 
+						span + span * numExtraYCells);
 				}
 				
 				i++;
 			}
 			
 			if (y < 6)
-				bottomOfKeyboard = y * w + w + w/2 + topOfKeys;
+				bottomOfKeyboard = y * span + span + span/2 + topOfKeys;
 		}
 		
-		mouseRect = new Rect(15*w, bottomOfKeyboard, 3*w, 5*w);
+		mouseRect = new Rect(15*span, bottomOfKeyboard, 3*span, 5*span);
 	}
 }
