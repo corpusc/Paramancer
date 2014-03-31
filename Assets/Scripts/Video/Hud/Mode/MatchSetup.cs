@@ -127,10 +127,57 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 		}else{ // custom, show options here
-			hud.CategoryHeader("Custom Settings");
+			GUILayout.Label("");
+
+			//hud.CategoryHeader("Custom Settings");
+			GUILayout.Box("Custom Settings");
 
 			scrollPos = GUILayout.BeginScrollView(scrollPos);
 			
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Box("Limits");
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("(0 ignores)");
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("Frags: ");
+			matches[matchId].winScore = S.GetInt( GUILayout.TextField(matches[matchId].winScore.ToString()) );
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("Time:");
+			matches[matchId].Duration = (float)S.GetDouble( GUILayout.TextField(matches[matchId].Duration.ToString()) );
+			GUILayout.Label("(mins)");
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("Lives:");
+			matches[matchId].playerLives = S.GetInt( GUILayout.TextField(matches[matchId].playerLives.ToString()) );
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			
+			GUILayout.Label("");
+			GUILayout.Label("");
+
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			//hud.CategoryHeader("Misc");
+			GUILayout.Box("Misc");
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+
 			// checkbox toggles 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
@@ -172,49 +219,29 @@ public class MatchSetup {
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Respawn Time: ");
+			GUILayout.Label("Player Respawn:");
 			matches[matchId].respawnWait = S.GetInt( GUILayout.TextField(matches[matchId].respawnWait.ToString()) );
+			GUILayout.Label("(secs)");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Restock time (seconds): ");
+			GUILayout.Label("Item Repawn:");
 			matches[matchId].restockTime = S.GetInt(GUILayout.TextField(matches[matchId].restockTime.ToString()) );
+			GUILayout.Label("(secs)");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
 			GUILayout.Label("");
-
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			GUILayout.Box("Limits (0 ignores)");
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-			
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("Frags: ");
-			matches[matchId].winScore = S.GetInt( GUILayout.TextField(matches[matchId].winScore.ToString()) );
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("Time (mins): ");
-			matches[matchId].Duration = (float)S.GetDouble( GUILayout.TextField(matches[matchId].Duration.ToString()) );
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("Lives: ");
-			matches[matchId].playerLives = S.GetInt( GUILayout.TextField(matches[matchId].playerLives.ToString()) );
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-			
 			GUILayout.Label("");
-			
+
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Box("Items");
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+
 			// spawn gun A
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();

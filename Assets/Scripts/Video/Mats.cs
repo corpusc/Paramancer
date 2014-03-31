@@ -10,7 +10,7 @@ public static class Mats {
 	
 	static Mats() {
 		handleFolder("Av");
-		handleFolder("AvHeads");
+		handleFolder("AvHead");
 	}
 
 	public static Material Get(string s) { // hash lookups in a Dictionary are fast right? 
