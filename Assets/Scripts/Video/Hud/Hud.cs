@@ -313,7 +313,7 @@ public class Hud : MonoBehaviour {
 
 		if (startAtTop) {
 			r.y = 0;
-			r.height = Screen.height - controls.HeightOfButtonsOrKeys;
+			r.height = Screen.height - controls.HeightOfKeyboard;
 		}
 
 		GUI.color = col;
@@ -590,15 +590,19 @@ public class Hud : MonoBehaviour {
 		PlayerPrefs.SetFloat("LookSensitivity", locUser.LookSensitivity);
 		GUILayout.EndHorizontal();
 
-		GUILayout.BeginHorizontal();
-		if (GUILayout.Button("Default Keys"))
-			CcInput.SetDefaultBinds();
-		GUILayout.Button("GamePad");
-		GUILayout.Button("Hydra");
-		GUILayout.Button("MouseL");
-		GUILayout.Button("MouseR");
-		GUILayout.Button("MMOL");
-		GUILayout.Button("MMOR");
+		//if (GUILayout.Button("Default Keys"))
+			//CcInput.SetDefaultBinds();
+		GUILayout.BeginHorizontal(); // the names 
+		for (int i = 0; i < (int)ControlDevice.Count; i++)
+			GUILayout.Box(((ControlDevice)i).ToString());
+		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal(); // the pics 
+		GUILayout.FlexibleSpace();
+		for (int i = 0; i < (int)ControlDevice.Count; i++) {
+			GUILayout.Button(Pics.Get(((ControlDevice)i) + ""), GUILayout.MaxWidth(64), GUILayout.MaxHeight(128));
+			GUILayout.FlexibleSpace();
+		}
 		GUILayout.EndHorizontal();
 
 
@@ -768,11 +772,12 @@ public class Hud : MonoBehaviour {
 
 		CategoryHeader("Current team", false, false);
 		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls, GUI/HUD, Weapon effects");
-		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions, Graphics");
+		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions, A few graphics & sounds");
 
 		CategoryHeader("Media authors", false);
 		GUILayout.Label("CarnagePolicy     - Sounds");
 		GUILayout.Label("Nobiax/yughues   - Textures");
+		GUILayout.Label("Wayne Brown      - A few icons");
 
 		CategoryHeader("Engine", false);
 		GUILayout.Label("This is an extensively remodeled fork of a #7DFPS game");

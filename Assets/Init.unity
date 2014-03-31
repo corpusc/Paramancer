@@ -392,7 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19da8c5804d80174c8ede6393f0e21a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HeightOfButtonsOrKeys: 0
+  HeightOfKeyboard: 0
 --- !u!114 &1973207301
 MonoBehaviour:
   m_ObjectHideFlags: 0

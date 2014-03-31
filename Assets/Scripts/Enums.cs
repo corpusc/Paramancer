@@ -1,6 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum ControlDevice {
+	LeftHandedMouse,
+	LeftHandedMMOMouse,
+	RightHandedMMOMouse,
+	RightHandedMouse,
+
+	Count,
+
+	// these are unused, cuz we have no textures for them yet (Voxamancy has gamepad)
+	GamePad,
+	Hydra,
+}
+
 public enum Head {
 	NormalHead,
 	CardboardBoxHead,
@@ -12,16 +25,6 @@ public enum Head {
 	PyramidHead,
 	ChocoboHead,
 	SpikeHead,
-
-//	// NOT sophie's
-//  TentacleRoot,
-//	RobotHead,
-//	head_spaceship,
-//	enforcer_face,
-//	SmileyHead,
-//	Helmet,
-//	PaperBag,
-//	Mahead,
 
 	Count
 }

@@ -60,17 +60,19 @@ using UnityEngine;
 using System.Collections;
 
 public class Controls : MonoBehaviour {
-	public int HeightOfButtonsOrKeys;
+	public int HeightOfKeyboard;
 
-	// privates
+	// private 
 	Hud hud;
-	int bottomOfKeyboard;
+	ControlDevice currDev = ControlDevice.RightHandedMouse;
 	Texture keyCap;
 	Texture mousePic;
 	Rect mouseRect;
+	const int numMouseButtonColumns = 4;
+	const int numMouseButtonRows = 5;
 	const int numKeyRows = 6;
 	int maxX = 21;
-	int maxY = numKeyRows + 5; // +5 rows for mouse
+	int maxY = numMouseButtonRows + numKeyRows;
 	int span;
 	BindData draggee = null; // user action that is attached to pointer.  it's still dragging if you're not HOLDING LMB?!
 	Vector3 mouPos; // converted Input.mousePosition to sensible coordinates
@@ -83,28 +85,20 @@ public class Controls : MonoBehaviour {
 	
 	void Start() {
 		hud = GetComponent<Hud>();
+		keyCap = Pics.Get("KeyCap");
+		mousePic = Pics.Get("RightHandedMouse");
 
-		// load textures
-		Object[] pics = Resources.LoadAll("Pic/Hud/Controls");
-		
-		// use this temp list to setup permanent vars
-		for (int i = 0; i < pics.Length; i++) {
-			var s = pics[i].name;
-			
-			if (s == "KeyCap")
-				keyCap = pics[i] as Texture2D;
-			if (s == "5 Button Mouse")
-				mousePic = pics[i] as Texture;
-		}
-
-//		for (int i = 0; i < 10; i++) {
-//			keyCap.SetPixel(i, i, Color.red);
-//		}
-//		keyCap.Apply();
-		
 		// setup temp structure for the physical layout of the keyboard
 		var n = KeyCode.None;
 		codes = new KeyCode[] {
+			// mouse keys/buttons 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n,              n, KeyCode.Mouse5, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3, n, KeyCode.Mouse6, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, n,              n, 
+
+			// keyboard 
 			KeyCode.Escape, 
 			KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6, 
 			KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12,
@@ -152,26 +146,16 @@ public class Controls : MonoBehaviour {
 			KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow,
 			KeyCode.Keypad0, n, KeyCode.KeypadPeriod, n,
 			
-			// mouse normal
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3, n, KeyCode.Mouse5, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, KeyCode.Mouse6, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
-			
-//			// mouse right-handed MMO 
-//			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
-//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, n, KeyCode.Mouse5, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, 
-//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Mouse3, n, KeyCode.Mouse6, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, 
-//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Mouse4, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, 
-//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, 
-//			
-//			// mouse left-handed MMO    (both MMOs have buttons on both sides atm)
-//			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, n, n, n, 
-//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, n, KeyCode.Mouse5, n, KeyCode.Alpha0, KeyCode.Minus, KeyCode.Equals, 
-//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Mouse3, n, KeyCode.Mouse6, n, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, 
-//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Mouse4, n, n, n, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, 
-//			n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, n, n, n, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, 
+//			switch (currDev) {
+//			case ControlDevice.l:
+//				break;
+//			case ControlDevice.Right:
+//				break;
+//			case ControlDevice.Right:
+//				break;
+//			case ControlDevice.Right:
+//				break;
+//			}
 		};
 		
 		// the more complicated mirrored structure that holds all the OTHER key data
@@ -197,11 +181,11 @@ public class Controls : MonoBehaviour {
 		// FIXME: we'll wanna clear draggee upon leaving the controls config screen, otherwise
 		// when coming back, there will be an action on the pointer instead of showing up on
 		// its proper key location (altho atm, its impossible to leave without clicking on menu 
-		// option, thus dropping the action
+		// option, thus dropping the action) 
 		if (Input.GetKeyDown(KeyCode.Mouse0) ) {
 			int tkId; // targeted key id
 			var tk = targetedKey(out tkId);
-			if (tk == null) { // not a valid area, so discard draggee
+			if (tk == null) { // not a valid area, so discard draggee 
 				if (draggee != null) {
 					draggee.Id = latestUnboundKey;
 					draggee.KeyCode = codes[latestUnboundKey];
@@ -260,8 +244,8 @@ public class Controls : MonoBehaviour {
 		var r = new Rect(0, 0, Screen.width, Screen.height);
 		GUI.BeginGroup(r);
 
-		r.y = Screen.height - HeightOfButtonsOrKeys;
-		r.height = 6 * span + (span/2);
+		r.y = Screen.height - HeightOfKeyboard;
+		r.height = HeightOfKeyboard;
 		GUI.DrawTexture(r, Pics.White);
 		GUI.DrawTexture(mouseRect, mousePic);
 
@@ -277,7 +261,7 @@ public class Controls : MonoBehaviour {
 			
 			// if slicing not needed, just draw in single call and move on to next key
 			if (or.width <= or.height) {
-				if (i > numKeyRows*maxX) {
+				if (i < numMouseButtonRows*maxX) {
 					var c = GUI.color;
 					c.a = 0.5f;
 					GUI.color = c;
@@ -357,8 +341,8 @@ public class Controls : MonoBehaviour {
 		
 		// inform user of remapping abilities 
 		S.GetShoutyColor();
-		GUI.Label(new Rect(0, Screen.height-50, 300, 25), "Left-Click on actions to move them elsewhere");
-		GUI.Label(new Rect(0, Screen.height-25, 300, 25), "Right-Click on keys to swap them with others");
+		GUI.Label(new Rect(0, Screen.height-HeightOfKeyboard-50, 300, 25), "Left-Click on actions to move them elsewhere");
+		GUI.Label(new Rect(0, Screen.height-HeightOfKeyboard-25, 300, 25), "Right-Click on keys to swap them with others");
 
 		// draw action icon near pointer if it's being moved 
 		if (draggee != null) {
@@ -465,11 +449,15 @@ public class Controls : MonoBehaviour {
 	}
 
 	void setupKeyData() {
-		span = Screen.width/(maxX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
-		//int h = Screen.height/(numY+1);
+		int lOvW; // leftover width 
+		span = Screen.width / (maxX+1); // need an extra space to put a bit of distance tween keypad, cursor keys & main alpha area
+		lOvW = Screen.width - span*(maxX+1) + span;
 		int fKeyGap = span/3;
-		HeightOfButtonsOrKeys = span * maxY + span/2;
-		int topOfKeys = Screen.height - HeightOfButtonsOrKeys;
+		int gap1 = lOvW/2; // gap tween cursor/pgup/pgdn   &   main text area 
+		lOvW -= gap1;
+		int gap2 = lOvW; // gap tween keypad   &   cursor/pgup/pgdn 
+		HeightOfKeyboard = span*numKeyRows + span/2;
+		int topOfMouseButtons = Screen.height - HeightOfKeyboard - span*5;
 		
 		int i = 0;
 		for (int y = 0; y < maxY; y++) {
@@ -479,6 +467,9 @@ public class Controls : MonoBehaviour {
 					int numExtraXCells = numNonesToTheRight(codes[i]);
 					int numExtraYCells = 0;
 					switch (codes[i]) {
+						case KeyCode.Mouse0:
+						case KeyCode.Mouse1:
+						case KeyCode.Mouse2:
 						case KeyCode.KeypadPlus:
 						case KeyCode.KeypadEnter:
 							numExtraYCells++;
@@ -488,37 +479,40 @@ public class Controls : MonoBehaviour {
 					int xOffs = 0;
 					int yOffs = 0;
 		
-					if (y == 0) {
+					if (y == numMouseButtonRows) { // row of function keys 
 						if (x > 0) xOffs += fKeyGap;
 						if (x > 4) xOffs += fKeyGap;
 						if (x > 8) xOffs += fKeyGap;
-						if (x > 12) xOffs += fKeyGap;
+						if (x > 12) xOffs += gap1;
 					} else {
-						if (y < numKeyRows) {
-							if (x > 13) xOffs += fKeyGap;
-							if (x > 16) xOffs += fKeyGap;
+						if (y > numMouseButtonRows) {
+							if (x > 13) 
+								xOffs += gap1;
+							if (x > 16) 
+								xOffs += gap2;
+
+							yOffs = span/2;
+						}else{
+							xOffs = gap1+gap2;
 						}
-						
-						yOffs = span/2;
 					}
 		
-					// set key data
+					// set key data 
 					keyData[i].KeyCode = codes[i];
 					keyData[i].Text = getConciseText(codes[i]);
 					keyData[i].Rect = new Rect(
 						x * span + xOffs,
-						y * span + yOffs + topOfKeys,
+						y * span + yOffs + topOfMouseButtons,
 						span + span * numExtraXCells, 
 						span + span * numExtraYCells);
 				}
 				
 				i++;
 			}
-			
-			if (y < 6)
-				bottomOfKeyboard = y * span + span + span/2 + topOfKeys;
 		}
 		
-		mouseRect = new Rect(15*span, bottomOfKeyboard, 3*span, 5*span);
+		mouseRect = new Rect(
+			Screen.width-3*span, topOfMouseButtons, 
+			3*span, numMouseButtonRows*span);
 	}
 }

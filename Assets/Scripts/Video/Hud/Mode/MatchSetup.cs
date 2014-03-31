@@ -143,6 +143,7 @@ public class MatchSetup {
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("(0 ignores)");
+			GUILayout.Label("");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
