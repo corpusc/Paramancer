@@ -10,9 +10,10 @@ public class RoguelikeLevel : MonoBehaviour {
 	public bool[,] Block; //2d array
 	public Vec2i MapSize;
 	public int Forms; //the amount of rooms/hallways to create
-	public float MaxOverride = 0.5f; //only create a form if there aren't too many things already in there
-	public int MinFormWidth = 1;
+	public float MaxOverride = 0.3f; //only create a form if there aren't too many things already in there
+	public int MinFormWidth = 3;
 	public int MaxFormWidth = 500;
+	public int MaxArea = 50000; //limits the creation of extremely large rooms
 
 	int safetyLimit = 2000; //the limit of tries Build() can do before surrendering
 
@@ -49,6 +50,7 @@ public class RoguelikeLevel : MonoBehaviour {
 			if (containsBlocks(start, end)) {
 				if (end.x >= start.x + MinFormWidth && end.y >= start.y + MinFormWidth)
 				if (end.x <= start.x + MaxFormWidth && end.y <= start.y + MaxFormWidth)
+				if ((end.x - start.x + 1) * (end.y - start.y + 1) <= MaxArea)
 					if (blocksInRect(start, end) < (end.x - start.x + 1) * (end.y - start.y + 1) * MaxOverride) {
 						fillRect(start, end);
 					formsMade++;
@@ -60,7 +62,7 @@ public class RoguelikeLevel : MonoBehaviour {
 	void preBuild() {
 		Vec2i a;
 		a.x = Random.Range(0, MapSize.x - MaxFormWidth);
-		a.y = Random.Range(0, MapSize.y);
+		a.y = Random.Range(0, MapSize.y - MaxFormWidth);
 		Vec2i b;
 		b.x = Random.Range(a.x + MinFormWidth, a.x + MaxFormWidth);
 		b.y = Random.Range(a.y + MinFormWidth, a.y + MaxFormWidth);
