@@ -467,35 +467,20 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					if /* shooting */ 
-						(Screen.lockCursor && 
+					if /* we can shoot */ (
+						gun.Cooldown <= 0f &&
+						Screen.lockCursor && 
 						!User.hasBall && 
 						GunInHand >= Item.Pistol
 					) {
-						if (arse.Guns[(int)GunInHand].AutoFire) {
-							if /* holding */ 
-								(CcInput.Holding(UserAction.Activate)
-							) {
-								if (gun.Cooldown <= 0f) {
-									Fire(false);
-									gun.Cooldown += gun.Delay;
-								}
-							}
-						}else{
-							if /* started pressing */ 
-								(CcInput.Started(UserAction.Activate)
-							) {
-								if (gun.Cooldown <= 0f) {
-									Fire(false);
-									gun.Cooldown += gun.Delay;
-								}
-							}
+						if /*gun repeats while pressed*/ (arse.Guns[(int)GunInHand].AutoFire) {
+							if (CcInput.Holding(UserAction.Activate))
+								Fire(gun);
+						}else{ // single shot
+							if (CcInput.Started(UserAction.Activate))
+								Fire(gun);
 							if (CcInput.Started(UserAction.Alt))
-							if (gun.Cooldown <= 0f) {
-								//print ("Attempted to altfire.");
-								Fire(true);
-								gun.Cooldown += gun.Delay;
-								}
+								Fire(gun, true);
 						}
 					}
 					
@@ -780,9 +765,13 @@ public class EntityClass : MonoBehaviour {
 		}
 	}
 	
-	void Fire(bool alt) {
-		var ct = Camera.main.transform;
+	void Fire(GunData gunData, bool alt = false) {
 		Item gun = (Item)GunInHand;
+		if (alt && gun != Item.RocketLauncher)
+			return;
+
+		gunData.Cooldown += gunData.Delay;
+		var ct = Camera.main.transform;
 
 		switch (gun) {
 			case Item.Pistol:

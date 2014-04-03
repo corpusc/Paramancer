@@ -195,25 +195,30 @@ public class Arsenal : MonoBehaviour {
 				break;
 			
 			case Item.RocketLauncher:
-			if (alt) {
-				for (int i = 0; i < 3; i++) {
-					GameObject newRocket = (GameObject)GameObject.Instantiate(rocketPrefab);
-					newRocket.transform.position = origin;
-					newRocket.transform.LookAt(origin + direction);
-					newRocket.GetComponent<RocketScript>().viewID = bulletID;
-					newRocket.GetComponent<RocketScript>().shooterID = shooterID;
-					newRocket.GetComponent<RocketScript>().Turning = true;
+				if (alt) {
+					for (int i = 0; i < 3; i++) {
+						var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
+						nr.transform.position = origin;
+						nr.transform.LookAt(origin + direction);
+
+						var rs = nr.GetComponent<RocketScript>();
+						rs.viewID = bulletID;
+						rs.shooterID = shooterID;
+						rs.Turning = true;
+						
+						activeRockets.Add(nr.GetComponent<RocketScript>());
+					} 
+				}else{
+					var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
+					nr.transform.position = origin;
+					nr.transform.LookAt(origin + direction);
 					
-					activeRockets.Add(newRocket.GetComponent<RocketScript>());
-				} } else {
-				GameObject newRocket = (GameObject)GameObject.Instantiate(rocketPrefab);
-				newRocket.transform.position = origin;
-				newRocket.transform.LookAt(origin + direction);
-				newRocket.GetComponent<RocketScript>().viewID = bulletID;
-				newRocket.GetComponent<RocketScript>().shooterID = shooterID;
-				
-				activeRockets.Add(newRocket.GetComponent<RocketScript>());
-			}
+					var	rs = nr.GetComponent<RocketScript>();
+					rs.viewID = bulletID;
+					rs.shooterID = shooterID;
+					
+					activeRockets.Add(nr.GetComponent<RocketScript>());
+				}
 				break;
 		}
 		
