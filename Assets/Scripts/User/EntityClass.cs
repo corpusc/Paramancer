@@ -712,8 +712,8 @@ public class EntityClass : MonoBehaviour {
 			}
 			
 			gunMesh2.transform.parent = gunParentB;
-			gunMesh2.transform.localEulerAngles = new Vector3(0,180,90);
-			gunMesh2.transform.localPosition = Vector3.zero;
+			gunMesh2.transform.localEulerAngles = new Vector3(0, 180, 90);
+			gunMesh2.transform.localPosition =  new Vector3(0.012f, 0.47f, -0.002f); //Vector3.zero;
 			prevGunOnBack = GunOnBack;
 			sendRPCUpdate = true;
 			
