@@ -520,7 +520,7 @@ public class CcNet : MonoBehaviour {
 			case 4: players[i].Entity.PlaySound("QuadraKill"); break;
 			case 5: players[i].Entity.PlaySound("PentaKill"); break;
 			case 6: players[i].Entity.PlaySound("HexaKill"); break;
-			default: players[i].Entity.PlaySound("Godlike"); break;
+			default: players[i].Entity.PlaySound("GodLike"); break;
 		}
 	}
 	
