@@ -46,6 +46,8 @@ public class EntityClass : MonoBehaviour {
 	public GameObject[] heads;
 
 	// avatar settings 
+	public GameObject CurrModel;
+	private Vector3 gunOffs = new Vector3(0.47f, -0.48f, 0.84f); // offset of gun, from either camera (1st person) or aimBone (other players)
 	public Color colA;
 	public Color colB;
 	public Color colC;
@@ -92,6 +94,7 @@ public class EntityClass : MonoBehaviour {
 	
 	void Start() {
 		var o = GameObject.Find("Main Program");
+		var currModel = Models.Get("Joan");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
 		arse = o.GetComponent<Arsenal>();
@@ -130,11 +133,14 @@ public class EntityClass : MonoBehaviour {
 		
 		if (User.health <= 0f) {
 			// shut off bomb
-			if (gunMesh1 != null && gunMesh1.transform.Find("Flash Light") != null) {
-				gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
+			var fl = gunMesh1.transform.Find("Flash Light");
+			if (gunMesh1 != null && fl != null) {
+				fl.GetComponent<FlashlightScript>().visible = false;
 			}
-			if (gunMesh2 != null && gunMesh2.transform.Find("Flash Light") != null) {
-				gunMesh2.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
+
+			fl = gunMesh2.transform.Find("Flash Light");
+			if (gunMesh2 != null && fl != null) {
+				fl.GetComponent<FlashlightScript>().visible = false;
 			} 
 		}
 
@@ -157,6 +163,10 @@ public class EntityClass : MonoBehaviour {
 				
 				Camera.main.transform.parent = null;
 				Camera.main.transform.position = net.players[Spectatee].Entity.transform.position;
+				CurrModel.transform.position = net.players[Spectatee].Entity.transform.position;
+				CurrModel.SetActive(true);
+				CurrModel.hideFlags = HideFlags.DontSave;
+
 				float invY = 1f;
 				if (locUser.LookInvert)
 					invY = -1f;
@@ -651,13 +661,16 @@ public class EntityClass : MonoBehaviour {
 
 			if (GunInHand >= Item.Pistol) {
 				gunMesh1 = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
+				//gunMesh1 = (GameObject)GameObject.Instantiate(Models.Get("Joan"));
 			}else{
 				gunMesh1 = new GameObject();
 			}
 			
-			gunMesh1.transform.parent = gunParent;
-			gunMesh1.transform.localEulerAngles = new Vector3(0, 180, 90);
-			gunMesh1.transform.localPosition = Vector3.zero;
+			// FIXME:  i dunno why there should be a seperate instance of the first person gun......
+			// gunMesh1 should be the same whether local or remote? 
+			gunMesh1.transform.parent = aimBone.transform; //gunParent;
+			gunMesh1.transform.localEulerAngles = new Vector3(0, 180, -90);
+			gunMesh1.transform.localPosition = Vector3.zero;    // /*(firstPersonGun)*/new Vector3(0.6f, 0.9f, 0.6f); //(gunMesh1)Vector3.zero;    
 			prevGunInHand = GunInHand;
 			
 			if (User.local) {
@@ -670,9 +683,9 @@ public class EntityClass : MonoBehaviour {
 					firstPersonGun = new GameObject();
 				}
 				
-				firstPersonGun.transform.parent = Camera.main.transform;
-				firstPersonGun.transform.localEulerAngles = new Vector3( -90, 0, 0);
-				firstPersonGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
+				firstPersonGun.transform.parent = Camera.main.transform;    // correct
+				firstPersonGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
+				firstPersonGun.transform.localPosition = gunOffs;
 				
 				if (firstPersonGun.renderer) 
 					firstPersonGun.renderer.castShadows = false;
@@ -1055,7 +1068,9 @@ public class EntityClass : MonoBehaviour {
 	
 	void LateUpdate() {
 		if (User.health > 0f) {
-			aimBone.transform.localEulerAngles += new Vector3(0, camAngle.x, 0);
+			aimBone.transform.localEulerAngles /*+=*/ = new Vector3(0, camAngle.x, 0);
+			//gunMesh1.transform.localPosition = gunOffs;
+			//gunMesh1.transform.position = aimBone.transform.position;
 			animObj.transform.localPosition = (animObj.transform.forward * camAngle.x * -0.002f) - Vector3.up;
 		}
 	}

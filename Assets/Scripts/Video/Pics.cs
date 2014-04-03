@@ -63,7 +63,7 @@ public static class Pics {
 			feedback += cl.name + ",  ";
 		}
 		
-		Debug.Log("______ Pic/" + s + " ______ " + feedback.TrimEnd(',', ' '));
+		Debug.Log("______ PIC/" + s + " ______ " + feedback.TrimEnd(',', ' '));
 
 
 
