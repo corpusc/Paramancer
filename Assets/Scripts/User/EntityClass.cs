@@ -47,7 +47,8 @@ public class EntityClass : MonoBehaviour {
 
 	// avatar settings 
 	public GameObject CurrModel;
-	private Vector3 gunOffs = new Vector3(0.47f, -0.48f, 0.84f); // offset of gun, from either camera (1st person) or aimBone (other players)
+	private Vector3 gunOffs = new Vector3(0.47f, -0.48f, 0.84f); // offset of gun from camera (self, 1st person)
+	private Vector3 remoteGunOffs = new Vector3(0.074f, 0.46f, 0.84f); // offset of gun from aimBone (other players)
 	public Color colA;
 	public Color colB;
 	public Color colC;
@@ -667,10 +668,10 @@ public class EntityClass : MonoBehaviour {
 			}
 			
 			// FIXME:  i dunno why there should be a seperate instance of the first person gun......
-			// gunMesh1 should be the same whether local or remote? 
+			// gunMesh1 should be the same whether local or remote?  atm, one is child of aimBone, and other is child of Camera.main
 			gunMesh1.transform.parent = aimBone.transform; //gunParent;
-			gunMesh1.transform.localEulerAngles = new Vector3(0, 180, -90);
-			gunMesh1.transform.localPosition = Vector3.zero;    // /*(firstPersonGun)*/new Vector3(0.6f, 0.9f, 0.6f); //(gunMesh1)Vector3.zero;    
+			gunMesh1.transform.localEulerAngles = new Vector3(0, 270, 90);
+			gunMesh1.transform.localPosition = remoteGunOffs;
 			prevGunInHand = GunInHand;
 			
 			if (User.local) {
