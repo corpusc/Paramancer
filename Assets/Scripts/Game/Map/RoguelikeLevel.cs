@@ -8,6 +8,9 @@ public struct Vec2i {
 
 public class RoguelikeLevel : MonoBehaviour {
 	public bool[,] Block; //2d array
+	public int[,] BlockType;
+	[HideInInspector]
+	public int n_types = 8;
 	public Vec2i MapSize;
 	public int Forms; //the amount of rooms/hallways to create
 	public float MaxOverride = 0.1f; //only create a form if there aren't too many things already in there
@@ -15,16 +18,25 @@ public class RoguelikeLevel : MonoBehaviour {
 	public int MaxFormWidth = 500;
 	public int MaxArea = 10000; //limits the creation of extremely large rooms
 
-	int safetyLimit = 2000; //the limit of tries Build() can do before surrendering
+	int safetyLimit = 10000; //the limit of tries Build() can do before surrendering
 
-	// Use this for initialization
+	//block types:
+	//0 - default, bricks
+	//1 - concrete
+	//2 - gray gravel-like with blue stripes(textures/IceFlame)
+	//3 - sci_fi_003
+	//4 - wooden planks
+	//5 - metal_floor
+	//6 - metal_plate_005
+	//7 - metal_plate_008
+
 	void Start () {
 		Block = new bool[MapSize.x, MapSize.y];
+		BlockType = new int[MapSize.x, MapSize.y];
 		EmptyMap();
 		Build();
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}
@@ -87,14 +99,19 @@ public class RoguelikeLevel : MonoBehaviour {
 	}
 
 	void fillRect (Vec2i start, Vec2i end) {
+		int currentType = Random.Range(0, n_types);
 		for (int i = start.x; i <= end.x; i++)
-			for (int j = start.y; j <= end.y; j++)
-				Block[i, j] = true;
+		for (int j = start.y; j <= end.y; j++) {
+			Block[i, j] = true;
+			BlockType[i, j] = currentType;
+		}
 	}
 
 	public void EmptyMap () {
 		for (int i = 0; i < MapSize.x; i++)
-			for (int j = 0; j < MapSize.y; j++)
-				Block[i, j] = false;
+		for (int j = 0; j < MapSize.y; j++) {
+			Block[i, j] = false;
+			BlockType[i, j] = 0;
+		}
 	}
 }

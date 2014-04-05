@@ -168,10 +168,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65655c48bec5b494589b3dbb0252d82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Forms: 0
-  MaxOverride: .5
-  MinFormWidth: 1
-  MaxFormWidth: 200
+  n_types: 8
+  Forms: 100
+  MaxOverride: .200000003
+  MinFormWidth: 16
+  MaxFormWidth: 500
+  MaxArea: 10000
 --- !u!1 &725311463
 GameObject:
   m_ObjectHideFlags: 0
