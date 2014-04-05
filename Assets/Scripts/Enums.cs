@@ -2,10 +2,10 @@
 using System.Collections;
 
 public enum ControlDevice {
-	LeftHandedMouse,
-	LeftHandedMMOMouse,
-	RightHandedMMOMouse,
-	RightHandedMouse,
+	LeftyMouse,
+	LeftyMMOMouse,
+	RightyMMOMouse,
+	RightyMouse,
 
 	Count,
 

@@ -30,6 +30,9 @@ public class Hud : MonoBehaviour {
 				case HudMode.Controls: 
 					controls.enabled = true;
 					break;
+				case HudMode.Settings:
+					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+					break;
 			}
 		}
 	}
@@ -311,11 +314,21 @@ public class Hud : MonoBehaviour {
 	void menuBegin(Color col, bool scrolling = true, bool startAtTop = false) {
 		var r = window;
 
+		// special exceptions 
 		if (startAtTop) {
 			r.y = 0;
 			r.height = Screen.height - controls.HeightOfKeyboard;
 		}
 
+		switch (Mode) {
+			case HudMode.Settings:
+				r.x = r.y = 0;
+				r.width = Screen.width/3;
+				r.height = Screen.height;
+				break;
+		}
+
+		// universal 
 		GUI.color = col;
 		GUI.DrawTexture(r, Pics.White);
 		
@@ -422,12 +435,13 @@ public class Hud : MonoBehaviour {
 		// graphics
 		//categoryHeader("Graphics");
 		GUILayout.BeginHorizontal();
-		if (GUILayout.Button("Change to "))
+		if (GUILayout.Button("Full screen"))
 			Screen.SetResolution(fsWidth, fsHeight, true);
-		GUILayout.Label("Fullscreen resolution of");
+		GUILayout.Label("(");
 		fsWidth = S.GetInt(GUILayout.TextField(fsWidth.ToString()));
 		GUILayout.Label("X");
 		fsHeight = S.GetInt(GUILayout.TextField(fsHeight.ToString()));
+		GUILayout.Label(")");
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
@@ -456,13 +470,22 @@ public class Hud : MonoBehaviour {
 		// colour sliders
 		GUILayout.BeginHorizontal();
 		GUI.color = net.localPlayer.colA;
-		GUILayout.Box("**** Colour A ****");
+		GUILayout.Box(Pics.White);
 		GUI.color = net.localPlayer.colB;
-		GUILayout.Box("**** Colour B ****");
+		GUILayout.Box(Pics.White);
 		GUI.color = net.localPlayer.colC; 
-		GUILayout.Box("**** Colour C ****");
+		GUILayout.Box(Pics.White);
 		GUILayout.EndHorizontal();
-
+		
+		GUILayout.BeginHorizontal();
+		GUI.color = net.localPlayer.colA;
+		GUILayout.Box("Colour A");
+		GUI.color = net.localPlayer.colB;
+		GUILayout.Box("Colour B");
+		GUI.color = net.localPlayer.colC; 
+		GUILayout.Box("Colour C");
+		GUILayout.EndHorizontal();
+		
 		colorSliders();
 		GUI.color = Color.white;
 
@@ -568,18 +591,25 @@ public class Hud : MonoBehaviour {
 
 
 
-	
+	void centeredLabel(string s) {
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		GUILayout.Label(s);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+	}
 	
 	void drawControlsAdjunct() {
 		menuBegin(S.WhiteTRANS, true, true);
 
+		// inform user of remapping abilities 
+		S.GetShoutyColor();
+		centeredLabel("Left-Click on actions to move them elsewhere");
+		centeredLabel("Right-Click on keys to swap them with others");
+		GUI.color = Color.white;
+
+		// control settings 
 		GUILayout.BeginHorizontal();
-		if (GUILayout.Button(GoToPrevMenu)) {
-			if (Mode == HudMode.Settings)
-				net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
-			
-			Mode = HudMode.MainMenu;
-		}
 		GUILayout.FlexibleSpace();
 		/**/locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Look inversion", GUILayout.ExpandWidth(false));
 		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
@@ -609,11 +639,7 @@ public class Hud : MonoBehaviour {
 
 
 
-		// menu end stuff 
-		GUI.color = Color.white;
-		GUILayout.EndScrollView();
-		
-		GUILayout.EndArea();
+		menuEnd(); 
 	}
 
 	
@@ -647,23 +673,16 @@ public class Hud : MonoBehaviour {
 
 	int prevNumServers = 0;
 	void joinWindow() {
-		int x = Screen.width/4;
-		int w = Screen.width/2;
-		GUILayout.BeginArea(new Rect(x, 0, w, Screen.height));
+//		int x = Screen.width/4;
+//		int w = Screen.width/2;
+//		GUILayout.BeginArea(new Rect(x, 0, w, Screen.height));
+//
+//		// title bar
+//		GUILayout.Box(S.GetSpacedOut(Mode + ""));
+//
+//		if (GUILayout.Button(GoToPrevMenu))
+//			Mode = HudMode.MainMenu;
 
-		// title bar
-		GUILayout.Box(S.GetSpacedOut(Mode + ""));
-
-		if (GUILayout.Button(GoToPrevMenu))
-			Mode = HudMode.MainMenu;
-
-		// allow entering a passsword
-		GUILayout.BeginHorizontal();
-		GUILayout.Label("Game Password: ");
-		net.password = GUILayout.TextField(net.password);
-		GUILayout.EndHorizontal();
-
-		
 		HostData[] hostData = MasterServer.PollHostList();
 		// play sound if number of servers goes up
 		if (prevNumServers < hostData.Length) {
@@ -671,15 +690,10 @@ public class Hud : MonoBehaviour {
 		}
 		prevNumServers = hostData.Length;
 
-		int scrollHeight = hostData.Length * 40;
-		if (scrollHeight < 350) 
-			scrollHeight = 350;
+		menuBegin();//hobgob
 		
-		scrollPos = GUILayout.BeginScrollView(scrollPos);
-		
+
 		if (hostData.Length == 0) {
-			GUILayout.Label("...");
-			GUILayout.Label("...");
 			GUILayout.Label("No hosts found!");
 		}else{
 			if (hostPings.Length == 0) {
@@ -710,8 +724,11 @@ public class Hud : MonoBehaviour {
 			GUILayout.Label("[" + hostData[i].connectedPlayers.ToString() + "/" + hostData[i].playerLimit.ToString() + "]");
 			GUILayout.Label(hostData[i].comment);
 
-			if (hostData[i].passwordProtected)
-				GUILayout.Label("[PASSWORDED]");
+			if (hostData[i].passwordProtected) {
+				// allow entering a passsword
+				GUILayout.Label("Password:");
+				net.password = GUILayout.TextField(net.password);
+			}
 
 			if (hostPings[i].isDone)
 				GUILayout.Label("Ping: " + hostPings[i].time.ToString());
@@ -720,9 +737,8 @@ public class Hud : MonoBehaviour {
 			
 			GUILayout.EndHorizontal();
 		}
-		
-		GUILayout.EndScrollView();
-		GUILayout.EndArea();
+
+		menuEnd();
 	}
 
 

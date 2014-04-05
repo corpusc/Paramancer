@@ -245,37 +245,37 @@ public class MatchSetup {
 
 			// spawn gun A
 			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
 
 			if (GUILayout.Button("<")) 
 				matches[matchId].spawnGunA--;
 			if (matches[matchId].spawnGunA < Item.Random) 
 				matches[matchId].spawnGunA = Item.Count-1;
 			
-			GUILayout.Label("Spawn Gun A: " + matches[matchId].spawnGunA);
-			
 			if (GUILayout.Button(">")) 
 				matches[matchId].spawnGunA++;
 			if (matches[matchId].spawnGunA >= Item.Count) 
 				matches[matchId].spawnGunA = Item.Random;
 
+			GUILayout.Label("Inventory A: " + matches[matchId].spawnGunA);
+			
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
 			// spawn gun B
 			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
+
 			if (GUILayout.Button("<")) 
 				matches[matchId].spawnGunB--;
 			if (matches[matchId].spawnGunB < Item.Random) 
 				matches[matchId].spawnGunB = Item.Count-1;
 			
-			GUILayout.Label("Spawn Gun B: " + matches[matchId].spawnGunB);
-			
 			if (GUILayout.Button(">")) 
 				matches[matchId].spawnGunB++;
 			if (matches[matchId].spawnGunB >= Item.Count) 
 				matches[matchId].spawnGunB = Item.Random;
+
+			GUILayout.Label("Inventory B: " + matches[matchId].spawnGunB);
+			
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
@@ -289,8 +289,9 @@ public class MatchSetup {
 
 			GUILayout.EndScrollView();
 		}
-		
-		if (GUILayout.Button("CANCEL"/*, GUILayout.ExpandWidth(false)*/)) {
+
+		GUILayout.FlexibleSpace();
+		if (GUILayout.Button(hud.GoToPrevMenu/*, GUILayout.ExpandWidth(false)*/)) {
 			hud.Mode = HudMode.MainMenu;
 		}
 		
@@ -402,21 +403,24 @@ public class MatchSetup {
 
 	void slotSelect(ref Item item, int slot) {
 		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
+
+		// cycle 
 		if (GUILayout.Button("<")) 
 			item--;
-		
-		if (item < Item.Health) 
-			item = Item.Count-1;
-		
-		GUILayout.Label("Pickup Slot " + slot + S.GetSpacedOut(": " + item));
-		
 		if (GUILayout.Button(">")) 
 			item++;
-		
+
+		// wrap 
+		if (item < Item.Health) 
+			item = Item.Count-1;
 		if (item >= Item.Count) 
 			item = Item.Health;
+
+		GUILayout.Label("Pickup " + slot + S.GetSpacedOut(": "));
 		GUILayout.FlexibleSpace();
+		GUILayout.Label("" + item);
+		GUILayout.FlexibleSpace();
+
 		GUILayout.EndHorizontal();
 	}
 	

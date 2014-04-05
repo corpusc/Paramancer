@@ -70,14 +70,14 @@ public static class Pics {
 		// CLEANME:     use this temp list to setup permanent vars 
 		for (int i = 0; i < tPics.Length; i++) {
 			switch (tPics[i].name) {
+			case "BlankWhite": 
+				White = tPics[i]; 
+				break;
 			case "Sprint": 
 				Sprint = tPics[i]; 
 				break;
 			case "Health": 
 				Health = tPics[i]; 
-				break;
-			case "whiteTex": 
-				White = tPics[i]; 
 				break;
 			case "blackTex": 
 				Black = tPics[i]; 

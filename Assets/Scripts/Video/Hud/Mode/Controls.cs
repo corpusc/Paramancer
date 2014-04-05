@@ -64,7 +64,7 @@ public class Controls : MonoBehaviour {
 
 	// private 
 	Hud hud;
-	ControlDevice currDev = ControlDevice.RightHandedMouse;
+	ControlDevice currDev = ControlDevice.RightyMouse;
 	Texture keyCap;
 	Texture mousePic;
 	Rect mouseRect;
@@ -86,7 +86,7 @@ public class Controls : MonoBehaviour {
 	void Start() {
 		hud = GetComponent<Hud>();
 		keyCap = Pics.Get("KeyCap");
-		mousePic = Pics.Get("RightHandedMouse");
+		mousePic = Pics.Get("RightyMouse");
 
 		// setup temp structure for the physical layout of the keyboard
 		var n = KeyCode.None;
@@ -94,9 +94,9 @@ public class Controls : MonoBehaviour {
 			// mouse keys/buttons 
 			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse0, KeyCode.Mouse2, KeyCode.Mouse1, 
 			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n,              n, KeyCode.Mouse5, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3, n, KeyCode.Mouse6, n, 
-			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, n,              n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse3,              n, KeyCode.Mouse5, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, KeyCode.Mouse4, n, KeyCode.Mouse6, n, 
+			n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n,              n, 
 
 			// keyboard 
 			KeyCode.Escape, 
@@ -246,7 +246,7 @@ public class Controls : MonoBehaviour {
 
 		r.y = Screen.height - HeightOfKeyboard;
 		r.height = HeightOfKeyboard;
-		GUI.DrawTexture(r, Pics.White);
+		//GUI.DrawTexture(r, Pics.White);
 		GUI.DrawTexture(mouseRect, mousePic);
 
 		// draw keys          (perhaps clean this up by using mouseOver())
@@ -339,11 +339,6 @@ public class Controls : MonoBehaviour {
 			), s);
 		}
 		
-		// inform user of remapping abilities 
-		S.GetShoutyColor();
-		GUI.Label(new Rect(0, Screen.height-HeightOfKeyboard-50, 300, 25), "Left-Click on actions to move them elsewhere");
-		GUI.Label(new Rect(0, Screen.height-HeightOfKeyboard-25, 300, 25), "Right-Click on keys to swap them with others");
-
 		// draw action icon near pointer if it's being moved 
 		if (draggee != null) {
 			GUI.color = S.Purple;
