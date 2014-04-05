@@ -410,31 +410,39 @@ public class Hud : MonoBehaviour {
 
 		// misc settings 
 		// gun bob 
-		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "Gun Bobbing");
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "Gun bob");
 		if (net.gunBobbing)
 			PlayerPrefs.SetInt("GunBobbing", 1);
 		else
 			PlayerPrefs.SetInt("GunBobbing", 0);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
 
 		// chat fade
 		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
 		SizedLabel("Chat/Log fade time:   ");
 		log.FadeTime = (float)S.GetInt(GUILayout.TextField(log.FadeTime.ToString()));
+		PlayerPrefs.SetFloat("textFadeTime", log.FadeTime);
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
-		PlayerPrefs.SetFloat("textFadeTime", log.FadeTime);
 
 		// audio
 		//categoryHeader("Audio");
 		GUILayout.BeginHorizontal();
-		SizedLabel("Master Volume:   ");
-		Sfx.VolumeMaster = GUILayout.HorizontalSlider(Sfx.VolumeMaster, 0.0f, 1f);
-		GUILayout.EndHorizontal();
+		GUILayout.FlexibleSpace();
+		GUILayout.Label("Master Volume:   ");
+		Sfx.VolumeMaster = GUILayout.HorizontalSlider(Sfx.VolumeMaster, 0.0f, 1f, GUILayout.MinWidth(64));
 		PlayerPrefs.SetFloat("MasterVolume", Sfx.VolumeMaster);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
 
 		// graphics
 		//categoryHeader("Graphics");
 		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
 		if (GUILayout.Button("Full screen"))
 			Screen.SetResolution(fsWidth, fsHeight, true);
 		GUILayout.Label("(");
@@ -448,13 +456,14 @@ public class Hud : MonoBehaviour {
 		// avatar settings
 		CategoryHeader("Avatar");
 		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
 		SizedLabel("Name:   ");
 		net.localPlayer.name = GUILayout.TextField(net.localPlayer.name);
-		GUILayout.FlexibleSpace();
-		GUILayout.EndHorizontal();
 		if (net.localPlayer.name.Length > 20) 
 			net.localPlayer.name = net.localPlayer.name.Substring(0, 20);
 		net.localPlayer.name = FormatName(net.localPlayer.name);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
 
 		innerScrollPos = GUILayout.BeginScrollView(innerScrollPos);
 		
@@ -603,22 +612,31 @@ public class Hud : MonoBehaviour {
 		menuBegin(S.WhiteTRANS, true, true);
 
 		// inform user of remapping abilities 
+		centeredLabel("Press keys to LIGHT THEM UP");
 		S.GetShoutyColor();
 		centeredLabel("Left-Click on actions to move them elsewhere");
-		centeredLabel("Right-Click on keys to swap them with others");
 		GUI.color = Color.white;
+		centeredLabel("Right-Click on keys to swap them with others");
+		GUILayout.Label("");
 
-		// control settings 
+		// look inversion 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
 		/**/locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Look inversion", GUILayout.ExpandWidth(false));
 		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
 		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
 		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+
+		// sensitivity 
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
 		GUILayout.Label("Look sensitivity:", GUILayout.ExpandWidth(false));
 		locUser.LookSensitivity = GUILayout.HorizontalSlider(locUser.LookSensitivity, 0.1f, 10f, GUILayout.MinWidth(196));
 		PlayerPrefs.SetFloat("LookSensitivity", locUser.LookSensitivity);
+		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
+
 
 		//if (GUILayout.Button("Default Keys"))
 			//CcInput.SetDefaultBinds();
@@ -790,23 +808,19 @@ public class Hud : MonoBehaviour {
 		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Logo, Controls");
 		GUILayout.Label("IceFlame            - Coding, Various media & effects, Announcer");
 
-		CategoryHeader("Media authors", false);
-		GUILayout.Label("CarnagePolicy     - Sounds");
-		GUILayout.Label("Nobiax/yughues   - Textures");
-		GUILayout.Label("Wayne Brown      - A few icons");
-
 		CategoryHeader("Engine", false);
-		GUILayout.Label("This is an extensively remodeled fork of a #7DFPS game by Sophie Houlden.");
+		GUILayout.Label("This is an extensively remodeled fork of a game made (within 7 days) by Sophie Houlden");
+		GUILayout.Label("Visit sophiehoulden.com");
+		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?!
+		//if (GUILayout.Button("Sophie Houlden (web page)"))
+			//Application.OpenURL("http://sophiehoulden.com");  
 
-		GUILayout.BeginHorizontal();
-		if (GUILayout.Button("Sophie Houlden (web page)"))
-			Application.OpenURL("http://sophiehoulden.com");
-		if (GUILayout.Button("Splat Death Salad (web page)"))
-			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
-		GUILayout.EndHorizontal();
-
-//		if (Application.isWebPlayer) 
-//			GUILayout.Label("*** Visit the homepage for standalone client downloads (win/mac) ***");
+		CategoryHeader("Media authors", false);
+		GUILayout.Label("CarnagePolicy          - Sounds");
+		GUILayout.Label("Nobiax/yughues        - Textures");
+		GUILayout.Label("Wayne Brown           - A few icons");
+		//if (Application.isWebPlayer) 
+//			GUILayout.Label("some nebulous message to you Mr. Webplayer Guy");
 
 		menuEnd();
 	}

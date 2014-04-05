@@ -82,6 +82,7 @@ public class MatchSetup {
 		}
 
 		GUILayout.Label("Map:");
+		GUILayout.FlexibleSpace();
 		GUILayout.Label(matches[matchId].allowedLevels[mapId]);
 		GUILayout.FlexibleSpace();
 
@@ -256,8 +257,10 @@ public class MatchSetup {
 			if (matches[matchId].spawnGunA >= Item.Count) 
 				matches[matchId].spawnGunA = Item.Random;
 
-			GUILayout.Label("Inventory A: " + matches[matchId].spawnGunA);
-			
+			GUILayout.Label("Inventory A: ");
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("" + matches[matchId].spawnGunA);
+
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
@@ -274,8 +277,10 @@ public class MatchSetup {
 			if (matches[matchId].spawnGunB >= Item.Count) 
 				matches[matchId].spawnGunB = Item.Random;
 
-			GUILayout.Label("Inventory B: " + matches[matchId].spawnGunB);
-			
+			GUILayout.Label("Inventory B: ");
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("" + matches[matchId].spawnGunB);
+
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
@@ -393,6 +398,7 @@ public class MatchSetup {
 
 
 		GUILayout.Label("Mode: ");
+		GUILayout.FlexibleSpace();
 		GUILayout.Label(matches[matchId].Name);
 		GUILayout.FlexibleSpace();
 		

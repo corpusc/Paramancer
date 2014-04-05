@@ -35,10 +35,9 @@ public class MatchData {
 			case Match.Custom:
 				Name = "Custom";
 				Descript = "Have it your way!  All the exact settings you prefer.";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", 
-					"TestLevelB", "Tower" };
+				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 				break;
-			case Match.GravORama:
+			case Match.BringYourOwnGravity:
 				Name = "Bring Your Own Gravity"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
 				// Gravity Is/Gets Personal?, Personal Gravity?, Gravitaction?
 				Descript = "Each player has their own, independent, changeable gravity";
@@ -61,15 +60,13 @@ public class MatchData {
 			case Match.FFAFragMatch:
 				Name = "FFA Fragmatch";
 				Descript = "Frag count is ALL that counts in this freestyle Free For All!";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", 
-					"TestLevelB", "Tower" };
+				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 				respawnWait = 1f;
 				break;
 			case Match.TeamFragMatch:
 				Name = "Team Fragmatch";
 				Descript = "Frag count is what counts, but don't hurt your mates!";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "TestLevel", 
-					"TestLevelB", "Tower" };
+				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 				teamBased = true;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
@@ -89,18 +86,17 @@ public class MatchData {
 			case Match.YouOnlyLiveThrice:
 				Name = "YOLT! (You Only Live Thrice)";
 				Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
+				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower"};
 				Duration = 0f;
 				killsIncreaseScore = false;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
-			case Match.SwapMeat:
-				Name = "Swap Meat";
-				Descript = "There is only the swapper gun, grenades and lava... have fun!";
-				allowedLevels = new string[] { "Furnace" , "Tower"};
-				killsIncreaseScore = false;
-				spawnGunA = Item.Swapper;
-				spawnGunB = Item.Grenade;
+			case Match.InstaGib:
+				Name = "InstaGib";
+				Descript = "Everyone spawns with railgun, which 1 shot frags";
+				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower"};
+				spawnGunA = Item.Rifle;
+				spawnGunB = Item.None;
 				pickupSlot1 = Item.None;
 				pickupSlot2 = Item.None;
 				pickupSlot3 = Item.None;

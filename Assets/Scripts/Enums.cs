@@ -38,13 +38,13 @@ public enum Crosshair {
 
 public enum Match {
 	Custom,
-	GravORama,
+	BringYourOwnGravity,
 	GrueFood,
 	FFAFragMatch,
 	BBall,
 	TeamFragMatch,
 	YouOnlyLiveThrice,
-	SwapMeat,
+	InstaGib,
 	WeaponLottery,
 	Count
 }
