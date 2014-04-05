@@ -95,7 +95,6 @@ public class EntityClass : MonoBehaviour {
 	
 	void Start() {
 		var o = GameObject.Find("Main Program");
-		var currModel = Models.Get("Joan");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
 		arse = o.GetComponent<Arsenal>();
@@ -124,6 +123,11 @@ public class EntityClass : MonoBehaviour {
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
+
+		// new female model 
+		CurrModel = Models.Get("Joan");
+		CurrModel.SetActive(true);
+		CurrModel.hideFlags = HideFlags.DontSave; // ....to the scene. AND don't DESTROY when new scene loads 
 	}
 	
 	public bool sendRPCUpdate = false;
@@ -165,8 +169,6 @@ public class EntityClass : MonoBehaviour {
 				Camera.main.transform.parent = null;
 				Camera.main.transform.position = net.players[Spectatee].Entity.transform.position;
 				CurrModel.transform.position = net.players[Spectatee].Entity.transform.position;
-				CurrModel.SetActive(true);
-				CurrModel.hideFlags = HideFlags.DontSave;
 
 				float invY = 1f;
 				if (locUser.LookInvert)

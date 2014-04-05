@@ -771,8 +771,8 @@ public class Hud : MonoBehaviour {
 		menuBegin();
 
 		CategoryHeader("Current team", false, false);
-		GUILayout.Label("Corpus Callosum - Coding, Logo, Controls, GUI/HUD, Weapon effects");
-		GUILayout.Label("IceFlame            - Coding, Tower map, Other map additions, A few graphics & sounds");
+		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Logo, Controls");
+		GUILayout.Label("IceFlame            - Coding, Various media & effects, Announcer");
 
 		CategoryHeader("Media authors", false);
 		GUILayout.Label("CarnagePolicy     - Sounds");
@@ -780,13 +780,12 @@ public class Hud : MonoBehaviour {
 		GUILayout.Label("Wayne Brown      - A few icons");
 
 		CategoryHeader("Engine", false);
-		GUILayout.Label("This is an extensively remodeled fork of a #7DFPS game");
-		GUILayout.Label("by Sophie Houlden.  Click below to visit her sites:");
+		GUILayout.Label("This is an extensively remodeled fork of a #7DFPS game by Sophie Houlden.");
 
 		GUILayout.BeginHorizontal();
-		if (GUILayout.Button("Sophie Houlden"))
+		if (GUILayout.Button("Sophie Houlden (web page)"))
 			Application.OpenURL("http://sophiehoulden.com");
-		if (GUILayout.Button("Splat Death Salad Homepage"))
+		if (GUILayout.Button("Splat Death Salad (web page)"))
 			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
 		GUILayout.EndHorizontal();
 
