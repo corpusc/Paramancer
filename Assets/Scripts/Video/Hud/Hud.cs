@@ -809,17 +809,11 @@ public class Hud : MonoBehaviour {
 		GUILayout.Label("IceFlame            - Coding, Various media & effects, Announcer");
 
 		CategoryHeader("Engine", false);
-		GUILayout.Label("This is an extensively remodeled fork of a game made by Sophie Houlden (within 7 days)");
-
-		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
-		if (GUILayout.Button("Sophie Houlden (web page)"))
-			Application.OpenURL("http://sophiehoulden.com");
-		GUILayout.FlexibleSpace();
-		if (GUILayout.Button("Splat Death Salad (web page)"))
-			Application.OpenURL("http://sophiehoulden.com/games/splatdeathsalad");
-		GUILayout.FlexibleSpace();
-		GUILayout.EndHorizontal();
+		GUILayout.Label("This is an extensively remodeled fork of a game made (within 7 days) by Sophie Houlden");
+		GUILayout.Label("Visit sophiehoulden.com");
+		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?!
+		//if (GUILayout.Button("Sophie Houlden (web page)"))
+			//Application.OpenURL("http://sophiehoulden.com");  
 
 		CategoryHeader("Media authors", false);
 		GUILayout.Label("CarnagePolicy          - Sounds");
