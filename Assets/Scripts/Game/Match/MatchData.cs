@@ -96,7 +96,7 @@ public class MatchData {
 				Descript = "Everyone spawns with railgun, which 1 shot frags";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower"};
 				spawnGunA = Item.Rifle;
-				spawnGunB = Item.None;
+				spawnGunB = Item.Spatula;
 				pickupSlot1 = Item.None;
 				pickupSlot2 = Item.None;
 				pickupSlot3 = Item.None;

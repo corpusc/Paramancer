@@ -88,11 +88,11 @@ public class MatchSetup {
 
 		GUILayout.EndHorizontal();
 
-		// customize button, or show all options
-		if (matchId != 0) { // if not custom
-			// description
-			GUILayout.Label(matches[matchId].Descript);
-			
+		// description 
+		GUILayout.Label(matches[matchId].Descript);
+		
+		// customize button, or show all options 
+		if (matchId != 0) { // if not custom 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("Customize Match") ) {
@@ -128,9 +128,9 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 		}else{ // custom, show options here
-			GUILayout.Label("");
 
 			//hud.CategoryHeader("Custom Settings");
+			GUILayout.Label("");
 			GUILayout.Box("Custom Settings");
 
 			scrollPos = GUILayout.BeginScrollView(scrollPos);
@@ -332,17 +332,19 @@ public class MatchSetup {
 	}
 
 	void serverSetup(CcNet net, Hud hud) {
+		// num users 
 		GUILayout.BeginHorizontal();
 		hud.SizedLabel("Max Connections: " + net.connections);
 		net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32));
 		GUILayout.EndHorizontal();
 
-		GUILayout.BeginHorizontal(); {
+		// server name 
+		GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("Name: ");
 			net.gameName = GUILayout.TextField(net.gameName);
 			GUILayout.FlexibleSpace();
-		} GUILayout.EndHorizontal();
+		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal(); {
 			GUILayout.FlexibleSpace();
