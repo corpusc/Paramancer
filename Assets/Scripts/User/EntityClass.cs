@@ -60,7 +60,7 @@ public class EntityClass : MonoBehaviour {
 	public GameObject[] heads;
 
 	// avatar settings 
-	public GameObject CurrModel;
+	//public GameObject CurrModel;
 	private Vector3 gunOffs = new Vector3(0.47f, -0.48f, 0.84f); // offset of gun from camera (self, 1st person)
 	private Vector3 remoteGunOffs = new Vector3(0.074f, 0.46f, 0.84f); // offset of gun from aimBone (other players)
 	public Color colA;
@@ -109,9 +109,9 @@ public class EntityClass : MonoBehaviour {
 		locUser = o.GetComponent<LocalUser>();
 
 		// new female model 
-		CurrModel = Models.Get("Joan");
-		CurrModel.SetActive(true);
-		CurrModel.hideFlags = HideFlags.DontSave; // ....to the scene. AND don't DESTROY when new scene loads 
+		//CurrModel = Models.Get("Joan");
+		//CurrModel.SetActive(true);
+		//CurrModel.hideFlags = HideFlags.None;    //.DontSave; // ....to the scene. AND don't DESTROY when new scene loads 
 
 
 
@@ -177,7 +177,7 @@ public class EntityClass : MonoBehaviour {
 				
 				Camera.main.transform.parent = null;
 				Camera.main.transform.position = net.players[Spectatee].Entity.transform.position;
-				CurrModel.transform.position = net.players[Spectatee].Entity.transform.position;
+				//CurrModel.transform.position = net.players[Spectatee].Entity.transform.position;
 
 				float invY = 1f;
 				if (locUser.LookInvert)

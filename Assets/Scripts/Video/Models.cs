@@ -10,8 +10,8 @@ public static class Models {
 	
 	
 	static Models() {
-		Debug.Log("Models constructor-----------------");
-		handleFolder("Women");
+		Debug.Log("----------------- Models constructor -----------------");
+		//handleFolder("Women");
 	}
 	
 	
