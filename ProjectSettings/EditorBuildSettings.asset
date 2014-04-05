@@ -10,10 +10,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MenuMain.unity
   - enabled: 1
-    path: Assets/Map/TestLevel.unity
-  - enabled: 1
-    path: Assets/Map/TestLevelB.unity
-  - enabled: 1
     path: Assets/Map/Overpass.unity
   - enabled: 1
     path: Assets/Map/Furnace.unity

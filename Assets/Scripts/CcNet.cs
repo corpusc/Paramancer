@@ -1326,7 +1326,7 @@ public class CcNet : MonoBehaviour {
 		if (e == NetworkConnectionError.RSAPublicKeyMismatch) 
 			Error = "We presented an RSA public key which does not match what the system we connected to is using.";
 		if (e == NetworkConnectionError.InvalidPassword) 
-			Error = "The server is using a password and has refused our connection because we did not set the correct password.";
+			Error = "Invalid/incorrect password!";
 		if (e == NetworkConnectionError.ConnectionFailed) 
 			Error = "Connection attempt failed, possibly because of internal connectivity problems.";
 		if (e == NetworkConnectionError.TooManyConnectedPlayers) 

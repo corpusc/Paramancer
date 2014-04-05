@@ -347,7 +347,7 @@ public class MatchSetup {
 		GUILayout.BeginHorizontal(); {
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("Password: ");
-			net.password = GUILayout.TextField(net.password);
+			net.password = GUILayout.TextField(net.password, GUILayout.MinWidth(16));
 			GUILayout.FlexibleSpace();
 		} GUILayout.EndHorizontal();
 

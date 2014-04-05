@@ -39,7 +39,7 @@ static public class S {
 		return ns;
 	}
 
-	static public void GetShoutyColor() {
+	static public void SetShoutyColor() {
 		if ((Time.time % 0.3f) > 0.15f)
 			GUI.color = Color.cyan;
 		else

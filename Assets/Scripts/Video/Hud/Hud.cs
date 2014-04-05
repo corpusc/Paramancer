@@ -210,7 +210,7 @@ public class Hud : MonoBehaviour {
 		    net.gameOver) 
 		{
 			string s = "Next Game in: " +  Mathf.FloorToInt(net.NextMatchTime).ToString() + " seconds.";
-			S.GetShoutyColor();
+			S.SetShoutyColor();
 			S.GUIOutlinedLabel(new Rect(midX-50, 5, 200, 30), s);
 		}
 	}
@@ -402,7 +402,7 @@ public class Hud : MonoBehaviour {
 	void drawSettings() {
 		// warn people changes can be ignored 
 		if (net.Connected) {
-			S.GetShoutyColor();
+			S.SetShoutyColor();
 			GUI.Box(new Rect(0, 0, Screen.width, 80), "Currently, you have to change avatar while disconnected, for changes to be networked");
 		}
 
@@ -613,7 +613,7 @@ public class Hud : MonoBehaviour {
 
 		// inform user of remapping abilities 
 		centeredLabel("Press keys to LIGHT THEM UP");
-		S.GetShoutyColor();
+		S.SetShoutyColor();
 		centeredLabel("Left-Click on actions to move them elsewhere");
 		GUI.color = Color.white;
 		centeredLabel("Right-Click on keys to swap them with others");
@@ -733,26 +733,37 @@ public class Hud : MonoBehaviour {
 		for (int i=0; i<hostData.Length; i++) {
 			GUILayout.BeginHorizontal();
 
-			if (GUILayout.Button("Connect")) {
+			// connect buttons 
+			if (GUILayout.Button("JOIN MATCH\n\"" + hostData[i].gameName + "\"")) {
 				Network.Connect(hostData[i],net.password);
 				Mode = HudMode.Connecting;
 			}
-	
-			GUILayout.Label(hostData[i].gameName);
-			GUILayout.Label("[" + hostData[i].connectedPlayers.ToString() + "/" + hostData[i].playerLimit.ToString() + "]");
-			GUILayout.Label(hostData[i].comment);
+			
+			// comment 
+			GUILayout.FlexibleSpace();
+			var s = hostData[i].comment;
+			s = s.Insert(s.IndexOf('\n')+1, "Map:   ");
+			GUILayout.Label("Mode: " + s);
 
+			// user # & ping 
+			GUILayout.FlexibleSpace();
+			s = "Users: " + hostData[i].connectedPlayers +  "\n"; // "/" + hostData[i].playerLimit
+			// ping 
+			if (hostPings[i].isDone)
+				s += "Ping: " + hostPings[i].time;
+			else
+				s += "Ping: ???";
+			GUILayout.Box(s);
+
+			// password box if needed 
 			if (hostData[i].passwordProtected) {
-				// allow entering a passsword
+				S.SetShoutyColor();
+				GUILayout.FlexibleSpace();
 				GUILayout.Label("Password:");
-				net.password = GUILayout.TextField(net.password);
+				GUI.color = Color.white;
+				net.password = GUILayout.TextField(net.password, GUILayout.MinWidth(16));
 			}
 
-			if (hostPings[i].isDone)
-				GUILayout.Label("Ping: " + hostPings[i].time.ToString());
-			else
-				GUILayout.Label("Ping: ?");
-			
 			GUILayout.EndHorizontal();
 		}
 
