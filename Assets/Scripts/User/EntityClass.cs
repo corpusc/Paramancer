@@ -19,13 +19,27 @@ public class EntityClass : MonoBehaviour {
 	// cam 
 	public GameObject camHolder;
 	private Vector3 camAngle;
-	
+	private Vector3 lastCamAngle = Vector3.zero;
+
+	// misc 
+	private bool prevCrouching = false; // crouching in previous frame? 
 	private bool crouched = false;
-	public GameObject weaponSoundObj;
+	public bool grounded;
+	private Vector3 moveVec = Vector3.zero;
+	public float yMove = 0f;
+	private float lastYmove = 0f;
+	private Vector3 lastMoveVector = Vector3.zero;
+	private double lastUpdateTime = -1f;
+	private float lastHealth = 0f;
 	
+	public Light firstPersonLight;
+	public GameObject weaponSoundObj;
+
+	// nearby pickup 
 	public string offeredPickup = "";
 	public PickupBoxScript currentOfferedPickup;
 	
+	// skeletally animated model 
 	public GameObject animObj;
 	
 	// swapper 
@@ -33,12 +47,12 @@ public class EntityClass : MonoBehaviour {
 	public int swapperCrossY = 0;
 	public bool swapperLocked = false;
 	private Vector3 swapperLock = Vector3.zero;
-	
-	private Vector3 moveVec = Vector3.zero;
-	
+
+	// grav dir indicator 
 	public GameObject gravArrowPrefab;
 	private GameObject gravArrowObj;
 	
+	// bball dir arrow 
 	public GameObject bballArrowPrefab;
 	private GameObject bballArrowObj;
 	
@@ -54,22 +68,9 @@ public class EntityClass : MonoBehaviour {
 	public Color colC;
 	public int headType = 0;
 	
-	public GameObject meshObj;
+	public GameObject meshObj; // CLEANME:   NOT SURE WHAT THIS IS ATM 
 	public GameObject gunMesh1;
 	public GameObject gunMesh2;
-	
-	public bool grounded;
-	public float yMove = 0f;
-
-	private double lastUpdateTime = -1f;
-	
-	private Vector3 lastCamAngle = Vector3.zero;
-	private Vector3 lastMoveVector = Vector3.zero;
-	private bool prevCrouching = false;
-	private float lastYmove = 0f;
-	private float lastHealth = 0f;
-	
-	public Light firstPersonLight;
 	
 	// inventory 
 	public Item GunInHand = Item.Pistol;
@@ -86,29 +87,42 @@ public class EntityClass : MonoBehaviour {
 	
 	// scripts
 	public CcNet net;
-	// private
-	Hud hud; // won't need this anymore once playingHud gets drawn correctly? *****************
+	// private handles to other scripts 
+	Hud hud; // FIXME?  won't need this anymore once playingHud gets drawn correctly? *****************
 	Arsenal arse;
 	LocalUser locUser;
 
 	
 	
 	void Start() {
+		// components 
+		// add 
+		if (ava == null) 
+			ava = gameObject.AddComponent<Avatar>();
+
+		// get 
+		cc = GetComponent<CharacterController>();
 		var o = GameObject.Find("Main Program");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
 		arse = o.GetComponent<Arsenal>();
 		locUser = o.GetComponent<LocalUser>();
-		
+
+		// new female model 
+		CurrModel = Models.Get("Joan");
+		CurrModel.SetActive(true);
+		CurrModel.hideFlags = HideFlags.DontSave; // ....to the scene. AND don't DESTROY when new scene loads 
+
+
+
+		// the rest is all dependent on User class 
+		if (User == null)
+			return;
+
 		if (User.local && net.CurrMatch.pitchBlack) {
 			Camera.main.backgroundColor = Color.black;
 			RenderSettings.ambientLight = Color.black;
 		}
-		
-		cc = GetComponent<CharacterController>();
-		
-		if (ava == null) 
-			ava = gameObject.AddComponent<Avatar>();
 		
 		if (User.lives >= 0) {
 			if (isLocal) {
@@ -123,15 +137,10 @@ public class EntityClass : MonoBehaviour {
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
-
-		// new female model 
-		CurrModel = Models.Get("Joan");
-		CurrModel.SetActive(true);
-		CurrModel.hideFlags = HideFlags.DontSave; // ....to the scene. AND don't DESTROY when new scene loads 
 	}
 	
 	public bool sendRPCUpdate = false;
-	float rpcCamtime = 0f;
+	float rpcCamTime = 0f;
 	void Update() {
 		if (User.local)
 			net.localPlayer.Entity = this;
@@ -336,7 +345,7 @@ public class EntityClass : MonoBehaviour {
 					
 					
 					//sendRPCUpdate = false;
-					if (camAngle != lastCamAngle && Time.time > rpcCamtime) 
+					if (camAngle != lastCamAngle && Time.time > rpcCamTime) 
 						sendRPCUpdate = true;
 					if (moveVec != lastMoveVector) 
 						sendRPCUpdate = true;
@@ -361,7 +370,7 @@ public class EntityClass : MonoBehaviour {
 							(int)GunInHand, (int)GunOnBack, transform.up, transform.forward);
 						sendRPCUpdate = false;
 						
-						rpcCamtime = Time.time; // + 0.02f;
+						rpcCamTime = Time.time; // + 0.02f;
 					}
 					
 					var gun = arse.Guns[(int)GunInHand];
