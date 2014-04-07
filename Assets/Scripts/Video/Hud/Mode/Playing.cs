@@ -46,7 +46,7 @@ public class Playing {
 		int eH = 7; // energy height
 		int eY = Screen.height-13; // energy y pos
 		int energyW = (int)((float)barW * (1f - locEnt.EnergyLeft));
-		energy.SetBarColor(locEnt.EnergyLeft);
+		energy.SetBarColor(locEnt.EnergyLeft, false);
 		GUI.DrawTexture(new Rect(midX-energyW/2-bm, eY-bm, energyW+bm*2, eH+bm*2), Pics.Black); // background/outline
 		GUI.DrawTexture(new Rect(midX-energyW/2, eY, energyW, eH), Pics.White);
 		S.GUIDrawOutlinedTexture(new Rect(midX-8, eY-4, 16, 16), sprint);
