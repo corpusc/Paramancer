@@ -15,6 +15,8 @@ public class Hud : MonoBehaviour {
 	public HudMode Mode {
 		get { return mode; }
 		set {
+			scrollPos = Vector2.zero;
+
 			// tasks to do when LEAVING this mode
 			switch (mode) {
 				case HudMode.Controls:
@@ -27,6 +29,9 @@ public class Hud : MonoBehaviour {
 			
 			// tasks to do when ENTERING this mode
 			switch (mode) {
+				case HudMode.MainMenu:
+					lookForServer();
+					break;
 				case HudMode.Controls: 
 					controls.enabled = true;
 					break;
@@ -140,7 +145,7 @@ public class Hud : MonoBehaviour {
 		{
 			oldW = Screen.width;
 			oldH = Screen.height;
-			// sizes of UI elements
+			// sizes of UI elements 
 			midX = oldW/2;
 			midY = oldH/2;
 			window.width = oldW * (S.GoldenRatio / (1f + S.GoldenRatio) );
@@ -150,21 +155,21 @@ public class Hud : MonoBehaviour {
 		}
 
 
-		// handle all the modes!
+		// handle all the modes! 
 		switch (Mode) {
 			case HudMode.Playing:
 				playHud.Draw(net, arse, midX, midY, VSpanLabel, this);
 				maybePromptClickIn();
 				break;
 				
-			case HudMode.StartGame:
+			case HudMode.NewGame:
 			case HudMode.MatchSetup:
 				matchSetup.Draw(net.isServer, net, this, vSpan);
 				break;
 				
-			case HudMode.JoinGame:
-				joinWindow();
-				break;
+//			case HudMode.JoinGame:
+//				joinMatchInProgress();
+//				break;
 
 			case HudMode.MainMenu:
 				if (!net.Connected) {
@@ -690,17 +695,7 @@ public class Hud : MonoBehaviour {
 	}
 
 	int prevNumServers = 0;
-	void joinWindow() {
-//		int x = Screen.width/4;
-//		int w = Screen.width/2;
-//		GUILayout.BeginArea(new Rect(x, 0, w, Screen.height));
-//
-//		// title bar
-//		GUILayout.Box(S.GetSpacedOut(Mode + ""));
-//
-//		if (GUILayout.Button(GoToPrevMenu))
-//			Mode = HudMode.MainMenu;
-
+	void listMatchesInProgress(float halfWidth, float topOfJoinButtons) {
 		HostData[] hostData = MasterServer.PollHostList();
 		// play sound if number of servers goes up
 		if (prevNumServers < hostData.Length) {
@@ -708,11 +703,9 @@ public class Hud : MonoBehaviour {
 		}
 		prevNumServers = hostData.Length;
 
-		menuBegin();//hobgob
-		
-
+		// setup ping info 
 		if (hostData.Length == 0) {
-			GUILayout.Label("No hosts found!");
+			//GUILayout.Label("No hosts found!");
 		}else{
 			if (hostPings.Length == 0) {
 				//create new pings for all hosts
@@ -730,44 +723,63 @@ public class Hud : MonoBehaviour {
 			}
 		}
 		
+		Rect r = new Rect(0, topOfJoinButtons, 0, 0);
+		// iterate thru all matches that are being served 
 		for (int i=0; i<hostData.Length; i++) {
-			GUILayout.BeginHorizontal();
+			// build all the text for the JOIN MATCH button 
+			var s = "";
 
-			// connect buttons 
-			if (GUILayout.Button("JOIN MATCH\n\"" + hostData[i].gameName + "\"")) {
+			// connect button 
+			// name
+			s += " JOIN MATCH \n\n";
+			s += "\"" + hostData[i].gameName + "\" \n";
+
+			// comment 
+			var com = hostData[i].comment;
+			if (com.Contains("\n")) {
+				com = com.Insert(com.IndexOf('\n')+1, "Map:   ");
+				com = "Mode:   " + com + '\n';
+			}
+			s += com;
+
+			// ping 
+			if (hostPings[i] != null && hostPings[i].isDone)
+				s += "Ping:   " + hostPings[i].time;
+			else
+				s += "Ping:   ???";
+
+			// user # 
+			s += "    Users:   " + hostData[i].connectedPlayers; // "/" + hostData[i].playerLimit
+			
+
+
+			// rectangle of join button 
+			float w = GetWidthButton(s);
+			float h = GetHeightButton(s);
+			r.x = midX-w/2;
+			r.y -= h;
+			r.width = w;
+			r.height = h;
+			if (GUI.Button(r, s)) {
 				Network.Connect(hostData[i],net.password);
 				Mode = HudMode.Connecting;
 			}
-			
-			// comment 
-			GUILayout.FlexibleSpace();
-			var s = hostData[i].comment;
-			s = s.Insert(s.IndexOf('\n')+1, "Map:   ");
-			GUILayout.Label("Mode: " + s);
-
-			// user # & ping 
-			GUILayout.FlexibleSpace();
-			s = "Users: " + hostData[i].connectedPlayers +  "\n"; // "/" + hostData[i].playerLimit
-			// ping 
-			if (hostPings[i].isDone)
-				s += "Ping: " + hostPings[i].time;
-			else
-				s += "Ping: ???";
-			GUILayout.Box(s);
 
 			// password box if needed 
+			var rect = r;
 			if (hostData[i].passwordProtected) {
 				S.SetShoutyColor();
-				GUILayout.FlexibleSpace();
-				GUILayout.Label("Password:");
+				s = "Password:";
+				w = GetWidthBox(s);
+				rect.x = rect.xMax;
+				rect.width = w;
+				rect.height = h/2;
+				GUI.Box(rect, s);
+				rect.y += h/2;
+				net.password = GUI.TextField(rect, net.password/*, GUILayout.MinWidth(16)*/);
 				GUI.color = Color.white;
-				net.password = GUILayout.TextField(net.password, GUILayout.MinWidth(16));
 			}
-
-			GUILayout.EndHorizontal();
 		}
-
-		menuEnd();
 	}
 
 
@@ -874,14 +886,28 @@ public class Hud : MonoBehaviour {
 	}
 
 	void menuMain() {
-		// draw logo (dimensions are close to perfect square, so midX can be both wid & hei)
-		GUI.DrawTexture(new Rect(midX/2, 0, midX, midX), Pics.gameLogo);
-		
-		int hS = 64; // half the horizontal span of menu item
-		int mIH = vSpan + vSpan/2; // menu item height
-		var r = new Rect(midX-hS, Screen.height-mIH, hS*2, mIH); // menu rect
-		
-		// start drawing menu items from the bottom
+		float hS = 112; // half the horizontal span of menu items 
+
+		// draw logos 
+		float paraWid = midX-hS;
+		// 'Paramancer' dimensions are close to perfect square, so midX can be both wid & hei 
+		GUI.DrawTexture(new Rect(0, Screen.height-paraWid, paraWid, paraWid), Pics.Get("Logo - Paramancer"));
+		float cazWid = paraWid/2;
+		var r = new Rect(cazWid/2, 0, cazWid, cazWid/2);
+		GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));
+		string s = "brings you:";
+		r.width = GetWidthLabel(s);
+		r.height = 100; // doesn't really matter with a label 
+		r.x = cazWid-r.width/2;
+		r.y = cazWid/2;
+		GUI.Label(r, s);
+
+		// draw menus 
+		int mIH = vSpan + vSpan/2; // menu item height 
+		r = new Rect(midX-hS, Screen.height, hS*2, mIH); // menu rect 
+		r.y -= mIH;
+
+		// ...from the bottom 
 		if (!Application.isWebPlayer) {
 			if (GUI.Button(r, "Quit")) {
 				if (net.Connected)
@@ -901,13 +927,13 @@ public class Hud : MonoBehaviour {
 		buttonStarts(HudMode.Settings, r); /*^*/ r.y -= mIH;
 		buttonStarts(HudMode.Controls, r); /*^*/ r.y -= mIH;
 
-		if (!net.Connected) {
-			if (buttonStarts(HudMode.JoinGame, r)) {
-				scrollPos = Vector2.zero;
-				lookForServer();
-			}
-			r.y -= mIH;
-		}
+//		// JoinGame button 
+//		if (!net.Connected) {
+//			if (buttonStarts(HudMode.JoinGame, r)) {
+//				lookForServer();
+//			}
+//			r.y -= mIH;
+//		}
 
 		// server mode buttons
 		if (net.isServer) {
@@ -918,16 +944,18 @@ public class Hud : MonoBehaviour {
 			r.y -= mIH;
 		}
 
+		// last/topmost static button 
 		if (net.Connected) {
 			if (GUI.Button(r, "RESUME"))
 				Mode = HudMode.Playing;
-			r.y -= mIH;
 		}else{				
-			if (buttonStarts(HudMode.StartGame, r)) {
+			if (buttonStarts(HudMode.NewGame, r)) {
 				net.gameName = net.localPlayer.name + "'s match...of the Damned";
 			}
-			r.y -= mIH;
 		}
+
+		// dynamic buttons for all the servers/matches/instances currently in progress 
+		listMatchesInProgress(hS, r.y);
 	}
 
 	public float GetWidthBox(string s) {
@@ -936,15 +964,33 @@ public class Hud : MonoBehaviour {
 		return GS.CalcSize(GC).x;
 	}
 	
+	public float GetHeightBox(string s) {
+		GS = "Box";
+		GC = new GUIContent(s);
+		return GS.CalcSize(GC).y;
+	}
+	
 	public float GetWidthButton(string s) {
 		GS = "Button";
 		GC = new GUIContent(s);
 		return GS.CalcSize(GC).x;
 	}
 	
+	public float GetHeightButton(string s) {
+		GS = "Button";
+		GC = new GUIContent(s);
+		return GS.CalcSize(GC).y;
+	}
+	
 	public float GetWidthLabel(string s) {
 		GS = "Label";
 		GC = new GUIContent(s);
 		return GS.CalcSize(GC).x;
+	}
+	
+	public float GetHeightLabel(string s) {
+		GS = "Label";
+		GC = new GUIContent(s);
+		return GS.CalcSize(GC).y;
 	}
 }

@@ -11,8 +11,6 @@ public static class Pics {
 	static public Texture crossHair;
 	static public Texture TeamRedFlag;
 	static public Texture TeamBlueFlag;
-	static public Texture gameLogo;
-	static public Texture companyLogo;
 	static public Texture Sprint;
 
 	// private
@@ -84,12 +82,6 @@ public static class Pics {
 				break;
 			case "Crosshair": 
 				crossHair = tPics[i]; 
-				break;
-			case "Logo - CazCore": 
-				companyLogo = tPics[i]; 
-				break;
-			case "Logo - Paramancer": 
-				gameLogo = tPics[i]; 
 				break;
 			case "FlagRed": 
 				TeamRedFlag = tPics[i]; 
