@@ -2052,7 +2052,6 @@ GameObject:
   - 4: {fileID: 1374035891}
   - 198: {fileID: 1374035892}
   - 199: {fileID: 1374035893}
-  - 114: {fileID: 1374035894}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
@@ -3146,17 +3145,6 @@ ParticleSystemRenderer:
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
---- !u!114 &1374035894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1374035890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecb4e5756fbdc9841a0ed1269b053a82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1417139827
 GameObject:
   m_ObjectHideFlags: 0
@@ -3225,7 +3213,6 @@ GameObject:
   - 4: {fileID: 1459350573}
   - 102: {fileID: 1459350575}
   - 23: {fileID: 1459350574}
-  - 114: {fileID: 1459350576}
   m_Layer: 0
   m_Name: PlayerNameText
   m_TagString: Untagged
@@ -3286,17 +3273,6 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
---- !u!114 &1459350576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1459350572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 108b1fbeb2e4d41459ff4795ee56a476, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1508006599
 GameObject:
   m_ObjectHideFlags: 0

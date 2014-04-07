@@ -1,9 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class SwapperBullet : MonoBehaviour {
-	
-	
+
+public class LightningBeam : MonoBehaviour {
 	private LineRenderer lr;
 	
 	private Color col = new Color(1,1,1,0.5f);
@@ -15,8 +14,9 @@ public class SwapperBullet : MonoBehaviour {
 	private Vector3[] points;
 	private Vector3[] moves;
 	
-	// Use this for initialization
-	void Start () {
+
+
+	void Start() {
 		lr = GetComponent<LineRenderer>();
 		
 		

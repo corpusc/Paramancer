@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Arsenal : MonoBehaviour {
 	public GameObject Beam;
-	public GameObject swapperBulletPrefab;
+	public GameObject LightningBeamPrefab;
 	public GameObject grenadeBulletPrefab;
 	public GameObject BeamParticle;
 	public GameObject grenadeFlashPrefab;
@@ -103,11 +103,11 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 		
-		var nb = (GameObject)GameObject.Instantiate(swapperBulletPrefab);
-		nb.GetComponent<SwapperBullet>().start = origin;
-		if (localFire && !hit) nb.GetComponent<SwapperBullet>().start = localstart;
-		nb.GetComponent<SwapperBullet>().end = end;
-		nb.GetComponent<SwapperBullet>().hit = hit;
+		var nb = (GameObject)GameObject.Instantiate(LightningBeamPrefab);
+		nb.GetComponent<LightningBeam>().start = origin;
+		if (localFire && !hit) nb.GetComponent<LightningBeam>().start = localstart;
+		nb.GetComponent<LightningBeam>().end = end;
+		nb.GetComponent<LightningBeam>().hit = hit;
 	}
 
 	void shootHitscan(Vector3 origin, Vector3 end, NetworkViewID shooterID, Item weapon) {

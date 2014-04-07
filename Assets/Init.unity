@@ -363,7 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Beam: {fileID: 100000, guid: aa2bec16957c74136b0b6a9729a28fb6, type: 2}
-  swapperBulletPrefab: {fileID: 100000, guid: 512eb2b9b0e4e420d80680b8e33d2e22, type: 2}
+  LightningBeamPrefab: {fileID: 100000, guid: 512eb2b9b0e4e420d80680b8e33d2e22, type: 2}
   grenadeBulletPrefab: {fileID: 100000, guid: 60eec104b207e4413a8d16b866a1bbb6, type: 2}
   BeamParticle: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9, type: 2}
   grenadeFlashPrefab: {fileID: 100000, guid: 881ce601f15ac4e9b9084babb5779a14, type: 2}
