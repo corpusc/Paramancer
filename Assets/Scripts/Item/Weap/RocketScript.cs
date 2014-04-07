@@ -8,7 +8,7 @@ public class RocketScript : MonoBehaviour {
 	public int ExplosionParticles = 50;
 	public float ExplosionSize = 0.4f;
 	public float ForwardOffset = 1f; //prevents running into your own rocket when you have lags
-	public float Turn = 3f;
+	public float Turn = 2f;
 	public bool Turning = false;
 	public float MinParticleSpeed = 5f;
 	public float MaxParticleSpeed = 8f;
@@ -44,9 +44,9 @@ public class RocketScript : MonoBehaviour {
 					np.transform.position = transform.position + offset;
 					np.GetComponent<BeamParticle>().MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
 					np.GetComponent<BeamParticle>().life = 0.5f;
-					np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.yellow, Color.blue, Random.value);
+					np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.green, Color.blue, Random.value);
 					np.GetComponent<BeamParticle>().UseMidColor = true;
-					np.GetComponent<BeamParticle>().MidColor = Color.Lerp(Color.red, Color.green, Random.Range(0f, 0.5f));
+					np.GetComponent<BeamParticle>().MidColor = Color.Lerp(Color.green, Color.blue, Random.value);
 					np.GetComponent<BeamParticle>().MidColorPos = Random.Range(0.4f, 0.6f);
 					np.GetComponent<BeamParticle>().EndColor = Color.clear;
 				}
@@ -82,11 +82,28 @@ public class RocketScript : MonoBehaviour {
 	}
 	
 	private void detonateMaybe() {
-		for(int i = 0; i < ExplosionParticles; i++){
+		if (Turning)
+		for (int i = 0; i < ExplosionParticles; i++) {
 			var np = (GameObject)GameObject.Instantiate(particle);
 			np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos;
 			np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
-			np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.red, Color.yellow, Random.Range(0f, 1f));
+			np.GetComponent<BeamParticle>().StartColor = Color.Lerp (Color.green, Color.yellow, Random.value);
+			np.GetComponent<BeamParticle>().UseMidColor = true;
+			np.GetComponent<BeamParticle>().MidColor = Color.Lerp (Color.green, Color.blue, Random.value);
+			np.GetComponent<BeamParticle>().MidColorPos = 0.7f;
+			np.GetComponent<BeamParticle>().EndColor = Color.clear;
+			np.GetComponent<BeamParticle>().life = 0.5f;
+			np.GetComponent<BeamParticle>().f = 1f;
+			np.GetComponent<BeamParticle>().MinSize = 6f;
+			np.GetComponent<BeamParticle>().MaxSize = 8f;
+			np.GetComponent<BeamParticle>().acceleration = 0.1f;
+		}
+		else
+		for (int i = 0; i < ExplosionParticles; i++) {
+			var np = (GameObject)GameObject.Instantiate(particle);
+			np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos;
+			np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
+			np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.red, Color.yellow, Random.value);
 			np.GetComponent<BeamParticle>().EndColor = Color.Lerp(Color.Lerp(Color.red, Color.clear, 1f), Color.Lerp(Color.black, Color.clear, 1f), Random.Range(0f, 1f));
 			np.GetComponent<BeamParticle>().life = 0.5f;
 			np.GetComponent<BeamParticle>().f = 1f;

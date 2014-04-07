@@ -781,7 +781,11 @@ public class EntityClass : MonoBehaviour {
 		if (alt && gun != Item.RocketLauncher)
 			return;
 
-		gunData.Cooldown += gunData.Delay;
+		if (alt)
+			gunData.Cooldown += gunData.AltDelay;
+		else
+			gunData.Cooldown += gunData.Delay;
+
 		var ct = Camera.main.transform;
 
 		switch (gun) {

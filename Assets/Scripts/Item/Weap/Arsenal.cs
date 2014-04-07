@@ -53,23 +53,23 @@ public class Arsenal : MonoBehaviour {
 			
 			switch ((Item)i) {
 				case Item.Pistol: 
-					Guns[i].Delay = 0.3f; break; 
+				Guns[i].Delay = 0.3f; Guns[i].AltDelay = 0.3f; break; 
 				case Item.Grenade:  
-					Guns[i].Delay = 0.4f; break; 
+				Guns[i].Delay = 0.25f; Guns[i].AltDelay = 0.25f; break; 
 				case Item.MachineGun:  
-					Guns[i].Delay = 0.1f; Guns[i].AutoFire = true; break; 
+				Guns[i].Delay = 0.1f; Guns[i].AltDelay = 0.1f; Guns[i].AutoFire = true; break; 
 				case Item.Rifle:  
-					Guns[i].Delay = 2f; break; 
+				Guns[i].Delay = 2f; Guns[i].AltDelay = 2f; break; 
 				case Item.RocketLauncher:  
-					Guns[i].Delay = 1.5f; break; 
+				Guns[i].Delay = 1.5f; Guns[i].AltDelay = 0.7f; break; 
 				case Item.Swapper:  
-					Guns[i].Delay = 2f; break; 
+				Guns[i].Delay = 2f; Guns[i].AltDelay = 2f; break; 
 				case Item.GravGun:  
-					Guns[i].Delay = 1f; break; 
+				Guns[i].Delay = 1f; Guns[i].AltDelay = 1f; break; 
 				case Item.Bomb:  
-					Guns[i].Delay = 1f; break; 
+				Guns[i].Delay = 1f; Guns[i].AltDelay = 1f; break; 
 				case Item.Spatula:  
-					Guns[i].Delay = 1f; break;
+				Guns[i].Delay = 1f; Guns[i].AltDelay = 1f; break;
 			}
 			
 			// set widest icon
@@ -195,20 +195,6 @@ public class Arsenal : MonoBehaviour {
 				break;
 			
 			case Item.RocketLauncher:
-				if (alt) {
-					for (int i = 0; i < 3; i++) {
-						var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
-						nr.transform.position = origin;
-						nr.transform.LookAt(origin + direction);
-
-						var rs = nr.GetComponent<RocketScript>();
-						rs.viewID = bulletID;
-						rs.shooterID = shooterID;
-						rs.Turning = true;
-						
-						activeRockets.Add(nr.GetComponent<RocketScript>());
-					} 
-				}else{
 					var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
 					nr.transform.position = origin;
 					nr.transform.LookAt(origin + direction);
@@ -218,7 +204,8 @@ public class Arsenal : MonoBehaviour {
 					rs.shooterID = shooterID;
 					
 					activeRockets.Add(nr.GetComponent<RocketScript>());
-				}
+					if(alt)
+						rs.Turning = true;
 				break;
 		}
 		
@@ -251,7 +238,7 @@ public class Arsenal : MonoBehaviour {
 	public float GetWeaponDamage(Item weapon) {
 		switch (weapon) {
 			case Item.Pistol:         return 40f;
-			case Item.Grenade:        return 70f;
+			case Item.Grenade:        return 60f;
 			case Item.MachineGun:     return 15f;
 			case Item.Rifle:          return 105f;
 			case Item.RocketProjectile: return 70f;
@@ -313,9 +300,9 @@ public class Arsenal : MonoBehaviour {
 						) {
 							if (net.players[k].Entity.transform.position.y > activeRockets[i].transform.position.y) {
 								if (activeRockets[i].shooterID == net.players[k].viewID){
-									net.players[k].Entity.yMove = 8;
+									net.players[k].Entity.yMove = 14;
 								}else{
-									net.players[k].Entity.yMove = 3;
+									net.players[k].Entity.yMove = 5;
 								}
 								net.players[k].Entity.grounded = false;
 								net.players[k].Entity.sendRPCUpdate = true;
