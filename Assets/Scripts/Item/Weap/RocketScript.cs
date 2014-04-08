@@ -47,7 +47,7 @@ public class RocketScript : MonoBehaviour {
 					np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.green, Color.blue, Random.value);
 					np.GetComponent<BeamParticle>().UseMidColor = true;
 					np.GetComponent<BeamParticle>().MidColor = Color.Lerp(Color.green, Color.blue, Random.value);
-					np.GetComponent<BeamParticle>().MidColorPos = Random.Range(0.4f, 0.6f);
+					np.GetComponent<BeamParticle>().MidColorPos = Random.Range(0.4f, 0.5f);
 					np.GetComponent<BeamParticle>().EndColor = Color.clear;
 				}
 			else
