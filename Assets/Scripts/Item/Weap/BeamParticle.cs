@@ -75,6 +75,12 @@ public class BeamParticle : MonoBehaviour {
 		transform.Rotate(new Vector3(0f, 0f, rotation));
 		transform.localScale += Time.deltaTime * shrinkFactor;
 
+		/*
+		RaycastHit hit;
+		if(Physics.SphereCast(transform.position, transform.localScale.magnitude, moveVec.normalized, out hit, 100f, 1))
+			transform.position = Vector3.MoveTowards(transform.position, hit.point, Vector3.Distance(transform.position, hit.point) - transform.localScale.magnitude);
+			*/
+
 		moveVec *= Mathf.Pow(acceleration, Time.deltaTime);
 		life -= Time.deltaTime;
 
