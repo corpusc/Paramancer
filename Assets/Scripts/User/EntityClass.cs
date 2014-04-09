@@ -317,7 +317,7 @@ public class EntityClass : MonoBehaviour {
 						yMove = 0f;
 						if (CcInput.Started(UserAction.MoveUp)) {
 							yMove = 4f;
-							PlaySound("boing");
+							PlaySound("Jump");
 							net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
 						}
 					}else{
@@ -1138,7 +1138,7 @@ public class EntityClass : MonoBehaviour {
 	public void PlaySound(UserAction action) { // i believe atm, this is only used by network "tiny updates" 
 		switch (action) {
 			case UserAction.MoveUp:
-				PlaySound(0.6f, Sfx.Get("boing"));
+				PlaySound(0.6f, Sfx.Get("Jump"));
 				break;
 			case UserAction.Next:
 			case UserAction.Previous:

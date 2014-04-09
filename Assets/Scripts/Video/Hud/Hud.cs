@@ -699,7 +699,7 @@ public class Hud : MonoBehaviour {
 		HostData[] hostData = MasterServer.PollHostList();
 		// play sound if number of servers goes up
 		if (prevNumServers < hostData.Length) {
-			Sfx.PlayOmni("new_game");
+			Sfx.PlayOmni("NewGame");
 		}
 		prevNumServers = hostData.Length;
 

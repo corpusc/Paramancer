@@ -81,7 +81,7 @@ public static class Sfx {
 			nc.Clip = cl;
 			nc.Tags.Add(s);
 			switch (cl.name) {
-				case "boing": nc.Volume = 0.2f;	break;
+				case "Jump": nc.Volume = 0.2f;	break;
 				case "Catch": nc.Volume = 0.4f; break;
 				case "click": nc.Volume = 0.2f; break;
 				case "Die": nc.Volume = 1f; break;

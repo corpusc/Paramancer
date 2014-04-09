@@ -11,7 +11,6 @@ GameObject:
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
   - 114: {fileID: 11400000}
-  - 76: {fileID: 7600000}
   m_Layer: 0
   m_Name: BeamParticle
   m_TagString: Untagged
@@ -58,19 +57,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!76 &7600000
-WorldParticleCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_BounceFactor: .5
-  m_CollisionEnergyLoss: 0
-  m_CollidesWith:
-    serializedVersion: 2
-    m_Bits: 1025
-  m_SendCollisionMessage: 0
-  m_MinKillVelocity: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
