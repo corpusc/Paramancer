@@ -11,7 +11,7 @@ public class Hud : MonoBehaviour {
 	public float VSpanBox; // box vertical span
 	public float VSpanButton; // button vertical span
 	public float VSpanLabel; // label vertical span
-	private HudMode mode = HudMode.MainMenu;
+	private HudMode mode = HudMode.PreMenu;
 	public HudMode Mode {
 		get { return mode; }
 		set {
@@ -170,6 +170,10 @@ public class Hud : MonoBehaviour {
 //			case HudMode.JoinGame:
 //				joinMatchInProgress();
 //				break;
+
+			case HudMode.PreMenu:
+				preMenu();
+				break;
 
 			case HudMode.MainMenu:
 				if (!net.Connected) {
@@ -885,6 +889,13 @@ public class Hud : MonoBehaviour {
 		return false;
 	}
 
+	void preMenu() {
+		Rect r = new Rect(0, 0, Screen.width, Screen.height);
+		GUI.DrawTexture(r, Pics.Get("blackTex"));
+		GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));
+		if (Time.time > 2f) Mode = HudMode.MainMenu;
+	}
+
 	void menuMain() {
 		float hS = 112; // half the horizontal span of menu items 
 
@@ -892,15 +903,16 @@ public class Hud : MonoBehaviour {
 		float paraWid = midX-hS;
 		// 'Paramancer' dimensions are close to perfect square, so midX can be both wid & hei 
 		GUI.DrawTexture(new Rect(0, Screen.height-paraWid, paraWid, paraWid), Pics.Get("Logo - Paramancer"));
+
 		float cazWid = paraWid/2;
 		var r = new Rect(cazWid/2, 0, cazWid, cazWid/2);
-		GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));
+		//GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));
 		string s = "brings you:";
 		r.width = GetWidthLabel(s);
 		r.height = 100; // doesn't really matter with a label 
 		r.x = cazWid-r.width/2;
 		r.y = cazWid/2;
-		GUI.Label(r, s);
+		//GUI.Label(r, s);
 
 		// draw menus 
 		int mIH = vSpan + vSpan/2; // menu item height 
