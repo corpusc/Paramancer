@@ -57,9 +57,9 @@ public class Arsenal : MonoBehaviour {
 				case Item.Grenade:  
 				Guns[i].Delay = 0.25f; Guns[i].AltDelay = 0.25f; break; 
 				case Item.MachineGun:  
-				Guns[i].Delay = 0.1f; Guns[i].AltDelay = 0.1f; Guns[i].AutoFire = true; break; 
+				Guns[i].Delay = 0.1f; Guns[i].AltDelay = 0.1f; Guns[i].AutoFire = true; Guns[i].ShotCol = Color.green; break; 
 				case Item.Rifle:  
-				Guns[i].Delay = 2f; Guns[i].AltDelay = 2f; break; 
+				Guns[i].Delay = 2f; Guns[i].AltDelay = 2f; Guns[i].ShotCol = Color.blue; break; 
 				case Item.RocketLauncher:  
 				Guns[i].Delay = 1.5f; Guns[i].AltDelay = 0.7f; break; 
 				case Item.Swapper:  
@@ -127,6 +127,7 @@ public class Arsenal : MonoBehaviour {
 		if (localFire) 
 			beam.GetComponent<BeamEffect>().start = localstart;
 		beam.GetComponent<BeamEffect>().end = end;
+		beam.GetComponent<BeamEffect>().col = Guns[(int)weapon].ShotCol;
 		if (weapon == Item.Pistol)
 			beam.renderer.material.color = Color.white;
 		
