@@ -22,7 +22,6 @@ public class BeamParticle : MonoBehaviour {
 	public float MaxSize = 3f;
 	public bool ShotFromRifle = false; // use a different particle if yes
 	public float acceleration = 1f; //multiply the speed by this
-	public float RotationSpeed = 30f;
 
 	// private 
 	Mesh mesh;
@@ -30,12 +29,10 @@ public class BeamParticle : MonoBehaviour {
 	Color[] colors;
 	Vector3 shrinkFactor;
 	float maxLife;
-	float rotation;
 
 
 
 	void Start() {
-		rotation = Random.Range(0f, 360f * Mathf.Deg2Rad);
 		shrinkFactor = new Vector3(f, f, f);
 		if (ShotFromRifle) {
 			renderer.material = (Material)Resources.Load("Mat/Weap/RifleParticle", typeof(Material));
@@ -71,8 +68,7 @@ public class BeamParticle : MonoBehaviour {
 
 		transform.position += moveVec * Time.deltaTime;
 		transform.rotation = Camera.main.transform.rotation;
-		rotation += RotationSpeed * Time.deltaTime * Mathf.Deg2Rad;
-		transform.Rotate(new Vector3(0f, 0f, rotation));
+		//transform.forward = Camera.main.transform.forward + new Vector3(0f, Time.time, 0f); //for some reason, doesn't work
 		transform.localScale += Time.deltaTime * shrinkFactor;
 
 		/*

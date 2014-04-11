@@ -152,7 +152,7 @@ public class Arsenal : MonoBehaviour {
 			float progress = 0f;
 			while (progress < maxLen) {
 				var np = (GameObject)GameObject.Instantiate(BeamParticle);
-				var v = Vector3.up/4;
+				var v = Camera.main.transform.up/4;
 				v = Quaternion.AngleAxis(angle, Camera.main.transform.forward) * v;
 				var center = beamStart + (beamDir * progress);
 				np.transform.position = center + v;
