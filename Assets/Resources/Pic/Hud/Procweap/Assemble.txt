@@ -1,0 +1,7 @@
+Barrel: 50, 250 : 500x200
+Under-barrel: 150, 460 : 300x100
+Over-barrel: 250, 140 : 300x100
+firing chamber: 560, 250 : 200x200
+Ammo: 585, 460 : 150x200
+Main body: 770, 200 : 300x250
+Handle: 920, 460 : 150x200
