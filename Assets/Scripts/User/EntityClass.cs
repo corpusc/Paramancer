@@ -18,6 +18,7 @@ public class EntityClass : MonoBehaviour {
 
 	// cam 
 	public GameObject camHolder;
+	public float FOV = 90f;
 	private Vector3 camAngle;
 	private Vector3 lastCamAngle = Vector3.zero;
 
@@ -137,6 +138,8 @@ public class EntityClass : MonoBehaviour {
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
+
+		FOV = PlayerPrefs.GetFloat ("FOV", 90f);
 	}
 	
 	public bool sendRPCUpdate = false;
@@ -161,6 +164,10 @@ public class EntityClass : MonoBehaviour {
 		if (Time.time - PrevFrag > 10f)
 			MultiFragCount = 0;
 
+		if (isLocal) {
+			//Camera.main.fieldOfView = FOV;
+		}
+
 		if (Spectating && isLocal) {
 			if (net.players.Count > 0) {
 				if (firstPersonGun) 
@@ -175,7 +182,6 @@ public class EntityClass : MonoBehaviour {
 						Spectatee = 0;
 				}
 
-				Camera.main.fieldOfView = PlayerPrefs.GetFloat("FOV");
 				Camera.main.transform.parent = null;
 				Camera.main.transform.position = net.players[Spectatee].Entity.transform.position;
 				//CurrModel.transform.position = net.players[Spectatee].Entity.transform.position;

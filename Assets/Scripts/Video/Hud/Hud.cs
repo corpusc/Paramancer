@@ -95,7 +95,7 @@ public class Hud : MonoBehaviour {
 		log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
-		PlayerPrefs.GetFloat("FOV", 90f);
+		//PlayerPrefs.GetFloat("FOV", 90f);
 	}
 
 	float serverSearch;
@@ -508,8 +508,8 @@ public class Hud : MonoBehaviour {
 		colorSliders();
 
 		GUILayout.BeginHorizontal();
-		float tFOV = 90f;
-		GUILayout.HorizontalSlider(tFOV, 30f, 180f);
+		GUI.color = Color.green;
+		GUILayout.HorizontalSlider(net.localPlayer.Entity.FOV, 30f, 180f);
 		GUILayout.EndHorizontal();
 
 		GUI.color = Color.white;
@@ -535,7 +535,7 @@ public class Hud : MonoBehaviour {
 		PlayerPrefs.SetFloat("PlayerColC_R", net.localPlayer.colC.r);
 		PlayerPrefs.SetFloat("PlayerColC_G", net.localPlayer.colC.g);
 		PlayerPrefs.SetFloat("PlayerColC_B", net.localPlayer.colC.b);
-		PlayerPrefs.SetFloat("FOV", tFOV);
+		PlayerPrefs.SetFloat("FOV", net.localPlayer.Entity.FOV);
 	}
 
 	void colorSliders() {
