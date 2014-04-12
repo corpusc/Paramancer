@@ -174,7 +174,8 @@ public class EntityClass : MonoBehaviour {
 					if (Spectatee >= net.players.Count) 
 						Spectatee = 0;
 				}
-				
+
+				Camera.main.fieldOfView = PlayerPrefs.GetFloat("FOV");
 				Camera.main.transform.parent = null;
 				Camera.main.transform.position = net.players[Spectatee].Entity.transform.position;
 				//CurrModel.transform.position = net.players[Spectatee].Entity.transform.position;
