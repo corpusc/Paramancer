@@ -138,8 +138,6 @@ public class EntityClass : MonoBehaviour {
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
-
-		FOV = PlayerPrefs.GetFloat ("FOV", 90f);
 	}
 	
 	public bool sendRPCUpdate = false;
@@ -165,7 +163,7 @@ public class EntityClass : MonoBehaviour {
 			MultiFragCount = 0;
 
 		if (isLocal) {
-			//Camera.main.fieldOfView = FOV;
+			Camera.main.fieldOfView = FOV;
 		}
 
 		if (Spectating && isLocal) {

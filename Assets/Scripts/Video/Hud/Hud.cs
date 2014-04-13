@@ -23,6 +23,9 @@ public class Hud : MonoBehaviour {
 					CcInput.SaveKeyConfig();
 					controls.enabled = false;
 					break;
+			case HudMode.Settings:
+				PlayerPrefs.Save(); //potential FIXME(I didn't see saving anywhere in the settings code, so added it here)
+				break;
 			}
 			
 			mode = value;
@@ -47,6 +50,7 @@ public class Hud : MonoBehaviour {
 	string defaultName = "Lazy Noob";
 	Playing playHud = new Playing();
 	MatchSetup matchSetup = new MatchSetup();
+	float tFOV = 90f;
 	
 	// UI element sizes
 	int midX, midY; // middle of the screen
@@ -95,7 +99,8 @@ public class Hud : MonoBehaviour {
 		log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
-		//PlayerPrefs.GetFloat("FOV", 90f);
+		tFOV = PlayerPrefs.GetFloat ("FOV", 45f);
+		//print ("Loaded FOV, value = " + tFOV.ToString());
 	}
 
 	float serverSearch;
@@ -159,6 +164,7 @@ public class Hud : MonoBehaviour {
 		// handle all the modes! 
 		switch (Mode) {
 			case HudMode.Playing:
+				net.localPlayer.Entity.FOV = tFOV;
 				playHud.Draw(net, arse, midX, midY, VSpanLabel, this);
 				maybePromptClickIn();
 				break;
@@ -506,11 +512,15 @@ public class Hud : MonoBehaviour {
 		GUILayout.EndHorizontal();
 		
 		colorSliders();
-
-		GUILayout.BeginHorizontal();
+		
 		GUI.color = Color.green;
-		GUILayout.HorizontalSlider(net.localPlayer.Entity.FOV, 30f, 180f);
+		GUILayout.BeginHorizontal();
+		CategoryHeader ("Field of View");
 		GUILayout.EndHorizontal();
+		GUILayout.BeginHorizontal();
+		tFOV = GUILayout.HorizontalSlider(tFOV, 20f, 85f);
+		GUILayout.EndHorizontal();
+		if (net.Connected) net.localPlayer.Entity.FOV = tFOV;
 
 		GUI.color = Color.white;
 
@@ -535,7 +545,7 @@ public class Hud : MonoBehaviour {
 		PlayerPrefs.SetFloat("PlayerColC_R", net.localPlayer.colC.r);
 		PlayerPrefs.SetFloat("PlayerColC_G", net.localPlayer.colC.g);
 		PlayerPrefs.SetFloat("PlayerColC_B", net.localPlayer.colC.b);
-		PlayerPrefs.SetFloat("FOV", net.localPlayer.Entity.FOV);
+		PlayerPrefs.SetFloat("FOV", tFOV);
 	}
 
 	void colorSliders() {
