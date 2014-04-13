@@ -515,7 +515,7 @@ public class Hud : MonoBehaviour {
 		
 		GUI.color = Color.green;
 		GUILayout.BeginHorizontal();
-		CategoryHeader ("Field of View");
+		CategoryHeader ("Field of View : " + tFOV.ToString());
 		GUILayout.EndHorizontal();
 		GUILayout.BeginHorizontal();
 		tFOV = GUILayout.HorizontalSlider(tFOV, 20f, 85f);
