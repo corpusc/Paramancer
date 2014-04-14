@@ -50,9 +50,9 @@ public class Hud : MonoBehaviour {
 
 	// private
 	string defaultName = "Lazy Noob";
-	Playing playHud = new Playing();
+	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
-	float tFOV = 90f;
+	float tFOV = 45f;
 	
 	// UI element sizes
 	int midX, midY; // middle of the screen
@@ -100,7 +100,7 @@ public class Hud : MonoBehaviour {
 		log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
-		tFOV = PlayerPrefs.GetFloat ("FOV", 45f);
+		tFOV = PlayerPrefs.GetFloat("FOV", 90f);
 		//print ("Loaded FOV, value = " + tFOV.ToString());
 	}
 
@@ -267,8 +267,7 @@ public class Hud : MonoBehaviour {
 			r.x += mar;    r.width -= mar*2;
 			r.y += mar;   r.height -= mar*2;				
 			GUI.Button(r, "To grab mouse cursor,\n" +
-			           "Unity REQUIRES clicking on the game\n" +
-			           "screen.... after ESC has been pushed.\n" +
+			           "Unity REQUIRES clicking on the game screen\n" +
 			           "(You can remap  MENU action to another key)");
 		}
 	}
@@ -354,8 +353,6 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginArea(r, GS);
 		
 		GUI.color = Color.white;
-		GS.font = Font;
-		GS.fontSize = 16;
 		GUILayout.Box(S.GetSpacedOut(Mode + ""));
 
 		if (scrolling)
@@ -395,8 +392,9 @@ public class Hud : MonoBehaviour {
 
 	public void CategoryHeader(string s, bool wantCentering = true, bool spacing = true) {
 		int catSpan = 150; // category header span 
-		int ls = 8; //letter size, in pixels
-		if (s.Length * ls > catSpan) catSpan = s.Length * ls;
+		int ls = 8; // letter size, in pixels
+		if (s.Length * ls > catSpan) 
+			catSpan = s.Length * ls;
 		
 		if (spacing)
 			GUILayout.Label("");
@@ -458,8 +456,19 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
 		GUILayout.Label("Master Volume:   ");
-		Sfx.VolumeMaster = GUILayout.HorizontalSlider(Sfx.VolumeMaster, 0.0f, 1f, GUILayout.MinWidth(64));
+		Sfx.VolumeMaster = GUILayout.HorizontalSlider(Sfx.VolumeMaster, 0.0f, 1f, GUILayout.MinWidth(128));
 		PlayerPrefs.SetFloat("MasterVolume", Sfx.VolumeMaster);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+		
+		// FOV slider 
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		float tVal = tFOV * 2f;
+		var s = "FOV (field of view): ";
+		float wid = GetWidthLabel(s + "188.8");
+		GUILayout.Label(s + tVal.ToString("#.#"), GUILayout.MinWidth(wid));
+		tFOV = GUILayout.HorizontalSlider(tFOV, 20f, 80f, GUILayout.MinWidth(128));
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
@@ -491,7 +500,7 @@ public class Hud : MonoBehaviour {
 
 		innerScrollPos = GUILayout.BeginScrollView(innerScrollPos);
 		
-		// head slider
+		// head slider 
 		float hss = 1f / (int)Head.Count; // head slider span
 		net.localPlayer.headType = (int)(headSliderPos / hss);
 		GUILayout.BeginHorizontal();
@@ -520,21 +529,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.EndHorizontal();
 		
 		colorSliders();
-		
-		GUI.color = Color.green;
-		GUILayout.BeginHorizontal();
-		float tVal = tFOV * 2f;
-		CategoryHeader ("Field of View : " + tVal.ToString("#.##"));
-		GUILayout.EndHorizontal();
-		GUILayout.BeginHorizontal();
-		tFOV = GUILayout.HorizontalSlider(tFOV, 20f, 80f);
-		GUILayout.EndHorizontal();
-		if (net.Connected) net.localPlayer.Entity.FOV = tFOV;
 
 		GUI.color = Color.white;
-
 		GUILayout.EndScrollView();
-
 		menuEnd();
 
 		// now just save player 
@@ -879,7 +876,7 @@ public class Hud : MonoBehaviour {
 
 		CategoryHeader("Current team", false, false);
 		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Logo, Controls");
-		GUILayout.Label("IceFlame            - Coding, Various media & effects, Announcer");
+		GUILayout.Label("IceFlame       - Coding, Various media & effects, Announcer");
 
 		CategoryHeader("Engine", false);
 		GUILayout.Label("This is an extensively remodeled fork of a game made (within 7 days) by Sophie Houlden");
@@ -891,7 +888,7 @@ public class Hud : MonoBehaviour {
 		CategoryHeader("Media authors", false);
 		GUILayout.Label("CarnagePolicy          - Sounds");
 		GUILayout.Label("Nobiax/yughues        - Textures");
-		GUILayout.Label("Wayne Brown           - A few icons");
+		GUILayout.Label("Wayne Brown         - A few icons");
 		//if (Application.isWebPlayer) 
 //			GUILayout.Label("some nebulous message to you Mr. Webplayer Guy");
 

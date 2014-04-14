@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Playing {
+public class PlayingHud {
 	public bool viewingScores = true;
 
 	Scoreboard scores = new Scoreboard();
