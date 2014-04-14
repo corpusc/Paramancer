@@ -267,8 +267,7 @@ public class Hud : MonoBehaviour {
 			r.x += mar;    r.width -= mar*2;
 			r.y += mar;   r.height -= mar*2;				
 			GUI.Button(r, "To grab mouse cursor,\n" +
-			           "Unity REQUIRES clicking on the game screen\n" +
-			           "(You can remap  MENU action to another key)");
+			           "Unity REQUIRES clicking on the game screen");
 		}
 	}
 	
@@ -424,7 +423,7 @@ public class Hud : MonoBehaviour {
 		// warn people changes can be ignored 
 		if (net.Connected) {
 			S.SetShoutyColor();
-			GUI.Box(new Rect(0, 0, Screen.width, 80), "Currently, you have to change avatar while disconnected, for changes to be networked");
+			GUI.Box(new Rect(Screen.width/3, 0, Screen.width/3*2, 80), "Currently, you have to change AVATAR settings while disconnected \n for changes to be networked");
 		}
 
 		menuBegin();
@@ -635,16 +634,16 @@ public class Hud : MonoBehaviour {
 		GUI.skin.label.font = Font;
 		GUI.skin.label.fontSize = 16;
 		GUI.skin.box.font = Font;
-		GUI.skin.box.fontSize = 16;
+		GUI.skin.box.fontSize = 24;
 		GUI.skin.textArea.font = Font;
 		GUI.skin.textArea.fontSize = 16;
 		GUI.skin.textField.font = Font;
 		GUI.skin.textField.fontSize = 16;
 		GUI.skin.toggle.font = Font;
 		GUI.skin.toggle.fontSize = 14;
-		GUI.skin.toggle.normal.background = (Texture2D)Pics.Get ("TickBox");
-		GUI.skin.toggle.active.background = (Texture2D)Pics.Get ("TickBoxTicked");
-		GUI.skin.toggle.hover.background = (Texture2D)Pics.Get ("TickBoxTickable");
+		GUI.skin.toggle.normal.background = (Texture2D)Pics.Get("TickBox");
+		GUI.skin.toggle.active.background = (Texture2D)Pics.Get("TickBoxTicked");
+		GUI.skin.toggle.hover.background = (Texture2D)Pics.Get("TickBoxTickable");
 	}
 
 
