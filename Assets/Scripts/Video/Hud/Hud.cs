@@ -523,7 +523,7 @@ public class Hud : MonoBehaviour {
 		GUI.color = Color.green;
 		GUILayout.BeginHorizontal();
 		float tVal = tFOV * 2f;
-		CategoryHeader ("Field of View : " + tVal.ToString("#.00"));
+		CategoryHeader ("Field of View : " + tVal.ToString("#.##"));
 		GUILayout.EndHorizontal();
 		GUILayout.BeginHorizontal();
 		tFOV = GUILayout.HorizontalSlider(tFOV, 20f, 80f);
@@ -631,6 +631,9 @@ public class Hud : MonoBehaviour {
 	void StylizeMenu() {
 		GUI.skin.button.font = Font;
 		GUI.skin.button.fontSize = 16;
+		GUI.skin.button.normal.background = (Texture2D)Pics.Get("Button");
+		GUI.skin.button.active.background = (Texture2D)Pics.Get("ButtonClicked");
+		GUI.skin.button.hover.background = (Texture2D)Pics.Get("ButtonMouseOver");
 		GUI.skin.label.font = Font;
 		GUI.skin.label.fontSize = 16;
 		GUI.skin.box.font = Font;
