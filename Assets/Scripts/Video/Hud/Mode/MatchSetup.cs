@@ -259,7 +259,7 @@ public class MatchSetup {
 
 			GUILayout.Label("Inventory A: ");
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("" + matches[matchId].spawnGunA);
+			GUILayout.Label(S.GetSpacedOut("" + matches[matchId].spawnGunA));
 
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
@@ -279,7 +279,7 @@ public class MatchSetup {
 
 			GUILayout.Label("Inventory B: ");
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("" + matches[matchId].spawnGunB);
+			GUILayout.Label(S.GetSpacedOut("" + matches[matchId].spawnGunB));
 
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
@@ -424,9 +424,9 @@ public class MatchSetup {
 		if (item >= Item.Count) 
 			item = Item.Health;
 
-		GUILayout.Label("Pickup " + slot + S.GetSpacedOut(": "));
+		GUILayout.Label("Pickup " + slot + ": ");
 		GUILayout.FlexibleSpace();
-		GUILayout.Label("" + item);
+		GUILayout.Label(S.GetSpacedOut("" + item));
 		GUILayout.FlexibleSpace();
 
 		GUILayout.EndHorizontal();

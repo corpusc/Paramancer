@@ -12,12 +12,15 @@ public class CcLog : MonoBehaviour {
 
 	// private 
 	string newEntry = "";
+	float vSpan;
 	CcNet net;
+	Hud hud;
 	
 	
 	
 	void Start() {
 		net = GetComponent<CcNet>();
+		hud = GetComponent<Hud>();
 	}
 	
 	void Update() {
@@ -26,6 +29,8 @@ public class CcLog : MonoBehaviour {
 	}
 	
 	void OnGUI() {
+		vSpan = hud.GetHeightLabel("Qjy");
+
 		// display entries
 		if (Time.time < DisplayTime) {
 			for (int i=0; i<30; i++) {
@@ -34,18 +39,18 @@ public class CcLog : MonoBehaviour {
 					
 					// highlight
 					GUI.color = /* white */ new Color(1, 1, 1, 0.5f);
-					GUI.Label(new Rect(10,Screen.height - 55 - (i*15) -1, 700, 20), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
+					GUI.Label(new Rect(10,Screen.height - 55 - (i*vSpan) -1, Screen.width, vSpan), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
 					
 					// drop shadow
 					GUI.color = /* black */ new Color(0, 0, 0, 0.5f);
 					//GUI.color = new Color((messages[messages.Count-i-1].senderColor.r * -1) + 0.5f, (messages[messages.Count-i-1].senderColor.g * -1) + 0.5f, (messages[messages.Count-i-1].senderColor.b * -1) + 0.5f, 1);
-					GUI.Label(new Rect(11,Screen.height - 55 - (i*15) +1, 700, 20), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
+					GUI.Label(new Rect(11,Screen.height - 55 - (i*vSpan) +1, Screen.width, vSpan), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
 					//GUI.Label(new Rect(9,Screen.height - 55 - (i*15) -1, 500, 20), messages[messages.Count-i-1].sender + " " + messages[messages.Count-i-1].message);
 					
 					// normal
 					GUI.color = Entries[Entries.Count-i-1].Color;
 					//GUI.color = new Color(messages[messages.Count-i-1].senderColor.r + 0.25f, messages[messages.Count-i-1].senderColor.g + 0.25f, messages[messages.Count-i-1].senderColor.b + 0.25f, 1);
-					GUI.Label(new Rect(10,Screen.height - 55 - (i*15), 700, 20), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
+					GUI.Label(new Rect(10,Screen.height - 55 - (i*vSpan), Screen.width, vSpan), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
 					
 					GUI.color = guiColA;
 				}

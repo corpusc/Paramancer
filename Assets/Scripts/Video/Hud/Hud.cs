@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Hud : MonoBehaviour {
 	public string GoToPrevMenu = "<< Back <<";
 	// gui 
+	public Font Font;
 	public GUIStyle GS;
 	public GUIContent GC;
 	public float VSpanBox; // box vertical span
@@ -351,7 +352,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginArea(r);
 		
 		GUI.color = Color.white;
-		GUILayout.Box(S.GetSpacedOut(Mode + ""));
+		GS.font = Font;
+		GS.fontSize = 16;
+		GUILayout.Box(S.GetSpacedOut(Mode + ""), GS);
 
 		if (scrolling)
 			scrollPos = GUILayout.BeginScrollView(scrollPos);
