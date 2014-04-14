@@ -161,6 +161,8 @@ public class Hud : MonoBehaviour {
 			Window.y = (Screen.height - Window.height) / 2;
 		}
 
+		StylizeMenu();
+
 
 		// handle all the modes! 
 		switch (Mode) {
@@ -393,6 +395,8 @@ public class Hud : MonoBehaviour {
 
 	public void CategoryHeader(string s, bool wantCentering = true, bool spacing = true) {
 		int catSpan = 150; // category header span 
+		int ls = 8; //letter size, in pixels
+		if (s.Length * ls > catSpan) catSpan = s.Length * ls;
 		
 		if (spacing)
 			GUILayout.Label("");
@@ -518,10 +522,11 @@ public class Hud : MonoBehaviour {
 		
 		GUI.color = Color.green;
 		GUILayout.BeginHorizontal();
-		CategoryHeader ("Field of View : " + tFOV.ToString());
+		float tVal = tFOV * 2f;
+		CategoryHeader ("Field of View : " + tVal.ToString("#.00"));
 		GUILayout.EndHorizontal();
 		GUILayout.BeginHorizontal();
-		tFOV = GUILayout.HorizontalSlider(tFOV, 20f, 85f);
+		tFOV = GUILayout.HorizontalSlider(tFOV, 20f, 80f);
 		GUILayout.EndHorizontal();
 		if (net.Connected) net.localPlayer.Entity.FOV = tFOV;
 
@@ -623,7 +628,18 @@ public class Hud : MonoBehaviour {
 	
 
 
-
+	void StylizeMenu() {
+		GUI.skin.button.font = Font;
+		GUI.skin.button.fontSize = 16;
+		GUI.skin.label.font = Font;
+		GUI.skin.label.fontSize = 16;
+		GUI.skin.box.font = Font;
+		GUI.skin.box.fontSize = 16;
+		GUI.skin.textArea.font = Font;
+		GUI.skin.textArea.fontSize = 16;
+		GUI.skin.textField.font = Font;
+		GUI.skin.textField.fontSize = 16;
+	}
 
 
 
