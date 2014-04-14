@@ -349,12 +349,12 @@ public class Hud : MonoBehaviour {
 		GUI.color = col;
 		GUI.DrawTexture(r, Pics.White);
 		
-		GUILayout.BeginArea(r);
+		GUILayout.BeginArea(r, GS);
 		
 		GUI.color = Color.white;
 		GS.font = Font;
 		GS.fontSize = 16;
-		GUILayout.Box(S.GetSpacedOut(Mode + ""), GS);
+		GUILayout.Box(S.GetSpacedOut(Mode + ""));
 
 		if (scrolling)
 			scrollPos = GUILayout.BeginScrollView(scrollPos);

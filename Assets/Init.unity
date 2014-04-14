@@ -285,6 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GoToPrevMenu: << Back <<
+  Font: {fileID: 12800000, guid: 6dcecc57693b1d2419e4eb77f98caf4c, type: 3}
   GS:
     m_Name: 
     m_Normal:
@@ -351,6 +352,12 @@ MonoBehaviour:
   VSpanBox: 0
   VSpanButton: 0
   VSpanLabel: 0
+  Window:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 600
+    height: 400
 --- !u!114 &1973207298
 MonoBehaviour:
   m_ObjectHideFlags: 0
