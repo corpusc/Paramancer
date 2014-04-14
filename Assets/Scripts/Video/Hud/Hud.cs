@@ -435,7 +435,8 @@ public class Hud : MonoBehaviour {
 		// gun bob 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "Gun bob");
+		SizedLabel("Gun bobbing ");
+		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "");
 		if (net.gunBobbing)
 			PlayerPrefs.SetInt("GunBobbing", 1);
 		else
@@ -642,6 +643,11 @@ public class Hud : MonoBehaviour {
 		GUI.skin.textArea.fontSize = 16;
 		GUI.skin.textField.font = Font;
 		GUI.skin.textField.fontSize = 16;
+		GUI.skin.toggle.font = Font;
+		GUI.skin.toggle.fontSize = 14;
+		GUI.skin.toggle.normal.background = (Texture2D)Pics.Get ("TickBox");
+		GUI.skin.toggle.active.background = (Texture2D)Pics.Get ("TickBoxTicked");
+		GUI.skin.toggle.hover.background = (Texture2D)Pics.Get ("TickBoxTickable");
 	}
 
 

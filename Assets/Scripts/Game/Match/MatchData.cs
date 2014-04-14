@@ -93,7 +93,7 @@ public class MatchData {
 				break;
 			case Match.InstaGib:
 				Name = "InstaGib";
-				Descript = "Everyone spawns with railgun, which 1 shot frags";
+				Descript = "Everyone spawns with railgun, one hit and you're dead";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower"};
 				spawnGunA = Item.Rifle;
 				spawnGunB = Item.Spatula;
