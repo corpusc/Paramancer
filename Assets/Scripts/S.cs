@@ -11,6 +11,8 @@ static public class S {
 	
 	// colors 
 	public static Color WhiteTRANS = new Color(1f, 1f, 1f, 0.35f);
+	public static Color RedTRANS = new Color(1f, 0f, 0f, 0.35f);
+	public static Color BlueTRANS = new Color(0f, 0f, 1f, 0.35f);
 	public static Color PurpleTRANS = new Color(0.3f, 0f, 0.4f, 0.6f);
 	public static Color Purple = new Color(0.8f, 0f, 1f, 1f);
 	//static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
@@ -39,11 +41,26 @@ static public class S {
 		return ns;
 	}
 
+	static float point; // ...in colour channel spectrum 
+	static bool increasing = true; // starts moving to the limit of 1f 
 	static public void SetShoutyColor() {
-		if ((Time.time % 0.3f) > 0.15f)
-			GUI.color = Color.cyan;
-		else
-			GUI.color = Color.blue;
+		if (increasing) {
+			point += Time.deltaTime * 2;
+
+			if (point > 1f) {
+				point = 1f;
+				increasing = false;
+			}
+		}else{ // decreasing 
+			point -= Time.deltaTime * 2;
+			
+			if (point < 0f) {
+				point = 0f;
+				increasing = true;
+			}
+		}
+
+		GUI.color = Color.Lerp(Color.cyan, Color.blue, point);
 	}
 	
 	static public void GUIOutlinedLabel(Rect r, string s) {

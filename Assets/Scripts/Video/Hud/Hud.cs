@@ -11,6 +11,7 @@ public class Hud : MonoBehaviour {
 	public float VSpanBox; // box vertical span
 	public float VSpanButton; // button vertical span
 	public float VSpanLabel; // label vertical span
+	public Rect Window = new Rect(0, 0, 600, 400); // background for most menus 
 	private HudMode mode = HudMode.PreMenu;
 	public HudMode Mode {
 		get { return mode; }
@@ -54,7 +55,6 @@ public class Hud : MonoBehaviour {
 	
 	// UI element sizes
 	int midX, midY; // middle of the screen
-	Rect window = new Rect(0, 0, 600, 400); // background for most menus
 	int vSpan = 20; // FIXME: hardwired vertical span of the text.  doubled in many places for button height
 	Vector2 scrollPos = Vector2.zero;
 
@@ -154,10 +154,10 @@ public class Hud : MonoBehaviour {
 			// sizes of UI elements 
 			midX = oldW/2;
 			midY = oldH/2;
-			window.width = oldW * (S.GoldenRatio / (1f + S.GoldenRatio) );
-			window.height = oldH * (S.GoldenRatio / (1f + S.GoldenRatio) );
-			window.x = (Screen.width - window.width) / 2;
-			window.y = (Screen.height - window.height) / 2;
+			Window.width = oldW * (S.GoldenRatio / (1f + S.GoldenRatio) );
+			Window.height = oldH * (S.GoldenRatio / (1f + S.GoldenRatio) );
+			Window.x = (Screen.width - Window.width) / 2;
+			Window.y = (Screen.height - Window.height) / 2;
 		}
 
 
@@ -280,7 +280,7 @@ public class Hud : MonoBehaviour {
 	
 	
 	public void DrawWindowBackground(bool halfWidth = false) {
-		DrawWindowBackground(window, halfWidth);
+		DrawWindowBackground(Window, halfWidth);
 	}
 	public void DrawWindowBackground(Rect r, bool halfWidth = false, bool halfHeight = false) {
 		GUI.color = S.PurpleTRANS;
@@ -328,7 +328,7 @@ public class Hud : MonoBehaviour {
 		menuBegin(S.WhiteTRANS, scrolling, startAtTop);
 	}
 	void menuBegin(Color col, bool scrolling = true, bool startAtTop = false) {
-		var r = window;
+		var r = Window;
 
 		// special exceptions 
 		if (startAtTop) {

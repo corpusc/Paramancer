@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections;
 
 public class Scoreboard {
+	float fragsX, deathsX, scoreX;
+
+
+
 	public void Draw(CcNet net, Hud hud, float lvs) {
 		GUI.color = Color.grey;
 
@@ -61,80 +65,126 @@ public class Scoreboard {
 
 
 
+		// team mode scoreboard 
 		if (net.CurrMatch.teamBased) {
-			hud.DrawWindowBackground();
+			fragsX = hud.GetWidthLabel("Frags:   ");
+			deathsX = hud.GetWidthLabel("Deaths:   ");
+			scoreX = hud.GetWidthLabel("Score:   ");
+			
+			//hud.DrawWindowBackground();  // this function used anymore?  FIXME?
+			var left = hud.Window;
+			var right = hud.Window;
+			left.width = hud.Window.width/2;
+			right.width = hud.Window.width/2;
+			right.x = hud.Window.width/2 + hud.Window.x;
 
-			int mfse = Mathf.Min(Screen.width, Screen.height) / 3; // margin from screen edge
-			GUI.BeginGroup(new Rect(mfse, mfse, Screen.width-mfse, Screen.height-mfse));
+			int m = Mathf.Min(Screen.width, Screen.height) / 3; // margin from screen edge
+			//GUILayout.BeginArea(new Rect(m, m, Screen.width-m, Screen.height-m));
 			
-			GUI.color = new Color(1f, 0f, 0f, 1f);
+			// RED (left side) 
+			// color 
+			GUI.color = S.RedTRANS;
+			if (net.gameOver && net.team1Score > net.team2Score)
+				anyBrightColor();			
 			
-			if (net.gameOver && net.team1Score>net.team2Score) 
-				GUI.color = new Color(Random.Range(0.5f, 1f), Random.Range(0.5f,1f), Random.Range(0.5f, 1f), 1f);
-			
-			GUI.Label(new Rect(100, 20, 150, 20), "Team 1 Score: " + net.team1Score.ToString());
-			GUI.color = new Color(0f, 1f, 1f, 1f);
-			
-			if (net.gameOver && net.team2Score>net.team1Score) 
-				GUI.color = new Color(Random.Range(0.5f, 1f), Random.Range(0.5f,1f), Random.Range(0.5f,1f), 1f);
-			
-			GUI.Label(new Rect(300, 20, 150, 20), "Team 2 Score: " + net.team2Score.ToString());
-			GUI.Label(new Rect(10, 40, 150, 20), "Name:");
-			GUI.Label(new Rect(160, 40, 50, 20), "Kills:");
-			GUI.Label(new Rect(210, 40, 50, 20), "Deaths:");
-			GUI.Label(new Rect(270, 40, 50, 20), "Score:");
-			
-			// team 1
-			int yOffset = 0;
-			GUI.Label(new Rect(10,(yOffset*20) + 60,150,20), "Team 1:");
-			yOffset++;
-			
+			GUI.DrawTexture(left, Pics.Get("BlankWhite"));
+			showHotkey(UserAction.SwapTeam, left);
+			GUI.color = Color.white;
+
+			GUILayout.BeginArea(left);
+			GUILayout.BeginVertical();
+
+			// score 
+			GUILayout.Box("RED: " + net.team1Score.ToString());
+			teamPane();
+
 			for (int i=0; i<net.players.Count; i++) {
-				GUI.color = new Color(1f, 0f, 0f, 1f);
 				if (net.players[i].team == 1) {
-					
-					if (net.players[i].local) 
-						GUI.color = new Color(1, 0.3f, 0.3f, 1f);
-					if (net.gameOver && net.team1Score>net.team2Score) 
-						GUI.color = new Color(Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), 1f);
-					
-					GUI.Label(new Rect(10, (yOffset*20) + 60, 150, lvs), net.players[i].name);
-					GUI.Label(new Rect(160, (yOffset*20) + 60, 50, lvs), net.players[i].kills.ToString());
-					GUI.Label(new Rect(210, (yOffset*20) + 60, 50, lvs), net.players[i].deaths.ToString());
-					GUI.Label(new Rect(270, (yOffset*20) + 60, 50, lvs), net.players[i].currentScore.ToString());
-					
-					yOffset++;
+					showNameAndStats(i, net);
 				}
 			}
-			
-			// team 2
-			yOffset++;
-			GUI.Label(new Rect(10,(yOffset*20) + 60,150,20), "Team 2:");
-			yOffset++;
+
+			GUILayout.EndVertical();
+			GUILayout.EndArea();
+
+
+
+			// BLUE (right side) 
+			// color 
+			GUI.color = S.BlueTRANS;
+			if (net.gameOver && net.team2Score > net.team1Score) 
+				anyBrightColor();	
+
+			GUI.DrawTexture(right, Pics.Get("BlankWhite"));
+			showHotkey(UserAction.Scores, right);
+			GUI.color = Color.white;
+
+			GUILayout.BeginArea(right);
+			GUILayout.BeginVertical();
+
+			// score 
+			GUILayout.Box("BLUE: " + net.team2Score.ToString());
+			teamPane();
 			for (int i=0; i<net.players.Count; i++) {
-				GUI.color = new Color(0f, 1f, 1f, 1f);
-				
 				if (net.players[i].team == 2) {
-					if (net.players[i].local) 
-						GUI.color = new Color(0.3f, 1, 1, 1f);
-					if (net.gameOver && net.team2Score>net.team1Score) 
-						GUI.color = new Color(Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), 1f);
-				
-					GUI.Label(new Rect(10, yOffset*20 + 60, 150, 20), net.players[i].name);
-					GUI.Label(new Rect(160, yOffset*20 + 60, 50, 20), net.players[i].kills.ToString());
-					GUI.Label(new Rect(210, yOffset*20 + 60, 50, 20), net.players[i].deaths.ToString());
-					GUI.Label(new Rect(270, yOffset*20 + 60, 50, 20), net.players[i].currentScore.ToString());
-					
-					yOffset++;
+					showNameAndStats(i, net);
 				}
 			}
-			
-			GUI.color = Color.black;
-			yOffset++;
-			GUI.Label(new Rect(10,(yOffset*20) + 60,300,20), 
-				">> TO CHANGE TEAMS, PRESS '" + CcInput.GetKeyLabel(UserAction.SwapTeam) + "' <<");
-			
-			GUI.EndGroup();
+
+			GUILayout.EndVertical();
+			GUILayout.EndArea();
 		}
+	}
+
+	void showNameAndStats(int i, CcNet net) {
+		if (net.players[i].local) 
+			S.SetShoutyColor();
+
+		GUILayout.BeginHorizontal();
+		GUILayout.Label(net.players[i].name);
+		GUILayout.FlexibleSpace();
+		GUILayout.Label(net.players[i].kills.ToString(), GUILayout.MinWidth(fragsX));
+		GUILayout.Label(net.players[i].deaths.ToString(), GUILayout.MinWidth(deathsX));
+		GUILayout.Label(net.players[i].currentScore.ToString(), GUILayout.MinWidth(scoreX));
+		GUILayout.EndHorizontal();
+	}
+
+	void showHotkey(UserAction ua, Rect r) {
+		float offs = 8;
+		int span = 64;
+		r.y = r.yMax - span;
+		r.width = span;
+		r.height = span;
+
+		GUI.color = Color.white;
+		GUI.Label(r, Pics.Get("KeyCap"));
+		GUI.color = Color.black;
+		r.x += offs;
+		r.y += offs;
+		GUI.Label(r, CcInput.GetKeyLabel(ua));
+		GUI.color = Color.white;
+		r.x += span;
+		r.width = 200; // don't think we need a precise size 
+
+		if (ua == UserAction.Scores)
+			GUI.Label(r, "= Close");
+		else
+			GUI.Label(r, S.GetSpacedOut("= " + ua));
+	}
+
+	static void teamPane(){
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		GUILayout.Label("Frags:    ");
+		GUILayout.Label("Deaths:   ");
+		GUILayout.Label("Score:   ");
+		GUILayout.EndHorizontal();
+	}
+
+	static void anyBrightColor() {
+		GUI.color = new Color(
+			Random.Range (0.5f, 1f), 
+			Random.Range (0.5f, 1f), 
+			Random.Range (0.5f, 1f), 1f);
 	}
 }
