@@ -296,7 +296,7 @@ public class Controls : MonoBehaviour {
 			GUI.DrawTextureWithTexCoords(dest, keyCap, texC);
 		}
 		
-		// draw actions
+		// draw action icons 
 		var bd = CcInput.BindData;
 		for (int i = 0; i < bd.Length; i++) {
 			if (bd[i] != draggee) {
@@ -308,7 +308,6 @@ public class Controls : MonoBehaviour {
 				
 				//GUI.DrawTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
 				S.GUIDrawOutlinedTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
-				//Debug.Log("drew an action icon");
 			}
 		}
 		

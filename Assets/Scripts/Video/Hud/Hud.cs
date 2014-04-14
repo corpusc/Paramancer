@@ -138,7 +138,7 @@ public class Hud : MonoBehaviour {
 			firstTime = false;
 
 			// setup vertical span sizes
-			GC = new GUIContent("Playing");
+			GC = new GUIContent("Qypjg");
 			GS = "Box";
 			VSpanBox = GS.CalcSize(GC).y;
 			GS = "Button";
