@@ -140,7 +140,7 @@ public static class CcInput {
 					bind(i, KeyCode.Alpha2);
 					loadPic(i, "0 " + (UserAction)i);
 					break;
-				case UserAction.Grenade:
+				case UserAction.GrenadeLauncher:
 					bind(i, KeyCode.X);
 					loadPic(i, "1 " + (UserAction)i);
 					break;
@@ -148,7 +148,7 @@ public static class CcInput {
 					bind(i, KeyCode.Alpha3);
 					loadPic(i, "2 " + (UserAction)i);
 					break;
-				case UserAction.Rifle:
+				case UserAction.RailGun:
 					bind(i, KeyCode.G);
 					loadPic(i, "3 " + (UserAction)i);
 					break;
@@ -160,7 +160,7 @@ public static class CcInput {
 					bind(i, KeyCode.W);
 					loadPic(i, "5 " + (UserAction)i);
 					break;
-				case UserAction.GravGun:
+				case UserAction.Gravulator:
 					bind(i, KeyCode.R);
 					loadPic(i, "6 " + (UserAction)i);
 					break;

@@ -360,9 +360,9 @@ public class CcNet : MonoBehaviour {
 		int numGibs = 4;
 		
 		switch ((Item)weapon) {
-			case Item.Grenade:                numGibs = 15; break;
+			case Item.GrenadeLauncher:                numGibs = 15; break;
 			case Item.MachineGun:             numGibs = 2; break;
-			case Item.Rifle:                  numGibs = 30; break;
+			case Item.RailGun:                  numGibs = 30; break;
 			case Item.RocketProjectile: numGibs = 20; break;
 			case Item.Bomb:                   numGibs = 20; break;
 			

@@ -17,15 +17,15 @@ public class MatchData {
 	public bool allowFriendlyFire = false;
 	public bool pitchBlack = false;
 	public Item spawnGunA = Item.Pistol;
-	public Item spawnGunB = Item.Grenade;
+	public Item spawnGunB = Item.GrenadeLauncher;
 	public float restockTime = 12f;
 	public int playerLives = 0;
 	public bool basketball = false;
 	// what is in the level pickupslots?
 	public Item pickupSlot1 = Item.Health;
-	public Item pickupSlot2 = Item.Grenade;
+	public Item pickupSlot2 = Item.GrenadeLauncher;
 	public Item pickupSlot3 = Item.MachineGun;
-	public Item pickupSlot4 = Item.Rifle;
+	public Item pickupSlot4 = Item.RailGun;
 	public Item pickupSlot5 = Item.Pistol;
 	
 	
@@ -42,7 +42,7 @@ public class MatchData {
 				// Gravity Is/Gets Personal?, Personal Gravity?, Gravitaction?
 				Descript = "Each player has their own, independent, changeable gravity";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-				spawnGunA = Item.GravGun;
+				spawnGunA = Item.Gravulator;
 				spawnGunB = Item.Pistol;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
@@ -51,9 +51,9 @@ public class MatchData {
 				Descript = "Careful when you spark one up.....your GUN that is";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 				pitchBlack = true;
-				pickupSlot1 = Item.Grenade;
+				pickupSlot1 = Item.GrenadeLauncher;
 				pickupSlot2 = Item.MachineGun;
-				pickupSlot3 = Item.Rifle;
+				pickupSlot3 = Item.RailGun;
 				pickupSlot4 = Item.RocketLauncher;
 				pickupSlot5 = Item.Bomb;
 				break;
@@ -79,7 +79,7 @@ public class MatchData {
 				teamBased = true;
 				basketball = true;
 				pickupSlot2 = Item.MachineGun;
-				pickupSlot3 = Item.Rifle;
+				pickupSlot3 = Item.RailGun;
 				pickupSlot4 = Item.RocketLauncher;
 				pickupSlot5 = Item.Swapper;
 				break;
@@ -95,7 +95,7 @@ public class MatchData {
 				Name = "InstaGib";
 				Descript = "Everyone spawns with railgun, one hit and you're dead";
 				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower"};
-				spawnGunA = Item.Rifle;
+				spawnGunA = Item.RailGun;
 				spawnGunB = Item.Spatula;
 				pickupSlot1 = Item.None;
 				pickupSlot2 = Item.None;

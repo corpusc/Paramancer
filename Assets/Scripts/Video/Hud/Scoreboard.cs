@@ -71,16 +71,12 @@ public class Scoreboard {
 			deathsX = hud.GetWidthLabel("Deaths:   ");
 			scoreX = hud.GetWidthLabel("Score:   ");
 			
-			//hud.DrawWindowBackground();  // this function used anymore?  FIXME?
 			var left = hud.Window;
 			var right = hud.Window;
 			left.width = hud.Window.width/2;
 			right.width = hud.Window.width/2;
 			right.x = hud.Window.width/2 + hud.Window.x;
 
-			int m = Mathf.Min(Screen.width, Screen.height) / 3; // margin from screen edge
-			//GUILayout.BeginArea(new Rect(m, m, Screen.width-m, Screen.height-m));
-			
 			// RED (left side) 
 			// color 
 			GUI.color = S.RedTRANS;

@@ -313,29 +313,45 @@ public class Controls : MonoBehaviour {
 		
 		// draw key labels          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {
+			var rect = keyData[i].Rect;
+
 			// get the right color
 			if (pushingOrHoveringOver(i))
 				GUI.color = S.Purple;
-			else
-				GUI.color = Color.white;
+			else {
+				float l = 0.75f; // level 
+				GUI.color = new Color(l, l, l);
+			}
 				
 			// draw 
-			GUI.Box(keyData[i].Rect, keyData[i].Text);
+			rect.x += rect.width/5;
+			S.GUIOutlinedLabel(rect, keyData[i].Text);
 		}
 
 
 		GUI.EndGroup();
 
 
-		// hover text for action icons 
+		// hover text for selected action icon 
 		string s = targetedBind();
 		if (s != null) {
-			GUI.color = Color.cyan;
-			float wid = hud.GetWidthBox(s);
-			GUI.Box(new Rect(
-				mouPos.x-wid/2, mouPos.y-hud.VSpanBox*1.5f, 
-				wid,                     hud.VSpanBox
-			), s);
+			//float mar = // margin 
+			float wid = hud.GetWidthLabel(s);
+			var h = hud.VSpanLabel;
+			var rect = new Rect(
+				mouPos.x-wid/2-h, 
+				mouPos.y-h*3,
+				wid+h*2,                     
+				h*2);
+
+			GUI.color = S.PurpleTRANS;
+			GUI.DrawTexture(rect, Pics.Get("BlankWhite"));
+
+			rect.x = mouPos.x-wid/2;
+			rect.y += h/2;
+			// don't really need to shrink this actually......otherwise: rect.width = wid*2 
+			S.SetShoutyColor();
+			S.GUIOutlinedLabel(rect, s);
 		}
 		
 		// draw action icon near pointer if it's being moved 

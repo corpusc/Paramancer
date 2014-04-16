@@ -9,7 +9,7 @@ public class GunData {
 	public bool AutoFire = false;
 	public Color ShotCol = Color.white;
 	public float Delay = 0f;
-	public float AltDelay = 0f;
+	public float DelayAlt = 0f;
 	public float Cooldown = 0f; // current progress through the ^above^ Delay
 	public bool Carrying = false;	
 }

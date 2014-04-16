@@ -82,26 +82,30 @@ public enum Item {
 	Health = -3,
 	Random = -2,
 	None = -1,
+
+	// when changing weapon names, also change in "UserAction" enum 
 	Pistol = 0,
-	Grenade,
+	GrenadeLauncher,
 	MachineGun, // 2
-	Rifle,
+	RailGun,
 	RocketLauncher, // 4
 	Swapper,
-	GravGun, // 6
+	Gravulator, // 6
 	Bomb,
 	Spatula, // 8
 	Count
 }
 
 public enum UserAction {
+	// when changing weapon names, also change in "Item" enum 
+	// these are for selecting/equipping with 1 touch 
 	Pistol,
-	Grenade,
+	GrenadeLauncher,
 	MachineGun, // 2
-	Rifle,
+	RailGun,
 	RocketLauncher, // 4
 	Swapper,
-	GravGun, // 6
+	Gravulator, // 6
 	Bomb,
 	Spatula, // 8
 	

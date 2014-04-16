@@ -75,7 +75,7 @@ public class EntityClass : MonoBehaviour {
 	
 	// inventory 
 	public Item GunInHand = Item.Pistol;
-	public Item GunOnBack = Item.Grenade;
+	public Item GunOnBack = Item.GrenadeLauncher;
 	private Item prevGunInHand = Item.None;
 	private Item prevGunOnBack = Item.None;
 	public GameObject firstPersonGun;
@@ -459,7 +459,7 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					// grav gun arrow
-					if (GunInHand == Item.GravGun) {
+					if (GunInHand == Item.Gravulator) {
 						if (gravArrowObj == null) {
 							gravArrowObj = (GameObject)GameObject.Instantiate(gravArrowPrefab);
 							//gravArrowObj.layer = 
@@ -753,11 +753,11 @@ public class EntityClass : MonoBehaviour {
 		switch ((Item)GunInHand) {
 			case Item.Pistol:
 				recoilRest = 5f; break;
-			case Item.Grenade:
+			case Item.GrenadeLauncher:
 				recoilRest = 8f; break;
 			case Item.MachineGun:
 				recoilRest = 8f; break;
-			case Item.Rifle:
+			case Item.RailGun:
 				recoilRest = 2f; break;
 			case Item.RocketLauncher:
 				recoilRest = 1f; break;
@@ -787,7 +787,7 @@ public class EntityClass : MonoBehaviour {
 			return;
 
 		if (alt)
-			gunData.Cooldown += gunData.AltDelay;
+			gunData.Cooldown += gunData.DelayAlt;
 		else
 			gunData.Cooldown += gunData.Delay;
 
@@ -798,7 +798,7 @@ public class EntityClass : MonoBehaviour {
 				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
-			case Item.Grenade:
+			case Item.GrenadeLauncher:
 				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, ava.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
@@ -810,7 +810,7 @@ public class EntityClass : MonoBehaviour {
 					Random.Range(-1f, 1f),
 					Random.Range(-1f, 1f)).normalized * 0.2f;
 				break; 
-			case Item.Rifle:
+			case Item.RailGun:
 				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
@@ -830,7 +830,7 @@ public class EntityClass : MonoBehaviour {
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Item.GravGun:
+			case Item.Gravulator:
 				Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 				RaycastHit gravHit = new RaycastHit();
 				int gravLayer = 1<<0;

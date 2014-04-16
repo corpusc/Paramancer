@@ -278,26 +278,7 @@ public class Hud : MonoBehaviour {
 
 	
 	
-	
-	
-	public void DrawWindowBackground(bool halfWidth = false) {
-		DrawWindowBackground(Window, halfWidth);
-	}
-	public void DrawWindowBackground(Rect r, bool halfWidth = false, bool halfHeight = false) {
-		GUI.color = S.PurpleTRANS;
-		
-		if (halfWidth)
-			r.width /= 2;
-		
-		if (halfHeight)
-			r.height /= 2;
-		
-		GUI.DrawTexture(r, Pics.White);
-		GUI.color = S.Purple;
-	}
-	
-	
-	
+
 	
 	
 	

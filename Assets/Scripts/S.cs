@@ -13,7 +13,7 @@ static public class S {
 	public static Color WhiteTRANS = new Color(1f, 1f, 1f, 0.35f);
 	public static Color RedTRANS = new Color(1f, 0f, 0f, 0.35f);
 	public static Color BlueTRANS = new Color(0f, 0f, 1f, 0.35f);
-	public static Color PurpleTRANS = new Color(0.3f, 0f, 0.4f, 0.6f);
+	public static Color PurpleTRANS = new Color(0.2f, 0f, 0.3f, 0.8f);
 	public static Color Purple = new Color(0.8f, 0f, 1f, 1f);
 	//static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
 	public static Color PurpleLight = Color.Lerp(Purple, Color.white, 0.5f);

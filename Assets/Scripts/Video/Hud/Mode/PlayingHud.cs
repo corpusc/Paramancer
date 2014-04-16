@@ -106,7 +106,7 @@ public class PlayingHud {
 		var old = GUI.matrix; // we need to store this, cuz we only want to spin the crosshairs
 		GUIUtility.RotateAroundPivot(-Camera.main.transform.rotation.eulerAngles.y, new Vector2(midX, midY));
 
-		if (gunA != Item.GravGun) {
+		if (gunA != Item.Gravulator) {
 		GUI.DrawTexture(new Rect(
 			midX-crosshairRadius, 
 			midY-crosshairRadius, 
