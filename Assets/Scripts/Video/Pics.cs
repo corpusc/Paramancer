@@ -20,6 +20,7 @@ public static class Pics {
 	
 	static Pics() {
 		handleFolder("Hud");
+		//handleFolder("Hud/Control/GamePad");
 	}
 	
 	

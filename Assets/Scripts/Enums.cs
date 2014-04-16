@@ -2,16 +2,14 @@
 using System.Collections;
 
 public enum ControlDevice {
+	Hydra,
 	LeftyMouse,
 	LeftyMMOMouse,
 	RightyMMOMouse,
 	RightyMouse,
+	GamePad,
 
 	Count,
-
-	// these are unused, cuz we have no textures for them yet (Voxamancy has gamepad)
-	GamePad,
-	Hydra,
 }
 
 public enum Head {

@@ -61,13 +61,13 @@ using System.Collections;
 
 public class Controls : MonoBehaviour {
 	public int HeightOfKeyboard;
+	public Texture currDevPic;
 
 	// private 
 	Hud hud;
-	ControlDevice currDev = ControlDevice.RightyMouse;
 	Texture keyCap;
-	Texture mousePic;
 	Rect mouseRect;
+	ControlDevice currDev;
 	const int numMouseButtonColumns = 4;
 	const int numMouseButtonRows = 5;
 	const int numKeyRows = 6;
@@ -81,12 +81,21 @@ public class Controls : MonoBehaviour {
 	KeyData[] keyData; // this is the real structure built from "codes", that is mostly used elsewhere
 	// ^^^^^ matching indices ^^^^^^^
 	
+
 	
-	
+	public void SetCurrDevice(ControlDevice cd) {
+		currDev = cd;
+
+		if (currDev == ControlDevice.GamePad)
+			currDevPic = Pics.Get("PerspectiveMin");
+		else
+			currDevPic = Pics.Get(currDev + "");
+	}
+
 	void Start() {
 		hud = GetComponent<Hud>();
 		keyCap = Pics.Get("KeyCap");
-		mousePic = Pics.Get("RightyMouse");
+		SetCurrDevice(ControlDevice.RightyMouse);
 
 		// setup temp structure for the physical layout of the keyboard
 		var n = KeyCode.None;
@@ -247,7 +256,7 @@ public class Controls : MonoBehaviour {
 		r.y = Screen.height - HeightOfKeyboard;
 		r.height = HeightOfKeyboard;
 		//GUI.DrawTexture(r, Pics.White);
-		GUI.DrawTexture(mouseRect, mousePic);
+		GUI.DrawTexture(mouseRect, currDevPic);
 
 		// draw keys          (perhaps clean this up by using mouseOver())
 		for (int i = 0; i < keyData.Length; i++) {

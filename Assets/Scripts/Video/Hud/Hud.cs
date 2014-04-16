@@ -669,26 +669,38 @@ public class Hud : MonoBehaviour {
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
+		// allow resetting to defaults 
+		//if (GUILayout.Button("Default Keys")) CcInput.SetDefaultBinds();
 
-		//if (GUILayout.Button("Default Keys"))
-			//CcInput.SetDefaultBinds();
-		GUILayout.BeginHorizontal(); // the names 
+		// the pics 
+		GUILayout.BeginHorizontal(); 
+		GUILayout.FlexibleSpace();
+		for (int i = 0; i < (int)ControlDevice.Count; i++) {
+			Texture p;
+
+			if ((ControlDevice)i == ControlDevice.GamePad) {
+				p = Pics.Get("PerspectiveMin");
+				
+				if (GUILayout.Button(p, GUILayout.MaxWidth(256), GUILayout.MaxHeight(128))) {
+					controls.SetCurrDevice((ControlDevice)i);
+				}
+			}else{
+				p = Pics.Get(((ControlDevice)i) + "");
+				
+				if (GUILayout.Button(p, GUILayout.MaxWidth(64), GUILayout.MaxHeight(128))) {
+					controls.SetCurrDevice((ControlDevice)i);
+				}
+			}
+		}
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+
+		// the names 
+		GUILayout.BeginHorizontal(); 
 		for (int i = 0; i < (int)ControlDevice.Count; i++)
 			GUILayout.Box(((ControlDevice)i).ToString());
 		GUILayout.EndHorizontal();
-
-		GUILayout.BeginHorizontal(); // the pics 
-		GUILayout.FlexibleSpace();
-		for (int i = 0; i < (int)ControlDevice.Count; i++) {
-			GUILayout.Button(Pics.Get(((ControlDevice)i) + ""), GUILayout.MaxWidth(64), GUILayout.MaxHeight(128));
-			GUILayout.FlexibleSpace();
-		}
-		GUILayout.EndHorizontal();
-
-
-
-
-
+		
 		menuEnd(); 
 	}
 
