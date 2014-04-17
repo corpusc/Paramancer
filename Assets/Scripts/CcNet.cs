@@ -282,7 +282,11 @@ public class CcNet : MonoBehaviour {
 			players[vi].health -= 30f;
 		}else{
 			// normal damage
-			players[vi].health -= arse.GetWeaponDamage((Item)weapon);
+			if ((Item)weapon == Item.GrenadeLauncher || (Item)weapon == Item.RocketProjectile) { //less damage when farther from the explosion
+				float d = Vector3.Distance(hitPos, players[vi].Entity.transform.position) + 1f;
+				players[vi].health -= arse.GetWeaponDamage((Item)weapon) / d;
+
+			} else players[vi].health -= arse.GetWeaponDamage((Item)weapon);
 		}
 		
 		if (players[vi].health <= 0f) {

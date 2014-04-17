@@ -53,6 +53,12 @@ public class Hud : MonoBehaviour {
 	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
 	float tFOV = 45f;
+	string[] splashText = {"If you like this game, support us on *link to our webpage*!",
+		"TIP: Use the gravulator as often as possible to confuse your enemies!",
+		"TIP: Offense is often the best defense!",
+		"1234567890 is a big number!",
+		"TIP: Change your avatar in the Settings section!",
+		"TIP: There is a lot of control configuration avaliable, be sure to ckeck it out in the Controls section!"}; //sometimes funny(see minecraft splash text)
 	
 	// UI element sizes
 	int midX, midY; // middle of the screen
@@ -413,8 +419,7 @@ public class Hud : MonoBehaviour {
 		// gun bob 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		SizedLabel("Gun bobbing ");
-		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "");
+		net.gunBobbing = TickBox.Display(net.gunBobbing, "Gun bobbing ");
 		if (net.gunBobbing)
 			PlayerPrefs.SetInt("GunBobbing", 1);
 		else
@@ -620,11 +625,6 @@ public class Hud : MonoBehaviour {
 		GUI.skin.textArea.fontSize = 16;
 		GUI.skin.textField.font = Font;
 		GUI.skin.textField.fontSize = 16;
-		GUI.skin.toggle.font = Font;
-		GUI.skin.toggle.fontSize = 14;
-		GUI.skin.toggle.normal.background = (Texture2D)Pics.Get("TickBox");
-		GUI.skin.toggle.active.background = (Texture2D)Pics.Get("TickBoxTicked");
-		GUI.skin.toggle.hover.background = (Texture2D)Pics.Get("TickBoxTickable");
 	}
 
 
@@ -654,7 +654,7 @@ public class Hud : MonoBehaviour {
 		// look inversion 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		/**/locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Look inversion", GUILayout.ExpandWidth(false));
+		/**/locUser.LookInvert = TickBox.Display(locUser.LookInvert, "Invert Y axis ");
 		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
 		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
 		GUILayout.FlexibleSpace();
@@ -823,6 +823,24 @@ public class Hud : MonoBehaviour {
 
 
 
+
+
+
+	
+	float nextSplashUpdate = 0f;
+	float splashUpdateTime = 20f; //the time it takes for the splash message to update
+	string tSplash = ""; //the currently displayed splash
+	float tWidth = 0f;
+	Rect splashRect;
+	void displaySplash() {
+		if (Time.time > nextSplashUpdate) {
+			nextSplashUpdate += splashUpdateTime;
+			tSplash = splashText[UnityEngine.Random.Range(0, splashText.Length)];
+			tWidth = GetWidthLabel(tSplash) + 10f;
+			splashRect = new Rect((Screen.width - tWidth) / 2f, 0, tWidth, GetHeightLabel(tSplash));
+		}
+		GUI.TextArea(splashRect, tSplash);
+	}
 
 
 
@@ -1003,6 +1021,8 @@ public class Hud : MonoBehaviour {
 
 		// dynamic buttons for all the servers/matches/instances currently in progress 
 		listMatchesInProgress(hS, r.y);
+
+		displaySplash();
 	}
 
 	public float GetWidthBox(string s) {

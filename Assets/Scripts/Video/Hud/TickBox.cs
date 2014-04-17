@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TickBox : MonoBehaviour {
+public static class TickBox {
 
-	Texture2D off;
-	Texture2D on;
-
-	bool Display(bool state) {
-		off = (Texture2D)Pics.Get("Tickbox");
-		on = (Texture2D)Pics.Get("TickboxTicked");
-		return GUILayout.Button(state ? on : off);
+	public static bool Display(bool state, string label = "") {
+		GUIStyle GS = "Label";
+		GUIContent GC = new GUIContent(label);
+		GUILayout.Label(label, GUILayout.MaxWidth(GS.CalcSize(GC).x));
+		if (GUILayout.Button(state ? "X" : " ", GUILayout.Width(20)))
+			return !state;
+		return state;
 	}
 }
