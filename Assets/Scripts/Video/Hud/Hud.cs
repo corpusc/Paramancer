@@ -53,12 +53,7 @@ public class Hud : MonoBehaviour {
 	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
 	float tFOV = 45f;
-	string[] splashText = {"If you like this game, support us on *link to our webpage*!",
-		"TIP: Use the gravulator as often as possible to confuse your enemies!",
-		"TIP: Offense is often the best defense!",
-		"1234567890 is a big number!",
-		"TIP: Change your avatar in the Settings section!",
-		"TIP: There is a lot of control configuration avaliable, be sure to ckeck it out in the Controls section!"}; //sometimes funny(see minecraft splash text)
+	bool showTips = true;
 	
 	// UI element sizes
 	int midX, midY; // middle of the screen
@@ -107,6 +102,7 @@ public class Hud : MonoBehaviour {
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
 		tFOV = PlayerPrefs.GetFloat("FOV", 90f);
+		showTips = (PlayerPrefs.GetInt("showTips", 1) == 1);
 		//print ("Loaded FOV, value = " + tFOV.ToString());
 	}
 
@@ -426,6 +422,18 @@ public class Hud : MonoBehaviour {
 			PlayerPrefs.SetInt("GunBobbing", 0);
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
+
+		//show tips
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		showTips = TickBox.Display(showTips, "Show tips ");
+		if (showTips)
+			PlayerPrefs.SetInt("showTips", 1);
+		else
+			PlayerPrefs.SetInt("showTips", 0);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+		nextSplashUpdate = Time.time;
 
 		// chat fade
 		GUILayout.BeginHorizontal();
@@ -827,15 +835,34 @@ public class Hud : MonoBehaviour {
 
 
 	
+	string[] splashText = {"If you like this game, support us on *link to our webpage*!",
+		"1234567890 is a big number!",
+		"Paramancer == Not a Number!",
+		"There are 10 types of people: those who know binary and those who don't.",
+		"sqrtf(-1.f)!",
+		"To understand what recursion is, you must first understand recursion.",
+		"{\"hip\", \"hip\"}\nhip hip array!",
+		"while (!asleep) sheep++;",
+		"int main(){main();}",
+		"It compiles!"}; //sometimes funny(see minecraft splash text)
+
+	string[] tipText = {"TIP: Use the gravulator as often as possible to confuse your enemies!",
+		"TIP: Offense is often the best defense!",
+		"TIP: Change your avatar in the Settings section!",
+		"TIP: There is a lot of control configuration avaliable, be sure to check it out in the Controls section!"};
+
 	float nextSplashUpdate = 0f;
-	float splashUpdateTime = 20f; //the time it takes for the splash message to update
+	float splashUpdateTime = 10f; //the time it takes for the splash message to update
 	string tSplash = ""; //the currently displayed splash
 	float tWidth = 0f;
 	Rect splashRect;
 	void displaySplash() {
 		if (Time.time > nextSplashUpdate) {
 			nextSplashUpdate += splashUpdateTime;
-			tSplash = splashText[UnityEngine.Random.Range(0, splashText.Length)];
+			if(showTips)
+				tSplash = tipText[UnityEngine.Random.Range(0, tipText.Length)];
+			else
+				tSplash = splashText[UnityEngine.Random.Range(0, splashText.Length)];
 			tWidth = GetWidthLabel(tSplash) + 10f;
 			splashRect = new Rect((Screen.width - tWidth) / 2f, 0, tWidth, GetHeightLabel(tSplash));
 		}

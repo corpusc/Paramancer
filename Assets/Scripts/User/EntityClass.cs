@@ -328,7 +328,7 @@ public class EntityClass : MonoBehaviour {
 					}else{
 						yMove -= Time.deltaTime * 10f;
 					}
-					
+
 					ava.Move(transform.up * yMove * Time.deltaTime * 5f);
 					
 					crouched = false;

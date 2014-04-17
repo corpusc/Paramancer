@@ -301,8 +301,8 @@ public class CcNet : MonoBehaviour {
 			
 			if (CurrMatch.deathsSubtractScore) 
 				players[vi].currentScore--;
-			
-			players[si].kills++;
+			if (si != vi)
+				players[si].kills++;
 			
 			if (CurrMatch.killsIncreaseScore) 
 				players[si].currentScore++;
