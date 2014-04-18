@@ -171,7 +171,7 @@ public enum FiringChamber {
 public enum MainBody {
 	Light, //move 10% faster
 	Electromagnetic, //railgun effect, consume energy for more damage
-	Immortality, //if (health - dmg <= 0f && health - dmg >= -5f) health = 1f;
+	Immortality, //if (health - dmg <= 0f && cooldown == 0f) health = 1f;
 	Cushioned, //if (dmg > 30f) dmg = lerp(dmg, 30f, 0.1f);
 	Ethereal, //instant respawn
 

@@ -7,7 +7,7 @@ public class RlikePlane : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		lev = (RoguelikeLevel)this.GetComponent("RoguelikeLevel");
+		lev = new RoguelikeLevel();
 		lev.MapSize.x = 1024;
 		lev.MapSize.y = 1024;
 		lev.Block = new bool[1024, 1024]; //manually init this because lev.Start() will only be called after this start(), which would make texture.SetPixel harder to do

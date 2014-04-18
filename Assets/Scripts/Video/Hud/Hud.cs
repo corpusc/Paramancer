@@ -844,12 +844,17 @@ public class Hud : MonoBehaviour {
 		"{\"hip\", \"hip\"}\nhip hip array!",
 		"while (!asleep) sheep++;",
 		"int main(){main();}",
-		"It compiles!"}; //sometimes funny(see minecraft splash text)
+		"It compiles!",
+		"Eye see sharp!",
+		"Gluten free!"}; //sometimes funny(see minecraft splash text)
 
 	string[] tipText = {"TIP: Use the gravulator as often as possible to confuse your enemies!",
 		"TIP: Offense is often the best defense!",
 		"TIP: Change your avatar in the Settings section!",
-		"TIP: There is a lot of control configuration avaliable, be sure to check it out in the Controls section!"};
+		"TIP: There is a lot of control configuration avaliable, be sure to check it out in the Controls section!",
+		"TIP: Use the weapons that have been built for you. It will be easier to create your own when you get a decent feeling of the game.",
+		"TIP: You can disable tips in the settings menu. You'll be tortured with a coder's sense of humor in that case.",
+		"TIP: You don't have to set up a game of your own, you can just join others by clicking on their games!"};
 
 	float nextSplashUpdate = 0f;
 	float splashUpdateTime = 10f; //the time it takes for the splash message to update

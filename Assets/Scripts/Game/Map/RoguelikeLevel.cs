@@ -6,7 +6,7 @@ public struct Vec2i {
 	public int y;
 };
 
-public class RoguelikeLevel : MonoBehaviour {
+public class RoguelikeLevel {
 	public bool[,] Block; //2d array
 	public int[,] BlockType;
 	[HideInInspector]
@@ -30,15 +30,11 @@ public class RoguelikeLevel : MonoBehaviour {
 	//6 - metal_plate_005
 	//7 - metal_plate_008
 
-	void Start () {
+	void Init () {
 		Block = new bool[MapSize.x, MapSize.y];
 		BlockType = new int[MapSize.x, MapSize.y];
 		EmptyMap();
 		Build();
-	}
-
-	void Update () {
-	
 	}
 
 	public void Build () {
