@@ -5,7 +5,7 @@ public class RocketScript : MonoBehaviour {
 	public GameObject particle;
 	public int MinParticlesPerFrame = 6;
 	public int MaxParticlesPerFrame = 10;
-	public int ExplosionParticles = 50;
+	public int ExplosionParticles = 200;
 	public float ExplosionSize = 0.4f;
 	public float ForwardOffset = 1f; //prevents running into your own rocket when you have lags
 	public float Turn = 2f;
@@ -43,7 +43,7 @@ public class RocketScript : MonoBehaviour {
 					Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
 					np.transform.position = transform.position + offset;
 					np.GetComponent<BeamParticle>().MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
-					np.GetComponent<BeamParticle>().life = 0.5f;
+					np.GetComponent<BeamParticle>().life = 1.5f;
 					np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.green, Color.blue, Random.value);
 					np.GetComponent<BeamParticle>().UseMidColor = true;
 					np.GetComponent<BeamParticle>().MidColor = Color.Lerp(Color.green, Color.blue, Random.value);
@@ -57,7 +57,7 @@ public class RocketScript : MonoBehaviour {
 					Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
 					np.transform.position = transform.position + offset;
 					np.GetComponent<BeamParticle>().MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
-					np.GetComponent<BeamParticle>().life = 0.5f;
+					np.GetComponent<BeamParticle>().life = 2.5f;
 					np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.white, Color.yellow, Random.value);
 					np.GetComponent<BeamParticle>().UseMidColor = true;
 					np.GetComponent<BeamParticle>().MidColor = Color.Lerp(Color.red, Color.black, Random.Range(0f, 0.5f));
@@ -92,11 +92,12 @@ public class RocketScript : MonoBehaviour {
 			np.GetComponent<BeamParticle>().MidColor = Color.Lerp (Color.green, Color.blue, Random.value);
 			np.GetComponent<BeamParticle>().MidColorPos = 0.7f;
 			np.GetComponent<BeamParticle>().EndColor = Color.clear;
-			np.GetComponent<BeamParticle>().life = 0.5f;
-			np.GetComponent<BeamParticle>().f = 1f;
+			np.GetComponent<BeamParticle>().life = 2.5f;
+			np.GetComponent<BeamParticle>().f = -2f;
 			np.GetComponent<BeamParticle>().MinSize = 6f;
 			np.GetComponent<BeamParticle>().MaxSize = 8f;
 			np.GetComponent<BeamParticle>().acceleration = 0.1f;
+			np.GetComponent<BeamParticle>().type = ParticleType.Multiple;
 		}
 		else
 		for (int i = 0; i < ExplosionParticles; i++) {
@@ -105,11 +106,12 @@ public class RocketScript : MonoBehaviour {
 			np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
 			np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.red, Color.yellow, Random.value);
 			np.GetComponent<BeamParticle>().EndColor = Color.Lerp(Color.Lerp(Color.red, Color.clear, 1f), Color.Lerp(Color.black, Color.clear, 1f), Random.Range(0f, 1f));
-			np.GetComponent<BeamParticle>().life = 0.5f;
-			np.GetComponent<BeamParticle>().f = 1f;
+			np.GetComponent<BeamParticle>().life = 2.5f;
+			np.GetComponent<BeamParticle>().f = -2f;
 			np.GetComponent<BeamParticle>().MinSize = 6f;
 			np.GetComponent<BeamParticle>().MaxSize = 8f;
 			np.GetComponent<BeamParticle>().acceleration = 0.1f;
+			np.GetComponent<BeamParticle>().type = ParticleType.Multiple;
 		}
 		enabled = false;
 		if (net.isServer)

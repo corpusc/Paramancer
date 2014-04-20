@@ -128,6 +128,18 @@ public enum UserAction {
 	Count
 }
 
+public enum ParticleType {
+	Circle,
+	Puff,
+	Multiple,
+
+	Count
+}
+
+
+
+//procweap parts
+
 public enum Barrel {
 	Double,
 	Muted,

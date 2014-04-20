@@ -169,11 +169,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   n_types: 8
-  Forms: 100
+  Forms: 50
   MaxOverride: .200000003
   MinFormWidth: 16
   MaxFormWidth: 500
-  MaxArea: 10000
+  MaxArea: 50000
 --- !u!1 &725311463
 GameObject:
   m_ObjectHideFlags: 0
