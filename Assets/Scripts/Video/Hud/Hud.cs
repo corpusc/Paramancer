@@ -52,6 +52,7 @@ public class Hud : MonoBehaviour {
 	string defaultName = "Lazy Noob";
 	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
+	AboutMenu futureGoals = new AboutMenu();
 	float tFOV = 45f;
 	
 	// UI element sizes
@@ -193,6 +194,12 @@ public class Hud : MonoBehaviour {
 				menuMain();
 				break;
 
+			case HudMode.About:
+				// maybe this should be titled "ABOUT"?  would be more accurate?... and more standard 
+				menuBegin();
+				futureGoals.Draw(this);
+				menuEnd();
+				break;
 			case HudMode.Controls:
 				drawControlsAdjunct();
 				break;
@@ -369,32 +376,47 @@ public class Hud : MonoBehaviour {
 
 	
 	
-
+	
 	public void CategoryHeader(string s, bool wantCentering = true, bool spacing = true) {
-		int catSpan = 150; // category header span 
-		int ls = 8; // letter size, in pixels
-		if (s.Length * ls > catSpan) 
-			catSpan = s.Length * ls;
-		
 		if (spacing)
 			GUILayout.Label("");
-
+		
 		GUILayout.BeginHorizontal();
-
+		
 		if (wantCentering) 
 			GUILayout.FlexibleSpace();
-
-		GUILayout.Box(s, GUILayout.MaxWidth(catSpan));
-
+		
+		GUILayout.Box(s, GUILayout.MaxWidth(GetWidthBox(s)));
+		
 		if (wantCentering) 
 			GUILayout.FlexibleSpace();
-
+		
 		GUILayout.EndHorizontal();
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 	public void SizedLabel(string s) {
 		GUILayout.Label(s, GUILayout.MaxWidth(GetWidthLabel(s)));
 	}
+
+
+
+
+
+
+
+
 
 	int fsWidth = 1280;
 	int fsHeight = 720;
@@ -695,11 +717,11 @@ public class Hud : MonoBehaviour {
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
-		// the names 
-		GUILayout.BeginHorizontal(); 
-		for (int i = 0; i < (int)ControlDevice.Count; i++)
-			GUILayout.Box(((ControlDevice)i).ToString());
-		GUILayout.EndHorizontal();
+//		// the names 
+//		GUILayout.BeginHorizontal(); 
+//		for (int i = 0; i < (int)ControlDevice.Count; i++)
+//			GUILayout.Box(((ControlDevice)i).ToString());
+//		GUILayout.EndHorizontal();
 		
 		menuEnd(); 
 	}
@@ -867,12 +889,12 @@ public class Hud : MonoBehaviour {
 		menuBegin();
 
 		CategoryHeader("Current team", false, false);
-		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Logo, Controls");
+		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Logos, Control Config");
 		GUILayout.Label("IceFlame       - Coding, Various media & effects, Announcer");
 
 		CategoryHeader("Engine", false);
-		GUILayout.Label("This is an extensively remodeled fork of a game made (within 7 days) by Sophie Houlden");
-		GUILayout.Label("Visit sophiehoulden.com");
+		GUILayout.Label("This is an extensively remodeled fork of a game made in a seven day game jam.  By Sophie Houlden");
+		GUILayout.Label("(sophiehoulden.com)");
 		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?!
 		//if (GUILayout.Button("Sophie Houlden (web page)"))
 			//Application.OpenURL("http://sophiehoulden.com");  
@@ -973,6 +995,7 @@ public class Hud : MonoBehaviour {
 		buttonStarts(HudMode.Credits, r); /*^*/ r.y -= mIH;
 		buttonStarts(HudMode.Settings, r); /*^*/ r.y -= mIH;
 		buttonStarts(HudMode.Controls, r); /*^*/ r.y -= mIH;
+		buttonStarts(HudMode.About, r); /*^*/ r.y -= mIH;
 
 //		// JoinGame button 
 //		if (!net.Connected) {

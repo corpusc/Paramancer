@@ -10,18 +10,18 @@ public class BeamParticle : MonoBehaviour {
 			moveVec *= Random.Range(1f, 2f);
 		}
 	}
-	public float MaxSpeed = 0.2f; // random max
+	public float MaxSpeed = 0.2f; // random max 
 	public Color StartColor = Color.blue;
 	public Color MidColor = Color.green;
 	public bool UseMidColor = false;
-	public float MidColorPos = 0.5f; // reaches midcolor at maxlife * MidColorPos
-	public Color EndColor = Color.red; // always use something transparent
+	public float MidColorPos = 0.5f; // reaches midcolor at maxlife * MidColorPos 
+	public Color EndColor = Color.red; // always use something transparent 
 	public float life = 0.8f;
 	public float f = 0.05f;
 	public float MinSize = 1f;
 	public float MaxSize = 3f;
-	public bool ShotFromRifle = false; // use a different particle if yes
-	public float acceleration = 1f; //multiply the speed by this
+	public bool ShotFromRifle = false; // use a different particle if yes 
+	public float acceleration = 1f; // multiply the speed by this 
 
 	// private 
 	Mesh mesh;

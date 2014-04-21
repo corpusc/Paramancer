@@ -73,14 +73,13 @@ MonoBehaviour:
   MidColor: {r: 0, g: 1, b: 0, a: 1}
   UseMidColor: 0
   MidColorPos: .5
-  EndColor: {r: 1, g: 0, b: 0, a: 0}
+  EndColor: {r: 1, g: .289655179, b: 0, a: 0}
   life: .800000012
   f: .0500000007
   MinSize: 1
   MaxSize: 3
   ShotFromRifle: 0
   acceleration: 1
-  RotationSpeed: 30
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
