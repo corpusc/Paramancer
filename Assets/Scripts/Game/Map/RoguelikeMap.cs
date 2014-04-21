@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RoguelikeDungeon : MonoBehaviour {
+public class RoguelikeDungeon {
 
-	//RoguelikeLevel* lev;
+	public RoguelikeLevel[] lev;
+	public int n_levs = 5; //the amount of levels a dungeon has
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	public void Init() {
+		lev = new RoguelikeLevel[n_levs];
+
+		int cForms = 10; //current
+		float cOverride = 0.3f;
+		for (int i = 0; i < n_levs; i++) {
+			lev[i].Forms = cForms;
+		}
 	}
 }
