@@ -8,6 +8,7 @@ using System.Globalization;
 
 static public class S {
 	public const float GoldenRatio = 1.6180339887498948482f;
+	public const int K = 1000;
 	
 	// colors 
 	public static Color WhiteTRANS = new Color(1f, 1f, 1f, 0.35f);

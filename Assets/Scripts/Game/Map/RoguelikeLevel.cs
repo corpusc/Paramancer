@@ -7,19 +7,23 @@ public struct Vec2i {
 };
 
 public class RoguelikeLevel{
-	public bool[,] Block; //2d array
+	public bool[,] Block; // 2d array
 	public TileType[,] Type;
+	public bool[,] Floor; // for holes connecting levels
+	public bool[,] Ceiling;
 	public Vec2i MapSize;
-	public int Forms = 50; //the amount of rooms/hallways to create
-	public float MaxOverride = 0.2f; //only create a form if there aren't too many things already in there
+	public int Forms = 50; // the amount of rooms/hallways to create
+	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there
 	public int MinFormWidth = 16;
 	public int MaxFormWidth = 500;
-	public int MaxArea = 10000; //limits the creation of extremely large rooms
+	public int MaxArea = 10000; // limits the creation of extremely large rooms
 
-	int safetyLimit = 50000; //the limit of tries Build() can do before surrendering
+	int safetyLimit = 50000; // the limit of tries Build() can do before surrendering
 
 	public void Init () {
 		Block = new bool[MapSize.x, MapSize.y];
+		Floor = new bool[MapSize.x, MapSize.y];
+		Ceiling = new bool[MapSize.x, MapSize.y];
 		Type = new TileType[MapSize.x, MapSize.y];
 		EmptyMap();
 		Build();
@@ -35,7 +39,7 @@ public class RoguelikeLevel{
 
 			Vec2i u;
 			u.x = Random.Range(0, MapSize.x);
-			u.y = Random.Range(0, MapSize.y); //this is last-exclusive, hence all the <= and ...+ 1 later on
+			u.y = Random.Range(0, MapSize.y); // this is last-exclusive, hence all the <= and ...+ 1 later on
 			
 			Vec2i start;
 			Vec2i end;
@@ -87,6 +91,8 @@ public class RoguelikeLevel{
 		for (int i = start.x; i <= end.x; i++)
 		for (int j = start.y; j <= end.y; j++) {
 			Block[i, j] = true;
+			Ceiling[i, j] = true;
+			Floor[i, j] = true;
 			Type[i, j] = currentType;
 		}
 	}
@@ -95,7 +101,24 @@ public class RoguelikeLevel{
 		for (int i = 0; i < MapSize.x; i++)
 		for (int j = 0; j < MapSize.y; j++) {
 			Block[i, j] = false;
+			Ceiling[i, j] = false;
+			Floor[i, j] = false;
 			Type[i, j] = 0;
+		}
+	}
+
+	public bool GetBlock (int x, int y) { // only difference between adressing blocks as an array is that this will return false if out of the map
+		if (x < 0 || x >= MapSize.x) return false;
+		if (x < 0 || x >= MapSize.x) return false;
+		return Block[x, y];
+	}
+
+	public void Build3D () {
+		for (int i = 0; i < MapSize.x; i++)
+		for (int j = 0; j < MapSize.y; j++) {
+			if (Floor[i, j]) {
+				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
+			}
 		}
 	}
 }

@@ -301,11 +301,13 @@ public class CcNet : MonoBehaviour {
 			
 			if (CurrMatch.deathsSubtractScore) 
 				players[vi].currentScore--;
-			if (si != vi)
+			if (si == vi) {
+				Sfx.PlayOmni("humiliation");
+			} else {
 				players[si].kills++;
-			
-			if (CurrMatch.killsIncreaseScore) 
-				players[si].currentScore++;
+				if (CurrMatch.killsIncreaseScore) 
+					players[si].currentScore++;
+			}
 		}
 		
 		// team stuff
@@ -445,9 +447,11 @@ public class CcNet : MonoBehaviour {
 		string victimName = "Someone";
 		for(int i = 0; i < players.Count; i++) {
 			if (players[i].viewID == fraggerID) { // if this is the fragger 
-				players[i].Entity.MultiFragCount++;
-				players[i].Entity.PrevFrag = Time.time;
-				handleMultiFrag(i);
+				if (victimID != fraggerID) {
+					players[i].Entity.MultiFragCount++;
+					players[i].Entity.PrevFrag = Time.time;
+					handleMultiFrag(players[i].Entity.MultiFragCount);
+				}
 				fraggerName = players[i].name;
 				fraggerIdx = i;
 			}
@@ -455,7 +459,8 @@ public class CcNet : MonoBehaviour {
 			if (players[i].viewID == victimID) { // if this is the victim 
 				victimName = players[i].name;
 				victimIdx = i;
-				players[i].Entity.PlaySound("Die");
+				if (victimID != fraggerID)
+					players[i].Entity.PlaySound("Die");
 
 				// lives
 				players[i].lives--;
