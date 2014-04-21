@@ -183,38 +183,38 @@ public class MatchSetup {
 			// checkbox toggles 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			matches[matchId].killsIncreaseScore = GUILayout.Toggle(matches[matchId].killsIncreaseScore, "Kills Increase score");
+			matches[matchId].killsIncreaseScore = TickBox.Display(matches[matchId].killsIncreaseScore, "Kills Increase score");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			matches[matchId].deathsSubtractScore = GUILayout.Toggle(matches[matchId].deathsSubtractScore, "Deaths Reduce score");
+			matches[matchId].deathsSubtractScore = TickBox.Display(matches[matchId].deathsSubtractScore, "Deaths Reduce score");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			matches[matchId].pitchBlack = GUILayout.Toggle(matches[matchId].pitchBlack, "Pitch Black");
+			matches[matchId].pitchBlack = TickBox.Display(matches[matchId].pitchBlack, "Pitch Black");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			matches[matchId].teamBased = GUILayout.Toggle(matches[matchId].teamBased, "Team Based");
+			matches[matchId].teamBased = TickBox.Display(matches[matchId].teamBased, "Team Based");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
 			if (matches[matchId].teamBased) {
 				GUILayout.BeginHorizontal();
 				GUILayout.FlexibleSpace();
-				matches[matchId].allowFriendlyFire = GUILayout.Toggle(matches[matchId].allowFriendlyFire, "Allow Friendly Fire");
+				matches[matchId].allowFriendlyFire = TickBox.Display(matches[matchId].allowFriendlyFire, "Allow Friendly Fire");
 				GUILayout.FlexibleSpace();
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 				GUILayout.FlexibleSpace();
-				matches[matchId].basketball = GUILayout.Toggle(matches[matchId].basketball, "Basketball");
+				matches[matchId].basketball = TickBox.Display(matches[matchId].basketball, "Basketball");
 				GUILayout.FlexibleSpace();
 				GUILayout.EndHorizontal();
 			}

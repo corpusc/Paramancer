@@ -126,3 +126,84 @@ public enum UserAction {
 	
 	Count
 }
+
+public enum ParticleType {
+	Circle,
+	Puff,
+	Multiple,
+
+	Count
+}
+
+
+
+//procweap parts
+
+public enum Barrel {
+	Double,
+	Muted,
+	Large,
+
+	Count
+}
+
+public enum UnderBarrel { //activate with z?
+	Bayonet, //instakill anyone close enough and right in front of you
+	Laser, //deal damage per second to enemies directly in front of you
+	Flashlight,
+	Kamikaze, //go boom! when you die, activatable
+	Gravulator,
+	Swapper,
+	GrapplingHook,
+	OozeLeaker, //an ooze that slows everyone who enters it
+
+	Count
+}
+
+public enum OverBarrel { //activate with x?
+	Scope, //zoom
+	Forcefield, //damage all enemies that are close
+	DamageReductor, //dmg *= 0.95f
+	Unhitter, //activate to enter a mode where you can't move/shoot, but you can't be hit(only lasts 3 seconds)
+	Flamethrower,
+
+	Count
+}
+
+public enum FiringChamber {
+	Large, //for grenades/rockets
+	Vaporizing, //jets of glowing-hot gasses fly out of your gun to the sides, dealing damage
+	Vacuum, //no shot sound
+	Amortized, //no knockback
+
+	Count
+}
+
+public enum MainBody {
+	Light, //move 10% faster
+	Electromagnetic, //railgun effect, consume energy for more damage
+	Immortality, //if (health - dmg <= 0f && cooldown == 0f) health = 1f;
+	Cushioned, //if (dmg > 30f) dmg = lerp(dmg, 30f, 0.1f);
+	Ethereal, //instant respawn
+
+	Count
+}
+
+public enum Ammo {
+	Rocket,
+	Grenade,
+	SmokeGrenade,
+	Tape, //for machine guns
+	Pull, //...anyone hit towards you
+	Push, //...-,,- away from you
+	Tesla, //damage nearby enemies
+
+	Count
+}
+
+public enum Handle {
+	Standard,
+	Auto,
+
+	Count
+}

@@ -6,7 +6,7 @@ using System.Collections;
 public class Avatar : MonoBehaviour {
 	public bool isGrounded = false;
 	public float radius = 0.5f;
-	public float MiddleOfHead = 1.8f;
+	public float MiddleOfHead = 2f;
 	public float SprintMultiplier = 2.0f;
 	public Vector3 UpVector = new Vector3(0.0f, 1.0f, 0.0f);
 	public bool sprinting = false;

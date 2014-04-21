@@ -400,6 +400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeightOfKeyboard: 0
+  currDevPic: {fileID: 0}
 --- !u!114 &1973207301
 MonoBehaviour:
   m_ObjectHideFlags: 0

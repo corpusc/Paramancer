@@ -54,6 +54,7 @@ public class Hud : MonoBehaviour {
 	MatchSetup matchSetup = new MatchSetup();
 	AboutMenu futureGoals = new AboutMenu();
 	float tFOV = 45f;
+	bool showTips = true;
 	
 	// UI element sizes
 	int midX, midY; // middle of the screen
@@ -102,6 +103,7 @@ public class Hud : MonoBehaviour {
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
 		tFOV = PlayerPrefs.GetFloat("FOV", 90f);
+		showTips = (PlayerPrefs.GetInt("showTips", 1) == 1);
 		//print ("Loaded FOV, value = " + tFOV.ToString());
 	}
 
@@ -435,14 +437,25 @@ public class Hud : MonoBehaviour {
 		// gun bob 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		SizedLabel("Gun bobbing ");
-		net.gunBobbing = GUILayout.Toggle(net.gunBobbing, "");
+		net.gunBobbing = TickBox.Display(net.gunBobbing, "Gun bobbing ");
 		if (net.gunBobbing)
 			PlayerPrefs.SetInt("GunBobbing", 1);
 		else
 			PlayerPrefs.SetInt("GunBobbing", 0);
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
+
+		//show tips
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		showTips = TickBox.Display(showTips, "Show tips ");
+		if (showTips)
+			PlayerPrefs.SetInt("showTips", 1);
+		else
+			PlayerPrefs.SetInt("showTips", 0);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+		nextSplashUpdate = Time.time;
 
 		// chat fade
 		GUILayout.BeginHorizontal();
@@ -642,11 +655,6 @@ public class Hud : MonoBehaviour {
 		GUI.skin.textArea.fontSize = 16;
 		GUI.skin.textField.font = Font;
 		GUI.skin.textField.fontSize = 16;
-		GUI.skin.toggle.font = Font;
-		GUI.skin.toggle.fontSize = 14;
-		GUI.skin.toggle.normal.background = (Texture2D)Pics.Get("TickBox");
-		GUI.skin.toggle.active.background = (Texture2D)Pics.Get("TickBoxTicked");
-		GUI.skin.toggle.hover.background = (Texture2D)Pics.Get("TickBoxTickable");
 	}
 
 
@@ -676,7 +684,7 @@ public class Hud : MonoBehaviour {
 		// look inversion 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		/**/locUser.LookInvert = GUILayout.Toggle(locUser.LookInvert, "Look inversion", GUILayout.ExpandWidth(false));
+		/**/locUser.LookInvert = TickBox.Display(locUser.LookInvert, "Invert Y axis ");
 		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
 		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
 		GUILayout.FlexibleSpace();
@@ -845,6 +853,48 @@ public class Hud : MonoBehaviour {
 
 
 
+
+
+
+	
+	string[] splashText = {"If you like this game, support us on *link to our webpage*!",
+		"1234567890 is a big number!",
+		"Paramancer == Not a Number!",
+		"There are 10 types of people: those who know binary and those who don't.",
+		"sqrtf(-1.f)!",
+		"To understand what recursion is, you must first understand recursion.",
+		"{\"hip\", \"hip\"}\nhip hip array!",
+		"while (!asleep) sheep++;",
+		"int main(){main();}",
+		"It compiles!",
+		"Eye see sharp!",
+		"Gluten free!"}; //sometimes funny(see minecraft splash text)
+
+	string[] tipText = {"TIP: Use the gravulator as often as possible to confuse your enemies!",
+		"TIP: Offense is often the best defense!",
+		"TIP: Change your avatar in the Settings section!",
+		"TIP: There is a lot of control configuration avaliable, be sure to check it out in the Controls section!",
+		"TIP: Use the weapons that have been built for you. It will be easier to create your own when you get a decent feeling of the game.",
+		"TIP: You can disable tips in the settings menu. You'll be tortured with a coder's sense of humor in that case.",
+		"TIP: You don't have to set up a game of your own, you can just join others by clicking on their games!"};
+
+	float nextSplashUpdate = 0f;
+	float splashUpdateTime = 10f; //the time it takes for the splash message to update
+	string tSplash = ""; //the currently displayed splash
+	float tWidth = 0f;
+	Rect splashRect;
+	void displaySplash() {
+		if (Time.time > nextSplashUpdate) {
+			nextSplashUpdate += splashUpdateTime;
+			if(showTips)
+				tSplash = tipText[UnityEngine.Random.Range(0, tipText.Length)];
+			else
+				tSplash = splashText[UnityEngine.Random.Range(0, splashText.Length)];
+			tWidth = GetWidthLabel(tSplash) + 10f;
+			splashRect = new Rect((Screen.width - tWidth) / 2f, 0, tWidth, GetHeightLabel(tSplash));
+		}
+		GUI.TextArea(splashRect, tSplash);
+	}
 
 
 
@@ -1026,6 +1076,8 @@ public class Hud : MonoBehaviour {
 
 		// dynamic buttons for all the servers/matches/instances currently in progress 
 		listMatchesInProgress(hS, r.y);
+
+		displaySplash();
 	}
 
 	public float GetWidthBox(string s) {

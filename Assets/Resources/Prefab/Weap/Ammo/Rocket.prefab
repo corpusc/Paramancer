@@ -334,7 +334,7 @@ MonoBehaviour:
   particle: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9, type: 2}
   MinParticlesPerFrame: 10
   MaxParticlesPerFrame: 15
-  ExplosionParticles: 100
+  ExplosionParticles: 200
   ExplosionSize: .400000006
   ForwardOffset: 2
   Turn: 2

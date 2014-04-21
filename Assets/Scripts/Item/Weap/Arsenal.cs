@@ -176,7 +176,7 @@ public class Arsenal : MonoBehaviour {
 				np.GetComponent<BeamParticle>().MaxSize = 0.4f;
 				np.GetComponent<BeamParticle>().StartColor = Color.blue;
 				np.GetComponent<BeamParticle>().EndColor = Color.clear;
-				np.GetComponent<BeamParticle>().ShotFromRifle = true;
+				np.GetComponent<BeamParticle>().type = ParticleType.Circle;
 				progress += 0.20f;
 				angle += 24f;
 			}

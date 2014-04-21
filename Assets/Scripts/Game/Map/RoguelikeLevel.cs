@@ -6,19 +6,19 @@ public struct Vec2i {
 	public int y;
 };
 
-public class RoguelikeLevel : MonoBehaviour {
+public class RoguelikeLevel{
 	public bool[,] Block; //2d array
 	public int[,] BlockType;
 	[HideInInspector]
 	public int n_types = 8;
 	public Vec2i MapSize;
-	public int Forms; //the amount of rooms/hallways to create
-	public float MaxOverride = 0.1f; //only create a form if there aren't too many things already in there
+	public int Forms = 50; //the amount of rooms/hallways to create
+	public float MaxOverride = 0.2f; //only create a form if there aren't too many things already in there
 	public int MinFormWidth = 16;
 	public int MaxFormWidth = 500;
 	public int MaxArea = 10000; //limits the creation of extremely large rooms
 
-	int safetyLimit = 10000; //the limit of tries Build() can do before surrendering
+	int safetyLimit = 50000; //the limit of tries Build() can do before surrendering
 
 	//block types:
 	//0 - default, bricks
@@ -30,15 +30,11 @@ public class RoguelikeLevel : MonoBehaviour {
 	//6 - metal_plate_005
 	//7 - metal_plate_008
 
-	void Start () {
+	public void Init () {
 		Block = new bool[MapSize.x, MapSize.y];
 		BlockType = new int[MapSize.x, MapSize.y];
 		EmptyMap();
 		Build();
-	}
-
-	void Update () {
-	
 	}
 
 	public void Build () {
