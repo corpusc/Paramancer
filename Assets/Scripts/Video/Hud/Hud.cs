@@ -885,7 +885,7 @@ public class Hud : MonoBehaviour {
 	Rect splashRect;
 	void displaySplash() {
 		if (Time.time > nextSplashUpdate) {
-			nextSplashUpdate += splashUpdateTime;
+			nextSplashUpdate = Time.time + splashUpdateTime;
 			if(showTips)
 				tSplash = tipText[UnityEngine.Random.Range(0, tipText.Length)];
 			else

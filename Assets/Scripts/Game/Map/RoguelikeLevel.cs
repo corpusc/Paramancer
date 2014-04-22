@@ -17,6 +17,8 @@ public class RoguelikeLevel{
 	public int MinFormWidth = 16;
 	public int MaxFormWidth = 500;
 	public int MaxArea = 10000; // limits the creation of extremely large rooms
+	public Vector3 Pos = Vector3.zero;
+	public Vector3 Scale = Vector3.one;
 
 	int safetyLimit = 50000; // the limit of tries Build() can do before surrendering
 
@@ -118,6 +120,9 @@ public class RoguelikeLevel{
 		for (int j = 0; j < MapSize.y; j++) {
 			if (Floor[i, j]) {
 				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
+				np.transform.rotation = Quaternion.identity;
+				np.transform.position = Pos + new Vector3((float)i * Scale.x, 0f, (float)j * Scale.z);
+				np.transform.localScale = Scale * 0.1f; // for some reason, planes start as a 10x10 square, hence the 0.1
 			}
 		}
 	}

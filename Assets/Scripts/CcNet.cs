@@ -450,7 +450,7 @@ public class CcNet : MonoBehaviour {
 				if (victimID != fraggerID) {
 					players[i].Entity.MultiFragCount++;
 					players[i].Entity.PrevFrag = Time.time;
-					handleMultiFrag(players[i].Entity.MultiFragCount);
+					handleMultiFrag(players[i].Entity.MultiFragCount, players[i].name);
 				}
 				fraggerName = players[i].name;
 				fraggerIdx = i;
@@ -483,7 +483,7 @@ public class CcNet : MonoBehaviour {
 		
 		// set some unused?! totals
 		if (localPlayer.viewID == fraggerID) 
-			localPlayer.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz?
+			localPlayer.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz? NOTE: they could be used for statistics
 		if (localPlayer.viewID == victimID) { // if local player was the victim 
 			localPlayer.totalDeaths++;
 			localPlayer.FraggedBy = players[fraggerIdx].Entity.gameObject;
@@ -520,7 +520,7 @@ public class CcNet : MonoBehaviour {
 		
 	}
 
-	void handleMultiFrag(int i) {
+	void handleMultiFrag(int i, string f) { // f is for fragger
 		switch (players[i].Entity.MultiFragCount) {
 			case 0: break;
 			case 1: break;
@@ -529,30 +529,44 @@ public class CcNet : MonoBehaviour {
 			case 4: players[i].Entity.PlaySound("QuadraKill"); break;
 			case 5: players[i].Entity.PlaySound("PentaKill"); break;
 			case 6: players[i].Entity.PlaySound("HexaKill"); break;
-			default: players[i].Entity.PlaySound("GodLike"); break;
+			default:
+
+			players[i].Entity.PlaySound("GodLike");
+			var le = new LogEntry();
+			le.Maker = "";
+			le.Color = Color.magenta;
+			le.Text = f + " is godlike!";
+			log.Entries.Add(le);
+			log.DisplayTime = Time.time+log.FadeTime;
+
+			break;
 		}
 	}
 	
 	private string getObituary(string f, int fId, string v, int vId) { // fragger, victim
 		// suicides
 		if (fId == vId) {
-			switch (Random.Range(0, 5)) {
+			switch (Random.Range(0, 7)) {
 				case 0:	return f + " bought the farm!";
 				case 1:	return f + " changed career... to Daisy Pusher!";
 				case 2:	return f + " really bit the dust!";
 				case 3:	return f + " really shot himself in the foot!";
 				case 4:	return f + " did some nice kamikaze work!";
+				case 5: return f + " didn't know binary!";
+				case 6: return f + " got scared of the dark!";
 				default: return "....";
 			}
 		}
 		
 		// normal frags
-		switch (Random.Range(0, 5)) {
+		switch (Random.Range(0, 7)) {
 			case 0:	return f + " really gave " + v + " what for!";
 			case 1:	return f + " fixed " + v + "'s little red wagon!";
 			case 2:	return f + " messed up " + v + " real bad!";
 			case 3:	return f + " sent " + v + " to a better place!";
 			case 4:	return f + " released " + v + "'s spirit from these mortal chains!";
+			case 5: return v + " was shown the light by " + f + "!";
+			case 6: return f + " showed the justice to " + v + "!";
 			default: return "....";
 		}
 	}
