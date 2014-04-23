@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RoguelikeDungeon {
+public class RoguelikeMap : ScriptableObject {
 
 	public RoguelikeLevel[] lev;
 	public int n_levs = 5; // the amount of levels a dungeon has

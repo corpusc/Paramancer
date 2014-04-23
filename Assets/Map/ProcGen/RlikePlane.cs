@@ -7,23 +7,27 @@ public class RlikePlane : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		lev = new RoguelikeLevel();
-		lev.MapSize.x = 1024;
-		lev.MapSize.y = 1024;
+		lev = ScriptableObject.CreateInstance<RoguelikeLevel>();
+		lev.MapSize.x = 64;
+		lev.MapSize.y = 64;
+		lev.Forms = 40;
+		lev.MaxArea = 50;
+		lev.MaxFormWidth = 16;
+		lev.MinFormWidth = 1;
+		lev.MaxOverride = 0.1f;
 		lev.Init();
-		Texture2D texture = new Texture2D(1024, 1024);
+		Texture2D texture = new Texture2D(64, 64);
+		texture.filterMode = FilterMode.Point;
 		renderer.material.mainTexture = texture;
-		int y = 0;
-		while (y < texture.height) {
-			int x = 0;
-			while (x < texture.width) {
-				Color color = (lev.Block[x, y] ? Color.white : Color.gray);
+		for (int x = 0; x < texture.width; x++)
+		for(int y = 0; y < texture.height; y++) {
+				Color color = (lev.Block[x, y] ? Color.white : Color.black);
 				texture.SetPixel(x, y, color);
-				++x;
 			}
-			++y;
-		}
 		texture.Apply();
+		lev.Pos = new Vector3(10f, 0f, 10f);
+		lev.Scale = new Vector3(3f, 3f, 3f);
+		lev.Build3D();
 	}
 	
 	// Update is called once per frame
