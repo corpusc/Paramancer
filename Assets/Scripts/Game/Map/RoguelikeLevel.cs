@@ -6,12 +6,12 @@ public struct Vec2i {
 	public int y;
 };
 
-public class RoguelikeLevel : ScriptableObject{
+public class RoguelikeLevel : ScriptableObject {
 	public bool[,] Block; // 2d array
 	// if Block[i, j] is true, then there is empty space at i, j
 	public TileType[,] Type;
 	public bool[,] Floor; // for holes connecting levels
-	public bool[,] Ceiling;
+	public char[,] Ceiling;
 	public Vec2i MapSize;
 	public int Forms = 50; // the amount of rooms/hallways to create
 	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there
@@ -35,7 +35,7 @@ public class RoguelikeLevel : ScriptableObject{
 	public void Init () {
 		Block = new bool[MapSize.x, MapSize.y];
 		Floor = new bool[MapSize.x, MapSize.y];
-		Ceiling = new bool[MapSize.x, MapSize.y];
+		Ceiling = new char[MapSize.x, MapSize.y];
 		Type = new TileType[MapSize.x, MapSize.y];
 
 		BricksMat = (Material)Resources.Load("Mat/Allegorithmic/BrickWall_02", typeof(Material));
@@ -53,6 +53,7 @@ public class RoguelikeLevel : ScriptableObject{
 
 	public void Build () {
 		preBuild();
+
 		int formsMade = 0;
 		for (int i = 0; i < safetyLimit && formsMade < Forms; i++) {
 			Vec2i t;
@@ -114,13 +115,14 @@ public class RoguelikeLevel : ScriptableObject{
 		end.x = Mathf.Clamp(end.x, 0, MapSize.x - 1);
 		end.y = Mathf.Clamp(end.y, 0, MapSize.y - 1); // because sometimes MaxFormWidth > MapSize
 
-		TileType currentType = (TileType)Random.Range(0, (int)TileType.Count);
+		char height = (char)Random.Range(1, 3);
+		TileType currTile = (TileType)Random.Range(0, (int)TileType.Count);
 		for (int i = start.x; i <= end.x; i++)
 		for (int j = start.y; j <= end.y; j++) {
 			Block[i, j] = true;
-			Ceiling[i, j] = true;
+			Ceiling[i, j] = height;
 			Floor[i, j] = true;
-			Type[i, j] = currentType;
+			Type[i, j] = currTile;
 		}
 	}
 
@@ -128,20 +130,21 @@ public class RoguelikeLevel : ScriptableObject{
 		for (int i = 0; i < MapSize.x; i++)
 		for (int j = 0; j < MapSize.y; j++) {
 			Block[i, j] = false;
-			Ceiling[i, j] = false;
+			Ceiling[i, j] = (char)0;
 			Floor[i, j] = false;
 			Type[i, j] = 0;
 		}
 	}
 
-	public bool GetBlock (int x, int y) { // only difference between adressing blocks as an array is that this will return false if out of the map
+	public bool GetBlock(int x, int y) { 
+		// only difference between adressing blocks as an array is that this will return false if out of the map 
 		if (x < 0 || x >= MapSize.x) return false;
 		if (y < 0 || y >= MapSize.y) return false;
-		//MonoBehaviour.print("Test passed, x = " + x.ToString() + " y = " + y.ToString());
+		//MonoBehaviour.print("Test passed, x = " + x.ToString() + " y = " + y.ToString()); 
 		return Block[x, y];
 	}
 
-	Material GetMat (TileType cType) { // current
+	Material GetMat (TileType cType) { // current 
 		switch (cType) {
 		case TileType.Bricks:
 			return BricksMat;
@@ -183,43 +186,76 @@ public class RoguelikeLevel : ScriptableObject{
 				np.transform.localScale = Scale * 0.1f; // for some reason, planes start as a 10x10 square, hence the 0.1
 				np.renderer.material = GetMat(Type[i, j]);
 			}
-			if (Ceiling[i, j]) {
+
+			char height = Ceiling[i, j];
+			if (height > 0) {
 				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
 				np.transform.up = Vector3.down;
-				np.transform.position = Pos + new Vector3((float)i * Scale.x, (float)Scale.y, (float)j * Scale.z);
+				np.transform.position = Pos + new Vector3(
+					Scale.x * (float)i, 
+					Scale.y * (float)height, 
+					Scale.z * (float)j);
 				np.transform.localScale = Scale * 0.1f;
 				np.renderer.material = GetMat(Type[i, j]);
 			}
-			if (Block[i, j]) { // walls
+
+			if (Block[i, j]) { // walls 
 				if (!GetBlock(i - 1, j)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-					np.transform.up = Vector3.right;
-					np.transform.position = Pos + new Vector3((float)i * Scale.x - Scale.x / 2f, (float)Scale.y / 2f, (float)j * Scale.z);
-					np.transform.localScale = new Vector3(Scale.y, 1f, Scale.z) * 0.1f;
+//					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
+//					np.transform.up = Vector3.right;
+//					np.transform.position = Pos + new Vector3((float)i * Scale.x - Scale.x / 2f, (float)Scale.y / 2f, (float)j * Scale.z);
+//					np.transform.localScale = new Vector3(Scale.y, 1f, Scale.z) * 0.1f;
+//					np.renderer.material = GetMat(Type[i, j]);
+					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+					np.transform.forward = Vector3.left;
+					np.transform.position = Pos + new Vector3(
+						(float)i * Scale.x - Scale.x / 2f, 
+						(float)height * Scale.y / 2f, 
+						(float)j * Scale.z);
+					np.transform.localScale = new Vector3(Scale.x, Scale.y * height, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
 					np.renderer.material = GetMat(Type[i, j]);
 				}
 				
 				if (!GetBlock(i + 1, j)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-					np.transform.up = Vector3.left;
-					np.transform.position = Pos + new Vector3((float)i * Scale.x + Scale.x / 2f, (float)Scale.y / 2f, (float)j * Scale.z);
-					np.transform.localScale = new Vector3(Scale.y, 1f, Scale.z) * 0.1f;
+//					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
+//					np.transform.up = Vector3.left;
+//					np.transform.position = Pos + new Vector3((float)i * Scale.x + Scale.x / 2f, (float)Scale.y / 2f, (float)j * Scale.z);
+//					np.transform.localScale = new Vector3(Scale.y, 1f, Scale.z) * 0.1f;
+//					np.renderer.material = GetMat(Type[i, j]);
+					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+					np.transform.forward = Vector3.right;
+					np.transform.position = Pos + new Vector3(
+						(float)i * Scale.x + Scale.x / 2f, 
+						(float)height * Scale.y / 2f, 
+						(float)j * Scale.z);
+					np.transform.localScale = new Vector3(Scale.x, Scale.y * height, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
 					np.renderer.material = GetMat(Type[i, j]);
 				}
 				
 				if (!GetBlock(i, j - 1)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-					np.transform.up = Vector3.forward;
-					np.transform.position = Pos + new Vector3((float)i * Scale.x, (float)Scale.y / 2f, (float)j * Scale.z - Scale.z / 2f);
-					np.transform.localScale = new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
+					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+					np.transform.forward = Vector3.back;
+					np.transform.position = Pos + new Vector3(
+						(float)i * Scale.x, 
+						(float)height * Scale.y / 2f, 
+						(float)j * Scale.z - Scale.z / 2f);
+					np.transform.localScale = new Vector3(Scale.x, Scale.y * height, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
 					np.renderer.material = GetMat(Type[i, j]);
 				}
 				
 				if (!GetBlock(i, j + 1)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-					np.transform.up = Vector3.back;
-					np.transform.position = Pos + new Vector3((float)i * Scale.x, (float)Scale.y / 2f, (float)j * Scale.z + Scale.z / 2f);
-					np.transform.localScale = new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
+//					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
+//					np.transform.up = Vector3.back;
+//					np.transform.position = Pos + new Vector3((float)i * Scale.x, (float)Scale.y / 2f, (float)j * Scale.z + Scale.z / 2f);
+//					np.transform.localScale = new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
+//					np.renderer.material = GetMat(Type[i, j]);
+					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+					//np.transform.forward = Vector3.forward;
+					np.transform.position = Pos + new Vector3(
+						(float)i * Scale.x, 
+						(float)height * Scale.y / 2f, 
+						(float)j * Scale.z + Scale.z / 2f);
+					np.transform.localScale = new Vector3(Scale.x, Scale.y * height, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
 					np.renderer.material = GetMat(Type[i, j]);
 				}
 			} // end of walls
