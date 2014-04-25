@@ -212,12 +212,14 @@ public class RoguelikeLevel : ScriptableObject {
 			char orH; // other room height 
 			char pwH; // partial wall height 
 			char sH; // space height 
+			Vector2 uvScale;
 			if (Block[i, j]) {
 				// west 
 				orH = GetCeilingHeight(i-1, j);
 				if (orH < height) {
 					pwH = (char)(height - orH);
 					sH = (char)(height - pwH);
+					uvScale = new Vector2(1, pwH);
 
 					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 					np.transform.forward = Vector3.left;
@@ -227,6 +229,8 @@ public class RoguelikeLevel : ScriptableObject {
 						(float)j * Scale.z);
 					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);
 					np.renderer.material = GetMat(Type[i, j]);
+					np.renderer.material.mainTextureScale = uvScale;
+					np.renderer.material.SetTextureScale("_BumpMap", uvScale);
 				}
 				
 				// east 
@@ -234,6 +238,7 @@ public class RoguelikeLevel : ScriptableObject {
 				if (orH < height) {
 					pwH = (char)(height - orH);
 					sH = (char)(height - pwH);
+					uvScale = new Vector2(1, pwH);
 
 					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 					np.transform.forward = Vector3.right;
@@ -243,6 +248,8 @@ public class RoguelikeLevel : ScriptableObject {
 						(float)j * Scale.z);
 					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);
 					np.renderer.material = GetMat(Type[i, j]);
+					np.renderer.material.mainTextureScale = uvScale;
+					np.renderer.material.SetTextureScale("_BumpMap", uvScale);
 				}
 				
 				// south 
@@ -250,6 +257,7 @@ public class RoguelikeLevel : ScriptableObject {
 				if (orH < height) {
 					pwH = (char)(height - orH);
 					sH = (char)(height - pwH);
+					uvScale = new Vector2(1, pwH);
 
 					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 					np.transform.forward = Vector3.back;
@@ -259,6 +267,8 @@ public class RoguelikeLevel : ScriptableObject {
 						(float)j * Scale.z - Scale.z / 2f);
 					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
 					np.renderer.material = GetMat(Type[i, j]);
+					np.renderer.material.mainTextureScale = uvScale;
+					np.renderer.material.SetTextureScale("_BumpMap", uvScale);
 				}
 
 				// north 
@@ -266,6 +276,7 @@ public class RoguelikeLevel : ScriptableObject {
 				if (orH < height) {
 					pwH = (char)(height - orH);
 					sH = (char)(height - pwH);
+					uvScale = new Vector2(1, pwH);
 
 					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 					//np.transform.forward = Vector3.forward;
@@ -275,6 +286,8 @@ public class RoguelikeLevel : ScriptableObject {
 						(float)j * Scale.z + Scale.z / 2f);
 					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
 					np.renderer.material = GetMat(Type[i, j]);
+					np.renderer.material.mainTextureScale = uvScale;
+					np.renderer.material.SetTextureScale("_BumpMap", uvScale);
 				}
 			} // end of walls
 		} // end of loop
