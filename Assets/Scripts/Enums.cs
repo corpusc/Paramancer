@@ -214,11 +214,11 @@ public enum Handle {
 
 //roguelike
 public enum TileType {
-	Bricks, //default
+	//Bricks, //default
 	Concrete,
 	Gray,
 	SciFi,
-	Wood,
+	//Wood,
 	Metal,
 	Metal2,
 	Metal3,

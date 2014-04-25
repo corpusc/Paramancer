@@ -52,7 +52,7 @@ public class Hud : MonoBehaviour {
 	string defaultName = "Lazy Noob";
 	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
-	AboutMenu futureGoals = new AboutMenu();
+	AboutMenu aboutMenu = new AboutMenu();
 	float tFOV = 45f;
 	bool showTips = true;
 	
@@ -199,7 +199,7 @@ public class Hud : MonoBehaviour {
 			case HudMode.About:
 				// maybe this should be titled "ABOUT"?  would be more accurate?... and more standard 
 				menuBegin();
-				futureGoals.Draw(this);
+				aboutMenu.Draw(this);
 				menuEnd();
 				break;
 			case HudMode.Controls:

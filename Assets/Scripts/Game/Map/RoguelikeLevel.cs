@@ -115,7 +115,7 @@ public class RoguelikeLevel : ScriptableObject {
 		end.x = Mathf.Clamp(end.x, 0, MapSize.x - 1);
 		end.y = Mathf.Clamp(end.y, 0, MapSize.y - 1); // because sometimes MaxFormWidth > MapSize
 
-		char height = (char)Random.Range(1, 3);
+		char height = (char)Random.Range(1, 5);
 		TileType currTile = (TileType)Random.Range(0, (int)TileType.Count);
 		for (int i = start.x; i <= end.x; i++)
 		for (int j = start.y; j <= end.y; j++) {
@@ -135,7 +135,7 @@ public class RoguelikeLevel : ScriptableObject {
 			Type[i, j] = 0;
 		}
 	}
-
+	
 	public bool GetBlock(int x, int y) { 
 		// only difference between adressing blocks as an array is that this will return false if out of the map 
 		if (x < 0 || x >= MapSize.x) return false;
@@ -143,12 +143,20 @@ public class RoguelikeLevel : ScriptableObject {
 		//MonoBehaviour.print("Test passed, x = " + x.ToString() + " y = " + y.ToString()); 
 		return Block[x, y];
 	}
-
+	
+	
+	public char GetCeilingHeight(int x, int y) { 
+		// only difference between adressing blocks as an array is that this will return false if out of the map 
+		if (x < 0 || x >= MapSize.x) return (char)0;
+		if (y < 0 || y >= MapSize.y) return (char)0;
+		return Ceiling[x, y];
+	}
+	
 	Material GetMat (TileType cType) { // current 
 		switch (cType) {
-		case TileType.Bricks:
-			return BricksMat;
-			break;
+//		case TileType.Bricks:
+//			return BricksMat;
+//			break;
 		case TileType.Concrete:
 			return ConcreteMat;
 			break;
@@ -167,9 +175,9 @@ public class RoguelikeLevel : ScriptableObject {
 		case TileType.SciFi:
 			return SciFiMat;
 			break;
-		case TileType.Wood:
-			return WoodMat;
-			break;
+//		case TileType.Wood:
+//			return WoodMat;
+//			break;
 		default:
 			return BricksMat;
 			break;
@@ -179,6 +187,8 @@ public class RoguelikeLevel : ScriptableObject {
 	public void Build3D () {
 		for (int i = 0; i < MapSize.x; i++)
 		for (int j = 0; j < MapSize.y; j++) {
+			char height = Ceiling[i, j];
+
 			if (Floor[i, j]) {
 				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
 				np.transform.up = Vector3.up; // a weird thing with planes, their forward is not the direction they're facing
@@ -187,7 +197,6 @@ public class RoguelikeLevel : ScriptableObject {
 				np.renderer.material = GetMat(Type[i, j]);
 			}
 
-			char height = Ceiling[i, j];
 			if (height > 0) {
 				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
 				np.transform.up = Vector3.down;
@@ -199,63 +208,72 @@ public class RoguelikeLevel : ScriptableObject {
 				np.renderer.material = GetMat(Type[i, j]);
 			}
 
-			if (Block[i, j]) { // walls 
-				if (!GetBlock(i - 1, j)) {
-//					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-//					np.transform.up = Vector3.right;
-//					np.transform.position = Pos + new Vector3((float)i * Scale.x - Scale.x / 2f, (float)Scale.y / 2f, (float)j * Scale.z);
-//					np.transform.localScale = new Vector3(Scale.y, 1f, Scale.z) * 0.1f;
-//					np.renderer.material = GetMat(Type[i, j]);
+			// make walls 
+			char orH; // other room height 
+			char pwH; // partial wall height 
+			char sH; // space height 
+			if (Block[i, j]) {
+				// west 
+				orH = GetCeilingHeight(i-1, j);
+				if (orH < height) {
+					pwH = (char)(height - orH);
+					sH = (char)(height - pwH);
+
 					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 					np.transform.forward = Vector3.left;
 					np.transform.position = Pos + new Vector3(
 						(float)i * Scale.x - Scale.x / 2f, 
-						(float)height * Scale.y / 2f, 
+						(float)pwH * Scale.y / 2f + Scale.y * sH, //height * Scale.y / 2f, 
 						(float)j * Scale.z);
-					np.transform.localScale = new Vector3(Scale.x, Scale.y * height, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
+					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);
 					np.renderer.material = GetMat(Type[i, j]);
 				}
 				
-				if (!GetBlock(i + 1, j)) {
-//					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-//					np.transform.up = Vector3.left;
-//					np.transform.position = Pos + new Vector3((float)i * Scale.x + Scale.x / 2f, (float)Scale.y / 2f, (float)j * Scale.z);
-//					np.transform.localScale = new Vector3(Scale.y, 1f, Scale.z) * 0.1f;
-//					np.renderer.material = GetMat(Type[i, j]);
+				// east 
+				orH = GetCeilingHeight(i+1, j);
+				if (orH < height) {
+					pwH = (char)(height - orH);
+					sH = (char)(height - pwH);
+
 					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 					np.transform.forward = Vector3.right;
 					np.transform.position = Pos + new Vector3(
 						(float)i * Scale.x + Scale.x / 2f, 
-						(float)height * Scale.y / 2f, 
+						(float)pwH * Scale.y / 2f + Scale.y * sH, 
 						(float)j * Scale.z);
-					np.transform.localScale = new Vector3(Scale.x, Scale.y * height, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
+					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);
 					np.renderer.material = GetMat(Type[i, j]);
 				}
 				
-				if (!GetBlock(i, j - 1)) {
+				// south 
+				orH = GetCeilingHeight(i, j-1);
+				if (orH < height) {
+					pwH = (char)(height - orH);
+					sH = (char)(height - pwH);
+
 					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 					np.transform.forward = Vector3.back;
 					np.transform.position = Pos + new Vector3(
 						(float)i * Scale.x, 
-						(float)height * Scale.y / 2f, 
+						(float)pwH * Scale.y / 2f + Scale.y * sH, 
 						(float)j * Scale.z - Scale.z / 2f);
-					np.transform.localScale = new Vector3(Scale.x, Scale.y * height, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
+					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
 					np.renderer.material = GetMat(Type[i, j]);
 				}
-				
-				if (!GetBlock(i, j + 1)) {
-//					var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-//					np.transform.up = Vector3.back;
-//					np.transform.position = Pos + new Vector3((float)i * Scale.x, (float)Scale.y / 2f, (float)j * Scale.z + Scale.z / 2f);
-//					np.transform.localScale = new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
-//					np.renderer.material = GetMat(Type[i, j]);
+
+				// north 
+				orH = GetCeilingHeight(i, j+1);
+				if (orH < height) {
+					pwH = (char)(height - orH);
+					sH = (char)(height - pwH);
+
 					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 					//np.transform.forward = Vector3.forward;
 					np.transform.position = Pos + new Vector3(
 						(float)i * Scale.x, 
-						(float)height * Scale.y / 2f, 
+						(float)pwH * Scale.y / 2f + Scale.y * sH, 
 						(float)j * Scale.z + Scale.z / 2f);
-					np.transform.localScale = new Vector3(Scale.x, Scale.y * height, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
+					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
 					np.renderer.material = GetMat(Type[i, j]);
 				}
 			} // end of walls
