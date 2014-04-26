@@ -207,21 +207,3 @@ public enum Handle {
 
 	Count
 }
-
-
-
-
-
-//roguelike
-public enum TileType {
-	//Bricks, //default
-	Concrete,
-	Gray,
-	SciFi,
-	//Wood,
-	Metal,
-	Metal2,
-	Metal3,
-
-	Count
-}

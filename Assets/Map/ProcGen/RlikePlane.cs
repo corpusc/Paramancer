@@ -21,9 +21,9 @@ public class RlikePlane : MonoBehaviour {
 		renderer.material.mainTexture = texture;
 		for (int x = 0; x < texture.width; x++)
 		for(int y = 0; y < texture.height; y++) {
-				Color color = (lev.Block[x, y] ? Color.white : Color.black);
+				Color color = (lev.Cells[x, y].Block ? Color.white : Color.black);
 				texture.SetPixel(x, y, color);
-			}
+		}
 		texture.Apply();
 		lev.Pos = new Vector3(10f, 0f, 10f);
 		lev.Scale = new Vector3(3f, 3f, 3f);

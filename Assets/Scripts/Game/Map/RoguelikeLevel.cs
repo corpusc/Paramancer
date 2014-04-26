@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public struct Vec2i {
 	public int x;
@@ -7,45 +8,67 @@ public struct Vec2i {
 };
 
 public class RoguelikeLevel : ScriptableObject {
-	public bool[,] Block; // 2d array
-	// if Block[i, j] is true, then there is empty space at i, j
-	public TileType[,] Type;
-	public bool[,] Floor; // for holes connecting levels
-	public char[,] Ceiling;
+	public class Cell {
+		public Material MatWalls;
+		public Material MatFloor;
+		public Material MatCeiling;
+		public bool Block = false; // if is true, then there is empty space at i, j 
+		public bool Floor = false; // for holes connecting levels 
+		public char Ceiling = (char)0;
+		public bool NeedsNWLip = true;
+		public bool NeedsNELip = true;
+		public bool NeedsSELip = true;
+		public bool NeedsSWLip = true;
+	}
+
+	public Cell[,] Cells;
 	public Vec2i MapSize;
-	public int Forms = 50; // the amount of rooms/hallways to create
-	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there
+	public int Forms = 50; // the amount of rooms/hallways to create 
+	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there 
 	public int MinFormWidth = 16;
 	public int MaxFormWidth = 500;
-	public int MaxArea = 10000; // limits the creation of extremely large rooms
+	public int MaxArea = 10000; // limits the creation of extremely large rooms 
 	public Vector3 Pos = Vector3.zero;
 	public Vector3 Scale = Vector3.one;
 
-	Material BricksMat;
-	Material ConcreteMat;
-	Material GrayMat;
-	Material MetalMat;
-	Material MetalMat2;
-	Material MetalMat3;
+	Material MetalFloor;
+	Material MetalGroovedEdges;
+	Material MetalWithRivets;
 	Material SciFiMat;
-	Material WoodMat;
 
-	int safetyLimit = 50000; // the limit of tries Build() can do before surrendering
+	// private 
+	List<Material> floors = new List<Material>();
+	List<Material> walls = new List<Material>();
+	List<Material> ceilings = new List<Material>();
+	List<Material> lips = new List<Material>();
+	char height; // current cell height 
+	int safetyLimit = 50000; // the limit of tries Build() can do before giving up 
+
+
 
 	public void Init () {
-		Block = new bool[MapSize.x, MapSize.y];
-		Floor = new bool[MapSize.x, MapSize.y];
-		Ceiling = new char[MapSize.x, MapSize.y];
-		Type = new TileType[MapSize.x, MapSize.y];
+		Cells = new Cell[MapSize.x, MapSize.y];
 
-		BricksMat = (Material)Resources.Load("Mat/Allegorithmic/BrickWall_02", typeof(Material));
-		ConcreteMat = (Material)Resources.Load("Mat/Allegorithmic/concrete_049", typeof(Material));
-		GrayMat = (Material)Resources.Load("Mat/IceFlame/GrayTileBlueMat", typeof(Material));
-		MetalMat = (Material)Resources.Load("Mat/Allegorithmic/metal_floor_003", typeof(Material));
-		MetalMat2 = (Material)Resources.Load("Mat/Allegorithmic/metal_plate_005", typeof(Material));
-		MetalMat3 = (Material)Resources.Load("Mat/Allegorithmic/metal_plate_008", typeof(Material));
+		MetalFloor = (Material)Resources.Load("Mat/Allegorithmic/metal_floor_003", typeof(Material));
+		MetalGroovedEdges = (Material)Resources.Load("Mat/Allegorithmic/metal_plate_005", typeof(Material));
+		MetalWithRivets = (Material)Resources.Load("Mat/Allegorithmic/metal_plate_008", typeof(Material));
 		SciFiMat = (Material)Resources.Load("Mat/Allegorithmic/sci_fi_003", typeof(Material));
-		WoodMat = (Material)Resources.Load("Mat/Allegorithmic/Wood_Planks_01", typeof(Material));
+
+		ceilings.Add(MetalFloor);
+		ceilings.Add(MetalGroovedEdges);
+		ceilings.Add(MetalWithRivets);
+		ceilings.Add(SciFiMat);
+
+		walls.Add(SciFiMat);
+		walls.Add(MetalGroovedEdges);
+		walls.Add(MetalWithRivets);
+
+		floors.Add(MetalFloor);
+		floors.Add(MetalGroovedEdges);
+		floors.Add(SciFiMat);
+
+		lips.Add(MetalFloor);
+		lips.Add(MetalWithRivets);
 
 		EmptyMap();
 		Build();
@@ -95,7 +118,7 @@ public class RoguelikeLevel : ScriptableObject {
 	bool containsBlocks (Vec2i start, Vec2i end) {
 		for (int i = start.x; i <= end.x; i++)
 			for (int j = start.y; j <= end.y; j++)
-				if (Block[i, j]) return true;
+				if (Cells[i, j].Block) return true;
 
 		return false;
 	}
@@ -104,36 +127,39 @@ public class RoguelikeLevel : ScriptableObject {
 		int c = 0;
 		for (int i = start.x; i <= end.x; i++)
 			for (int j = start.y; j <= end.y; j++)
-				if (Block[i, j]) c++;
+				if (Cells[i, j].Block) c++;
 
 		return c;
 	}
 
-	void fillRect (Vec2i start, Vec2i end) {
+	void fillRect(Vec2i start, Vec2i end) {
 		start.x = Mathf.Clamp(start.x, 0, MapSize.x - 1);
 		start.y = Mathf.Clamp(start.y, 0, MapSize.y - 1);
 		end.x = Mathf.Clamp(end.x, 0, MapSize.x - 1);
 		end.y = Mathf.Clamp(end.y, 0, MapSize.y - 1); // because sometimes MaxFormWidth > MapSize
 
+		// random heights and materials 
 		char height = (char)Random.Range(1, 5);
-		TileType currTile = (TileType)Random.Range(0, (int)TileType.Count);
+		var wall = walls[Random.Range(0, walls.Count)];
+		var floo = floors[Random.Range(0, floors.Count)];
+		var ceil = ceilings[Random.Range(0, ceilings.Count)];
+
+		// set all cells in rect 
 		for (int i = start.x; i <= end.x; i++)
 		for (int j = start.y; j <= end.y; j++) {
-			Block[i, j] = true;
-			Ceiling[i, j] = height;
-			Floor[i, j] = true;
-			Type[i, j] = currTile;
+			Cells[i, j].Block = true;
+			Cells[i, j].Ceiling = height;
+			Cells[i, j].Floor = true;
+			Cells[i, j].MatWalls = wall;
+			Cells[i, j].MatFloor = floo;
+			Cells[i, j].MatCeiling = ceil;
 		}
 	}
 
-	public void EmptyMap () {
+	public void EmptyMap() {
 		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.y; j++) {
-			Block[i, j] = false;
-			Ceiling[i, j] = (char)0;
-			Floor[i, j] = false;
-			Type[i, j] = 0;
-		}
+		for (int j = 0; j < MapSize.y; j++) 
+			Cells[i, j] = new Cell();
 	}
 	
 	public bool GetBlock(int x, int y) { 
@@ -141,7 +167,7 @@ public class RoguelikeLevel : ScriptableObject {
 		if (x < 0 || x >= MapSize.x) return false;
 		if (y < 0 || y >= MapSize.y) return false;
 		//MonoBehaviour.print("Test passed, x = " + x.ToString() + " y = " + y.ToString()); 
-		return Block[x, y];
+		return Cells[x, y].Block;
 	}
 	
 	
@@ -149,54 +175,120 @@ public class RoguelikeLevel : ScriptableObject {
 		// only difference between adressing blocks as an array is that this will return false if out of the map 
 		if (x < 0 || x >= MapSize.x) return (char)0;
 		if (y < 0 || y >= MapSize.y) return (char)0;
-		return Ceiling[x, y];
+		return Cells[x, y].Ceiling;
 	}
 	
-	Material GetMat (TileType cType) { // current 
-		switch (cType) {
-//		case TileType.Bricks:
-//			return BricksMat;
-//			break;
-		case TileType.Concrete:
-			return ConcreteMat;
-			break;
-		case TileType.Gray:
-			return GrayMat;
-			break;
-		case TileType.Metal:
-			return MetalMat;
-			break;
-		case TileType.Metal2:
-			return MetalMat2;
-			break;
-		case TileType.Metal3:
-			return MetalMat3;
-			break;
-		case TileType.SciFi:
-			return SciFiMat;
-			break;
-//		case TileType.Wood:
-//			return WoodMat;
-//			break;
-		default:
-			return BricksMat;
-			break;
+	void buildWall(Vector3 ori, // orientation/direction 
+	               Vector3 scale, 
+	               char orH, // other room ceiling height 
+	               int i,
+	               int j,
+	               Vector3 offset,
+	               bool uvOffset = false) {
+		char pwH; // partial wall height 
+		char sH; // space height 
+		Vector2 uvScale;
+
+		if (orH < height) {
+			pwH = (char)(height - orH);
+			sH = (char)(height - pwH);
+			uvScale = new Vector2(1, pwH);
+			var v = new Vector3(
+				(float)i * Scale.x + offset.x / 2f, 
+				(float)pwH * Scale.y / 2f + Scale.y * sH,
+				(float)j * Scale.z + offset.z / 2f);
+
+			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+			np.transform.localScale = new Vector3(scale.x, scale.y * pwH, scale.z);
+			np.transform.position = Pos + v;
+			np.transform.forward = ori;
+			np.renderer.material = Cells[i, j].MatWalls;
+			if (uvOffset) {
+				var uo = new Vector2(0.4f, 0f);
+				np.renderer.material = lips[Random.Range(0, lips.Count)];
+				np.renderer.material.mainTextureOffset = uo;
+				np.renderer.material.SetTextureOffset("_BumpMap", uo);
+				uvScale = new Vector2(0.2f, pwH);
+			}
+			np.renderer.material.mainTextureScale = uvScale;
+			np.renderer.material.SetTextureScale("_BumpMap", uvScale);
 		}
 	}
 
-	public void Build3D () {
+	public void Build3D() {
 		for (int i = 0; i < MapSize.x; i++)
 		for (int j = 0; j < MapSize.y; j++) {
-			char height = Ceiling[i, j];
+			Cell c = Cells[i, j];
+			height = c.Ceiling;
+			// imagine this, as if the passageway "mouth" is facing you (it's not always an absolute axis aligned orientation)
+			float lwd = 8f; // lip width divisor, for passageway frame 
+			float ldd = 16f; // lip depth divisor, for passageway frame 
 
-			if (Floor[i, j]) {
-				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-				np.transform.up = Vector3.up; // a weird thing with planes, their forward is not the direction they're facing
-				np.transform.position = Pos + new Vector3((float)i * Scale.x, 0f, (float)j * Scale.z);
-				np.transform.localScale = Scale * 0.1f; // for some reason, planes start as a 10x10 square, hence the 0.1
-				np.renderer.material = GetMat(Type[i, j]);
+			// make walls 
+			// each orientation only handles the lip on the right edge of its face 
+			if (c.Block) {
+				// west 
+				buildWall(Vector3.left, Scale, // main wall 
+				          GetCeilingHeight(i-1, j),  i, j,
+				          new Vector3(-Scale.x, 0, 0));
+
+				if (c.NeedsNWLip) {
+					buildWall(Vector3.left, 
+					          new Vector3(Scale.x/lwd, Scale.y, Scale.z),
+					          GetCeilingHeight(i-1, j), i, j,
+					          new Vector3(-Scale.x + Scale.x/ldd*2, 0, Scale.z - Scale.z/lwd), 
+					          true);
+					buildWall(Vector3.forward,
+					          new Vector3(Scale.x/ldd, Scale.y, Scale.z),
+					          GetCeilingHeight(i-1, j), i, j,
+					          new Vector3(-Scale.x + Scale.x/ldd, 0, Scale.z - Scale.z/lwd*2), 
+					          true);
+				}
+				if (c.NeedsSELip) { // COPY OF NW ATM!!!!!!!!!!!!!!!!!!!!!!!
+					buildWall(Vector3.back, 
+					          new Vector3(Scale.x/lwd, Scale.y, Scale.z),
+					          GetCeilingHeight(i-1, j), i, j,
+					          new Vector3(Scale.x - Scale.x/lwd, 0, -Scale.z + Scale.z/lwd), 
+					          true);
+					buildWall(Vector3.right,
+					          new Vector3(Scale.x/ldd, Scale.y, Scale.z),
+					          GetCeilingHeight(i-1, j), i, j,
+					          new Vector3(Scale.x -Scale.x/lwd*2, 0, -Scale.z + Scale.z/lwd/2), 
+					          true);
+				}
+
+				
+				// east 
+				buildWall(Vector3.right, Scale, 
+				          GetCeilingHeight(i+1, j), i, j,
+				          new Vector3(+Scale.x, 0, 0));
+
+
+				// south 
+				buildWall(Vector3.back, Scale, 
+				          GetCeilingHeight(i, j-1), i, j,
+				          new Vector3(0, 0, -Scale.z));
+
+
+				// north 
+				buildWall(Vector3.forward, Scale, 
+				          GetCeilingHeight(i, j+1), i, j,
+				          new Vector3(0, 0, +Scale.z));
 			}
 
+			// floor 
+			if (Cells[i, j].Floor) {
+				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
+				np.transform.up = Vector3.up; // a weird thing with planes, their forward is not the direction they're facing 
+				np.transform.position = Pos + new Vector3(
+					(float)i * Scale.x, 
+					0f, 
+					(float)j * Scale.z);
+				np.transform.localScale = Scale * 0.1f; // for some reason, planes start as a 10x10 square, hence the 0.1 
+				np.renderer.material = Cells[i, j].MatFloor;
+			}
+			
+			// ceiling 
 			if (height > 0) {
 				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
 				np.transform.up = Vector3.down;
@@ -205,91 +297,8 @@ public class RoguelikeLevel : ScriptableObject {
 					Scale.y * (float)height, 
 					Scale.z * (float)j);
 				np.transform.localScale = Scale * 0.1f;
-				np.renderer.material = GetMat(Type[i, j]);
+				np.renderer.material = Cells[i, j].MatCeiling;
 			}
-
-			// make walls 
-			char orH; // other room height 
-			char pwH; // partial wall height 
-			char sH; // space height 
-			Vector2 uvScale;
-			if (Block[i, j]) {
-				// west 
-				orH = GetCeilingHeight(i-1, j);
-				if (orH < height) {
-					pwH = (char)(height - orH);
-					sH = (char)(height - pwH);
-					uvScale = new Vector2(1, pwH);
-
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.forward = Vector3.left;
-					np.transform.position = Pos + new Vector3(
-						(float)i * Scale.x - Scale.x / 2f, 
-						(float)pwH * Scale.y / 2f + Scale.y * sH, //height * Scale.y / 2f, 
-						(float)j * Scale.z);
-					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);
-					np.renderer.material = GetMat(Type[i, j]);
-					np.renderer.material.mainTextureScale = uvScale;
-					np.renderer.material.SetTextureScale("_BumpMap", uvScale);
-				}
-				
-				// east 
-				orH = GetCeilingHeight(i+1, j);
-				if (orH < height) {
-					pwH = (char)(height - orH);
-					sH = (char)(height - pwH);
-					uvScale = new Vector2(1, pwH);
-
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.forward = Vector3.right;
-					np.transform.position = Pos + new Vector3(
-						(float)i * Scale.x + Scale.x / 2f, 
-						(float)pwH * Scale.y / 2f + Scale.y * sH, 
-						(float)j * Scale.z);
-					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);
-					np.renderer.material = GetMat(Type[i, j]);
-					np.renderer.material.mainTextureScale = uvScale;
-					np.renderer.material.SetTextureScale("_BumpMap", uvScale);
-				}
-				
-				// south 
-				orH = GetCeilingHeight(i, j-1);
-				if (orH < height) {
-					pwH = (char)(height - orH);
-					sH = (char)(height - pwH);
-					uvScale = new Vector2(1, pwH);
-
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.forward = Vector3.back;
-					np.transform.position = Pos + new Vector3(
-						(float)i * Scale.x, 
-						(float)pwH * Scale.y / 2f + Scale.y * sH, 
-						(float)j * Scale.z - Scale.z / 2f);
-					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
-					np.renderer.material = GetMat(Type[i, j]);
-					np.renderer.material.mainTextureScale = uvScale;
-					np.renderer.material.SetTextureScale("_BumpMap", uvScale);
-				}
-
-				// north 
-				orH = GetCeilingHeight(i, j+1);
-				if (orH < height) {
-					pwH = (char)(height - orH);
-					sH = (char)(height - pwH);
-					uvScale = new Vector2(1, pwH);
-
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					//np.transform.forward = Vector3.forward;
-					np.transform.position = Pos + new Vector3(
-						(float)i * Scale.x, 
-						(float)pwH * Scale.y / 2f + Scale.y * sH, 
-						(float)j * Scale.z + Scale.z / 2f);
-					np.transform.localScale = new Vector3(Scale.x, Scale.y * pwH, Scale.z);//new Vector3(Scale.x, 1f, Scale.y) * 0.1f;
-					np.renderer.material = GetMat(Type[i, j]);
-					np.renderer.material.mainTextureScale = uvScale;
-					np.renderer.material.SetTextureScale("_BumpMap", uvScale);
-				}
-			} // end of walls
-		} // end of loop
+		} // done processing cells 
 	} // end of Build3D()
 }
