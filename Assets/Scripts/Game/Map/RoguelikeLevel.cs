@@ -12,9 +12,10 @@ public class RoguelikeLevel : ScriptableObject {
 		public Material MatWalls;
 		public Material MatFloor;
 		public Material MatCeiling;
-		public bool Block = false; // if is true, then there is empty space at i, j 
+		public Material MatLip;
+		public bool IsAir = false; 
 		public bool Floor = false; // for holes connecting levels 
-		public char Ceiling = (char)0;
+		public char CeilingHeight = (char)0;
 		public bool NeedsNWLip = true;
 		public bool NeedsNELip = true;
 		public bool NeedsSELip = true;
@@ -37,12 +38,23 @@ public class RoguelikeLevel : ScriptableObject {
 	Material SciFiMat;
 
 	// private 
+	int numTries = 50000; // ...before Build() gives up 
+	
 	List<Material> floors = new List<Material>();
 	List<Material> walls = new List<Material>();
 	List<Material> ceilings = new List<Material>();
 	List<Material> lips = new List<Material>();
-	char height; // current cell height 
-	int safetyLimit = 50000; // the limit of tries Build() can do before giving up 
+
+	char currH; // current cell height 
+	Cell neiN; // current neighbor 
+	Cell neiS;
+	Cell neiE;
+	Cell neiW;
+	Cell neiNW;
+	
+	// lips of passageway/mouth 
+	float thickMAX = 1 / 8f;
+	float thinMAX = 1 / 16f;
 
 
 
@@ -78,14 +90,14 @@ public class RoguelikeLevel : ScriptableObject {
 		preBuild();
 
 		int formsMade = 0;
-		for (int i = 0; i < safetyLimit && formsMade < Forms; i++) {
+		for (int i = 0; i < numTries && formsMade < Forms; i++) {
 			Vec2i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
 
 			Vec2i u;
 			u.x = Random.Range(0, MapSize.x);
-			u.y = Random.Range(0, MapSize.y); // this is last-exclusive, hence all the <= and ...+ 1 later on
+			u.y = Random.Range(0, MapSize.y); // this is last-exclusive, hence all the <= and ...+ 1 later on 
 			
 			Vec2i start;
 			Vec2i end;
@@ -97,10 +109,11 @@ public class RoguelikeLevel : ScriptableObject {
 				if ((end.x >= start.x + MinFormWidth) && (end.y >= start.y + MinFormWidth))
 				if ((end.x <= start.x + MaxFormWidth) && (end.y <= start.y + MaxFormWidth))
 				if ((end.x - start.x + 1) * (end.y - start.y + 1) <= MaxArea)
+
 					if (blocksInRect(start, end) < (end.x - start.x + 1) * (end.y - start.y + 1) * MaxOverride) {
 						fillRect(start, end);
 					formsMade++;
-				}
+					}
 			}
 		}
 	}
@@ -118,7 +131,7 @@ public class RoguelikeLevel : ScriptableObject {
 	bool containsBlocks (Vec2i start, Vec2i end) {
 		for (int i = start.x; i <= end.x; i++)
 			for (int j = start.y; j <= end.y; j++)
-				if (Cells[i, j].Block) return true;
+				if (Cells[i, j].IsAir) return true;
 
 		return false;
 	}
@@ -127,7 +140,7 @@ public class RoguelikeLevel : ScriptableObject {
 		int c = 0;
 		for (int i = start.x; i <= end.x; i++)
 			for (int j = start.y; j <= end.y; j++)
-				if (Cells[i, j].Block) c++;
+				if (Cells[i, j].IsAir) c++;
 
 		return c;
 	}
@@ -140,19 +153,23 @@ public class RoguelikeLevel : ScriptableObject {
 
 		// random heights and materials 
 		char height = (char)Random.Range(1, 5);
-		var wall = walls[Random.Range(0, walls.Count)];
 		var floo = floors[Random.Range(0, floors.Count)];
 		var ceil = ceilings[Random.Range(0, ceilings.Count)];
+		var lip = lips[Random.Range(0, lips.Count)];
+		var wall = walls[Random.Range(0, walls.Count)];
+		while (wall == lip)
+			wall = walls[Random.Range(0, walls.Count)];
 
 		// set all cells in rect 
 		for (int i = start.x; i <= end.x; i++)
 		for (int j = start.y; j <= end.y; j++) {
-			Cells[i, j].Block = true;
-			Cells[i, j].Ceiling = height;
+			Cells[i, j].IsAir = true;
+			Cells[i, j].CeilingHeight = height;
 			Cells[i, j].Floor = true;
 			Cells[i, j].MatWalls = wall;
 			Cells[i, j].MatFloor = floo;
 			Cells[i, j].MatCeiling = ceil;
+			Cells[i, j].MatLip = lip;
 		}
 	}
 
@@ -167,32 +184,33 @@ public class RoguelikeLevel : ScriptableObject {
 		if (x < 0 || x >= MapSize.x) return false;
 		if (y < 0 || y >= MapSize.y) return false;
 		//MonoBehaviour.print("Test passed, x = " + x.ToString() + " y = " + y.ToString()); 
-		return Cells[x, y].Block;
+		return Cells[x, y].IsAir;
 	}
 	
 	
-	public char GetCeilingHeight(int x, int y) { 
+	public Cell GetCell(int x, int y) { 
 		// only difference between adressing blocks as an array is that this will return false if out of the map 
-		if (x < 0 || x >= MapSize.x) return (char)0;
-		if (y < 0 || y >= MapSize.y) return (char)0;
-		return Cells[x, y].Ceiling;
+		if (x < 0 || x >= MapSize.x)   return null;
+		if (y < 0 || y >= MapSize.y)   return null;
+
+		return Cells[x, y];
 	}
 	
-	void buildWall(Vector3 ori, // orientation/direction 
+	void buildWall(Vector3 offset,
+	               Vector3 ori, // orientation/direction 
 	               Vector3 scale, 
 	               char orH, // other room ceiling height 
 	               int i,
-	               int j,
-	               Vector3 offset,
-	               bool uvOffset = false) {
+	               int j, 
+	               Vector2 uvScale) {
+
 		char pwH; // partial wall height 
 		char sH; // space height 
-		Vector2 uvScale;
 
-		if (orH < height) {
-			pwH = (char)(height - orH);
-			sH = (char)(height - pwH);
-			uvScale = new Vector2(1, pwH);
+		if (orH < currH) {
+			pwH = (char)(currH - orH);
+			sH = (char)(currH - pwH);
+
 			var v = new Vector3(
 				(float)i * Scale.x + offset.x / 2f, 
 				(float)pwH * Scale.y / 2f + Scale.y * sH,
@@ -203,100 +221,251 @@ public class RoguelikeLevel : ScriptableObject {
 			np.transform.position = Pos + v;
 			np.transform.forward = ori;
 			np.renderer.material = Cells[i, j].MatWalls;
-			if (uvOffset) {
-				var uo = new Vector2(0.4f, 0f);
-				np.renderer.material = lips[Random.Range(0, lips.Count)];
+
+			if (uvScale == Vector2.zero) { // no offset 
+				uvScale = new Vector2(1, pwH); // (normal full cell thickness) 
+			}else{
+				uvScale.y = pwH;
+				var uo = new Vector2(thickMAX*3, 0f); // UV offset   (FIXME? hardwired to a particular quadrant where rivets spanned the entirety) 
+				if (uvScale.x == thinMAX)
+					uo.x += thickMAX/4; // FIXME?  hardwired
+				np.renderer.material = Cells[i, j].MatLip;
 				np.renderer.material.mainTextureOffset = uo;
 				np.renderer.material.SetTextureOffset("_BumpMap", uo);
-				uvScale = new Vector2(0.2f, pwH);
 			}
+
 			np.renderer.material.mainTextureScale = uvScale;
 			np.renderer.material.SetTextureScale("_BumpMap", uvScale);
 		}
 	}
 
+	void setNeighborOffsets(int i, int j) {
+		neiN = GetCell(i, j+1);
+		neiS = GetCell(i, j-1);
+		neiE = GetCell(i+1, j);
+		neiW = GetCell(i-1, j);
+		//neiNW = GetCell(i-1, j+1);
+	}
+
 	public void Build3D() {
+		// flag corners that need half of a lip 
 		for (int i = 0; i < MapSize.x; i++)
 		for (int j = 0; j < MapSize.y; j++) {
 			Cell c = Cells[i, j];
-			height = c.Ceiling;
-			// imagine this, as if the passageway "mouth" is facing you (it's not always an absolute axis aligned orientation)
-			float lwd = 8f; // lip width divisor, for passageway frame 
-			float ldd = 16f; // lip depth divisor, for passageway frame 
+			currH = c.CeilingHeight;
+			setNeighborOffsets(i, j);
+
+
+			// hmmmmmm....does this make sense?  we're making a partial height 
+			// in adjacent cubes based on the current cell of the actual building stage 
+			if (c.IsAir) {
+			}
+		}
+
+		// now do actual building 
+		for (int i = 0; i < MapSize.x; i++)
+		for (int j = 0; j < MapSize.y; j++) {
+			Cell c = Cells[i, j];
+			currH = c.CeilingHeight;
+			setNeighborOffsets(i, j);
+
+
+			// imagine this, as if the passageway "mouth" is facing you (it's not always an absolute axis aligned orientation) 
 
 			// make walls 
-			// each orientation only handles the lip on the right edge of its face 
-			if (c.Block) {
+			// (each orientation only handles the lip on the right edge of its face) 
+			if (c.IsAir) {
 				// west 
-				buildWall(Vector3.left, Scale, // main wall 
-				          GetCeilingHeight(i-1, j),  i, j,
-				          new Vector3(-Scale.x, 0, 0));
+				if (neiW != null) {
+					buildWall(new Vector3(-Scale.x, 0, 0), 
+					          Vector3.left, Scale, // main wall 
+					          neiW.CeilingHeight, i, j,				     
+					          Vector2.zero);
 
-				if (c.NeedsNWLip) {
-					buildWall(Vector3.left, 
-					          new Vector3(Scale.x/lwd, Scale.y, Scale.z),
-					          GetCeilingHeight(i-1, j), i, j,
-					          new Vector3(-Scale.x + Scale.x/ldd*2, 0, Scale.z - Scale.z/lwd), 
-					          true);
-					buildWall(Vector3.forward,
-					          new Vector3(Scale.x/ldd, Scale.y, Scale.z),
-					          GetCeilingHeight(i-1, j), i, j,
-					          new Vector3(-Scale.x + Scale.x/ldd, 0, Scale.z - Scale.z/lwd*2), 
-					          true);
+					if (c.NeedsNWLip) {
+						buildWall(
+							new Vector3(
+								-Scale.x + Scale.x*thinMAX*2, 
+								0, 
+								Scale.z - Scale.z*thickMAX + thickMAX*Scale.z), 
+							Vector3.left, 
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiW.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0));
+
+						buildWall(
+							new Vector3(
+								-Scale.x + Scale.x*thinMAX, 
+								0, 
+								Scale.z - Scale.z*thickMAX*2 + thickMAX*Scale.z), 
+							Vector3.forward,
+							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							neiW.CeilingHeight, i, j,					          
+							new Vector2(thinMAX, 0));
+					}
+
+					if (c.NeedsSELip) { // (SE corner of NW cell!) must offset it to the correct cell 
+						buildWall(
+							new Vector3(
+								-Scale.x - Scale.x*thickMAX + thickMAX*Scale.x, 
+								Scale.y, 
+								Scale.z + Scale.z*thickMAX),
+							Vector3.back, 
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiW.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0));
+
+						buildWall(
+							new Vector3(
+								-Scale.x - Scale.x*thickMAX*2 + thickMAX*Scale.x,
+								Scale.y, 
+								Scale.z + Scale.z*thickMAX/2),
+							Vector3.right,
+							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							neiW.CeilingHeight, i, j,
+							new Vector2(thinMAX, 0));
+					}
 				}
-				if (c.NeedsSELip) { // COPY OF NW ATM!!!!!!!!!!!!!!!!!!!!!!!
-					buildWall(Vector3.back, 
-					          new Vector3(Scale.x/lwd, Scale.y, Scale.z),
-					          GetCeilingHeight(i-1, j), i, j,
-					          new Vector3(Scale.x - Scale.x/lwd, 0, -Scale.z + Scale.z/lwd), 
-					          true);
-					buildWall(Vector3.right,
-					          new Vector3(Scale.x/ldd, Scale.y, Scale.z),
-					          GetCeilingHeight(i-1, j), i, j,
-					          new Vector3(Scale.x -Scale.x/lwd*2, 0, -Scale.z + Scale.z/lwd/2), 
-					          true);
-				}
+
 
 				
 				// east 
-				buildWall(Vector3.right, Scale, 
-				          GetCeilingHeight(i+1, j), i, j,
-				          new Vector3(+Scale.x, 0, 0));
+				if (neiE != null) {
+					buildWall(new Vector3(+Scale.x, 0, 0), 
+					          Vector3.right, Scale, 
+					          neiE.CeilingHeight, i, j,				          
+					          Vector2.zero);
 
+					if (c.NeedsSELip) {
+						buildWall(
+							new Vector3(
+								Scale.x - Scale.x*thinMAX*2, 
+								0, 
+								-Scale.z + Scale.z*thickMAX - thickMAX*Scale.z), 
+							Vector3.right, 
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiE.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0));
+						
+						buildWall(
+							new Vector3(
+								Scale.x - Scale.x*thinMAX, 
+								0, 
+								-Scale.z + Scale.z*thickMAX*2 - thickMAX*Scale.z), 
+							Vector3.back,
+							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							neiE.CeilingHeight, i, j,					          
+							new Vector2(thinMAX, 0));
+					}
+					
+					if (c.NeedsNWLip) {  // this was copied from NW
+						buildWall(
+							new Vector3(
+								Scale.x + Scale.x*thickMAX - thickMAX*Scale.x, 
+								Scale.y, 
+								-Scale.z - Scale.z*thickMAX),
+							Vector3.forward, 
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiE.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0));
+						
+						buildWall(
+							new Vector3(
+								Scale.x + Scale.x*thickMAX*2 - thickMAX*Scale.x,
+								Scale.y, 
+								-Scale.z - Scale.z*thickMAX/2),
+							Vector3.left,
+							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							neiE.CeilingHeight, i, j,
+							new Vector2(thinMAX, 0));
+					}
+				}
 
-				// south 
-				buildWall(Vector3.back, Scale, 
-				          GetCeilingHeight(i, j-1), i, j,
-				          new Vector3(0, 0, -Scale.z));
 
 
 				// north 
-				buildWall(Vector3.forward, Scale, 
-				          GetCeilingHeight(i, j+1), i, j,
-				          new Vector3(0, 0, +Scale.z));
+				if (neiN != null) {
+					buildWall(new Vector3(0, 0, +Scale.z), 
+					          Vector3.forward, Scale, 
+					          neiN.CeilingHeight, i, j,
+					          Vector2.zero);
+
+					if (c.NeedsNELip) {
+						buildWall(
+							new Vector3(
+							Scale.x, 
+							0, 
+							Scale.z - Scale.z*thickMAX), 
+							Vector3.forward, 
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiN.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0));
+						
+						buildWall(
+							new Vector3(
+							Scale.x - Scale.x*thickMAX, 
+							0, 
+							Scale.z - Scale.z*thinMAX), 
+							Vector3.right,
+							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							neiN.CeilingHeight, i, j,					          
+							new Vector2(thinMAX, 0));
+					}
+					
+					if (c.NeedsSWLip) { // (SE corner of NW cell!) must offset it to the correct cell 
+						buildWall(
+							new Vector3(
+							Scale.x + Scale.x*thinMAX, 
+							Scale.y, 
+							Scale.z + Scale.z*thickMAX),
+							Vector3.back, 
+							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							neiN.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0));
+						
+						buildWall(
+							new Vector3(
+							Scale.x + Scale.x*thickMAX,
+							Scale.y, 
+							Scale.z),
+							Vector3.left,
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiN.CeilingHeight, i, j,
+							new Vector2(thinMAX, 0));
+					}
+				}
+
+
+
+				// south 
+				if (neiS != null)
+					buildWall(new Vector3(0, 0, -Scale.z), 
+					          Vector3.back, Scale, 
+					          neiS.CeilingHeight, i, j,				          
+					          Vector2.zero);
 			}
 
 			// floor 
 			if (Cells[i, j].Floor) {
-				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-				np.transform.up = Vector3.up; // a weird thing with planes, their forward is not the direction they're facing 
+				var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+				np.transform.forward = Vector3.down;
 				np.transform.position = Pos + new Vector3(
 					(float)i * Scale.x, 
 					0f, 
 					(float)j * Scale.z);
-				np.transform.localScale = Scale * 0.1f; // for some reason, planes start as a 10x10 square, hence the 0.1 
+				np.transform.localScale = Scale;
 				np.renderer.material = Cells[i, j].MatFloor;
 			}
 			
 			// ceiling 
-			if (height > 0) {
-				var np = GameObject.CreatePrimitive(PrimitiveType.Plane);
-				np.transform.up = Vector3.down;
+			if (currH > 0) {
+				var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+				np.transform.forward = Vector3.up;
 				np.transform.position = Pos + new Vector3(
 					Scale.x * (float)i, 
-					Scale.y * (float)height, 
+					Scale.y * (float)currH, 
 					Scale.z * (float)j);
-				np.transform.localScale = Scale * 0.1f;
+				np.transform.localScale = Scale;
 				np.renderer.material = Cells[i, j].MatCeiling;
 			}
 		} // done processing cells 
