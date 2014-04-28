@@ -202,7 +202,8 @@ public class RoguelikeLevel : ScriptableObject {
 	               char orH, // other room ceiling height 
 	               int i,
 	               int j, 
-	               Vector2 uvScale) {
+	               Vector2 uvScale, 
+	               bool xIsThinner = false) {
 
 		char pwH; // partial wall height 
 		char sH; // space height 
@@ -227,7 +228,7 @@ public class RoguelikeLevel : ScriptableObject {
 			}else{
 				uvScale.y = pwH;
 				var uo = new Vector2(thickMAX*3, 0f); // UV offset   (FIXME? hardwired to a particular quadrant where rivets spanned the entirety) 
-				if (uvScale.x == thinMAX)
+				if (xIsThinner)
 					uo.x += thickMAX/4; // FIXME?  hardwired
 				np.renderer.material = Cells[i, j].MatLip;
 				np.renderer.material.mainTextureOffset = uo;
@@ -399,7 +400,8 @@ public class RoguelikeLevel : ScriptableObject {
 							Vector3.forward, 
 							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
 							neiN.CeilingHeight, i, j,
-							new Vector2(thickMAX, 0));
+							new Vector2(thickMAX, 0), 
+							true);
 						
 						buildWall(
 							new Vector3(
@@ -409,7 +411,8 @@ public class RoguelikeLevel : ScriptableObject {
 							Vector3.right,
 							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
 							neiN.CeilingHeight, i, j,					          
-							new Vector2(thinMAX, 0));
+							new Vector2(thinMAX, 0), 
+							true);
 					}
 					
 					if (c.NeedsSWLip) { // (SE corner of NW cell!) must offset it to the correct cell 
@@ -421,7 +424,8 @@ public class RoguelikeLevel : ScriptableObject {
 							Vector3.back, 
 							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
 							neiN.CeilingHeight, i, j,
-							new Vector2(thickMAX, 0));
+							new Vector2(thickMAX, 0), 
+							true);
 						
 						buildWall(
 							new Vector3(
@@ -431,18 +435,68 @@ public class RoguelikeLevel : ScriptableObject {
 							Vector3.left,
 							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
 							neiN.CeilingHeight, i, j,
-							new Vector2(thinMAX, 0));
+							new Vector2(thinMAX, 0), 
+							true);
 					}
 				}
 
 
 
 				// south 
-				if (neiS != null)
+				if (neiS != null) {
 					buildWall(new Vector3(0, 0, -Scale.z), 
 					          Vector3.back, Scale, 
 					          neiS.CeilingHeight, i, j,				          
 					          Vector2.zero);
+
+					if (c.NeedsSWLip) {
+						buildWall(
+							new Vector3(
+							-Scale.x, 
+							0, 
+							-Scale.z + Scale.z*thickMAX), 
+							Vector3.back, 
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiS.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0), 
+							true);
+						
+						buildWall(
+							new Vector3(
+							-Scale.x + Scale.x*thickMAX, 
+							0, 
+							-Scale.z + Scale.z*thinMAX), 
+							Vector3.left,
+							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							neiS.CeilingHeight, i, j,					          
+							new Vector2(thinMAX, 0), 
+							true);
+					}
+					
+					if (c.NeedsNELip) {
+						buildWall(
+							new Vector3(
+							-Scale.x, 
+							Scale.y, 
+							-Scale.z - Scale.z*thickMAX),
+							Vector3.forward, 
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiS.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0), 
+							true);
+						
+						buildWall(
+							new Vector3(
+							-Scale.x - Scale.x*thickMAX,
+							Scale.y, 
+							-Scale.z),
+							Vector3.right,
+							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							neiS.CeilingHeight, i, j,
+							new Vector2(thickMAX, 0), 
+							true);
+					}
+				}
 			}
 
 			// floor 
