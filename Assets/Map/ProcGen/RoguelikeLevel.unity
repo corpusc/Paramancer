@@ -175,6 +175,7 @@ MonoBehaviour:
   MaxArea: 10000
   Pos: {x: 0, y: 0, z: 0}
   Scale: {x: 1, y: 1, z: 1}
+  PylonsToGround: 1
 --- !u!1 &725311463
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,9 +28,12 @@ public class RoguelikeLevel : ScriptableObject {
 	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there 
 	public int MinFormWidth = 16;
 	public int MaxFormWidth = 500;
-	public int MaxArea = 10000; // limits the creation of extremely large rooms 
+	public int MaxArea = 10000; // limits the creation of extremely large rooms, favorizes corridors
 	public Vector3 Pos = Vector3.zero;
 	public Vector3 Scale = Vector3.one;
+	public int MinHeight = 2; // the minimal height a room can have
+	public int MaxHeight = 5; // the maximal height a room can have
+	public bool CreateOverhangs = true;
 
 	Material MetalFloor;
 	Material MetalGroovedEdges;
@@ -152,7 +155,7 @@ public class RoguelikeLevel : ScriptableObject {
 		end.y = Mathf.Clamp(end.y, 0, MapSize.y - 1); // because sometimes MaxFormWidth > MapSize
 
 		// random heights and materials 
-		char height = (char)Random.Range(1, 5);
+		char height = (char)Random.Range(MinHeight, MaxHeight);
 		var floo = floors[Random.Range(0, floors.Count)];
 		var ceil = ceilings[Random.Range(0, ceilings.Count)];
 		var lip = lips[Random.Range(0, lips.Count)];
@@ -164,7 +167,10 @@ public class RoguelikeLevel : ScriptableObject {
 		for (int i = start.x; i <= end.x; i++)
 		for (int j = start.y; j <= end.y; j++) {
 			Cells[i, j].IsAir = true;
-			Cells[i, j].CeilingHeight = height;
+			if (CreateOverhangs)
+				Cells[i, j].CeilingHeight = height;
+			else if (height >= Cells[i, j].CeilingHeight)
+				Cells[i, j].CeilingHeight = height;
 			Cells[i, j].Floor = true;
 			Cells[i, j].MatWalls = wall;
 			Cells[i, j].MatFloor = floo;
@@ -181,8 +187,8 @@ public class RoguelikeLevel : ScriptableObject {
 	
 	public bool GetBlock(int x, int y) { 
 		// only difference between adressing blocks as an array is that this will return false if out of the map 
-		if (x < 0 || x >= MapSize.x) return false;
-		if (y < 0 || y >= MapSize.y) return false;
+		if (x < 0 || x >= MapSize.x) return true;
+		if (y < 0 || y >= MapSize.y) return true;
 		//MonoBehaviour.print("Test passed, x = " + x.ToString() + " y = " + y.ToString()); 
 		return Cells[x, y].IsAir;
 	}
@@ -190,8 +196,8 @@ public class RoguelikeLevel : ScriptableObject {
 	
 	public Cell GetCell(int x, int y) { 
 		// only difference between adressing blocks as an array is that this will return false if out of the map 
-		if (x < 0 || x >= MapSize.x)   return null;
-		if (y < 0 || y >= MapSize.y)   return null;
+		if (x < 0 || x >= MapSize.x)   return new Cell();
+		if (y < 0 || y >= MapSize.y)   return new Cell();
 
 		return Cells[x, y];
 	}
@@ -209,8 +215,8 @@ public class RoguelikeLevel : ScriptableObject {
 		char sH; // space height 
 
 		if (orH < currH) {
-			pwH = (char)(currH - orH);
-			sH = (char)(currH - pwH);
+				pwH = (char)(currH - orH);
+				sH = (char)(currH - pwH);
 
 			var v = new Vector3(
 				(float)i * Scale.x + offset.x / 2f, 
