@@ -51,14 +51,14 @@ public class AboutMenu {
 		s += "Each realm/dimension/time-period will use a particular set of weapons.  ";
 		s += "For immersion, the various weapon sets will be pre-selected & enforced per realm/dimension.  ";
 		s += "Instanced multiplayer however would allow for mixing it up with the weapons.  ";
-		s += "Here's some example weapon sets we're thinking of: ";
-		s += "SciFi guns \n SciFi NanoSwarms \n PsiFi amplified psionic powers \n (the latter 2 being hand attachments or tech \"gloves\").  ";
+		s += "Here's some example weapon sets we're thinking of: \n\n";
+		s += "Sci-Fi guns \nSci-Fi NanoSwarms \nPsi-Fi amplified psionic powers \n(the latter 2 being hand attachments or tech \"gloves\").  \n\n";
 		s += "In order to keep ALL potential builders inspired to build in the Paraverse, we will allow users to build in whatever setting/theme they prefer.  ";
-		s += "Medieval Fantasy, \nSciFi, \nCyberPunk, \nSteamPunk, \nModern Day, \nVarious olden-time periods, ";
-		s += "Ghost/Undead/Purgatory/AfterLife, \nDream Realm, \nAbstract Realm, \nToon Realm, \nApocalypse Du Jour\n....all are possibilities.  ";
+		s += "Medieval Fantasy, \n\nSci-Fi, \nCyberPunk, \nSteamPunk, \nModern Day, \nVarious olden-time periods, ";
+		s += "Ghost/Undead/Purgatory/AfterLife, \nDream Realm, \nAbstract Realm, \nToon Realm, \nApocalypse Du Jour\n\n....all are possibilities.  ";
 		s += "We may want to limit ourselves initially to the main 3-4 most popular settings.  ";
-		s += "Anything that doesn't easily reconcile within \"the real world\" of Paramancer's (eventual) fiction, can be ";
-		s += " represented as cyberspace/metaverse/VR.  ";
+		s += "Anything that doesn't easily reconcile within \"the real world\" of Paramancer's fiction, can be ";
+		s += "represented as cyberspace/metaverse/VR.  ";
 		GUILayout.Label(s);
 		s = "";
 

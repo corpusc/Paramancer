@@ -137,8 +137,11 @@ public class Hud : MonoBehaviour {
 	bool firstTime = true;
 	int oldW, oldH;
 	void OnGUI() {
+		// init stuff that HAS to be inside OnGUI() 
 		if (firstTime) {
 			firstTime = false;
+
+			setupSkin();
 
 			// setup vertical span sizes
 			GC = new GUIContent("Qypjg");
@@ -150,6 +153,9 @@ public class Hud : MonoBehaviour {
 			VSpanLabel = GS.CalcSize(GC).y;
 		}
 
+		GUI.skin.button.hover.textColor = S.ShoutyColor;
+
+		// if screen dimensions changed 
 		if (oldW != Screen.width ||
 		    oldH != Screen.height) 
 		{
@@ -164,7 +170,6 @@ public class Hud : MonoBehaviour {
 			Window.y = (Screen.height - Window.height) / 2;
 		}
 
-		StylizeMenu();
 
 
 		// handle all the modes! 
@@ -437,7 +442,7 @@ public class Hud : MonoBehaviour {
 		// gun bob 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		net.gunBobbing = TickBox.Display(net.gunBobbing, "Gun bobbing ");
+		net.gunBobbing = TickBox.Display(net.gunBobbing, "Gun bobbing");
 		if (net.gunBobbing)
 			PlayerPrefs.SetInt("GunBobbing", 1);
 		else
@@ -448,7 +453,7 @@ public class Hud : MonoBehaviour {
 		//show tips
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		showTips = TickBox.Display(showTips, "Show tips ");
+		showTips = TickBox.Display(showTips, "Show tips");
 		if (showTips)
 			PlayerPrefs.SetInt("showTips", 1);
 		else
@@ -641,11 +646,14 @@ public class Hud : MonoBehaviour {
 	
 
 
-	void StylizeMenu() {
+	void setupSkin() {
 		GUI.skin.button.font = Font;
 		GUI.skin.button.fontSize = 16;
+		GUI.skin.button.normal.textColor = Color.black;
 		GUI.skin.button.normal.background = (Texture2D)Pics.Get("Button");
+		GUI.skin.button.active.textColor = S.Purple;      
 		GUI.skin.button.active.background = (Texture2D)Pics.Get("ButtonClicked");
+		// DO THIS PER FRAME INSTEAD          GUI.skin.button.hover.textColor = Color.cyan;
 		GUI.skin.button.hover.background = (Texture2D)Pics.Get("ButtonMouseOver");
 		GUI.skin.label.font = Font;
 		GUI.skin.label.fontSize = 16;
@@ -662,6 +670,12 @@ public class Hud : MonoBehaviour {
 
 
 
+
+
+
+
+
+
 	void centeredLabel(string s) {
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
@@ -669,7 +683,20 @@ public class Hud : MonoBehaviour {
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 	}
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	void drawControlsAdjunct() {
 		menuBegin(S.WhiteTRANS, true, true);
 
@@ -684,7 +711,7 @@ public class Hud : MonoBehaviour {
 		// look inversion 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		/**/locUser.LookInvert = TickBox.Display(locUser.LookInvert, "Invert Y axis ");
+		/**/locUser.LookInvert = TickBox.Display(locUser.LookInvert, "Look up/down reversed");
 		if (locUser.LookInvert) PlayerPrefs.SetInt("InvertY", 1);
 		else /*``````````````*/ PlayerPrefs.SetInt("InvertY", 0);
 		GUILayout.FlexibleSpace();
@@ -763,14 +790,16 @@ public class Hud : MonoBehaviour {
 		hostPings = new Ping[0];
 	}
 
+
+
+
+
+
+
+
 	int prevNumServers = 0;
 	void listMatchesInProgress(float halfWidth, float topOfJoinButtons) {
 		HostData[] hostData = MasterServer.PollHostList();
-		// play sound if number of servers goes up
-		if (prevNumServers < hostData.Length) {
-			Sfx.PlayOmni("NewGame");
-		}
-		prevNumServers = hostData.Length;
 
 		// setup ping info 
 		if (hostData.Length == 0) {
@@ -796,12 +825,20 @@ public class Hud : MonoBehaviour {
 		// iterate thru all matches that are being served 
 		for (int i=0; i<hostData.Length; i++) {
 			// build all the text for the JOIN MATCH button 
-			var s = "";
+			var s = " JOIN ";
+			if (net.Connected)
+				s += "DIFFERENT ";
+			s += "MATCH \n\n";
+			s += "\"" /*'''*/ + hostData[i].gameName + "\" \n";
 
-			// connect button 
-			// name
-			s += " JOIN MATCH \n\n";
-			s += "\"" + hostData[i].gameName + "\" \n";
+			if (net.Connected && 
+			    net.gameName == hostData[i].gameName) { // don't show this button if it has the same game name 
+				continue;
+			}else{
+				// play sound if number of servers goes up 
+				if (prevNumServers < hostData.Length)
+					Sfx.PlayOmni("NewGame");
+			}
 
 			// comment 
 			var com = hostData[i].comment;
@@ -818,7 +855,7 @@ public class Hud : MonoBehaviour {
 				s += "Ping:   ???";
 
 			// user # 
-			s += "    Users:   " + hostData[i].connectedPlayers; // "/" + hostData[i].playerLimit
+			s += "    Users:   " + hostData[i].connectedPlayers; // "/" + hostData[i].playerLimit 
 			
 
 
@@ -830,6 +867,9 @@ public class Hud : MonoBehaviour {
 			r.width = w;
 			r.height = h;
 			if (GUI.Button(r, s)) {
+				if (net.Connected)
+					net.DisconnectNow();
+
 				Network.Connect(hostData[i],net.password);
 				Mode = HudMode.Connecting;
 			}
@@ -848,6 +888,8 @@ public class Hud : MonoBehaviour {
 				net.password = GUI.TextField(rect, net.password/*, GUILayout.MinWidth(16)*/);
 				GUI.color = Color.white;
 			}
+
+			prevNumServers = hostData.Length;
 		}
 	}
 
@@ -857,30 +899,20 @@ public class Hud : MonoBehaviour {
 
 
 	
-	string[] splashText = {"If you like this game, support us on *link to our webpage*!",
-		"1234567890 is a big number!",
-		"Paramancer == Not a Number!",
+	string[] splashText = {
 		"There are 10 types of people: those who know binary and those who don't.",
 		"sqrtf(-1.f)!",
 		"To understand what recursion is, you must first understand recursion.",
-		"{\"hip\", \"hip\"}\nhip hip array!",
 		"while (!asleep) sheep++;",
-		"int main(){main();}",
-		"It compiles!",
-		"Eye see sharp!",
-		"Gluten free!"}; //sometimes funny(see minecraft splash text)
+		"Gluten free!"};
 
-	string[] tipText = {"TIP: Use the gravulator as often as possible to confuse your enemies!",
-		"TIP: Offense is often the best defense!",
-		"TIP: Change your avatar in the Settings section!",
-		"TIP: There is a lot of control configuration avaliable, be sure to check it out in the Controls section!",
-		"TIP: Use the weapons that have been built for you. It will be easier to create your own when you get a decent feeling of the game.",
-		"TIP: You can disable tips in the settings menu. You'll be tortured with a coder's sense of humor in that case.",
-		"TIP: You don't have to set up a game of your own, you can just join others by clicking on their games!"};
+	string[] tipText = {
+		"TIP: Use the gravulator as often as possible to confuse your enemies!",
+		"TIP: Offense is often the best defense!"};
 
 	float nextSplashUpdate = 0f;
-	float splashUpdateTime = 10f; //the time it takes for the splash message to update
-	string tSplash = ""; //the currently displayed splash
+	float splashUpdateTime = 10f; // the time it takes for the splash message to update
+	string tSplash = ""; // the currently displayed splash
 	float tWidth = 0f;
 	Rect splashRect;
 	void displaySplash() {
@@ -1079,6 +1111,19 @@ public class Hud : MonoBehaviour {
 
 		displaySplash();
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	public float GetWidthBox(string s) {
 		GS = "Box";

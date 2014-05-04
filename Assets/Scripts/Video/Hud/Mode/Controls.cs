@@ -258,15 +258,15 @@ public class Controls : MonoBehaviour {
 		//GUI.DrawTexture(r, Pics.White);
 		GUI.DrawTexture(mouseRect, currDevPic);
 
-		// draw keys          (perhaps clean this up by using mouseOver())
+		// draw keys          (perhaps clean this up by using mouseOver()) 
 		for (int i = 0; i < keyData.Length; i++) {
-			// get the right color
+			// get the right color 
 			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) ) {
 				GUI.color = S.PurpleLight;
 			}else
 				GUI.color = Color.white;
 				
-			Rect or = keyData[i].Rect; // store original rect
+			Rect or = keyData[i].Rect; // original rect 
 			
 			// if slicing not needed, just draw in single call and move on to next key
 			if (or.width <= or.height) {
@@ -280,29 +280,7 @@ public class Controls : MonoBehaviour {
 				continue;
 			}
 			
-			// setup border widths for 3 panel vertical slicing, so center can stretch, leaving normal borders
-			Rect dest = or;
-			int numSl = 3; // number of slices per normal key (1x1 aspect ratio / perfectly square)
-			float numDiv = dest.width / dest.height * numSl; // num of divisions
-			float pixBorderW = dest.width / numDiv; // pixel width
-			float perBorderW = 1f / numSl; // percent width
-			Rect texC = new Rect(0f, 0f, perBorderW, 1f); // texture coordinates
-			
-			// draw left border
-			dest.width = pixBorderW;
-			GUI.DrawTextureWithTexCoords(dest, keyCap, texC);
-			
-			// draw right border
-			dest.x = or.xMax - pixBorderW;
-			texC.x = 1f - perBorderW;
-			GUI.DrawTextureWithTexCoords(dest, keyCap, texC);
-			
-			// draw middle slice
-			dest.x = or.x + pixBorderW;
-			texC.x = 0f + perBorderW;
-			dest.width = or.width - pixBorderW*2;
-			texC.width = 1f - perBorderW*2;
-			GUI.DrawTextureWithTexCoords(dest, keyCap, texC);
+			S.DrawHoriStretchedAndCappedRect(or, keyCap);
 		}
 		
 		// draw action icons 
@@ -371,7 +349,7 @@ public class Controls : MonoBehaviour {
 
 		GUI.color = Color.white;
 	}
-	
+
 	bool pushingOrHoveringOver(int i) {
 		if (i >= (int)KeyCode.Mouse6)
 			Debug.Log("pushingOrHoveringOver() - i: " + i + "      (KeyCode)i: " + (KeyCode)i);

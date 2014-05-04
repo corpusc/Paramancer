@@ -11,12 +11,38 @@ static public class S {
 	public const int K = 1000;
 	
 	// colors 
+	// shouty/shimmery color that cycles back and forth between 2 colors 
+	static float point; // ...between them 
+	static bool increasing = true; // ... towards the limit of 1f 
+	//static private shoutyColor;
+	static public Color ShoutyColor { 
+		get { 
+			if (increasing) {
+				point += Time.deltaTime * 2;
+				
+				if (point > 1f) {
+					point = 1f;
+					increasing = false;
+				}
+			}else{ // decreasing 
+				point -= Time.deltaTime * 2;
+				
+				if (point < 0f) {
+					point = 0f;
+					increasing = true;
+				}
+			}
+			
+			return Color.Lerp(Color.cyan, Color.blue, point);
+		} 
+	}
+	// 		transparent 
 	public static Color WhiteTRANS = new Color(1f, 1f, 1f, 0.35f);
 	public static Color RedTRANS = new Color(1f, 0f, 0f, 0.35f);
 	public static Color BlueTRANS = new Color(0f, 0f, 1f, 0.35f);
 	public static Color PurpleTRANS = new Color(0.2f, 0f, 0.3f, 0.8f);
+	// 		opaque
 	public static Color Purple = new Color(0.8f, 0f, 1f, 1f);
-	//static Color purple = Color.Lerp(Color.red, Color.blue, 0.5f);
 	public static Color PurpleLight = Color.Lerp(Purple, Color.white, 0.5f);
 	public static Color Orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
 
@@ -42,26 +68,8 @@ static public class S {
 		return ns;
 	}
 
-	static float point; // ...in colour channel spectrum 
-	static bool increasing = true; // starts moving to the limit of 1f 
 	static public void SetShoutyColor() {
-		if (increasing) {
-			point += Time.deltaTime * 2;
-
-			if (point > 1f) {
-				point = 1f;
-				increasing = false;
-			}
-		}else{ // decreasing 
-			point -= Time.deltaTime * 2;
-			
-			if (point < 0f) {
-				point = 0f;
-				increasing = true;
-			}
-		}
-
-		GUI.color = Color.Lerp(Color.cyan, Color.blue, point);
+		GUI.color = ShoutyColor;
 	}
 	
 	static public void GUIOutlinedLabel(Rect r, string s) {
@@ -130,5 +138,33 @@ static public class S {
 		float ty = v.y;
 		v.x = (cos * tx) - (sin * ty);
 		v.y = (cos * ty) + (sin * tx);
+	}
+	
+	public static void DrawHoriStretchedAndCappedRect(Rect or, Texture pic)	{
+		// setup border widths for 3 panel vertical slicing, so center can stretch, leaving normal borders
+		Rect dest = or;
+		int numSl = 3;
+		// number of slices per normal key (1x1 aspect ratio / perfectly square)
+		float numDiv = dest.width / dest.height * numSl;
+		// num of divisions
+		float pixBorderW = dest.width / numDiv;
+		// pixel width
+		float perBorderW = 1f / numSl;
+		// percent width
+		Rect texC = new Rect (0f, 0f, perBorderW, 1f);
+		// texture coordinates
+		// draw left border
+		dest.width = pixBorderW;
+		GUI.DrawTextureWithTexCoords (dest, pic, texC);
+		// draw right border
+		dest.x = or.xMax - pixBorderW;
+		texC.x = 1f - perBorderW;
+		GUI.DrawTextureWithTexCoords (dest, pic, texC);
+		// draw middle slice
+		dest.x = or.x + pixBorderW;
+		texC.x = 0f + perBorderW;
+		dest.width = or.width - pixBorderW * 2;
+		texC.width = 1f - perBorderW * 2;
+		GUI.DrawTextureWithTexCoords (dest, pic, texC);
 	}
 }
