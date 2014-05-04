@@ -1,52 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
+public struct Vec3i {
+	public int x;
+	public int y;
+	public int z;
+};
 
 public class RoguelikeMap : ScriptableObject {
 
-	public RoguelikeLevel[] lev;
-	public int n_levs = 5; // the amount of levels a dungeon has
-	public int size_x = 1024;
-	public int size_y = 1024;
+	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc)
+	public Material[,,] Mat;
+	public Vec3i MapSize;
+	public int Forms = 40; // the amount of rooms/hallways to create 
+	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there 
+	public int MinFormWidth = 1;
+	public int MaxFormWidth = 16;
+	public int MaxArea = 100; // limits the creation of extremely large rooms, favorizes corridors
+	public Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map
+	public Vector3 Scale = Vector3.one; // the scale of all elements on the map
+	public int MinHeight = 2; // the minimal height a room can have
+	public int HeightRand = 3; // the maximal additional room height(minimal is 0)
+	// the maximal height of a room is determined by the map height & the room size
 
-	public int FormsStep = 2;
-	public float OverrideStep = -0.05f;
-	public int MinWidthStep = -1;
-	public int MaxWidthStep = 0;
-	public int MaxAreaStep = -2 * S.K;
+	// private
+	int numTries = 5000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
+	List<Material> MatPool = new List<Material>();
 
-	public int FormsInitial = 10;
-	public float OverrideInitial = 0.3f;
-	public int MinWidthInitial = 16;
-	public int MaxWidthInitial = 500;
-	public int MaxAreaInitial = 20 * S.K;
-
-	public void Init() {
-		lev = new RoguelikeLevel[n_levs];
-		Vec2i Size;
-		Size.x = size_x;
-		Size.y = size_y;
-
-		int cForms = FormsInitial; // current
-		float cOverride = OverrideInitial;
-		int cMinWidth = MinWidthInitial;
-		int cMaxWidth = MaxWidthInitial;
-		int cMaxArea = MaxAreaInitial;
-
-		for (int i = 0; i < n_levs; i++) {
-			lev[i].Forms = cForms;
-			lev[i].MaxOverride = cOverride;
-			lev[i].MinFormWidth = cMinWidth;
-			lev[i].MaxFormWidth = cMaxWidth;
-			lev[i].MaxArea = cMaxArea;
-
-			cForms += FormsStep;
-			cOverride += OverrideStep;
-			cMinWidth += MinWidthStep;
-			cMaxWidth += MaxWidthStep;
-			cMaxArea += MaxAreaStep;
-
-			lev[i].MapSize = Size;
-			lev[i].Init();
-		}
+	public void Init () {
+		Block = new bool[MapSize.x, MapSize.y, MapSize.z];
+		Mat = new Material[MapSize.x, MapSize.y, MapSize.z];
+		MatPool.Add((Material)Resources.Load("Mat/Allegorithmic/metal_floor_003", typeof(Material)));
 	}
 }
