@@ -65,24 +65,48 @@ public class RlikePlane : MonoBehaviour {
 				var delta = nw.Pos - prevWall.Pos;
 				nq.transform.position = prevWall.Pos + delta/2;
 				nq.transform.right = delta;
-				var f = 3f;
+				var f = 4f;
 				nq.transform.localScale = new Vector3 (delta.magnitude, f, f);
+				nq.renderer.material.mainTexture = Pics.Get("KeyCap");
 				prevWall = null;	
 			}
 		}
 	}
 
 	Wall maybeMakeBUILDStyleWall() {
+		Vector3 newPos;
 		var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+
 		RaycastHit rh;
 		float distance = 100f;
 		if (collider.Raycast (ray, out rh, distance)) {
-			Debug.Log ("hit plane");
+			// place precisely at an existing wall location if within a threshold 
+			float threshold = 0.2f;
+			Wall cc = null; // current closest wall point 
+			foreach (var v in walls) {
+				if (cc == null) {
+					cc = v;
+				}else{
+					var distToHit /*'''*/ = Vector3.Distance(v.Pos, rh.point);
+					var distToCurrClosest = Vector3.Distance(v.Pos, cc.Pos);
+
+					if (distToHit < distToCurrClosest)
+						cc = v;
+				}				
+			}
+
+			if (cc != null && Vector3.Distance(cc.Pos, rh.point) < threshold) {
+				newPos = cc.Pos;
+			}else{
+				newPos = rh.point;
+			}
+
+			// now create the point 
 			var nc = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			var f = .1f;
 			nc.transform.localScale = new Vector3 (f, f, f);
-			nc.transform.position = rh.point;
-			var nw = new Wall(rh.point, prevWall);
+			nc.transform.position = newPos;
+			var nw = new Wall(newPos, prevWall);
 			walls.Add(nw);
 			return nw;
 		}
