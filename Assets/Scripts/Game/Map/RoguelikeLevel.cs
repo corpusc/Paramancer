@@ -35,10 +35,10 @@ public class RoguelikeLevel : ScriptableObject {
 	public int MaxHeight = 5; // the maximal height a room can have
 	public bool CreateOverhangs = true;
 
-	Material MetalFloor;
-	Material MetalGroovedEdges;
-	Material MetalWithRivets;
-	Material SciFiMat;
+	public Material MetalFloor;
+	public Material MetalGroovedEdges;
+	public Material MetalWithRivets;
+	public Material SciFiMat;
 
 	// private 
 	int numTries = 50000; // ...before Build() gives up 
