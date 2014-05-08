@@ -12,9 +12,9 @@ public class RoguelikeMap : ScriptableObject {
 
 	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc)
 	public Material[,,] Mat;
-	public Vec3i MapSize;
+	public Vec3i MapSize; // this is the resolution
 	public int Forms = 40; // the amount of rooms/halls to create on the ground floor
-	public int FormsPerFloor = 10; // the amount of corridors/halls that connect alll rooms reaching the given height, per floor
+	public int FormsPerFloor = 5; // the amount of corridors/halls that connect alll rooms reaching the given height, per floor
 	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there 
 	public int MinFormWidth = 1;
 	public int MaxFormWidth = 16;
@@ -23,7 +23,8 @@ public class RoguelikeMap : ScriptableObject {
 	public Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map
 	public Vector3 Scale = Vector3.one; // the scale of all elements on the map
 	public int MinHeight = 2; // the minimal height a room can have
-	public int HeightRand = 3; // the maximal additional room height(minimal is 0)(last-exclusive, so set to 1 for no randomness)
+	public int HeightRand = 4; // the maximal additional room height(minimal is 0)(last-exclusive, so set to 1 for no randomness)
+	public int CorridorHeightRand = 2; // same as above, but for corridors
 	public bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed
 	// the maximal height of a room is determined by the map height & the room size
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth
@@ -47,6 +48,7 @@ public class RoguelikeMap : ScriptableObject {
 
 	//this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d ()
 	public void Build () {
+		//MonoBehaviour.print("Build() has been called.");
 		emptyMap();
 		preBuild();
 
@@ -79,8 +81,10 @@ public class RoguelikeMap : ScriptableObject {
 			}
 		} // end of ground floor creation
 
+		//MonoBehaviour.print("Created " + formsMade.ToString() + " forms.");
+
 		//...and then add bridges and corridors higher up
-		for (int h = 0; h < MapSize.y - MinHeight - HeightRand; h += Random.Range(MinHeight, MinHeight + HeightRand)) { // h is the height of the floor
+		for (int h = Random.Range(MinHeight, MinHeight + HeightRand); h < MapSize.y - MinHeight - HeightRand; h += MinHeight + HeightRand + 1) { // h is the height of the floor
 			formsMade = 0;
 			for (int i = 0; i < numTries && formsMade < FormsPerFloor; i++) {
 				Vec2i t;
@@ -97,7 +101,7 @@ public class RoguelikeMap : ScriptableObject {
 				start.z = Mathf.Min(t.z, u.z);
 				end.x = Mathf.Max(t.x, u.x);
 				end.z = Mathf.Max(t.z, u.z);
-				if (containsBlocks(start, end, h)) {
+				if (containsBlocks(start, end, h + 1)) {
 					if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
 						if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
 
@@ -108,6 +112,7 @@ public class RoguelikeMap : ScriptableObject {
 							formsMade++;
 						}
 				}
+				MonoBehaviour.print("Created " + formsMade.ToString() + " corridors");
 			} // end of the creation of a single corridor/bridge
 		} // end of corridor/bridge creation
 
@@ -120,40 +125,46 @@ public class RoguelikeMap : ScriptableObject {
 		for (int k = 0; k < MapSize.z; k++) {
 			// only build walls around a block if it's not a wall itself
 			if (Block[i, j, k]) {
-					if (getBlock(i - 1, j, k)) {
+					if (!getBlock(i - 1, j, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-						np.transform.position = Pos + new Vector3(Scale.x * (i - 1), Scale.y * j, Scale.z * k);
+						np.transform.position = Pos + new Vector3(Scale.x * i - Scale.x * 0.5f, Scale.y * j, Scale.z * k);
 						np.transform.localScale = Scale;
+						np.transform.forward = Vector3.left;
 						np.renderer.material = Mat[i, j, k];
 					}
-					if (getBlock(i + 1, j, k)) {
+					if (!getBlock(i + 1, j, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-						np.transform.position = Pos + new Vector3(Scale.x * (i + 1), Scale.y * j, Scale.z * k);
+						np.transform.position = Pos + new Vector3(Scale.x * i + Scale.x * 0.5f, Scale.y * j, Scale.z * k);
 						np.transform.localScale = Scale;
+						np.transform.forward = Vector3.right;
 						np.renderer.material = Mat[i, j, k];
 					}
-					if (getBlock(i, j, k - 1)) {
+					if (!getBlock(i, j, k - 1)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-						np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j, Scale.z * (k - 1));
+						np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j, Scale.z * k - Scale.z * 0.5f);
 						np.transform.localScale = Scale;
+						np.transform.forward = Vector3.back;
 						np.renderer.material = Mat[i, j, k];
 					}
-					if (getBlock(i, j, k + 1)) {
+					if (!getBlock(i, j, k + 1)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-						np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j, Scale.z * (k + 1));
+						np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j, Scale.z * k + Scale.z * 0.5f);
 						np.transform.localScale = Scale;
+						np.transform.forward = Vector3.forward;
 						np.renderer.material = Mat[i, j, k];
 					}
-					if (getBlock(i, j - 1, k)) {
+					if (!getBlock(i, j - 1, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-						np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * (j - 1), Scale.z * k);
+						np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j - Scale.y * 0.5f, Scale.z * k);
 						np.transform.localScale = Scale;
+						np.transform.forward = Vector3.down;
 						np.renderer.material = Mat[i, j, k];
 					}
-					if (getBlock(i, j + 1, k)) {
+					if (!getBlock(i, j + 1, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-						np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * (j + 1), Scale.z * k);
+						np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j + Scale.y * 0.5f, Scale.z * k);
 						np.transform.localScale = Scale;
+						np.transform.forward = Vector3.up;
 						np.renderer.material = Mat[i, j, k];
 					}
 			} // end of wall creation for the current block
@@ -176,52 +187,70 @@ public class RoguelikeMap : ScriptableObject {
 		a.x = Random.Range(0, MapSize.x - MaxFormWidth);
 		a.y = 0;
 		a.z = Random.Range(0, MapSize.z - MaxFormWidth);
+		//a.x = 0;
+		//a.y = 0;
+		//a.z = 0;
 		Vec3i b;
 		b.x = Random.Range(a.x + MinFormWidth, a.x + MaxFormWidth);
 		b.y = Random.Range(MinHeight, MinHeight + HeightRand);
 		b.z = Random.Range(a.z + MinFormWidth, a.z + MaxFormWidth);
+		//b.x = 0;
+		//b.y = 0;
+		//b.z = 0;
+		//MonoBehaviour.print("area of room in preBuild() = " + getArea(a, b));
 		fillRect(a, b);
 	}
 
 	// sets blocks to true(opens them to create rooms) and sets their material
 	void fillRect (Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders)
+		//int t = 0;
+		//MonoBehaviour.print("e.z = " + e.z.ToString());
+		Material cMat = MatPool[Random.Range(0, MatPool.Count)]; // current mat
 		for (int i = s.x; i <= e.x; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block
-		for (int j = s.y; i <= e.y; i++)
-		for (int k = s.z; i <= e.z; i++) {
+		for (int j = s.y; j <= e.y; j++)
+		for (int k = s.z; k <= e.z; k++) {
+			//MonoBehaviour.print("i = " + i.ToString());
+			//MonoBehaviour.print("j = " + j.ToString());
+			//MonoBehaviour.print("k = " + k.ToString());
 			Block[i, j, k] = true;
-			Mat[i, j, k] = MatPool[Random.Range(0, MatPool.Count)];
+			Mat[i, j, k] = cMat;
+			//t++;
 		}
+		//MonoBehaviour.print("fillRect() created " + t.ToString() + " blocks.");
 	}
 
 	// at ground floor
 	void fillRect (Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
 		Vec3i a;
-		a.x = s.z;
+		a.x = s.x;
 		a.y = 0;
 		a.z = s.z;
 		Vec3i b;
-		b.x = e.z;
+		b.x = e.x;
 		b.y = Random.Range(MinHeight, MinHeight + HeightRand);
 		b.z = e.z;
 		fillRect(a, b);
 	}
 
 	void fillRect (Vec2i s, Vec2i e, int h) { // start, end, height(of the floor)(must be sorted and not be out of borders)
+		MonoBehaviour.print("fillRect was called for a corridor");
 		Vec3i a;
-		a.x = s.z;
+		a.x = s.x;
 		a.y = h + 1; // h + 1 because floors generate at h(for bridges)
 		a.z = s.z;
 		Vec3i b;
-		b.x = e.z;
+		b.x = e.x;
 		b.y = h + Random.Range(MinHeight, MinHeight + HeightRand) + 1;
 		b.z = e.z;
 		fillRect(a, b);
+		MonoBehaviour.print("a.y = " + a.y.ToString());
+		MonoBehaviour.print("b.y = " + b.y.ToString());
 	}
 
 	//fills with false, used for creating bridges
 	void putWall (Vec2i s, Vec2i e, int h) { // start, end, height()(must be sorted and not be out of borders)
 		for (int i = s.x; i <= e.x; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block
-		for (int k = s.z; i <= e.z; i++)
+		for (int k = s.z; k <= e.z; k++)
 			Block[i, h, k] = false;
 	}
 
@@ -229,8 +258,8 @@ public class RoguelikeMap : ScriptableObject {
 	int countBlocks (Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders)
 		int t = 0; // temporary
 		for (int i = s.x; i <= e.x; i++) // the <= is there because it counts the blocks inclusively, so counting from 3, 3, 3 to 3, 3, 3 can cause it to return 1
-		for (int j = s.y; i <= e.y; i++)
-		for (int k = s.z; i <= e.z; i++) {
+		for (int j = s.y; j <= e.y; j++)
+		for (int k = s.z; k <= e.z; k++) {
 			if (Block[i, j, k]) t++;
 		}
 		return t;
@@ -239,11 +268,11 @@ public class RoguelikeMap : ScriptableObject {
 	// gets the taken area of the floor
 	int countBlocks (Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
 		Vec3i a;
-		a.x = s.z;
+		a.x = s.x;
 		a.y = 0;
 		a.z = s.z;
 		Vec3i b;
-		b.x = e.z;
+		b.x = e.x;
 		b.y = 0;
 		b.z = e.z;
 		return countBlocks(a, b);
@@ -264,8 +293,8 @@ public class RoguelikeMap : ScriptableObject {
 
 	bool containsBlocks (Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders)
 		for (int i = s.x; i <= e.x; i++) // the <= is there because it checks the blocks inclusively, so checking from 3, 3, 3 to 3, 3, 3 can cause it to return true
-		for (int j = s.y; i <= e.y; i++)
-		for (int k = s.z; i <= e.z; i++) {
+		for (int j = s.y; j <= e.y; j++)
+		for (int k = s.z; k <= e.z; k++) {
 			if (Block[i, j, k]) return true;
 		}
 		return false; // if we got here, it means that there are no blocks in the area

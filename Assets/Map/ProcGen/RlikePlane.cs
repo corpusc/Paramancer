@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class RlikePlane : MonoBehaviour {
 	RoguelikeLevel lev;
+	RoguelikeMap map;
 
 
 
@@ -34,6 +35,14 @@ public class RlikePlane : MonoBehaviour {
 			-lev.Scale.y*2, 
 			lev.Scale.z);
 		lev.Build3D();
+		map = ScriptableObject.CreateInstance<RoguelikeMap>();
+		map.MapSize.x = 64;
+		map.MapSize.y = 32;
+		map.MapSize.z = 64;
+		map.Pos = new Vector3(0f, 10f, 0f);
+		map.Init();
+		map.Build();
+		map.Build3d();
 	}
 
 

@@ -8,6 +8,7 @@ public class RlikeCam : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Screen.lockCursor = true;
 		nl = new GameObject("CoolThing");
 		nl.AddComponent<TrailRenderer>();
 		tr = nl.GetComponent<TrailRenderer>();
