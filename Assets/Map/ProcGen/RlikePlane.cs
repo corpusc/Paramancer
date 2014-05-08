@@ -12,7 +12,7 @@ public class RlikePlane : MonoBehaviour {
 	void Start () {
 		lev = ScriptableObject.CreateInstance<RoguelikeLevel>();
 		lev.MapSize.x = 64;
-		lev.MapSize.y = 64;
+		lev.MapSize.z = 64;
 		lev.Forms = 40;
 		lev.MaxArea = 50;
 		lev.MaxFormWidth = 16;

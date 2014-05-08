@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public struct Vec2i {
 	public int x;
-	public int y;
+	public int z;
 };
 
 public class RoguelikeLevel : ScriptableObject {
@@ -62,7 +62,7 @@ public class RoguelikeLevel : ScriptableObject {
 
 
 	public void Init () {
-		Cells = new Cell[MapSize.x, MapSize.y];
+		Cells = new Cell[MapSize.x, MapSize.z];
 
 		MetalFloor = (Material)Resources.Load("Mat/Allegorithmic/metal_floor_003", typeof(Material));
 		MetalGroovedEdges = (Material)Resources.Load("Mat/Allegorithmic/metal_plate_005", typeof(Material));
@@ -96,24 +96,24 @@ public class RoguelikeLevel : ScriptableObject {
 		for (int i = 0; i < numTries && formsMade < Forms; i++) {
 			Vec2i t;
 			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
 
 			Vec2i u;
 			u.x = Random.Range(0, MapSize.x);
-			u.y = Random.Range(0, MapSize.y); // this is last-exclusive, hence all the <= and ...+ 1 later on 
+			u.z = Random.Range(0, MapSize.z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
 			
 			Vec2i start;
 			Vec2i end;
 			start.x = Mathf.Min(t.x, u.x);
-			start.y = Mathf.Min(t.y, u.y);
+			start.z = Mathf.Min(t.z, u.z);
 			end.x = Mathf.Max(t.x, u.x);
-			end.y = Mathf.Max(t.y, u.y);
+			end.z = Mathf.Max(t.z, u.z);
 			if (containsBlocks(start, end)) {
-				if ((end.x >= start.x + MinFormWidth) && (end.y >= start.y + MinFormWidth))
-				if ((end.x <= start.x + MaxFormWidth) && (end.y <= start.y + MaxFormWidth))
-				if ((end.x - start.x + 1) * (end.y - start.y + 1) <= MaxArea)
+				if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
+				if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
+				if ((end.x - start.x + 1) * (end.z - start.z + 1) <= MaxArea)
 
-					if (blocksInRect(start, end) < (end.x - start.x + 1) * (end.y - start.y + 1) * MaxOverride) {
+					if (blocksInRect(start, end) < (end.x - start.x + 1) * (end.z - start.z + 1) * MaxOverride) {
 						fillRect(start, end);
 					formsMade++;
 					}
@@ -124,16 +124,16 @@ public class RoguelikeLevel : ScriptableObject {
 	void preBuild() {
 		Vec2i a;
 		a.x = Random.Range(0, MapSize.x - MaxFormWidth);
-		a.y = Random.Range(0, MapSize.y - MaxFormWidth);
+		a.z = Random.Range(0, MapSize.z - MaxFormWidth);
 		Vec2i b;
 		b.x = Random.Range(a.x + MinFormWidth, a.x + MaxFormWidth);
-		b.y = Random.Range(a.y + MinFormWidth, a.y + MaxFormWidth);
+		b.z = Random.Range(a.z + MinFormWidth, a.z + MaxFormWidth);
 		fillRect(a, b);
 	}
 
 	bool containsBlocks (Vec2i start, Vec2i end) {
 		for (int i = start.x; i <= end.x; i++)
-			for (int j = start.y; j <= end.y; j++)
+			for (int j = start.z; j <= end.z; j++)
 				if (Cells[i, j].IsAir) return true;
 
 		return false;
@@ -142,7 +142,7 @@ public class RoguelikeLevel : ScriptableObject {
 	int blocksInRect (Vec2i start, Vec2i end) {
 		int c = 0;
 		for (int i = start.x; i <= end.x; i++)
-			for (int j = start.y; j <= end.y; j++)
+			for (int j = start.z; j <= end.z; j++)
 				if (Cells[i, j].IsAir) c++;
 
 		return c;
@@ -150,9 +150,9 @@ public class RoguelikeLevel : ScriptableObject {
 
 	void fillRect(Vec2i start, Vec2i end) {
 		start.x = Mathf.Clamp(start.x, 0, MapSize.x - 1);
-		start.y = Mathf.Clamp(start.y, 0, MapSize.y - 1);
+		start.z = Mathf.Clamp(start.z, 0, MapSize.z - 1);
 		end.x = Mathf.Clamp(end.x, 0, MapSize.x - 1);
-		end.y = Mathf.Clamp(end.y, 0, MapSize.y - 1); // because sometimes MaxFormWidth > MapSize
+		end.z = Mathf.Clamp(end.z, 0, MapSize.z - 1); // because sometimes MaxFormWidth > MapSize
 
 		// random heights and materials 
 		char height = (char)Random.Range(MinHeight, MaxHeight);
@@ -165,7 +165,7 @@ public class RoguelikeLevel : ScriptableObject {
 
 		// set all cells in rect 
 		for (int i = start.x; i <= end.x; i++)
-		for (int j = start.y; j <= end.y; j++) {
+		for (int j = start.z; j <= end.z; j++) {
 			Cells[i, j].IsAir = true;
 			if (CreateOverhangs)
 				Cells[i, j].CeilingHeight = height;
@@ -181,14 +181,14 @@ public class RoguelikeLevel : ScriptableObject {
 
 	public void EmptyMap() {
 		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.y; j++) 
+		for (int j = 0; j < MapSize.z; j++) 
 			Cells[i, j] = new Cell();
 	}
 	
 	public bool GetBlock(int x, int y) { 
 		// only difference between adressing blocks as an array is that this will return false if out of the map 
 		if (x < 0 || x >= MapSize.x) return true;
-		if (y < 0 || y >= MapSize.y) return true;
+		if (y < 0 || y >= MapSize.z) return true;
 		//MonoBehaviour.print("Test passed, x = " + x.ToString() + " y = " + y.ToString()); 
 		return Cells[x, y].IsAir;
 	}
@@ -197,7 +197,7 @@ public class RoguelikeLevel : ScriptableObject {
 	public Cell GetCell(int x, int y) { 
 		// only difference between adressing blocks as an array is that this will return false if out of the map 
 		if (x < 0 || x >= MapSize.x)   return new Cell();
-		if (y < 0 || y >= MapSize.y)   return new Cell();
+		if (y < 0 || y >= MapSize.z)   return new Cell();
 
 		return Cells[x, y];
 	}
@@ -220,11 +220,11 @@ public class RoguelikeLevel : ScriptableObject {
 
 			var v = new Vector3(
 				(float)i * Scale.x + offset.x / 2f, 
-				(float)pwH * Scale.y / 2f + Scale.y * sH,
+				(float)pwH * Scale.z / 2f + Scale.z * sH,
 				(float)j * Scale.z + offset.z / 2f);
 
 			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-			np.transform.localScale = new Vector3(scale.x, scale.y * pwH, scale.z);
+			np.transform.localScale = new Vector3(scale.x, scale.z * pwH, scale.z);
 			np.transform.position = Pos + v;
 			np.transform.forward = ori;
 			np.renderer.material = Cells[i, j].MatWalls;
@@ -257,7 +257,7 @@ public class RoguelikeLevel : ScriptableObject {
 	public void Build3D() {
 		// flag corners that need half of a lip 
 		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.y; j++) {
+		for (int j = 0; j < MapSize.z; j++) {
 			Cell c = Cells[i, j];
 			currH = c.CeilingHeight;
 			setNeighborOffsets(i, j);
@@ -271,7 +271,7 @@ public class RoguelikeLevel : ScriptableObject {
 
 		// now do actual building 
 		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.y; j++) {
+		for (int j = 0; j < MapSize.z; j++) {
 			Cell c = Cells[i, j];
 			currH = c.CeilingHeight;
 			setNeighborOffsets(i, j);
@@ -296,7 +296,7 @@ public class RoguelikeLevel : ScriptableObject {
 								0, 
 								Scale.z - Scale.z*thickMAX + thickMAX*Scale.z), 
 							Vector3.left, 
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiW.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0));
 
@@ -306,7 +306,7 @@ public class RoguelikeLevel : ScriptableObject {
 								0, 
 								Scale.z - Scale.z*thickMAX*2 + thickMAX*Scale.z), 
 							Vector3.forward,
-							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thinMAX, Scale.z, Scale.z),
 							neiW.CeilingHeight, i, j,					          
 							new Vector2(thinMAX, 0));
 					}
@@ -315,20 +315,20 @@ public class RoguelikeLevel : ScriptableObject {
 						buildWall(
 							new Vector3(
 								-Scale.x - Scale.x*thickMAX + thickMAX*Scale.x, 
-								Scale.y, 
+								Scale.z, 
 								Scale.z + Scale.z*thickMAX),
 							Vector3.back, 
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiW.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0));
 
 						buildWall(
 							new Vector3(
 								-Scale.x - Scale.x*thickMAX*2 + thickMAX*Scale.x,
-								Scale.y, 
+								Scale.z, 
 								Scale.z + Scale.z*thickMAX/2),
 							Vector3.right,
-							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thinMAX, Scale.z, Scale.z),
 							neiW.CeilingHeight, i, j,
 							new Vector2(thinMAX, 0));
 					}
@@ -350,7 +350,7 @@ public class RoguelikeLevel : ScriptableObject {
 								0, 
 								-Scale.z + Scale.z*thickMAX - thickMAX*Scale.z), 
 							Vector3.right, 
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiE.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0));
 						
@@ -360,7 +360,7 @@ public class RoguelikeLevel : ScriptableObject {
 								0, 
 								-Scale.z + Scale.z*thickMAX*2 - thickMAX*Scale.z), 
 							Vector3.back,
-							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thinMAX, Scale.z, Scale.z),
 							neiE.CeilingHeight, i, j,					          
 							new Vector2(thinMAX, 0));
 					}
@@ -369,20 +369,20 @@ public class RoguelikeLevel : ScriptableObject {
 						buildWall(
 							new Vector3(
 								Scale.x + Scale.x*thickMAX - thickMAX*Scale.x, 
-								Scale.y, 
+								Scale.z, 
 								-Scale.z - Scale.z*thickMAX),
 							Vector3.forward, 
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiE.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0));
 						
 						buildWall(
 							new Vector3(
 								Scale.x + Scale.x*thickMAX*2 - thickMAX*Scale.x,
-								Scale.y, 
+								Scale.z, 
 								-Scale.z - Scale.z*thickMAX/2),
 							Vector3.left,
-							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thinMAX, Scale.z, Scale.z),
 							neiE.CeilingHeight, i, j,
 							new Vector2(thinMAX, 0));
 					}
@@ -404,7 +404,7 @@ public class RoguelikeLevel : ScriptableObject {
 							0, 
 							Scale.z - Scale.z*thickMAX), 
 							Vector3.forward, 
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiN.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0), 
 							true);
@@ -415,7 +415,7 @@ public class RoguelikeLevel : ScriptableObject {
 							0, 
 							Scale.z - Scale.z*thinMAX), 
 							Vector3.right,
-							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thinMAX, Scale.z, Scale.z),
 							neiN.CeilingHeight, i, j,					          
 							new Vector2(thinMAX, 0), 
 							true);
@@ -425,10 +425,10 @@ public class RoguelikeLevel : ScriptableObject {
 						buildWall(
 							new Vector3(
 							Scale.x + Scale.x*thinMAX, 
-							Scale.y, 
+							Scale.z, 
 							Scale.z + Scale.z*thickMAX),
 							Vector3.back, 
-							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thinMAX, Scale.z, Scale.z),
 							neiN.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0), 
 							true);
@@ -436,10 +436,10 @@ public class RoguelikeLevel : ScriptableObject {
 						buildWall(
 							new Vector3(
 							Scale.x + Scale.x*thickMAX,
-							Scale.y, 
+							Scale.z, 
 							Scale.z),
 							Vector3.left,
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiN.CeilingHeight, i, j,
 							new Vector2(thinMAX, 0), 
 							true);
@@ -462,7 +462,7 @@ public class RoguelikeLevel : ScriptableObject {
 							0, 
 							-Scale.z + Scale.z*thickMAX), 
 							Vector3.back, 
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiS.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0), 
 							true);
@@ -473,7 +473,7 @@ public class RoguelikeLevel : ScriptableObject {
 							0, 
 							-Scale.z + Scale.z*thinMAX), 
 							Vector3.left,
-							new Vector3(Scale.x*thinMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thinMAX, Scale.z, Scale.z),
 							neiS.CeilingHeight, i, j,					          
 							new Vector2(thinMAX, 0), 
 							true);
@@ -483,10 +483,10 @@ public class RoguelikeLevel : ScriptableObject {
 						buildWall(
 							new Vector3(
 							-Scale.x, 
-							Scale.y, 
+							Scale.z, 
 							-Scale.z - Scale.z*thickMAX),
 							Vector3.forward, 
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiS.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0), 
 							true);
@@ -494,10 +494,10 @@ public class RoguelikeLevel : ScriptableObject {
 						buildWall(
 							new Vector3(
 							-Scale.x - Scale.x*thickMAX,
-							Scale.y, 
+							Scale.z, 
 							-Scale.z),
 							Vector3.right,
-							new Vector3(Scale.x*thickMAX, Scale.y, Scale.z),
+							new Vector3(Scale.x*thickMAX, Scale.z, Scale.z),
 							neiS.CeilingHeight, i, j,
 							new Vector2(thickMAX, 0), 
 							true);
@@ -523,7 +523,7 @@ public class RoguelikeLevel : ScriptableObject {
 				np.transform.forward = Vector3.up;
 				np.transform.position = Pos + new Vector3(
 					Scale.x * (float)i, 
-					Scale.y * (float)currH, 
+					Scale.z * (float)currH, 
 					Scale.z * (float)j);
 				np.transform.localScale = Scale;
 				np.renderer.material = Cells[i, j].MatCeiling;
