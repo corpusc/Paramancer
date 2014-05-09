@@ -38,6 +38,10 @@ public class ProcGenVoxel : ScriptableObject {
 	public GameObject Torch;
 	public float TorchScale = 0.3f;
 	public float TorchOffset = 0.1f;
+
+	public int JumpPads = 10; // the amount of jump pads to be placed
+	public GameObject JumpPad;
+	public Vector3 JumpPadScale = new Vector3(1f, 0.2f, 1f);
 	// the maximal height of a room is determined by the map height & the room size
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth
 	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y
@@ -58,7 +62,8 @@ public class ProcGenVoxel : ScriptableObject {
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/sci_fi_003", typeof(Material)));
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/Stones_01", typeof(Material)));
 
-		Torch = GameObject.Find("Torch");
+		Torch = GameObject.Find("Torch"); // a GameObject called Torch must already be in the scene for this to work
+		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work
 	}
 
 	//this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d ()
