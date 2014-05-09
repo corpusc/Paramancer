@@ -24,9 +24,20 @@ public class ProcGenVoxel : ScriptableObject {
 	public Vector3 Scale = Vector3.one; // the scale of all elements on the map
 	public float SizeToHeight = 0.75f; // this is used to give a larger height to rooms with a square-like shape. Setting it to a lower value will cause rooms to appear flatter.
 	public int MinHeight = 2; // the minimal height a room can have
+	public int MaxFloorHeight = 1; // the maximal height of the floor of the rooms on the ground floor. Use 0 for no randomness.
 	public int HeightRand = 4; // the maximal additional room height(minimal is 0)(last-exclusive, so set to 1 for no randomness)
 	public int CorridorHeightRand = 2; // same as above, but for corridors
+	public int MinFloorLevelStep = 8; // the minimal height distance between two corridor levels on top of each other
+	public int MaxFloorLevelStep = 10; // the maximal height distance between two corridor levels on top of each other
+	public int MinCorridorStartHeight = 3; // the minimal height at which corridors & bridges are created
+	public int MaxCorridorStartHeight = 4; // the maximal height at which corridors & bridges are created
 	public bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed
+
+	// assets to be placed on the map
+	public int Torches = 40; // the amount of torches placed on the map
+	public GameObject Torch;
+	public float TorchScale = 0.3f;
+	public float TorchOffset = 0.1f;
 	// the maximal height of a room is determined by the map height & the room size
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth
 	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y
@@ -40,11 +51,14 @@ public class ProcGenVoxel : ScriptableObject {
 	public void Init () {
 		Block = new bool[MapSize.x, MapSize.y, MapSize.z];
 		Mat = new Material[MapSize.x, MapSize.y, MapSize.z];
+
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/metal_floor_003", typeof(Material)));
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/metal_plate_005", typeof(Material)));
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/metal_plate_008", typeof(Material)));
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/sci_fi_003", typeof(Material)));
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/Stones_01", typeof(Material)));
+
+		Torch = GameObject.Find("Torch");
 	}
 
 	//this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d ()
@@ -82,7 +96,7 @@ public class ProcGenVoxel : ScriptableObject {
 		} // end of ground floor creation
 
 		//...and then add bridges and corridors higher up
-		for (int h = Random.Range(MinHeight, MinHeight + HeightRand); h < MapSize.y - MinHeight - HeightRand; h += MinHeight + HeightRand + 1 + Random.Range(0, HeightRand)) { // h is the height of the floor
+		for (int h = Random.Range(MinCorridorStartHeight, MaxCorridorStartHeight + 1); h < MapSize.y - MinHeight - HeightRand; h += Random.Range(MinFloorLevelStep, MaxFloorLevelStep + 1)) { // h is the height of the floor
 			formsMade = 0;
 			for (int i = 0; i < numTries && formsMade < FormsPerFloor; i++) {
 				Vec2i t;
@@ -112,6 +126,50 @@ public class ProcGenVoxel : ScriptableObject {
 						}
 			} // end of the creation of a single corridor/bridge
 		} // end of corridor/bridge creation
+
+		// now place assets
+		// the placing of assets will probably be specific for every single one, that's why they're not treated together
+		// things like "don't place torches on ceilings" are checked here specifically for every single asset
+		formsMade = 0; // counting torches as forms
+		for (int i = 0; i < numTries && formsMade < Torches; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (Block[t.x, t.y, t.z]) {
+				if (!getBlock(t.x - 1, t.y, t.z)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch); // new torch
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x * 0.5f + TorchOffset, Scale.y * t.y, Scale.z * t.z);
+					nt.transform.localScale = Scale * TorchScale;
+					formsMade++;
+				}
+				else if (!getBlock(t.x + 1, t.y, t.z)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch);
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x * 0.5f - TorchOffset, Scale.y * t.y, Scale.z * t.z);
+					nt.transform.localScale = Scale * TorchScale;
+					formsMade++;
+				}
+				else if (!getBlock(t.x, t.y, t.z - 1)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch);
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z - Scale.z * 0.5f + TorchOffset);
+					nt.transform.localScale = Scale * TorchScale;
+					formsMade++;
+				}
+				else if (!getBlock(t.x, t.y, t.z + 1)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch);
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z + Scale.z * 0.5f - TorchOffset);
+					nt.transform.localScale = Scale * TorchScale;
+					formsMade++;
+				}
+				else if (!getBlock(t.x, t.y - 1, t.z)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch);
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y - Scale.y * 0.5f + TorchOffset, Scale.z * t.z);
+					nt.transform.localScale = Scale * TorchScale;
+					formsMade++;
+				}
+				// no torches on ceilings!
+			}
+		}
 
 	} // end of Build ()
 
@@ -213,11 +271,11 @@ public class ProcGenVoxel : ScriptableObject {
 		}
 		Vec3i a;
 		a.x = s.x;
-		a.y = 0;
+		a.y = Random.Range(0, MaxFloorHeight + 1);
 		a.z = s.z;
 		Vec3i b;
 		b.x = e.x;
-		b.y = h;
+		b.y = a.y + h;
 		b.z = e.z;
 		fillRect(a, b);
 	}
