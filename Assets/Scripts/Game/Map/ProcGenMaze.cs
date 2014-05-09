@@ -7,7 +7,7 @@ public struct Vec2i {
 	public int z;
 };
 
-public class RoguelikeLevel : ScriptableObject {
+public class ProcGenMaze : ScriptableObject {
 	public class Cell {
 		public Material MatWalls;
 		public Material MatFloor;

@@ -8,20 +8,21 @@ public struct Vec3i {
 	public int z;
 };
 
-public class RoguelikeMap : ScriptableObject {
+public class ProcGenVoxel : ScriptableObject {
 
 	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc)
 	public Material[,,] Mat;
 	public Vec3i MapSize; // this is the resolution
 	public int Forms = 40; // the amount of rooms/halls to create on the ground floor
-	public int FormsPerFloor = 5; // the amount of corridors/halls that connect alll rooms reaching the given height, per floor
+	public int FormsPerFloor = 10; // the amount of corridors/halls that connect alll rooms reaching the given height, per floor
 	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there 
 	public int MinFormWidth = 1;
 	public int MaxFormWidth = 16;
-	public int MaxArea = 100; // limits the creation of extremely large rooms, favorizes corridors
-	public int MaxCorridorArea = 50; // for corridors/bridges above the ground floor
+	public int MaxArea = 120; // limits the creation of extremely large rooms, favorizes corridors
+	public int MaxCorridorArea = 60; // for corridors/bridges above the ground floor
 	public Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map
 	public Vector3 Scale = Vector3.one; // the scale of all elements on the map
+	public float SizeToHeight = 0.75f; // this is used to give a larger height to rooms with a square-like shape. Setting it to a lower value will cause rooms to appear flatter.
 	public int MinHeight = 2; // the minimal height a room can have
 	public int HeightRand = 4; // the maximal additional room height(minimal is 0)(last-exclusive, so set to 1 for no randomness)
 	public int CorridorHeightRand = 2; // same as above, but for corridors
@@ -48,7 +49,6 @@ public class RoguelikeMap : ScriptableObject {
 
 	//this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d ()
 	public void Build () {
-		//MonoBehaviour.print("Build() has been called.");
 		emptyMap();
 		preBuild();
 
@@ -81,10 +81,8 @@ public class RoguelikeMap : ScriptableObject {
 			}
 		} // end of ground floor creation
 
-		//MonoBehaviour.print("Created " + formsMade.ToString() + " forms.");
-
 		//...and then add bridges and corridors higher up
-		for (int h = Random.Range(MinHeight, MinHeight + HeightRand); h < MapSize.y - MinHeight - HeightRand; h += MinHeight + HeightRand + 1) { // h is the height of the floor
+		for (int h = Random.Range(MinHeight, MinHeight + HeightRand); h < MapSize.y - MinHeight - HeightRand; h += MinHeight + HeightRand + 1 + Random.Range(0, HeightRand)) { // h is the height of the floor
 			formsMade = 0;
 			for (int i = 0; i < numTries && formsMade < FormsPerFloor; i++) {
 				Vec2i t;
@@ -101,9 +99,10 @@ public class RoguelikeMap : ScriptableObject {
 				start.z = Mathf.Min(t.z, u.z);
 				end.x = Mathf.Max(t.x, u.x);
 				end.z = Mathf.Max(t.z, u.z);
-				if (containsBlocks(start, end, h + 1)) {
+				if (containsBlocks(start, end, h + 1))
 					if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
 						if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
+							if (containsWalls(start, end, h)) // so that bridges don't generate in mid-air
 
 						// no MaxOverride check here because we want bridges to generate
 						if (getArea(start, end) <= MaxCorridorArea) {
@@ -111,8 +110,6 @@ public class RoguelikeMap : ScriptableObject {
 							fillRect(start, end, h);
 							formsMade++;
 						}
-				}
-				MonoBehaviour.print("Created " + formsMade.ToString() + " corridors");
 			} // end of the creation of a single corridor/bridge
 		} // end of corridor/bridge creation
 
@@ -187,53 +184,46 @@ public class RoguelikeMap : ScriptableObject {
 		a.x = Random.Range(0, MapSize.x - MaxFormWidth);
 		a.y = 0;
 		a.z = Random.Range(0, MapSize.z - MaxFormWidth);
-		//a.x = 0;
-		//a.y = 0;
-		//a.z = 0;
 		Vec3i b;
 		b.x = Random.Range(a.x + MinFormWidth, a.x + MaxFormWidth);
 		b.y = Random.Range(MinHeight, MinHeight + HeightRand);
 		b.z = Random.Range(a.z + MinFormWidth, a.z + MaxFormWidth);
-		//b.x = 0;
-		//b.y = 0;
-		//b.z = 0;
-		//MonoBehaviour.print("area of room in preBuild() = " + getArea(a, b));
 		fillRect(a, b);
 	}
 
 	// sets blocks to true(opens them to create rooms) and sets their material
 	void fillRect (Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders)
-		//int t = 0;
-		//MonoBehaviour.print("e.z = " + e.z.ToString());
 		Material cMat = MatPool[Random.Range(0, MatPool.Count)]; // current mat
 		for (int i = s.x; i <= e.x; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block
 		for (int j = s.y; j <= e.y; j++)
 		for (int k = s.z; k <= e.z; k++) {
-			//MonoBehaviour.print("i = " + i.ToString());
-			//MonoBehaviour.print("j = " + j.ToString());
-			//MonoBehaviour.print("k = " + k.ToString());
 			Block[i, j, k] = true;
 			Mat[i, j, k] = cMat;
-			//t++;
 		}
-		//MonoBehaviour.print("fillRect() created " + t.ToString() + " blocks.");
 	}
 
 	// at ground floor
 	void fillRect (Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
+		int h = (int)((float)Mathf.Min(e.x - s.x, e.z - s.z) * SizeToHeight); // height(of the room)
+		if (h < MinHeight) h = MinHeight;
+		h += Random.Range(0, HeightRand);
+		if (h >= MapSize.y) {
+			MonoBehaviour.print("Voxel map generation error: room height is too large! Please set MapSize.y to a higher value.");
+			return;
+		}
 		Vec3i a;
 		a.x = s.x;
 		a.y = 0;
 		a.z = s.z;
 		Vec3i b;
 		b.x = e.x;
-		b.y = Random.Range(MinHeight, MinHeight + HeightRand);
+		b.y = h;
 		b.z = e.z;
 		fillRect(a, b);
 	}
 
+	// this is only called for bridges & overground corridors
 	void fillRect (Vec2i s, Vec2i e, int h) { // start, end, height(of the floor)(must be sorted and not be out of borders)
-		MonoBehaviour.print("fillRect was called for a corridor");
 		Vec3i a;
 		a.x = s.x;
 		a.y = h + 1; // h + 1 because floors generate at h(for bridges)
@@ -243,8 +233,6 @@ public class RoguelikeMap : ScriptableObject {
 		b.y = h + Random.Range(MinHeight, MinHeight + HeightRand) + 1;
 		b.z = e.z;
 		fillRect(a, b);
-		MonoBehaviour.print("a.y = " + a.y.ToString());
-		MonoBehaviour.print("b.y = " + b.y.ToString());
 	}
 
 	//fills with false, used for creating bridges
@@ -348,5 +336,39 @@ public class RoguelikeMap : ScriptableObject {
 		t.y = y;
 		t.z = z;
 		return getBlock(t);
+	}
+
+	// checks if the area contains any blocks that are false(used so that bridges are not suspended in mid-air)
+	bool containsWalls (Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders)
+		for (int i = s.x; i <= e.x; i++) // the <= is there because it checks the blocks inclusively, so checking from 3, 3, 3 to 3, 3, 3 can cause it to return true
+		for (int j = s.y; j <= e.y; j++)
+		for (int k = s.z; k <= e.z; k++)
+			if (!Block[i, j, k]) return true;
+
+		return false; // if we got here, it means that there are no walls in the area
+	}
+
+	bool containsWalls (Vec2i s, Vec2i e, int h) { // start, end, height(sorted, not out of borders)
+		Vec3i a;
+		a.x = s.x;
+		a.y = h;
+		a.z = s.z;
+		Vec3i b;
+		b.x = e.x;
+		b.y = h;
+		b.z = e.z;
+		return containsWalls (a, b);
+	}
+
+	bool containsWalls (Vec2i s, Vec2i e) { // start, end(sorted, not out of borders)
+		Vec3i a;
+		a.x = s.x;
+		a.y = 0;
+		a.z = s.z;
+		Vec3i b;
+		b.x = e.x;
+		b.y = 0;
+		b.z = e.z;
+		return containsWalls (a, b);
 	}
 }
