@@ -14,15 +14,15 @@ public class ProcGenVoxel : ScriptableObject {
 	public Material[,,] Mat;
 	public Vec3i MapSize; // this is the resolution
 	public int Forms = 40; // the amount of rooms/halls to create on the ground floor
-	public int FormsPerFloor = 10; // the amount of corridors/halls that connect alll rooms reaching the given height, per floor
-	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there 
+	public int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor
+	public float MaxOverride = 0.15f; // only create a form if there aren't too many things already in there 
 	public int MinFormWidth = 1;
 	public int MaxFormWidth = 16;
-	public int MaxArea = 120; // limits the creation of extremely large rooms, favorizes corridors
+	public int MaxArea = 100; // limits the creation of extremely large rooms, favorizes corridors
 	public int MaxCorridorArea = 60; // for corridors/bridges above the ground floor
 	public Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map
 	public Vector3 Scale = Vector3.one; // the scale of all elements on the map
-	public float SizeToHeight = 0.75f; // this is used to give a larger height to rooms with a square-like shape. Setting it to a lower value will cause rooms to appear flatter.
+	public float SizeToHeight = 0.85f; // this is used to give a larger height to rooms with a square-like shape. Setting it to a lower value will cause rooms to appear flatter.
 	public int MinHeight = 2; // the minimal height a room can have
 	public int MaxFloorHeight = 1; // the maximal height of the floor of the rooms on the ground floor. Use 0 for no randomness.
 	public int HeightRand = 4; // the maximal additional room height(minimal is 0)(last-exclusive, so set to 1 for no randomness)
@@ -30,25 +30,28 @@ public class ProcGenVoxel : ScriptableObject {
 	public int MinFloorLevelStep = 8; // the minimal height distance between two corridor levels on top of each other
 	public int MaxFloorLevelStep = 10; // the maximal height distance between two corridor levels on top of each other
 	public int MinCorridorStartHeight = 3; // the minimal height at which corridors & bridges are created
-	public int MaxCorridorStartHeight = 4; // the maximal height at which corridors & bridges are created
+	public int MaxCorridorStartHeight = 5; // the maximal height at which corridors & bridges are created
 	public bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed
 
 	// assets to be placed on the map
 	public int Torches = 40; // the amount of torches placed on the map
 	public GameObject Torch;
 	public float TorchScale = 0.3f;
-	public float TorchOffset = 0.1f;
+	public float TorchOffset = 0.1f; // the distance from the center of the torch to the wall/floor it is attached to
 
 	public int JumpPads = 10; // the amount of jump pads to be placed
 	public GameObject JumpPad;
 	public Vector3 JumpPadScale = new Vector3(1f, 0.2f, 1f);
+	public int JumpHeight = 2; // the height that cannot be jumped over normally(needs a jump pad)(must be lesser than MapSize.y)
+	public float JumpPadOffset = 0.1f; // the distance from the center of the jump pad to the floor it is on
+
 	// the maximal height of a room is determined by the map height & the room size
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth
 	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y
 	// To create a map, set all the values you need, and call Init(), Build() and Build3d()
 
 	// private
-	int numTries = 5000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
+	int numTries = 20000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
 	List<Material> MatPool = new List<Material>();
 
 	// only sets everything up, doesn't build the level - call Build () and Build3d () manually
@@ -118,7 +121,7 @@ public class ProcGenVoxel : ScriptableObject {
 				start.z = Mathf.Min(t.z, u.z);
 				end.x = Mathf.Max(t.x, u.x);
 				end.z = Mathf.Max(t.z, u.z);
-				if (containsBlocks(start, end, h + 1))
+				if (eachFloorOpen(start, end, h + 1, h + MinHeight)) // MinHeight is considered to be the player height, to check if the corridor can be accessed
 					if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
 						if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
 							if (containsWalls(start, end, h)) // so that bridges don't generate in mid-air
@@ -173,8 +176,50 @@ public class ProcGenVoxel : ScriptableObject {
 					formsMade++;
 				}
 				// no torches on ceilings!
-			}
-		}
+			} // end of scanning an individual block to see if a torch can be placed
+		} // end of placing torches
+
+		// place jump pads
+		formsMade = 0; // counting jump pads as forms
+		for (int i = 0; i < numTries && formsMade < JumpPads; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(JumpHeight, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (Block[t.x, t.y, t.z] && !Block[t.x, t.y - 1, t.z]) { // if this is the floor of any form above jump height
+				int d = floorScan(t.x - 1, t.y, t.z); // distance
+				if (d >= JumpHeight) {
+					var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+					nj.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
+					nj.transform.localScale = JumpPadScale;
+					formsMade++;
+				} else {
+					d = floorScan(t.x + 1, t.y, t.z);
+					if (d >= JumpHeight) {
+						var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+						nj.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
+						nj.transform.localScale = JumpPadScale;
+						formsMade++;
+					} else {
+						d = floorScan(t.x, t.y, t.z - 1);
+						if (d >= JumpHeight) {
+							var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+							nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z - Scale.z);
+							nj.transform.localScale = JumpPadScale;
+							formsMade++;
+						} else {
+							d = floorScan(t.x, t.y, t.z + 1);
+							if (d >= JumpHeight) {
+								var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+								nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z + Scale.z);
+								nj.transform.localScale = JumpPadScale;
+								formsMade++;
+							}
+						}
+					}
+				}
+			} // end of checking the block for possible jump pad placing
+		} // end of placing jump pads
 
 	} // end of Build ()
 
@@ -433,5 +478,28 @@ public class ProcGenVoxel : ScriptableObject {
 		b.y = 0;
 		b.z = e.z;
 		return containsWalls (a, b);
+	}
+
+	// scans for walls starting from a given point, going down, returns the distance to the nearest floor
+	int floorScan (Vec3i p) { // position
+		for (int i = 0; i <= p.y + 1; i++) { // <= p.y + 1 because it also scans the floor that is not coded as bloks, instead, is dependent on the MapIsOpen variable
+			if (!getBlock(p.x, p.y - i, p.z)) return i;
+		}
+		return -1; // if no floor was reached before the map ended
+	}
+
+	int floorScan (int x, int y, int z) {
+		Vec3i t; // temporary
+		t.x = x;
+		t.y = y;
+		t.z = z;
+		return floorScan(t);
+	}
+
+	// checks if all floors at given heights contain open blocks, used to check if you can get into a corridor at all(MinHeight is considerd the player height)
+	bool eachFloorOpen (Vec2i s, Vec2i e, int hs, int he) { // start, end, starting height, ending height(inclusive, must be sorted and not be out of borders)
+		for (int i = hs; i <= he; i++)
+			if (!containsBlocks(s, e, i)) return false;
+		return true; // if we got here, everything's fine
 	}
 }
