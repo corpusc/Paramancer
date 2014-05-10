@@ -41,9 +41,13 @@ public class ProcGenVoxel : ScriptableObject {
 
 	public int JumpPads = 10; // the amount of jump pads to be placed
 	public GameObject JumpPad;
-	public Vector3 JumpPadScale = new Vector3(1f, 0.2f, 1f);
+	public Vector3 JumpPadScale = new Vector3(1f, 0.3f, 1f);
 	public int JumpHeight = 2; // the height that cannot be jumped over normally(needs a jump pad)(must be lesser than MapSize.y)
-	public float JumpPadOffset = 0.1f; // the distance from the center of the jump pad to the floor it is on
+	public float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on
+
+	public int SpawnPoints = 4; // the amount of spawn points to be placed
+	public GameObject SpawnPoint;
+	public Vector3 SpawnPointScale = Vector3.one;
 
 	// the maximal height of a room is determined by the map height & the room size
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth
@@ -67,6 +71,7 @@ public class ProcGenVoxel : ScriptableObject {
 
 		Torch = GameObject.Find("Torch"); // a GameObject called Torch must already be in the scene for this to work
 		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work
+		SpawnPoint = GameObject.Find("SpawnPoint"); // a GameObject called SpawnPoint must already be in the scene for this to work
 	}
 
 	//this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d ()
@@ -138,7 +143,7 @@ public class ProcGenVoxel : ScriptableObject {
 		// now place assets
 		// the placing of assets will probably be specific for every single one, that's why they're not treated together
 		// things like "don't place torches on ceilings" are checked here specifically for every single asset
-		formsMade = 0; // counting torches as forms
+		formsMade = 0; // counting torches as forms, no need for a separate var
 		for (int i = 0; i < numTries && formsMade < Torches; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
@@ -220,6 +225,27 @@ public class ProcGenVoxel : ScriptableObject {
 				}
 			} // end of checking the block for possible jump pad placing
 		} // end of placing jump pads
+
+		// place spawn points
+		formsMade = 0; // count spawn points as forms
+		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (columnOpen(t, MinHeight))
+				if (!getBlock(t.x, t.y - 1, t.z)) {
+					var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point
+					ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
+					ns.transform.localScale = SpawnPointScale;
+					formsMade++;
+			}
+		} // end of placing spawn points
+
+		// remove the originals so that they don't cause any trouble like spawning players outside the map
+		GameObject.Destroy(Torch);
+		GameObject.Destroy(JumpPad);
+		GameObject.Destroy(SpawnPoint);
 
 	} // end of Build ()
 
@@ -500,6 +526,15 @@ public class ProcGenVoxel : ScriptableObject {
 	bool eachFloorOpen (Vec2i s, Vec2i e, int hs, int he) { // start, end, starting height, ending height(inclusive, must be sorted and not be out of borders)
 		for (int i = hs; i <= he; i++)
 			if (!containsBlocks(s, e, i)) return false;
+
 		return true; // if we got here, everything's fine
+	}
+
+	// used for checking if a spawn can be placed, only checks a column of blocks
+	bool columnOpen (Vec3i s, int h) { // starting position, height from starting position(must not be out of borders)
+		for (int i = s.y; i <= s.y + h; i++)
+			if (!getBlock(s.x, i, s.z)) return false;
+
+		return true; // if we got here, it means all blocks we checked are open
 	}
 }
