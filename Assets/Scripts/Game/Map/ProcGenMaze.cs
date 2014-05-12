@@ -2,38 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public struct Vec2i {
-	public int x;
-	public int z;
-};
 
-public class ProcGenMaze : ScriptableObject {
-	public class Cell {
-		public Material MatWalls;
-		public Material MatFloor;
-		public Material MatCeiling;
-		public Material MatLip;
-		public bool IsAir = false; 
-		public bool Floor = false; // for holes connecting levels 
-		public char CeilingHeight = (char)0;
-		public bool NeedsNWLip = true;
-		public bool NeedsNELip = true;
-		public bool NeedsSELip = true;
-		public bool NeedsSWLip = true;
-	}
 
+public class ProcGenMaze {
 	public Cell[,] Cells;
-	public Vec2i MapSize;
-	public int Forms = 50; // the amount of rooms/hallways to create 
-	public float MaxOverride = 0.2f; // only create a form if there aren't too many things already in there 
-	public int MinFormWidth = 16;
-	public int MaxFormWidth = 500;
-	public int MaxArea = 10000; // limits the creation of extremely large rooms, favorizes corridors
+	public Vec2i Max; // maximum dimensions of the map 
+	public int numRooms = 40; // rooms/hallways to create 
+	public float MaxOverride = 0.1f; // only create a room if there aren't too many things already in there 
+	public int MaxArea = 50; // limits the creation of extremely large rooms, favors corridors 
 	public Vector3 Pos = Vector3.zero;
 	public Vector3 Scale = Vector3.one;
-	public int MinHeight = 2; // the minimal height a room can have
-	public int MaxHeight = 5; // the maximal height a room can have
 	public bool CreateOverhangs = true;
+	// room settings 
+	public int MinSpan = 1; // laterally 
+	public int MaxSpan = 16; // laterally 
+	public int MinHeight = 2;
+	public int MaxHeight = 5;
 
 	public Material MetalFloor;
 	public Material MetalGroovedEdges;
@@ -42,7 +26,7 @@ public class ProcGenMaze : ScriptableObject {
 
 	// private 
 	int numTries = 50000; // ...before Build() gives up 
-	
+	GameObject primBin;
 	List<Material> floors = new List<Material>();
 	List<Material> walls = new List<Material>();
 	List<Material> ceilings = new List<Material>();
@@ -53,16 +37,19 @@ public class ProcGenMaze : ScriptableObject {
 	Cell neiS;
 	Cell neiE;
 	Cell neiW;
-	Cell neiNW;
-	
+
 	// lips of passageway/mouth 
 	float thickMAX = 1 / 8f;
 	float thinMAX = 1 / 16f;
 
 
 
-	public void Init () {
-		Cells = new Cell[MapSize.x, MapSize.z];
+	public ProcGenMaze() {
+		Debug.Log("const of Maze()");
+
+		Max.x = 64;
+		Max.z = 64;
+		Cells = new Cell[Max.x, Max.z];
 
 		MetalFloor = (Material)Resources.Load("Mat/Allegorithmic/metal_floor_003", typeof(Material));
 		MetalGroovedEdges = (Material)Resources.Load("Mat/Allegorithmic/metal_plate_005", typeof(Material));
@@ -85,22 +72,22 @@ public class ProcGenMaze : ScriptableObject {
 		lips.Add(MetalFloor);
 		lips.Add(MetalWithRivets);
 
-		EmptyMap();
+		initCells();
 		Build();
 	}
 
 	public void Build () {
 		preBuild();
 
-		int formsMade = 0;
-		for (int i = 0; i < numTries && formsMade < Forms; i++) {
+		int numRooms = 0;
+		for (int i = 0; i < numTries && numRooms < numRooms; i++) {
 			Vec2i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, Max.x);
+			t.z = Random.Range(0, Max.z);
 
 			Vec2i u;
-			u.x = Random.Range(0, MapSize.x);
-			u.z = Random.Range(0, MapSize.z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
+			u.x = Random.Range(0, Max.x);
+			u.z = Random.Range(0, Max.z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
 			
 			Vec2i start;
 			Vec2i end;
@@ -108,51 +95,52 @@ public class ProcGenMaze : ScriptableObject {
 			start.z = Mathf.Min(t.z, u.z);
 			end.x = Mathf.Max(t.x, u.x);
 			end.z = Mathf.Max(t.z, u.z);
-			if (containsBlocks(start, end)) {
-				if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
-				if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
-				if ((end.x - start.x + 1) * (end.z - start.z + 1) <= MaxArea)
 
-					if (blocksInRect(start, end) < (end.x - start.x + 1) * (end.z - start.z + 1) * MaxOverride) {
-						fillRect(start, end);
-					formsMade++;
+			var num = numAirCellsWithin(start, end);
+			if (num > 0) {
+				if ( // ...we're within acceptable range 
+					end.x >= start.x + MinSpan && 
+				    end.z >= start.z + MinSpan &&
+					end.x <= start.x + MaxSpan && 
+					end.z <= start.z + MaxSpan
+			    ) {
+					if /* not too big in total size */ ((end.x - start.x + 1) * (end.z - start.z + 1) <= MaxArea) {
+						if (num < (end.x - start.x + 1) * (end.z - start.z + 1) * MaxOverride) {
+							fillRect(start, end);
+							numRooms++;
+						}
 					}
+				}
 			}
 		}
 	}
 
 	void preBuild() {
 		Vec2i a;
-		a.x = Random.Range(0, MapSize.x - MaxFormWidth);
-		a.z = Random.Range(0, MapSize.z - MaxFormWidth);
+		a.x = Random.Range(0, Max.x - MaxSpan);
+		a.z = Random.Range(0, Max.z - MaxSpan);
 		Vec2i b;
-		b.x = Random.Range(a.x + MinFormWidth, a.x + MaxFormWidth);
-		b.z = Random.Range(a.z + MinFormWidth, a.z + MaxFormWidth);
+		b.x = Random.Range(a.x + MinSpan, a.x + MaxSpan);
+		b.z = Random.Range(a.z + MinSpan, a.z + MaxSpan);
 		fillRect(a, b);
 	}
 
-	bool containsBlocks (Vec2i start, Vec2i end) {
-		for (int i = start.x; i <= end.x; i++)
-			for (int j = start.z; j <= end.z; j++)
-				if (Cells[i, j].IsAir) return true;
-
-		return false;
-	}
-
-	int blocksInRect (Vec2i start, Vec2i end) {
+	int numAirCellsWithin(Vec2i start, Vec2i end) {
 		int c = 0;
+
 		for (int i = start.x; i <= end.x; i++)
 			for (int j = start.z; j <= end.z; j++)
-				if (Cells[i, j].IsAir) c++;
+				if (Cells[i, j].IsAir) 
+					c++;
 
 		return c;
 	}
 
 	void fillRect(Vec2i start, Vec2i end) {
-		start.x = Mathf.Clamp(start.x, 0, MapSize.x - 1);
-		start.z = Mathf.Clamp(start.z, 0, MapSize.z - 1);
-		end.x = Mathf.Clamp(end.x, 0, MapSize.x - 1);
-		end.z = Mathf.Clamp(end.z, 0, MapSize.z - 1); // because sometimes MaxFormWidth > MapSize
+		start.x = Mathf.Clamp(start.x, 0, Max.x - 1);
+		start.z = Mathf.Clamp(start.z, 0, Max.z - 1);
+		end.x = Mathf.Clamp(end.x, 0, Max.x - 1);
+		end.z = Mathf.Clamp(end.z, 0, Max.z - 1); // because sometimes MaxFormWidth > MapSize
 
 		// random heights and materials 
 		char height = (char)Random.Range(MinHeight, MaxHeight);
@@ -160,6 +148,7 @@ public class ProcGenMaze : ScriptableObject {
 		var ceil = ceilings[Random.Range(0, ceilings.Count)];
 		var lip = lips[Random.Range(0, lips.Count)];
 		var wall = walls[Random.Range(0, walls.Count)];
+
 		while (wall == lip)
 			wall = walls[Random.Range(0, walls.Count)];
 
@@ -167,10 +156,12 @@ public class ProcGenMaze : ScriptableObject {
 		for (int i = start.x; i <= end.x; i++)
 		for (int j = start.z; j <= end.z; j++) {
 			Cells[i, j].IsAir = true;
+
 			if (CreateOverhangs)
 				Cells[i, j].CeilingHeight = height;
 			else if (height >= Cells[i, j].CeilingHeight)
 				Cells[i, j].CeilingHeight = height;
+
 			Cells[i, j].Floor = true;
 			Cells[i, j].MatWalls = wall;
 			Cells[i, j].MatFloor = floo;
@@ -179,25 +170,16 @@ public class ProcGenMaze : ScriptableObject {
 		}
 	}
 
-	public void EmptyMap() {
-		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.z; j++) 
+	void initCells() {
+		for (int i = 0; i < Max.x; i++)
+		for (int j = 0; j < Max.z; j++) 
 			Cells[i, j] = new Cell();
 	}
 	
-	public bool GetBlock(int x, int y) { 
-		// only difference between adressing blocks as an array is that this will return false if out of the map 
-		if (x < 0 || x >= MapSize.x) return true;
-		if (y < 0 || y >= MapSize.z) return true;
-		//MonoBehaviour.print("Test passed, x = " + x.ToString() + " y = " + y.ToString()); 
-		return Cells[x, y].IsAir;
-	}
-	
-	
 	public Cell GetCell(int x, int y) { 
 		// only difference between adressing blocks as an array is that this will return false if out of the map 
-		if (x < 0 || x >= MapSize.x)   return new Cell();
-		if (y < 0 || y >= MapSize.z)   return new Cell();
+		if (x < 0 || x >= Max.x)   return new Cell();
+		if (y < 0 || y >= Max.z)   return new Cell();
 
 		return Cells[x, y];
 	}
@@ -255,9 +237,11 @@ public class ProcGenMaze : ScriptableObject {
 	}
 
 	public void Build3D() {
+		primBin = GameObject.Find("PRIMS");
+
 		// flag corners that need half of a lip 
-		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.z; j++) {
+		for (int i = 0; i < Max.x; i++)
+		for (int j = 0; j < Max.z; j++) {
 			Cell c = Cells[i, j];
 			currH = c.CeilingHeight;
 			setNeighborOffsets(i, j);
@@ -270,8 +254,8 @@ public class ProcGenMaze : ScriptableObject {
 		}
 
 		// now do actual building 
-		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.z; j++) {
+		for (int i = 0; i < Max.x; i++)
+		for (int j = 0; j < Max.z; j++) {
 			Cell c = Cells[i, j];
 			currH = c.CeilingHeight;
 			setNeighborOffsets(i, j);
@@ -515,6 +499,7 @@ public class ProcGenMaze : ScriptableObject {
 					(float)j * Scale.z);
 				np.transform.localScale = Scale;
 				np.renderer.material = Cells[i, j].MatFloor;
+				np.transform.parent = primBin.transform;
 			}
 			
 			// ceiling 

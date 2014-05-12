@@ -5,44 +5,41 @@ using System.Collections.Generic;
 
 
 public class RlikePlane : MonoBehaviour {
-	ProcGenMaze lev;
-	ProcGenVoxel map;
+	ProcGenMaze grid;
+	ProcGenVoxel vox;
 
 
 
-	void Start () {
-		lev = ScriptableObject.CreateInstance<ProcGenMaze>();
-		lev.MapSize.x = 64;
-		lev.MapSize.z = 64;
-		lev.Forms = 40;
-		lev.MaxArea = 50;
-		lev.MaxFormWidth = 16;
-		lev.MinFormWidth = 1;
-		lev.MaxOverride = 0.1f;
-		lev.Init();
-		Texture2D texture = new Texture2D(64, 64);
+	void Start() {
+		Debug.Log("Start() of plane");
+		grid = new ProcGenMaze();
+		Texture2D texture = new Texture2D(grid.Max.x, grid.Max.z);
 		texture.filterMode = FilterMode.Point;
 		renderer.material.mainTexture = texture;
+
 		for (int x = 0; x < texture.width; x++)
 		for(int y = 0; y < texture.height; y++) {
-				Color color = (lev.Cells[x, y].IsAir ? Color.white : Color.black);
+				Color color = (grid.Cells[x, y].IsAir ? Color.white : Color.black);
 				texture.SetPixel(x, y, color);
 		}
+
 		texture.Apply();
-		lev.Scale = new Vector3(3f, 3f, 3f);
-		lev.Pos = new Vector3(
-			lev.Scale.x, 
-			-lev.Scale.y*2, 
-			lev.Scale.z);
-		lev.Build3D();
-		map = ScriptableObject.CreateInstance<ProcGenVoxel>();
-		map.MapSize.x = 64;
-		map.MapSize.y = 32;
-		map.MapSize.z = 64;
-		map.Pos = new Vector3(-100f, 0f, 0f);
-		map.Init();
-		map.Build();
-		map.Build3d();
+
+		grid.Scale = new Vector3(3f, 3f, 3f);
+		grid.Pos = new Vector3(
+			grid.Scale.x, 
+			-grid.Scale.y*2, 
+			grid.Scale.z);
+		grid.Build3D();
+
+		vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
+		vox.MapSize.x = 64;
+		vox.MapSize.y = 32;
+		vox.MapSize.z = 64;
+		vox.Pos = new Vector3(-100f, 0f, 0f);
+		vox.Init();
+		vox.Build();
+		vox.Build3d();
 	}
 
 
@@ -51,17 +48,6 @@ public class RlikePlane : MonoBehaviour {
 
 
 	// UPDATE is SOLELY an experimental/prototype of a BUILD-like Editor 
-	public class WallPoint {
-		public Vector3 Pos;
-		public WallPoint Next;
-		public GameObject GO;
-
-		public WallPoint(Vector3 pos, WallPoint next, GameObject go) {
-			Pos = pos;
-			Next = next;
-			GO = go;
-		}
-	}
 	WallPoint prevWall;
 	WallPoint cwt = null; // closest within threshold
 	int wpI = 0; // wall point index 
@@ -70,7 +56,6 @@ public class RlikePlane : MonoBehaviour {
 		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 		if (wallPointNear(ray)) {
-			Debug.Log("ShoutyColor!!!!!!!");
 			cwt.GO.renderer.material.color = S.ShoutyColor;
 		}else{
 			if (cwt != null) {
@@ -99,7 +84,7 @@ public class RlikePlane : MonoBehaviour {
 				var v = new Vector3 (delta.magnitude, f, f);
 				nq.transform.localScale = v;
 				v /= 4f;
-				nq.renderer.material = lev.SciFiMat;
+				nq.renderer.material = grid.SciFiMat;
 				nq.renderer.material.mainTextureScale = v;
 				prevWall = null;	
 			}

@@ -24,7 +24,7 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Flow
       value:
-        scalar[0]: 0
+        scalar[0]: 103
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
