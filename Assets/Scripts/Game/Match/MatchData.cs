@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MatchData {
 	// 'mode select' stuff
 	public string Name = "";
 	public string Descript; // description
-	public string[] allowedLevels;
+	public List<string> allowedLevels;
 	// specific mode/game settings stuff
 	public string levelName; // ...to load/play in
 	public int winScore = 30;
@@ -27,21 +28,27 @@ public class MatchData {
 	public Item pickupSlot3 = Item.MachineGun;
 	public Item pickupSlot4 = Item.RailGun;
 	public Item pickupSlot5 = Item.Pistol;
+
+	// private 
+	string gvName = "(Randomly Generated)"; // user-facing name of procecurally generated voxel-style map generation 
 	
 	
 	
 	public MatchData(Match match) {
+		var all /*'''*/ = new List<string>() { gvName, "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
+		var hasGoalsAndCeilings = new List<string>() { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		allowedLevels = all;
+
 		switch (match) {
 			case Match.Custom:
 				Name = "Custom";
 				Descript = "Have it your way!  All the exact settings you prefer.";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 				break;
 			case Match.BringYourOwnGravity:
-				Name = "Bring Your Own Gravity"; // Gravity Of The Matter/Situation?  Your Own Gravity? A Gravity Of Your Own?
-				// Gravity Is/Gets Personal?, Personal Gravity?, Gravitaction?
+				Name = "Bring Your Own Gravity"; //  A Gravity Of Your Own?  Gravity Is/Gets Personal? 
 				Descript = "Each player has their own, independent, changeable gravity";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+				allowedLevels = hasGoalsAndCeilings;
+				allowedLevels.Insert(0, gvName);
 				spawnGunA = Item.Gravulator;
 				spawnGunB = Item.Pistol;
 				pickupSlot5 = Item.RocketLauncher;
@@ -49,7 +56,6 @@ public class MatchData {
 			case Match.GrueFood:
 				Name = "Blackout";
 				Descript = "Careful when you spark one up.....your GUN that is";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 				pitchBlack = true;
 				pickupSlot1 = Item.GrenadeLauncher;
 				pickupSlot2 = Item.MachineGun;
@@ -60,20 +66,18 @@ public class MatchData {
 			case Match.FFAFragMatch:
 				Name = "FFA Fragmatch";
 				Descript = "Frag count is ALL that counts in this freestyle Free For All!";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 				respawnWait = 1f;
 				break;
 			case Match.TeamFragMatch:
 				Name = "Team Fragmatch";
 				Descript = "Frag count is what counts, but don't hurt your mates!";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 				teamBased = true;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
 			case Match.BBall:
 				Name = "BBall";
 				Descript = "Shooting hoops...and GUNS!  GANGSTA!";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+				allowedLevels = hasGoalsAndCeilings;
 				deathsSubtractScore = false;
 				killsIncreaseScore = false;
 				teamBased = true;
@@ -86,15 +90,13 @@ public class MatchData {
 			case Match.YouOnlyLiveThrice:
 				Name = "YOLT! (You Only Live Thrice)";
 				Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower"};
 				Duration = 0f;
 				killsIncreaseScore = false;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
 			case Match.InstaGib:
 				Name = "InstaGib";
-				Descript = "Everyone spawns with railgun, one hit and you're dead";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower"};
+				Descript = "Rail Guns & Spatulas.  One hit and you're dead";
 				spawnGunA = Item.RailGun;
 				spawnGunB = Item.Spatula;
 				pickupSlot1 = Item.None;
@@ -106,7 +108,6 @@ public class MatchData {
 			case Match.WeaponLottery:
 				Name = "Weapon Lottery";
 				Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
-				allowedLevels = new string[] { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" , "Tower"};
 				winScore = 20;
 				spawnGunA = Item.Random;
 				spawnGunB = Item.Random;

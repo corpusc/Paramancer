@@ -72,13 +72,13 @@ public class MatchSetup {
 		if (GUILayout.Button("<") ) {
 			mapId--;
 			if (mapId < 0) 
-				mapId += matches[matchId].allowedLevels.Length;
+				mapId += matches[matchId].allowedLevels.Count;
 		}
 
 		if (GUILayout.Button(">") ) {
 			mapId++;
-			if (mapId >= matches[matchId].allowedLevels.Length) 
-				mapId -= matches[matchId].allowedLevels.Length;
+			if (mapId >= matches[matchId].allowedLevels.Count) 
+				mapId -= matches[matchId].allowedLevels.Count;
 		}
 
 		GUILayout.Label("Map:");
@@ -97,7 +97,7 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("Customize Match") ) {
 				int levelChangeIndex = 0;
-				for (int i=0; i<matches[0].allowedLevels.Length; i++) {
+				for (int i=0; i<matches[0].allowedLevels.Count; i++) {
 					if (matches[0].allowedLevels[i] == matches[matchId].allowedLevels[mapId]) 
 						levelChangeIndex = i;
 				}
@@ -304,10 +304,10 @@ public class MatchSetup {
 
 
 
-		// START button
+		// START button 
 		if (!serving) {
 			if (GUI.Button(startButton, "Start Game!")) {
-				// init a server with the current game mode settings
+				// init a server with the current game mode settings 
 				net.serverGameChange = true;
 				Network.incomingPassword = net.password;
 				net.lastGameWasTeamBased = false;
@@ -372,7 +372,7 @@ public class MatchSetup {
 				matchId = matches.Length - 1;
 			
 			int mapChangeId = 0;
-			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
+			for (int i=0; i<matches[matchId].allowedLevels.Count; i++) {
 				if (matches[matchId].allowedLevels[i] == 
 				    matches[lastInt].allowedLevels[mapId]
 				    ) 
@@ -390,7 +390,7 @@ public class MatchSetup {
 				matchId = 0;
 			
 			int mapChangeId = 0;
-			for (int i=0; i<matches[matchId].allowedLevels.Length; i++) {
+			for (int i=0; i<matches[matchId].allowedLevels.Count; i++) {
 				if (matches[matchId].allowedLevels[i] == matches[lastInt].allowedLevels[mapId]) 
 					mapChangeId = i;
 			}

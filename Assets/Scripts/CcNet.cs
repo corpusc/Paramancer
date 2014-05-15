@@ -1020,6 +1020,8 @@ public class CcNet : MonoBehaviour {
 	public void AssignGameModeConfig(MatchData md, string levelName) {
 		CurrMatch.levelName = levelName;
 		
+		// FIXME?: no need for all these lines?   we could just do 'CurrMatch = md;'?
+		// allowedLevels is the only thing missing from here?
 		CurrMatch.Name = md.Name;
 		CurrMatch.Descript = md.Descript;
 		CurrMatch.winScore = md.winScore;
@@ -1044,10 +1046,10 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	public void RequestGameData() {
-		//a player has requested game data, pass it out.
+		// a player has requested game data, pass it out 
 		latestPacket = Time.time;
 		
-		//also figure out which team to drop them in
+		// also figure out which team to drop them in 
 		int team1count = 0;
 		int team2count = 0;
 		for (int i=0; i<players.Count; i++) {
@@ -1121,7 +1123,7 @@ public class CcNet : MonoBehaviour {
 		if (!isServer) 
 			gameTimeLeft = serverGameTime - (float)(Network.time - info.timestamp);
 		
-		// make sure all connected players have lives
+		// make sure all connected players have lives 
 		if (newGame)
 			for (int i=0; i<players.Count; i++)
 				players[i].lives = playerLives;
@@ -1131,7 +1133,7 @@ public class CcNet : MonoBehaviour {
 		
 		NextMatchTime = 15f;
 		
-		// if we get to this point, it's a new game, so let's get it together!
+		// if we get to this point, it's a new game, so let's get it together! 
 		NetVI = viewID;
 		serverGameChange = false;
 
@@ -1142,7 +1144,7 @@ public class CcNet : MonoBehaviour {
 		countdownAnnounced = false;
 		
 		if (!isServer) {
-			// lets update the local game settings
+			// lets update the local game settings 
 			CurrMatch.levelName = levelName;
 			CurrMatch.Name = matchName;
 			CurrMatch.Descript = matchDescript;
