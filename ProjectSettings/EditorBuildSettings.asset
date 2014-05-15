@@ -19,3 +19,7 @@ EditorBuildSettings:
     path: Assets/Map/Tower.unity
   - enabled: 1
     path: Assets/Map/The OctaDrome.unity
+  - enabled: 0
+    path: Assets/Map/ProcGen/InitMapGen.unity
+  - enabled: 1
+    path: Assets/Map/ProcGen/RoguelikeMap.unity

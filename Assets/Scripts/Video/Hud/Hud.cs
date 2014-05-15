@@ -647,17 +647,22 @@ public class Hud : MonoBehaviour {
 
 
 	void setupSkin() {
-		var t2 = (Texture2D)Pics.Get("Button");
+		var t2 = (Texture2D)Pics.Get("ButtonIce");
+		t2.filterMode = FilterMode.Point;
 		var mar = 16; // margin (for unstretchable border of button) 
 		GUI.skin.button.font = Font;
 		GUI.skin.button.fontSize = 16;
-		GUI.skin.button.border = new RectOffset(mar, mar, 0, 0);
+		//GUI.skin.button.border = new RectOffset(mar, mar, 0, 0);
 		GUI.skin.button.normal.textColor = Color.black;
 		GUI.skin.button.normal.background = t2;
-		//GUI.skin.button.active.textColor = S.Purple;      
-		//GUI.skin.button.active.background = (Texture2D)Pics.Get("ButtonClicked");
+		//GUI.skin.button.active.textColor = S.Purple;   
+		var ct = (Texture2D)Pics.Get("ButtonIceClicked"); // clicked texture
+		ct.filterMode = FilterMode.Point;
+		GUI.skin.button.active.background = ct;
 		// DO THIS PER FRAME INSTEAD          GUI.skin.button.hover.textColor = Color.cyan;
-		//GUI.skin.button.hover.background = (Texture2D)Pics.Get("ButtonMouseOver");
+		var ht = (Texture2D)Pics.Get("ButtonIceHover"); // hover texture
+		ht.filterMode = FilterMode.Point;
+		GUI.skin.button.hover.background = ht;
 		GUI.skin.label.font = Font;
 		GUI.skin.label.fontSize = 16;
 		GUI.skin.box.font = Font;
