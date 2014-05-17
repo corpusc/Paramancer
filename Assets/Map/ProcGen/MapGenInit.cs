@@ -15,6 +15,7 @@ public class MapGenInit : MonoBehaviour {
 		vox.Init();
 		vox.Build();
 		vox.Build3d();
+		vox.RemoveOriginals();
 	}
 	
 	// Update is called once per frame

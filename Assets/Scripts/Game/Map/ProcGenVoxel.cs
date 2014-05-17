@@ -58,6 +58,9 @@ public class ProcGenVoxel : ScriptableObject {
 	int numTries = 20000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
 	List<Material> MatPool = new List<Material>();
 
+	GameObject MapObject;
+	GameObject PrimObject;
+
 	// only sets everything up, doesn't build the level - call Build () and Build3d () manually
 	public void Init () {
 		Block = new bool[MapSize.x, MapSize.y, MapSize.z];
@@ -69,9 +72,11 @@ public class ProcGenVoxel : ScriptableObject {
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/sci_fi_003", typeof(Material)));
 		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/Stones_01", typeof(Material)));
 
-		Torch = GameObject.Find("Torch"); // a GameObject called Torch must already be in the scene for this to work
-		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work
-		SpawnPoint = GameObject.Find("SpawnPoint"); // a GameObject called SpawnPoint must already be in the scene for this to work
+		Torch = GameObject.Find("Torch"); // a GameObject called Torch must already be in the scene for this to work, it will be removed after everything is done by the script
+		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work, it will be removed after everything is done by the script
+		SpawnPoint = GameObject.Find("SpawnPoint"); // a GameObject called SpawnPoint must already be in the scene for this to work, it will be removed after everything is done by the script
+		MapObject = GameObject.Find("Map"); // an empty GameObject called Map should already be in the scene
+		PrimObject = GameObject.Find("Prims"); // an empty GameObject called Prims should already be in the secene
 	}
 
 	//this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d ()
@@ -140,113 +145,6 @@ public class ProcGenVoxel : ScriptableObject {
 			} // end of the creation of a single corridor/bridge
 		} // end of corridor/bridge creation
 
-		// now place assets
-		// the placing of assets will probably be specific for every single one, that's why they're not treated together
-		// things like "don't place torches on ceilings" are checked here specifically for every single asset
-		formsMade = 0; // counting torches as forms, no need for a separate var
-		for (int i = 0; i < numTries && formsMade < Torches; i++) {
-			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
-			if (Block[t.x, t.y, t.z]) {
-				if (!getBlock(t.x - 1, t.y, t.z)) {
-					var nt = (GameObject)GameObject.Instantiate(Torch); // new torch
-					nt.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x * 0.5f + TorchOffset, Scale.y * t.y, Scale.z * t.z);
-					nt.transform.localScale = Scale * TorchScale;
-					formsMade++;
-				}
-				else if (!getBlock(t.x + 1, t.y, t.z)) {
-					var nt = (GameObject)GameObject.Instantiate(Torch);
-					nt.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x * 0.5f - TorchOffset, Scale.y * t.y, Scale.z * t.z);
-					nt.transform.localScale = Scale * TorchScale;
-					formsMade++;
-				}
-				else if (!getBlock(t.x, t.y, t.z - 1)) {
-					var nt = (GameObject)GameObject.Instantiate(Torch);
-					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z - Scale.z * 0.5f + TorchOffset);
-					nt.transform.localScale = Scale * TorchScale;
-					formsMade++;
-				}
-				else if (!getBlock(t.x, t.y, t.z + 1)) {
-					var nt = (GameObject)GameObject.Instantiate(Torch);
-					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z + Scale.z * 0.5f - TorchOffset);
-					nt.transform.localScale = Scale * TorchScale;
-					formsMade++;
-				}
-				else if (!getBlock(t.x, t.y - 1, t.z)) {
-					var nt = (GameObject)GameObject.Instantiate(Torch);
-					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y - Scale.y * 0.5f + TorchOffset, Scale.z * t.z);
-					nt.transform.localScale = Scale * TorchScale;
-					formsMade++;
-				}
-				// no torches on ceilings!
-			} // end of scanning an individual block to see if a torch can be placed
-		} // end of placing torches
-
-		// place jump pads
-		formsMade = 0; // counting jump pads as forms
-		for (int i = 0; i < numTries && formsMade < JumpPads; i++) {
-			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(JumpHeight, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
-			if (Block[t.x, t.y, t.z] && !Block[t.x, t.y - 1, t.z]) { // if this is the floor of any form above jump height
-				int d = floorScan(t.x - 1, t.y, t.z); // distance
-				if (d >= JumpHeight) {
-					var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
-					nj.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
-					nj.transform.localScale = JumpPadScale;
-					formsMade++;
-				} else {
-					d = floorScan(t.x + 1, t.y, t.z);
-					if (d >= JumpHeight) {
-						var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
-						nj.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
-						nj.transform.localScale = JumpPadScale;
-						formsMade++;
-					} else {
-						d = floorScan(t.x, t.y, t.z - 1);
-						if (d >= JumpHeight) {
-							var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
-							nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z - Scale.z);
-							nj.transform.localScale = JumpPadScale;
-							formsMade++;
-						} else {
-							d = floorScan(t.x, t.y, t.z + 1);
-							if (d >= JumpHeight) {
-								var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
-								nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z + Scale.z);
-								nj.transform.localScale = JumpPadScale;
-								formsMade++;
-							}
-						}
-					}
-				}
-			} // end of checking the block for possible jump pad placing
-		} // end of placing jump pads
-
-		// place spawn points
-		formsMade = 0; // count spawn points as forms
-		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
-			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
-			if (columnOpen(t, MinHeight))
-				if (!getBlock(t.x, t.y - 1, t.z)) {
-					var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point
-					ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
-					ns.transform.localScale = SpawnPointScale;
-					formsMade++;
-			}
-		} // end of placing spawn points
-
-		// remove the originals so that they don't cause any trouble like spawning players outside the map
-		GameObject.Destroy(Torch);
-		GameObject.Destroy(JumpPad);
-		GameObject.Destroy(SpawnPoint);
-
 	} // end of Build ()
 
 	// this generates the level in 3d(puts it in the scene) based what Build() created - call Build() before this
@@ -262,6 +160,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.left;
 						np.renderer.material = Mat[i, j, k];
+						np.transform.parent = PrimObject.transform;
 					}
 					if (!getBlock(i + 1, j, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -269,6 +168,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.right;
 						np.renderer.material = Mat[i, j, k];
+						np.transform.parent = PrimObject.transform;
 					}
 					if (!getBlock(i, j, k - 1)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -276,6 +176,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.back;
 						np.renderer.material = Mat[i, j, k];
+						np.transform.parent = PrimObject.transform;
 					}
 					if (!getBlock(i, j, k + 1)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -283,6 +184,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.forward;
 						np.renderer.material = Mat[i, j, k];
+						np.transform.parent = PrimObject.transform;
 					}
 					if (!getBlock(i, j - 1, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -290,6 +192,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.down;
 						np.renderer.material = Mat[i, j, k];
+						np.transform.parent = PrimObject.transform;
 					}
 					if (!getBlock(i, j + 1, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -297,10 +200,130 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.up;
 						np.renderer.material = Mat[i, j, k];
+						np.transform.parent = PrimObject.transform;
 					}
 			} // end of wall creation for the current block
 		} // end of block scan
+		
+		// now place assets
+		// the placing of assets will probably be specific for every single one, that's why they're not treated together
+		// things like "don't place torches on ceilings" are checked here specifically for every single asset
+		int formsMade = 0; // counting torches as forms
+		for (int i = 0; i < numTries && formsMade < Torches; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (Block[t.x, t.y, t.z]) {
+				if (!getBlock(t.x - 1, t.y, t.z)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch); // new torch
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x * 0.5f + TorchOffset, Scale.y * t.y, Scale.z * t.z);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = MapObject.transform;
+					formsMade++;
+				}
+				else if (!getBlock(t.x + 1, t.y, t.z)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch);
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x * 0.5f - TorchOffset, Scale.y * t.y, Scale.z * t.z);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = MapObject.transform;
+					formsMade++;
+				}
+				else if (!getBlock(t.x, t.y, t.z - 1)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch);
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z - Scale.z * 0.5f + TorchOffset);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = MapObject.transform;
+					formsMade++;
+				}
+				else if (!getBlock(t.x, t.y, t.z + 1)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch);
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z + Scale.z * 0.5f - TorchOffset);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = MapObject.transform;
+					formsMade++;
+				}
+				else if (!getBlock(t.x, t.y - 1, t.z)) {
+					var nt = (GameObject)GameObject.Instantiate(Torch);
+					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y - Scale.y * 0.5f + TorchOffset, Scale.z * t.z);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = MapObject.transform;
+					formsMade++;
+				}
+				// no torches on ceilings!
+			} // end of scanning an individual block to see if a torch can be placed
+		} // end of placing torches
+		
+		// place jump pads
+		formsMade = 0; // counting jump pads as forms, no need for a separate variable
+		for (int i = 0; i < numTries && formsMade < JumpPads; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(JumpHeight, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (Block[t.x, t.y, t.z] && !Block[t.x, t.y - 1, t.z]) { // if this is the floor of any form above jump height
+				int d = floorScan(t.x - 1, t.y, t.z); // distance
+				if (d >= JumpHeight) {
+					var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+					nj.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
+					nj.transform.localScale = JumpPadScale;
+					nj.transform.parent = MapObject.transform;
+					formsMade++;
+				} else {
+					d = floorScan(t.x + 1, t.y, t.z);
+					if (d >= JumpHeight) {
+						var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+						nj.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
+						nj.transform.localScale = JumpPadScale;
+						nj.transform.parent = MapObject.transform;
+						formsMade++;
+					} else {
+						d = floorScan(t.x, t.y, t.z - 1);
+						if (d >= JumpHeight) {
+							var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+							nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z - Scale.z);
+							nj.transform.localScale = JumpPadScale;
+							nj.transform.parent = MapObject.transform;
+							formsMade++;
+						} else {
+							d = floorScan(t.x, t.y, t.z + 1);
+							if (d >= JumpHeight) {
+								var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+								nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z + Scale.z);
+								nj.transform.localScale = JumpPadScale;
+								nj.transform.parent = MapObject.transform;
+								formsMade++;
+							}
+						}
+					}
+				}
+			} // end of checking the block for possible jump pad placing
+		} // end of placing jump pads
+		
+		// place spawn points
+		formsMade = 0; // count spawn points as forms, no need for a separate var
+		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (columnOpen(t, MinHeight))
+			if (!getBlock(t.x, t.y - 1, t.z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point
+				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = MapObject.transform;
+				formsMade++;
+			}
+		} // end of placing spawn points
 	} // end of Build3d()
+	
+	// remove the originals so that they don't cause any trouble like spawning players outside the map
+	public void RemoveOriginals () {
+		GameObject.Destroy(Torch);
+		GameObject.Destroy(JumpPad);
+		GameObject.Destroy(SpawnPoint);
+	}
 
 	// private methods
 

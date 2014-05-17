@@ -8,7 +8,7 @@ using System.Globalization;
 
 static public class S {
 	public const float GoldenRatio = 1.6180339887498948482f;
-	public const int K = 1000; // what the fuck is this?   single letter variables should almost-always-ONLY be used locally 
+	public const int K = 1000; // K = 1000. Like the thing you see on statistics pages.
 	
 	// colors 
 	// shouty/shimmery color that cycles back and forth between 2 colors 

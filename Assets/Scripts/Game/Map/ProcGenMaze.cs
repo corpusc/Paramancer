@@ -237,7 +237,7 @@ public class ProcGenMaze {
 	}
 
 	public void Build3D() {
-		primBin = GameObject.Find("PRIMS");
+		primBin = GameObject.Find("Prims");
 
 		// flag corners that need half of a lip 
 		for (int i = 0; i < Max.x; i++)

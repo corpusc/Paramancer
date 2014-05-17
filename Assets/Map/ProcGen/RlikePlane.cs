@@ -40,6 +40,7 @@ public class RlikePlane : MonoBehaviour {
 		vox.Init();
 		vox.Build();
 		vox.Build3d();
+		vox.RemoveOriginals();
 	}
 
 
