@@ -516,7 +516,7 @@ public class CcNet : MonoBehaviour {
 		le.Color = Color.red;
 		le.Text = getObituary(fraggerName, fraggerIdx, victimName, victimIdx);
 		log.Entries.Add(le);
-		log.DisplayTime = Time.time+log.FadeTime;
+		log.TimeToHideEntireLog = Time.time+log.FadeTime;
 		
 	}
 
@@ -537,28 +537,26 @@ public class CcNet : MonoBehaviour {
 			le.Color = Color.magenta;
 			le.Text = f + " is godlike!";
 			log.Entries.Add(le);
-			log.DisplayTime = Time.time+log.FadeTime;
+			log.TimeToHideEntireLog = Time.time+log.FadeTime;
 
 			break;
 		}
 	}
 	
-	private string getObituary(string f, int fId, string v, int vId) { // fragger, victim
-		// suicides
+	private string getObituary(string f, int fId, string v, int vId) { // fragger, victim 
+		// suicides 
 		if (fId == vId) {
-			switch (Random.Range(0, 7)) {
+			switch (Random.Range(0, 5)) {
 				case 0:	return f + " bought the farm!";
 				case 1:	return f + " changed career... to Daisy Pusher!";
 				case 2:	return f + " really bit the dust!";
 				case 3:	return f + " really shot himself in the foot!";
 				case 4:	return f + " did some nice kamikaze work!";
-				case 5: return f + " didn't know binary!";
-				case 6: return f + " got scared of the dark!";
 				default: return "....";
 			}
 		}
 		
-		// normal frags
+		// normal frags 
 		switch (Random.Range(0, 7)) {
 			case 0:	return f + " really gave " + v + " what for!";
 			case 1:	return f + " fixed " + v + "'s little red wagon!";
@@ -923,7 +921,7 @@ public class CcNet : MonoBehaviour {
 				}
 				
 				log.Entries.Add(l);
-				log.DisplayTime = Time.time + log.FadeTime;
+				log.TimeToHideEntireLog = Time.time + log.FadeTime;
 			}
 		}
 	}
@@ -991,7 +989,7 @@ public class CcNet : MonoBehaviour {
 			newMsg.Color = Color.grey;
 			newMsg.Text = "<< " + name + " has joined >>";
 			log.Entries.Add(newMsg);
-			log.DisplayTime = Time.time+log.FadeTime;
+			log.TimeToHideEntireLog = Time.time+log.FadeTime;
 		}
 	}
 	
@@ -1446,7 +1444,7 @@ public class CcNet : MonoBehaviour {
 		newMsg.Color = Color.grey;
 		newMsg.Text = "<< " + name + " left >>";
 		log.Entries.Add(newMsg);
-		log.DisplayTime = Time.time+log.FadeTime;
+		log.TimeToHideEntireLog = Time.time+log.FadeTime;
 	}
 	
 	public void Kick(int playerIndex, bool autokick){
@@ -1485,7 +1483,7 @@ public class CcNet : MonoBehaviour {
 		if (autokick) 
 			newMsg.Text = "<< ! " + name + " was auto-kicked ! >>";
 		log.Entries.Add(newMsg);
-		log.DisplayTime = Time.time + log.FadeTime;
+		log.TimeToHideEntireLog = Time.time + log.FadeTime;
 		
 	}
 	
@@ -1499,7 +1497,7 @@ public class CcNet : MonoBehaviour {
 		newMsg.Color = Color.white;
 		newMsg.Text = "<< You have been disconnected from host >>";
 		log.Entries.Add(newMsg);
-		log.DisplayTime = Time.time+log.FadeTime;
+		log.TimeToHideEntireLog = Time.time+log.FadeTime;
 		
 		//Network.Disconnect();
 		//if (isServer) MasterServer.UnregisterHost();
@@ -1550,7 +1548,7 @@ public class CcNet : MonoBehaviour {
 		newMsg.Color = Color.grey;
 		newMsg.Text = "<< Host has left >>";
 		log.Entries.Add(newMsg);
-		log.DisplayTime = Time.time + log.FadeTime;
+		log.TimeToHideEntireLog = Time.time + log.FadeTime;
 	}
 	
 	

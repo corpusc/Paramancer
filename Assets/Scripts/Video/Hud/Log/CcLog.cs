@@ -6,13 +6,14 @@ using System.Collections.Generic;
 
 public class CcLog : MonoBehaviour {
 	public List<LogEntry> Entries = new List<LogEntry>();
-	public float FadeTime = 20f;
-	public float DisplayTime = -100;
+	public float FadeTime = 20f; // how many seconds a new LogEntry stays visible 
+	public float TimeToHideEntireLog = -100;
 	public bool Typing = false;
 
 	// private 
 	string newEntry = "";
-	float vSpan;
+	float leftMargin = 10;
+	float vs;
 	CcNet net;
 	Hud hud;
 	
@@ -29,38 +30,43 @@ public class CcLog : MonoBehaviour {
 	}
 	
 	void OnGUI() {
-		vSpan = hud.GetHeightLabel("Qjy");
+		vs = hud.VSpanLabel; // vertical span 
 
 		// display entries
-		if (Time.time < DisplayTime) {
-			for (int i=0; i<30; i++) {
-				if (i < Entries.Count) {
-					Color guiColA = GUI.color;
-					
-					// highlight
-					GUI.color = /* white */ new Color(1, 1, 1, 0.5f);
-					GUI.Label(new Rect(10,Screen.height - 55 - (i*vSpan) -1, Screen.width, vSpan), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
-					
-					// drop shadow
-					GUI.color = /* black */ new Color(0, 0, 0, 0.5f);
-					//GUI.color = new Color((messages[messages.Count-i-1].senderColor.r * -1) + 0.5f, (messages[messages.Count-i-1].senderColor.g * -1) + 0.5f, (messages[messages.Count-i-1].senderColor.b * -1) + 0.5f, 1);
-					GUI.Label(new Rect(11,Screen.height - 55 - (i*vSpan) +1, Screen.width, vSpan), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
-					//GUI.Label(new Rect(9,Screen.height - 55 - (i*15) -1, 500, 20), messages[messages.Count-i-1].sender + " " + messages[messages.Count-i-1].message);
-					
-					// normal
-					GUI.color = Entries[Entries.Count-i-1].Color;
-					//GUI.color = new Color(messages[messages.Count-i-1].senderColor.r + 0.25f, messages[messages.Count-i-1].senderColor.g + 0.25f, messages[messages.Count-i-1].senderColor.b + 0.25f, 1);
-					GUI.Label(new Rect(10,Screen.height - 55 - (i*vSpan), Screen.width, vSpan), Entries[Entries.Count-i-1].Maker + " " + Entries[Entries.Count-i-1].Text);
-					
-					GUI.color = guiColA;
-				}
+		if (Time.time < TimeToHideEntireLog) {
+			var prev = GUI.color;
+			float cY = Screen.height - 55; // current Y 
+
+			for (int i=Entries.Count-1;
+			     i >= 0 && 
+			     (Typing || Entries[i].TimeAdded > Time.time-FadeTime) && 
+			     cY>hud.TopOfMaxedLog; 
+			     i--
+			) {
+				string s = Entries[i].Maker + " " + Entries[i].Text;
+
+				// highlight
+				GUI.color = Color.white; // /* white */ new Color(1, 1, 1, 0.5f);
+				GUI.Label(new Rect(leftMargin-1, cY-1, Screen.width, vs), s);
+				
+				// drop shadow
+				GUI.color = Color.black; // /* black */ new Color(0, 0, 0, 0.5f);
+				GUI.Label(new Rect(leftMargin+1, cY+1, Screen.width, vs), s);
+
+				// normal
+				GUI.color = Entries[i].Color;
+				GUI.Label(new Rect(leftMargin, cY, Screen.width, vs), s);
+
+				cY -= vs;
 			}
+			
+			GUI.color = prev;
 		}
 		
 		
 		Event e = Event.current;
 		if (Typing) {
-			DisplayTime = Time.time + FadeTime;
+			TimeToHideEntireLog = Time.time + FadeTime;
 			
 			switch (e.keyCode) {
 				case KeyCode.Escape:
@@ -95,7 +101,7 @@ public class CcLog : MonoBehaviour {
 					break;
 				default:
 					GUI.SetNextControlName("TextField");
-					newEntry = GUI.TextField(new Rect(10, Screen.height - 35, 500, 20), newEntry);
+					newEntry = GUI.TextField(new Rect(leftMargin, Screen.height - 35, Screen.width-leftMargin, 20), newEntry);
 					GUI.FocusControl("TextField");
 					break;
 			}
@@ -112,7 +118,7 @@ public class CcLog : MonoBehaviour {
 		en.Color = net.VecToCol(col);
 		en.Text = s;
 		Entries.Add(en);
-		DisplayTime = Time.time + FadeTime;
+		TimeToHideEntireLog = Time.time + FadeTime;
 		Sfx.PlayOmni("Chat - drip");
 	}
 }

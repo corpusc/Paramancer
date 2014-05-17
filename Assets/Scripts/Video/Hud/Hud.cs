@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class Hud : MonoBehaviour {
 	public string GoToPrevMenu = "<< Back <<";
+	public float TopOfMaxedLog = 0f; // the maximum height it can be, without overlapping anything else 
+
 	// gui 
 	public Font Font;
 	public GUIStyle GS;
@@ -178,7 +180,7 @@ public class Hud : MonoBehaviour {
 		switch (Mode) {
 			case HudMode.Playing:
 				net.localPlayer.Entity.FOV = tFOV;
-				playHud.Draw(net, arse, midX, midY, VSpanLabel, this);
+				TopOfMaxedLog = playHud.Draw(net, arse, midX, midY, VSpanLabel, this);
 				maybePromptClickIn();
 				break;
 				
@@ -946,8 +948,8 @@ public class Hud : MonoBehaviour {
 		"Gluten free!"};
 
 	string[] tipText = {
-		"TIP: Use the gravulator as often as possible to confuse your enemies!",
-		"TIP: Offense is often the best defense!"};
+		"TIP: Use the gravulator as often as possible to confuse your enemies",
+		"TIP: Offense is often the best defense"};
 
 	float nextSplashUpdate = 0f;
 	float splashUpdateTime = 10f; // the time it takes for the splash message to update
@@ -962,9 +964,9 @@ public class Hud : MonoBehaviour {
 			else
 				tSplash = splashText[UnityEngine.Random.Range(0, splashText.Length)];
 			tWidth = GetWidthLabel(tSplash) + 10f;
-			splashRect = new Rect((Screen.width - tWidth) / 2f, 0, tWidth, GetHeightLabel(tSplash));
+			splashRect = new Rect((Screen.width - tWidth) / 2f, 0, tWidth, GetHeightBox(tSplash));
 		}
-		GUI.TextArea(splashRect, tSplash);
+		GUI.Box(splashRect, tSplash);
 	}
 
 

@@ -6,8 +6,9 @@ public class Scoreboard {
 
 
 
-	public void Draw(CcNet net, Hud hud, float lvs) {
+	public float Draw(CcNet net, Hud hud, float lvs) {
 		GUI.color = Color.grey;
+		float cY = lvs; // current Y 
 
 		if (!net.CurrMatch.teamBased) {
 			int highScore = -9999;
@@ -28,14 +29,15 @@ public class Scoreboard {
 				}
 			}
 			
-			GUI.Label(new Rect(0, 0, 150, lvs), "Name:");
+			GUI.Label(new Rect(0,  0, 150, lvs), "Name:");
 			GUI.Label(new Rect(150, 0, 50, lvs), "Frags:");
 			GUI.Label(new Rect(200, 0, 50, lvs), "Deaths:");
 			GUI.Label(new Rect(260, 0, 50, lvs), "Score:");
 			
 			if (net.CurrMatch.playerLives != 0) 
-				GUI.Label(new Rect(400, lvs, 50, lvs), "Lives:");
+				GUI.Label(new Rect(400, 0, 50, lvs), "Lives:");
 			
+			// cycle thru players 
 			for (int i=0; i<net.players.Count; i++) {
 				GUI.color = new Color(0.8f, 0.8f, 0.8f, 1f);
 				
@@ -52,15 +54,16 @@ public class Scoreboard {
 						Random.Range(0.5f, 1f), 
 						Random.Range(0.5f, 1f), 1f);
 				
-				GUI.Label(new Rect(0, (i*lvs) + lvs, 150, lvs), net.players[i].name);
-				GUI.Label(new Rect(150, (i*lvs) + lvs, 50, lvs), net.players[i].kills.ToString());
-				GUI.Label(new Rect(200, (i*lvs) + lvs, 50, lvs), net.players[i].deaths.ToString());
-				GUI.Label(new Rect(260, (i*lvs) + lvs, 50, lvs), net.players[i].currentScore.ToString());
+				GUI.Label(new Rect(0,   cY, 150, lvs), net.players[i].name);
+				GUI.Label(new Rect(150, cY, 50, lvs), net.players[i].kills.ToString());
+				GUI.Label(new Rect(200, cY, 50, lvs), net.players[i].deaths.ToString());
+				GUI.Label(new Rect(260, cY, 50, lvs), net.players[i].currentScore.ToString());
 				
 				if (net.CurrMatch.playerLives != 0) 
-					GUI.Label(new Rect(400, (i*lvs) + 40, 50, lvs), net.players[i].lives.ToString());
-			}
-			
+					GUI.Label(new Rect(400, cY, 50, lvs), net.players[i].lives.ToString());
+
+				cY += lvs;
+			}			
 		}
 
 
@@ -130,6 +133,8 @@ public class Scoreboard {
 			GUILayout.EndVertical();
 			GUILayout.EndArea();
 		}
+
+		return cY;
 	}
 
 	void showNameAndStats(int i, CcNet net) {

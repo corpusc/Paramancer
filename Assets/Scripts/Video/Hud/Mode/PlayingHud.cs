@@ -16,7 +16,7 @@ public class PlayingHud {
 	int crosshairRadius = 16;
 	Color prevCrossHair;
 	float prevTick;
-	public void Draw(CcNet net, Arsenal arse, int midX, int midY, float lvs, Hud hud) {
+	public float Draw(CcNet net, Arsenal arse, int midX, int midY, float lvs, Hud hud) {
 		var locEnt = net.localPlayer.Entity;
 //		if (locEnt == null)
 //			return;
@@ -197,7 +197,9 @@ public class PlayingHud {
 		
 		// scoreboard
 		if (viewingScores || net.gameOver) {
-			scores.Draw(net, hud, lvs);
+			return scores.Draw(net, hud, lvs);
+		}else{
+			return 0f;
 		}
 	}
 	
