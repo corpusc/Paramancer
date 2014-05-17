@@ -79,6 +79,7 @@ public class Arsenal : MonoBehaviour {
 				case Item.Spatula:   Guns[i].ShotCol = Color.magenta; 
 					Guns[i].Delay = 1f;  
 					Guns[i].DelayAlt = 1f; break;
+					Guns[i].Range = 2f;
 			}
 			
 			// set widest icon
@@ -129,6 +130,8 @@ public class Arsenal : MonoBehaviour {
 				localStart = net.players[i].Entity.firstPersonGun.transform.position + (Camera.main.transform.forward*0.5f);
 			}
 		}
+
+		if (weapon == Item.Spatula) return; // no trail
 		
 		// beam
 		//beam.GetComponent<BeamEffect>().start = origin;
@@ -190,6 +193,7 @@ public class Arsenal : MonoBehaviour {
 			case Item.Pistol:
 			case Item.MachineGun:
 			case Item.RailGun:
+			case Item.Spatula:
 				shootHitscan(origin, end, shooterID, weapon);
 				break;
 		
@@ -260,6 +264,7 @@ public class Arsenal : MonoBehaviour {
 			case Item.Pistol:         return 40f;
 			case Item.GrenadeLauncher:        return 60f;
 			case Item.MachineGun:     return 15f;
+			case Item.Spatula:          return 105f;
 			case Item.RailGun:          return 105f;
 			case Item.RocketProjectile: return 70f;
 			

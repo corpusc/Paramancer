@@ -661,18 +661,6 @@ public class Hud : MonoBehaviour {
 		ht.filterMode = FilterMode.Trilinear;
 		at.filterMode = FilterMode.Trilinear;
 
-		gSkin.box.font = Font;
-		gSkin.button.font = Font;
-		gSkin.label.font = Font;
-		gSkin.textArea.font = Font;
-		gSkin.textField.font = Font;
-
-		gSkin.box.fontSize = 24; // these are the semi-transparent dark gray boxes with a border around the text 
-		gSkin.button.fontSize = 16;
-		gSkin.label.fontSize = 16;
-		gSkin.textArea.fontSize = 16;
-		gSkin.textField.fontSize = 16;
-
 
 
 //		// handle button modes 
@@ -685,13 +673,29 @@ public class Hud : MonoBehaviour {
 //		gSkin.button.stretchWidth = true;
 //		gSkin.button.stretchHeight = true;
 //
-		gSkin.button.normal.textColor = S.Orange;
-		//.skin.button.hover gets set to ShoutyColor per frame 
-		gSkin.button.active.textColor = Color.cyan; 
 
 		gSkin.button.normal.background = nt;
 		gSkin.button.hover.background = ht;
 		gSkin.button.active.background = at;
+
+
+
+		gSkin.box.font = Font;
+		gSkin.button.font = Font;
+		gSkin.label.font = Font;
+		gSkin.textArea.font = Font;
+		gSkin.textField.font = Font;
+
+		gSkin.button.normal.textColor = S.Orange;
+		//.skin.button.hover gets set to ShoutyColor per frame 
+		gSkin.button.active.textColor = Color.cyan; 
+		
+		gSkin.box.fontSize = 24; // these are the semi-transparent dark gray boxes with a border around the text 
+		gSkin.button.fontSize = 16;
+		gSkin.label.fontSize = 16;
+		gSkin.textArea.fontSize = 16;
+		gSkin.textField.fontSize = 16;
+
 
 
 

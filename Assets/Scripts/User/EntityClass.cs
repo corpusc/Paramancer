@@ -651,7 +651,7 @@ public class EntityClass : MonoBehaviour {
 
 	void weaponSwitchingSoundAndVisual() {
 		gunRecoil += Vector3.right * 5f;
-		gunRecoil -= Vector3.up * 5f;
+		gunRecoil -= Vector3.up * 6f;
 		PlaySound("guncocked");
 		net.SendTINYUserUpdate(User.viewID, UserAction.Next);
 	}
@@ -765,7 +765,7 @@ public class EntityClass : MonoBehaviour {
 				recoilRest = 2f; break;
 		}
 		
-		gunRecoil -= (gunRecoil-Vector3.zero) * Time.deltaTime * recoilRest;
+		gunRecoil -= gunRecoil * Time.deltaTime * recoilRest;
 		firstPersonGun.transform.localPosition += gunRecoil * 0.1f;
 		
 		if (grounded) {
@@ -852,10 +852,9 @@ public class EntityClass : MonoBehaviour {
 				net.Detonate(gun, transform.position, User.viewID, User.viewID);
 				break; 
 			case Item.Spatula:
-				// FIXME: IF WE KEEP THIS, IT SHOULD BE AN INSTAGIB MELEE WEAPON
-				
-				//gunRecoil += Vector3.forward * 6f;
-				gunRecoil -= Vector3.right * 4f;
+				gunRecoil += Vector3.forward * 3 + Vector3.up * 2f;
+				//gunRecoil -= Vector3.right * 4f;
+				FireBullet(gun);
 				break;
 		}
 	}
@@ -980,10 +979,11 @@ public class EntityClass : MonoBehaviour {
 		// fire hitscan type gun
 		Vector3 bulletStart = Camera.main.transform.position;
 		Vector3 bulletDirection = Camera.main.transform.forward;
-		Vector3 bulletEnd = bulletStart + (bulletDirection*999f);
+		Vector3 bulletEnd;
 		bool hit = false;
 		bool registerhit = false;
 		int hitPlayer = -1;
+		bulletEnd = bulletStart + (bulletDirection * arse.Guns[(int)weapon].Range);
 	
 		if (weapon == Item.MachineGun) {
 			float shakeValue = 0.01f;
@@ -996,7 +996,7 @@ public class EntityClass : MonoBehaviour {
 		int bulletLayer = (1<<0) | (1<<8); // walls & players
 				
 		gameObject.layer = 2;
-		if (Physics.Raycast(bulletRay, out bulletHit, 999f, bulletLayer)) {
+		if (Physics.Raycast(bulletRay, out bulletHit, arse.Guns[(int)weapon].Range, bulletLayer)) {
 			bulletEnd = bulletHit.point;
 					
 			if (bulletHit.collider.gameObject.layer == 8) {
