@@ -5,12 +5,12 @@ public class AboutMenu {
 	public void Draw(Hud hud) {
 		string s = "";
 
-		hud.CategoryHeader("What is Paramancer?");
-		s += "RIGHT NOW, it is a completely functional, fast-paced, old-school, high-skill, arena-style multiplayer FPS.  ";
-		s += "That fundamental foundation will never change.  ";
-		s += "But there are quite a few OTHER stages/layers planned for the future.  ";
-		s += "However, I don't think it could financially sustain me until I can spend enough time building a single ";
-		s += "player game with it.  There are not many populated indie multiplayer games out there.  ";
+		hud.CategoryHeader("At The Moment");
+		s += "...this is a fully functional, fast-paced, old-school, arena-style multiplayer FPS.  ";
+		s += "That game-play foundation will never change.  ";
+		s += "However, I don't expect to make a living from that.  ";
+		s += "There are not many populated indie multiplayer games out there.  ";
+		s += "But I have quite a few OTHER stages/layers planned for the future.  ";
 		GUILayout.Label(s);
 		s = "";
 
@@ -31,13 +31,13 @@ public class AboutMenu {
 
 		hud.CategoryHeader("Procedural weapons");
 		s += "This stage would introduce a magical/medieval-fantasy theme/setting.  ";
-		s += "The new weapon set would be magical spells & staves  .";
-		s += "You will 'create'/select spells on-the-fly.  From a combination of magic runes.  The combo determines how the spell works.  ";
-		s += "This will mean possibly millions of possible ";
-		s += "spells.  Depending on how granular the rune/component selection ends up being.  ";
+		s += "The new weapon set will be magical spells & staves  .";
+		s += "You will 'create' spells on-the-fly, by selecting a combination of magic runes.  The combo determines how the spell works.  ";
+		s += "This will mean possibly millions of spells.  Depending on how granular the rune/component selection ends up being.  ";
 		s += "However they are designed to be balanced against each other in power.  A horizontal progression.  ";
 		s += "Giving you more variety & choice in how to ";
-		s += "divide & deliver your (potential) damage over the desired TTK period.  Not a power-level reward/advantage given for in-game grinding.  ";
+		s += "divide & deliver your (potential) damage over the desired TTK period.  "
+		s += "Not a power-level reward/advantage given for in-game grinding.  ";
 		s += "The traditional 90's style guns will remain as an option.  ";
 		GUILayout.Label(s);
 		s = "";
@@ -46,7 +46,7 @@ public class AboutMenu {
 		GUILayout.Label("");
 		hud.CategoryHeader("LONG-TERM GOALS");
 		hud.CategoryHeader("Multi-user map editing....AND");
-		hud.CategoryHeader("Various Realms & Weapon Sets", true, false);
+		hud.CategoryHeader("FURTHER Realms & Weapon Sets", true, false);
 		s += "With voxels only at first.  The easiest and fastest way to build things.  ";
 		s += "Each realm/dimension/time-period will use a particular set of weapons.  ";
 		s += "For immersion, the various weapon sets will be pre-selected & enforced per realm/dimension.  ";
@@ -55,7 +55,7 @@ public class AboutMenu {
 		s += "Sci-Fi guns \nSci-Fi NanoSwarms \nPsi-Fi amplified psionic powers \n(the latter 2 being hand attachments or tech \"gloves\").  \n\n";
 		s += "In order to keep ALL potential builders inspired to build in the Paraverse, we will allow users to build in whatever setting/theme they prefer.  ";
 		s += "Medieval Fantasy, \n\nSci-Fi, \nCyberPunk, \nSteamPunk, \nModern Day, \nVarious olden-time periods, ";
-		s += "Ghost/Undead/Purgatory/AfterLife, \nDream Realm, \nAbstract Realm, \nToon Realm, \nApocalypse Du Jour\n\n....all are possibilities.  ";
+		s += "\nGhost/Undead/Purgatory/AfterLife, \nDream Realm, \nAbstract Realm, \nToon Realm, \nApocalypse Du Jour\n\n....all are possibilities.  ";
 		s += "We may want to limit ourselves initially to the main 3-4 most popular settings.  ";
 		s += "Anything that doesn't easily reconcile within \"the real world\" of Paramancer's fiction, can be ";
 		s += "represented as cyberspace/metaverse/VR.  ";

@@ -75,7 +75,7 @@ public class Hud : MonoBehaviour {
 	
 	void Start() {
 		matchSetup.Init();
-		gSkin = ScriptableObject.CreateInstance<GUISkin>();
+		//gSkin = ScriptableObject.CreateInstance<GUISkin>();
 
 		// scripts
 		net = GetComponent<CcNet>();
@@ -148,16 +148,23 @@ public class Hud : MonoBehaviour {
 			// setup vertical span sizes
 			GC = new GUIContent("Qypjg");
 			GS = "Box";
+			GS.font = Font;
+			GS.fontSize = 24;
 			VSpanBox = GS.CalcSize(GC).y;
 			GS = "Button";
+			GS.font = Font;
+			GS.fontSize = 16;
 			VSpanButton = GS.CalcSize(GC).y;
 			GS = "Label";
+			GS.font = Font;
+			GS.fontSize = 16;
 			VSpanLabel = GS.CalcSize(GC).y;
 			
-			setupSkin();
 		}
 
+		//setupSkin();
 		GUI.skin.button.hover.textColor = S.ShoutyColor;
+		GUI.skin.button.active.textColor = S.Purple;
 
 		// if screen dimensions changed 
 		if (oldW != Screen.width ||
@@ -648,37 +655,37 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-
-
 	void setupSkin() {
 		// normal button 
 		// hover button 
 		// active button
 
-		var nt = (Texture2D)Pics.Get("Button"); // normal texture 
-		//var nt = (Texture2D)Pics.Get("ButtonIce"); // normal texture 
-		var ht = (Texture2D)Pics.Get("ButtonIceHover"); // hover texture 
-		var at = (Texture2D)Pics.Get("ButtonIceClicked"); // active texture 
-		nt.filterMode = FilterMode.Trilinear;
-		ht.filterMode = FilterMode.Trilinear;
-		at.filterMode = FilterMode.Trilinear;
+//		var nt = (Texture2D)Pics.Get("Button"); // normal texture 
+//		//var nt = (Texture2D)Pics.Get("ButtonIce"); // normal texture 
+//		var ht = (Texture2D)Pics.Get("ButtonIceHover"); // hover texture 
+//		var at = (Texture2D)Pics.Get("ButtonIceClicked"); // active texture 
+//		nt.filterMode = FilterMode.Trilinear;
+//		ht.filterMode = FilterMode.Trilinear;
+//		at.filterMode = FilterMode.Trilinear;
 
 
 
 //		// handle button modes 
 //		var hmm = 10;
-//		var pixel = 2; // pixel margin 
-//		var uvMar = 32; // UV margin (for unstretchable texture coord border) 
-//		gSkin.button.border = new RectOffset(-uvMar, uvMar, uvMar, uvMar);
+		//var pixel = 4; // pixel margin 
+		//var uvMar = 32; // UV margin (for unstretchable texture coord border) 
+		//gSkin.button.border = new RectOffset(uvMar, uvMar, uvMar, uvMar);
 //		gSkin.button.margin = new RectOffset(hmm, hmm, hmm, hmm); // spacing tween UI elements 
-//		gSkin.button.padding = new RectOffset(-pixel, pixel, pixel, pixel);
+//		gSkin.button.padding = new RectOffset(pixel, pixel, pixel, pixel);     // padding i was able to get working predictably (by itself) 
 //		gSkin.button.stretchWidth = true;
 //		gSkin.button.stretchHeight = true;
-//
 
-		gSkin.button.normal.background = nt;
-		gSkin.button.hover.background = ht;
-		gSkin.button.active.background = at;
+
+
+
+//		gSkin.button.normal.background = nt;
+//		gSkin.button.hover.background = ht;
+//		gSkin.button.active.background = at;
 
 
 
@@ -688,9 +695,9 @@ public class Hud : MonoBehaviour {
 		gSkin.textArea.font = Font;
 		gSkin.textField.font = Font;
 
-		gSkin.button.normal.textColor = S.Orange;
+		//gSkin.button.normal.textColor = S.Orange;
 		//.skin.button.hover gets set to ShoutyColor per frame 
-		gSkin.button.active.textColor = Color.cyan; 
+		//gSkin.button.active.textColor = Color.cyan; 
 		
 		gSkin.box.fontSize = 24; // these are the semi-transparent dark gray boxes with a border around the text 
 		gSkin.button.fontSize = 16;
@@ -698,11 +705,6 @@ public class Hud : MonoBehaviour {
 		gSkin.textArea.fontSize = 16;
 		gSkin.textField.fontSize = 16;
 
-
-
-
-
-		//GUI.skin = null;
 		GUI.skin = gSkin;
 	}
 
@@ -1012,7 +1014,7 @@ public class Hud : MonoBehaviour {
 		menuBegin();
 
 		CategoryHeader("Current team", false, false);
-		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Logos, Control Config");
+		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game Design, Logos, Control Config");
 		GUILayout.Label("IceFlame       - Coding, Various media & effects, Announcer");
 
 		CategoryHeader("Engine", false);
