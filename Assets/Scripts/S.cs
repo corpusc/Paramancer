@@ -8,7 +8,7 @@ using System.Globalization;
 
 static public class S {
 	public const float GoldenRatio = 1.6180339887498948482f;
-	public const int K = 1000;
+	public const int K = 1000; // what the fuck is this?   single letter variables should almost-always-ONLY be used locally 
 	
 	// colors 
 	// shouty/shimmery color that cycles back and forth between 2 colors 
@@ -18,14 +18,14 @@ static public class S {
 	static public Color ShoutyColor { 
 		get { 
 			if (increasing) {
-				point += Time.deltaTime * 2;
+				point += Time.deltaTime * 1.3f;
 				
 				if (point > 1f) {
 					point = 1f;
 					increasing = false;
 				}
 			}else{ // decreasing 
-				point -= Time.deltaTime * 2;
+				point -= Time.deltaTime * 1.3f;
 				
 				if (point < 0f) {
 					point = 0f;

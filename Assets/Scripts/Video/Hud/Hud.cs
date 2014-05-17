@@ -49,6 +49,7 @@ public class Hud : MonoBehaviour {
 
 
 	// private
+	GUISkin gSkin;
 	string defaultName = "Lazy Noob";
 	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
@@ -72,7 +73,8 @@ public class Hud : MonoBehaviour {
 	
 	void Start() {
 		matchSetup.Init();
-		
+		gSkin = ScriptableObject.CreateInstance<GUISkin>();
+
 		// scripts
 		net = GetComponent<CcNet>();
 		log = GetComponent<CcLog>();
@@ -141,8 +143,6 @@ public class Hud : MonoBehaviour {
 		if (firstTime) {
 			firstTime = false;
 
-			setupSkin();
-
 			// setup vertical span sizes
 			GC = new GUIContent("Qypjg");
 			GS = "Box";
@@ -151,6 +151,8 @@ public class Hud : MonoBehaviour {
 			VSpanButton = GS.CalcSize(GC).y;
 			GS = "Label";
 			VSpanLabel = GS.CalcSize(GC).y;
+			
+			setupSkin();
 		}
 
 		GUI.skin.button.hover.textColor = S.ShoutyColor;
@@ -647,30 +649,55 @@ public class Hud : MonoBehaviour {
 
 
 	void setupSkin() {
-		var t2 = (Texture2D)Pics.Get("ButtonIce");
-		t2.filterMode = FilterMode.Point;
-		var mar = 16; // margin (for unstretchable border of button) 
-		GUI.skin.button.font = Font;
-		GUI.skin.button.fontSize = 16;
-		//GUI.skin.button.border = new RectOffset(mar, mar, 0, 0);
-		GUI.skin.button.normal.textColor = Color.black;
-		GUI.skin.button.normal.background = t2;
-		//GUI.skin.button.active.textColor = S.Purple;   
-		var ct = (Texture2D)Pics.Get("ButtonIceClicked"); // clicked texture
-		ct.filterMode = FilterMode.Point;
-		GUI.skin.button.active.background = ct;
-		// DO THIS PER FRAME INSTEAD          GUI.skin.button.hover.textColor = Color.cyan;
-		var ht = (Texture2D)Pics.Get("ButtonIceHover"); // hover texture
-		ht.filterMode = FilterMode.Point;
-		GUI.skin.button.hover.background = ht;
-		GUI.skin.label.font = Font;
-		GUI.skin.label.fontSize = 16;
-		GUI.skin.box.font = Font;
-		GUI.skin.box.fontSize = 24;
-		GUI.skin.textArea.font = Font;
-		GUI.skin.textArea.fontSize = 16;
-		GUI.skin.textField.font = Font;
-		GUI.skin.textField.fontSize = 16;
+		// normal button 
+		// hover button 
+		// active button
+
+		var nt = (Texture2D)Pics.Get("Button"); // normal texture 
+		//var nt = (Texture2D)Pics.Get("ButtonIce"); // normal texture 
+		var ht = (Texture2D)Pics.Get("ButtonIceHover"); // hover texture 
+		var at = (Texture2D)Pics.Get("ButtonIceClicked"); // active texture 
+		nt.filterMode = FilterMode.Trilinear;
+		ht.filterMode = FilterMode.Trilinear;
+		at.filterMode = FilterMode.Trilinear;
+
+		gSkin.box.font = Font;
+		gSkin.button.font = Font;
+		gSkin.label.font = Font;
+		gSkin.textArea.font = Font;
+		gSkin.textField.font = Font;
+
+		gSkin.box.fontSize = 24; // these are the semi-transparent dark gray boxes with a border around the text 
+		gSkin.button.fontSize = 16;
+		gSkin.label.fontSize = 16;
+		gSkin.textArea.fontSize = 16;
+		gSkin.textField.fontSize = 16;
+
+
+
+//		// handle button modes 
+//		var hmm = 10;
+//		var pixel = 2; // pixel margin 
+//		var uvMar = 32; // UV margin (for unstretchable texture coord border) 
+//		gSkin.button.border = new RectOffset(-uvMar, uvMar, uvMar, uvMar);
+//		gSkin.button.margin = new RectOffset(hmm, hmm, hmm, hmm); // spacing tween UI elements 
+//		gSkin.button.padding = new RectOffset(-pixel, pixel, pixel, pixel);
+//		gSkin.button.stretchWidth = true;
+//		gSkin.button.stretchHeight = true;
+//
+		gSkin.button.normal.textColor = S.Orange;
+		//.skin.button.hover gets set to ShoutyColor per frame 
+		gSkin.button.active.textColor = Color.cyan; 
+
+		gSkin.button.normal.background = nt;
+		gSkin.button.hover.background = ht;
+		gSkin.button.active.background = at;
+
+
+
+
+		//GUI.skin = null;
+		GUI.skin = gSkin;
 	}
 
 
