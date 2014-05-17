@@ -450,7 +450,7 @@ public class CcNet : MonoBehaviour {
 				if (victimID != fraggerID) {
 					players[i].Entity.MultiFragCount++;
 					players[i].Entity.PrevFrag = Time.time;
-					handleMultiFrag(players[i].Entity.MultiFragCount, players[i].name);
+					handleMultiFrag(i, players[i].name);
 				}
 				fraggerName = players[i].name;
 				fraggerIdx = i;

@@ -78,8 +78,8 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].DelayAlt = 1f; break; 
 				case Item.Spatula:   Guns[i].ShotCol = Color.magenta; 
 					Guns[i].Delay = 1f;  
-					Guns[i].DelayAlt = 1f; break;
-					Guns[i].Range = 2f;
+					Guns[i].DelayAlt = 1f;
+					Guns[i].Range = 2f; break;
 			}
 			
 			// set widest icon
