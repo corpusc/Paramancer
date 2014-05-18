@@ -13,4 +13,5 @@ public class GunData {
 	public float Cooldown = 0f; // current progress through the ^above^ Delay
 	public bool Carrying = false;
 	public float Range = 999f;
+	public float MarkScale = 1f;
 }

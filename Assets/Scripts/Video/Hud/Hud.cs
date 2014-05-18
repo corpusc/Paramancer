@@ -51,7 +51,7 @@ public class Hud : MonoBehaviour {
 
 
 	// private
-	GUISkin gSkin;
+	//GUISkin GUI.skin;
 	string defaultName = "Lazy Noob";
 	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
@@ -75,7 +75,7 @@ public class Hud : MonoBehaviour {
 	
 	void Start() {
 		matchSetup.Init();
-		//gSkin = ScriptableObject.CreateInstance<GUISkin>();
+		//GUI.skin = ScriptableObject.CreateInstance<GUISkin>();
 
 		// scripts
 		net = GetComponent<CcNet>();
@@ -674,38 +674,38 @@ public class Hud : MonoBehaviour {
 //		var hmm = 10;
 		//var pixel = 4; // pixel margin 
 		//var uvMar = 32; // UV margin (for unstretchable texture coord border) 
-		//gSkin.button.border = new RectOffset(uvMar, uvMar, uvMar, uvMar);
-//		gSkin.button.margin = new RectOffset(hmm, hmm, hmm, hmm); // spacing tween UI elements 
-//		gSkin.button.padding = new RectOffset(pixel, pixel, pixel, pixel);     // padding i was able to get working predictably (by itself) 
-//		gSkin.button.stretchWidth = true;
-//		gSkin.button.stretchHeight = true;
+		//GUI.skin.button.border = new RectOffset(uvMar, uvMar, uvMar, uvMar);
+//		GUI.skin.button.margin = new RectOffset(hmm, hmm, hmm, hmm); // spacing tween UI elements 
+//		GUI.skin.button.padding = new RectOffset(pixel, pixel, pixel, pixel);     // padding i was able to get working predictably (by itself) 
+//		GUI.skin.button.stretchWidth = true;
+//		GUI.skin.button.stretchHeight = true;
 
 
 
 
-//		gSkin.button.normal.background = nt;
-//		gSkin.button.hover.background = ht;
-//		gSkin.button.active.background = at;
+//		GUI.skin.button.normal.background = nt;
+//		GUI.skin.button.hover.background = ht;
+//		GUI.skin.button.active.background = at;
 
 
 
-		gSkin.box.font = Font;
-		gSkin.button.font = Font;
-		gSkin.label.font = Font;
-		gSkin.textArea.font = Font;
-		gSkin.textField.font = Font;
+		GUI.skin.box.font = Font;
+		GUI.skin.button.font = Font;
+		GUI.skin.label.font = Font;
+		GUI.skin.textArea.font = Font;
+		GUI.skin.textField.font = Font;
 
-		//gSkin.button.normal.textColor = S.Orange;
+		//GUI.skin.button.normal.textColor = S.Orange;
 		//.skin.button.hover gets set to ShoutyColor per frame 
-		//gSkin.button.active.textColor = Color.cyan; 
+		//GUI.skin.button.active.textColor = Color.cyan; 
 		
-		gSkin.box.fontSize = 24; // these are the semi-transparent dark gray boxes with a border around the text 
-		gSkin.button.fontSize = 16;
-		gSkin.label.fontSize = 16;
-		gSkin.textArea.fontSize = 16;
-		gSkin.textField.fontSize = 16;
+		GUI.skin.box.fontSize = 24; // these are the semi-transparent dark gray boxes with a border around the text 
+		GUI.skin.button.fontSize = 16;
+		GUI.skin.label.fontSize = 16;
+		GUI.skin.textArea.fontSize = 16;
+		GUI.skin.textField.fontSize = 16;
 
-		GUI.skin = gSkin;
+		GUI.skin = GUI.skin;
 	}
 
 
@@ -944,10 +944,13 @@ public class Hud : MonoBehaviour {
 	
 	string[] splashText = {
 		"There are 10 types of people: those who know binary and those who don't.",
+		"There are 10 types of people: those who know binary and those who don't.\nAnd those who didn't expect this joke to be in base 3.",
 		"sqrtf(-1.f)!",
 		"To understand what recursion is, you must first understand recursion.",
 		"while (!asleep) sheep++;",
-		"Gluten free!"};
+		"Gluten free!",
+		"I don\'t need glasses, I C#!",
+		"ToBe || !ToBe"};
 
 	string[] tipText = {
 		"TIP: Use the gravulator as often as possible to confuse your enemies",
@@ -956,7 +959,7 @@ public class Hud : MonoBehaviour {
 	float nextSplashUpdate = 0f;
 	float splashUpdateTime = 10f; // the time it takes for the splash message to update
 	string tSplash = ""; // the currently displayed splash
-	float tWidth = 0f;
+	float tWidth = 0f; // temporary - of the current splash
 	Rect splashRect;
 	void displaySplash() {
 		if (Time.time > nextSplashUpdate) {
@@ -965,7 +968,7 @@ public class Hud : MonoBehaviour {
 				tSplash = tipText[UnityEngine.Random.Range(0, tipText.Length)];
 			else
 				tSplash = splashText[UnityEngine.Random.Range(0, splashText.Length)];
-			tWidth = GetWidthLabel(tSplash) + 10f;
+			tWidth = GetWidthLabel(tSplash) * 1.5f + 10f;
 			splashRect = new Rect((Screen.width - tWidth) / 2f, 0, tWidth, GetHeightBox(tSplash));
 		}
 		GUI.Box(splashRect, tSplash);

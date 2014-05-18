@@ -7,12 +7,12 @@ public class RocketScript : MonoBehaviour {
 	public int MaxParticlesPerFrame = 10;
 	public int ExplosionParticles = 200;
 	public float ExplosionSize = 0.4f;
-	public float ForwardOffset = 1f; //prevents running into your own rocket when you have lags
+	public float ForwardOffset = 1f; // prevents running into your own rocket when you have lags
 	public float Turn = 2f;
 	public bool Turning = false;
 	public float MinParticleSpeed = 5f;
 	public float MaxParticleSpeed = 8f;
-	public float PMR = 1f; //Particle Movement Randomness
+	public float PMR = 1f; // Particle Movement Randomness
 	public float ExplosionSpeed = 8f;
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;

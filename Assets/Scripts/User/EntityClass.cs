@@ -783,11 +783,14 @@ public class EntityClass : MonoBehaviour {
 	
 	void Fire(GunData gunData, bool alt = false) {
 		Item gun = (Item)GunInHand;
-		if (alt && gun != Item.RocketLauncher)
-			return;
+		if (alt) {
+			if (gun != Item.RocketLauncher && gun != Item.Spatula)
+				return;
+		}
 
-		if (alt)
+		if (alt) {
 			gunData.Cooldown += gunData.DelayAlt;
+		}
 		else
 			gunData.Cooldown += gunData.Delay;
 
@@ -799,7 +802,7 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
 			case Item.GrenadeLauncher:
-				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, ava.sprinting);
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, Vector3.zero, ava.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
 			case Item.MachineGun:
@@ -815,8 +818,8 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.RocketLauncher:
-			//print ("Rocket launcher shot, alt = " + (alt ? "1" : "0"));
-				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt);
+				//print ("Rocket launcher shot, alt = " + (alt ? "1" : "0"));
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, Vector3.zero);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Item.Swapper:
@@ -825,7 +828,7 @@ public class EntityClass : MonoBehaviour {
 					FireBullet(gun);
 				}else{
 					// locked on, we hit
-					net.Shoot(gun, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true, alt);
+				net.Shoot(gun, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true, alt, Vector3.zero);
 					net.RegisterHit(gun, net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
 				}
 				gunRecoil -= Vector3.forward * 5f;
@@ -854,7 +857,7 @@ public class EntityClass : MonoBehaviour {
 			case Item.Spatula:
 				gunRecoil += Vector3.forward * 3 + Vector3.up * 2f;
 				//gunRecoil -= Vector3.right * 4f;
-				FireBullet(gun);
+				FireBullet(gun, alt);
 				break;
 		}
 	}
@@ -975,11 +978,12 @@ public class EntityClass : MonoBehaviour {
 		//Debug.Log("Force look: " + targetLookPos.ToString() + " ??? " + lookObj.transform.position.ToString() + " ??? " + camAngle.ToString());
 	}
 	
-	void FireBullet(Item weapon) {
+	void FireBullet(Item weapon, bool alt = false) {
 		// fire hitscan type gun
 		Vector3 bulletStart = Camera.main.transform.position;
 		Vector3 bulletDirection = Camera.main.transform.forward;
 		Vector3 bulletEnd;
+		Vector3 hitNorm = Vector3.zero;
 		bool hit = false;
 		bool registerhit = false;
 		int hitPlayer = -1;
@@ -998,6 +1002,7 @@ public class EntityClass : MonoBehaviour {
 		gameObject.layer = 2;
 		if (Physics.Raycast(bulletRay, out bulletHit, arse.Guns[(int)weapon].Range, bulletLayer)) {
 			bulletEnd = bulletHit.point;
+			hitNorm = bulletHit.normal;
 					
 			if (bulletHit.collider.gameObject.layer == 8) {
 				// hit a player, tell the server
@@ -1017,8 +1022,9 @@ public class EntityClass : MonoBehaviour {
 		bulletStart = transform.position;
 		bulletStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
 		// RPC the shot, regardless
-		net.Shoot(weapon, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit, false);
-	
+		net.Shoot(weapon, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit, alt, hitNorm);
+
+		if (alt && weapon == Item.Spatula) return;
 		if (registerhit) 
 			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bulletHit.point);
 	}

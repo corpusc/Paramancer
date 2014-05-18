@@ -88,8 +88,8 @@ public class CcNet : MonoBehaviour {
 	GameObject pickupBoxPrefab;
 	GameObject splatPrefab;
 	GameObject basketballPrefab;
-	
-	
+
+
 	
 	void Start() {
 		DontDestroyOnLoad(this);
@@ -220,17 +220,25 @@ public class CcNet : MonoBehaviour {
 		}
 	}
 	
-	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit, bool alt, bool sprint = false) {
+	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit, bool alt, Vector3 hitNorm, bool sprint = false) {
 		// we have fired a shot, let's tell everyone about it so they can see it
 		//print ("Shot info received by net.Shoot(), alt = " + (alt ? "1" : "0"));
 		NetworkViewID bulletID = Network.AllocateViewID();
-		networkView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit, sprint, alt);
+		networkView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit, sprint, alt, hitNorm);
 	}
 	[RPC]
-	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, bool sprint, bool alt, NetworkMessageInfo info) {
+	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, bool sprint, bool alt, Vector3 hitNorm, NetworkMessageInfo info) {
 		// somebody fired a shot, let's show it
 		latestPacket = Time.time;
-		arse.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit, alt, sprint);
+		if (alt && (Item)weapon == Item.Spatula) {
+			var le = new LogEntry();
+			le.Maker = "";
+			le.Color = Color.magenta;
+			le.Text = getSpatulaMessage();
+			log.Entries.Add(le);
+			log.TimeToHideEntireLog = Time.time+log.FadeTime;
+		}
+		else arse.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit, alt, hitNorm, sprint);
 	}
 	
 	public void RegisterHit(Item weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
@@ -514,7 +522,7 @@ public class CcNet : MonoBehaviour {
 		var le = new LogEntry();
 		le.Maker = "";
 		le.Color = Color.red;
-		le.Text = getObituary(fraggerName, fraggerIdx, victimName, victimIdx);
+		le.Text = getObituary(fraggerName, fraggerIdx, victimName, victimIdx, (Item)weapon);
 		log.Entries.Add(le);
 		log.TimeToHideEntireLog = Time.time+log.FadeTime;
 		
@@ -542,8 +550,39 @@ public class CcNet : MonoBehaviour {
 			break;
 		}
 	}
+
+	private string getSpatulaMessage() {
+		switch(Random.Range(0, 12)) {
+		case 0:
+			return "SPA-TU-LA!";
+		case 1:
+			return "My spatula is magical! Just kidding, all spatulas are magical!";
+		case 2:
+			return "Sexy spatula! Ooooh!";
+		case 3:
+			return "SPAAAAAAAAAAATUUUUUUUUUUULAAAAAAAAA!";
+		case 4:
+			return "Spatula City!";
+		case 5:
+			return "To have a spatula or not to have a spatula.";
+		case 6:
+			return "\"Spatulas are responsible for people falling in love\" - Albert Einstein";
+		case 7:
+			return "\"Better three spatulas too much than one too little\" - William Shakespeare";
+		case 8:
+			return "\"Holding onto anger is like hitting oneslef with a spatula and expecting it to break\" - Buddha";
+		case 9:
+			return "\"Happiness depends on our spatulas\" - Aristotle";
+		case 10:
+			return "\"Can you see me swing my spatula?\" - CorpusCal";
+		case 11:
+			return "\"The spatulas are bigger than we are\" - IceFlame";
+		default:
+			return "Spatulas are so awesome that Random.Range() failed!";
+		}
+	}
 	
-	private string getObituary(string f, int fId, string v, int vId) { // fragger, victim 
+	private string getObituary(string f, int fId, string v, int vId, Item weapon) { // fragger, victim 
 		// suicides 
 		if (fId == vId) {
 			switch (Random.Range(0, 5)) {
@@ -555,8 +594,12 @@ public class CcNet : MonoBehaviour {
 				default: return "....";
 			}
 		}
-		
-		// normal frags 
+
+		// special per-weapon
+		if (weapon == Item.Spatula) {
+			return f + " broght the magic of 1525 to " + v + "!";
+		}
+		// normal frags
 		switch (Random.Range(0, 7)) {
 			case 0:	return f + " really gave " + v + " what for!";
 			case 1:	return f + " fixed " + v + "'s little red wagon!";

@@ -11,6 +11,7 @@ public class Arsenal : MonoBehaviour {
 	public GameObject muzzleFlashPrefab;
 	public GameObject rocketPrefab;
 	public GameObject soundObjectPrefab;
+	public GameObject BulletMark;
 	
 	public AudioClip sfx_grenadeExplode;
 	public AudioClip sfx_rocketExplode;
@@ -21,6 +22,7 @@ public class Arsenal : MonoBehaviour {
 	public AudioClip sfx_swappershoot;
 	public AudioClip sfx_bombBeep;
 	public AudioClip sfx_bombExplode;
+	public AudioClip sfx_spatula;
 	
 	public int WidestIcon;
 	public int TallestIcon;
@@ -58,11 +60,12 @@ public class Arsenal : MonoBehaviour {
 				case Item.GrenadeLauncher:   Guns[i].ShotCol = S.Orange; 
 					Guns[i].Delay = 0.25f; 
 					Guns[i].DelayAlt = 0.25f; break; 
-				case Item.MachineGun:   Guns[i].ShotCol = Color.cyan; 
+				case Item.MachineGun:   Guns[i].ShotCol = Color.green; 
 					Guns[i].Delay = 0.1f; 
 					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; break; // unique 
 				case Item.RailGun:   Guns[i].ShotCol = Color.cyan; 
-					Guns[i].Delay = 2f; 
+					Guns[i].Delay = 2f;
+					Guns[i].MarkScale = 2f;
 					Guns[i].DelayAlt = 2f; break; 
 				case Item.RocketLauncher:   Guns[i].ShotCol = Color.red; 
 					Guns[i].Delay = 1.5f; 
@@ -78,8 +81,8 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].DelayAlt = 1f; break; 
 				case Item.Spatula:   Guns[i].ShotCol = Color.magenta; 
 					Guns[i].Delay = 1f;  
-					Guns[i].DelayAlt = 1f;
-					Guns[i].Range = 2f; break;
+					Guns[i].DelayAlt = 4f;
+					Guns[i].Range = 3f; break;
 			}
 			
 			// set widest icon
@@ -120,7 +123,7 @@ public class Arsenal : MonoBehaviour {
 		nb.GetComponent<LightningBeam>().hit = hit;
 	}
 
-	void shootHitscan(Vector3 origin, Vector3 end, NetworkViewID shooterID, Item weapon) {
+	void shootHitscan(Vector3 origin, Vector3 end, NetworkViewID shooterID, Item weapon, Vector3 hitNorm) {
 		bool localFire = false;
 		Vector3 localStart = origin;
 
@@ -131,7 +134,16 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 
-		if (weapon == Item.Spatula) return; // no trail
+		if (weapon == Item.Spatula) return; // no trail or effects
+
+		if (hitNorm != Vector3.zero) {
+			GameObject nh = (GameObject)GameObject.Instantiate(BulletMark);
+			nh.transform.position = end + Vector3.Normalize(origin - end) * 0.01f;
+			nh.transform.forward = -hitNorm;
+			nh.transform.localScale *= Guns[(int)weapon].MarkScale;
+			nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
+			nh.GetComponent<BulletMark>().MaxLife = 30f;
+		}
 		
 		// beam
 		//beam.GetComponent<BeamEffect>().start = origin;
@@ -187,14 +199,14 @@ public class Arsenal : MonoBehaviour {
 	}
 
 	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, 
-		NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit, bool alt, bool sprint = false
+		NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit, bool alt, Vector3 hitNorm, bool sprint = false
 	) {
 		switch (weapon) {
 			case Item.Pistol:
 			case Item.MachineGun:
 			case Item.RailGun:
 			case Item.Spatula:
-				shootHitscan(origin, end, shooterID, weapon);
+				shootHitscan(origin, end, shooterID, weapon, hitNorm);
 				break;
 		
 			case Item.Swapper:
@@ -233,9 +245,10 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<net.players.Count; i++) {
 			if (net.players[i].viewID == shooterID) {
 				switch (weapon) {
-					case Item.Pistol:         playSfx(i, sfx_pistolshoot); break;
+					case Item.Pistol:           playSfx(i, sfx_pistolshoot); break;
 					case Item.GrenadeLauncher:        playSfx(i, sfx_grenadethrow); break;
-					case Item.MachineGun:     playSfx(i, sfx_machinegunshoot); break;
+					case Item.MachineGun:       playSfx(i, sfx_machinegunshoot); break;
+					case Item.Spatula:          playSfx(i, sfx_spatula); break;
 					case Item.RailGun:          playSfx(i, sfx_rifleshoot); break;
 					case Item.RocketLauncher: playSfx(i, sfx_grenadethrow); break;
 					// case Item.GravGun: *** soundwise, the activation sound is currently located along with jump/land sfx //FIXME
