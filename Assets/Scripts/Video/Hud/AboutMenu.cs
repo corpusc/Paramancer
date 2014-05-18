@@ -7,50 +7,10 @@ public class AboutMenu {
 	public void Draw(Hud hud) {
 		string s = "";
 
-		hud.CategoryHeader("At The Moment");
-		s += "...this is a fully functional, fast-paced, old-school, arena-style multiplayer FPS.  ";
-		s += "That game-play foundation will never change.  ";
-		s += "However, there are not many populated indie multiplayer games out there.  ";
-		s += "So, I have quite a few OTHER stages/layers planned for the future.  ";
-		GUILayout.Label(s);
-		s = "";
-
-
-		GUILayout.Label("");
-		hud.CategoryHeader("NEAR-TERM GOALS");
-		hud.CategoryHeader("Rogue-lite FPS");
-		s += "I always loved this concept, but have been disappointed with the few that recently came onto the market.  ";
-		s += "The theme/setting would be somewhere between modern/near-future and sci-fi.  ";
-		s += "We will generate new maps, & item/monster-placements (in SP) for every game session.  ";
-		s += "We will have single player, coop AND EVEN PVP on Roguelike maps.  Choices.  W6e will ";
-		s += "also allow dungeon invasions from others (PURELY OPTIONAL).  Once this stage is 'done', the game ";
-		s += "will be released.  This ends the scope of what I want to promise on Kickstarter.  ";
-		s += "And I might want to reserve the right to drop a \"minor\" feature or 2.  :)";
-		GUILayout.Label(s);
-		s = "";
-
-
-		hud.CategoryHeader("Procedural weapons");
-		s += "This stage would introduce a magical/medieval-fantasy theme/setting.  ";
-		s += "The new weapon set will be magical spells & staves  .";
-		s += "You will 'create' spells on-the-fly, by selecting a combination of magic runes.  The combo determines how the spell works.  ";
-		s += "This will mean possibly millions of spells.  Depending on how granular the rune/component selection ends up being.  ";
-		s += "However they are designed to be balanced against each other in power.  A horizontal progression.  ";
-		s += "Giving you more variety & choice in how to ";
-		s += "divide & deliver your (potential) damage over the desired TTK period.  ";
-		s += "Not a power-level reward/advantage given for in-game grinding.  ";
-		s += "The traditional 90's style guns will remain as an option.  ";
-		GUILayout.Label(s);
-		s = "";
-
-		if (GUILayout.Button("FAR FUTURE GOALS")) {
-			showingFarFuture = !showingFarFuture;
-		}
-
-
 		if (showingFarFuture) {
 			GUILayout.Label("");
 			hud.CategoryHeader("FAR FUTURE GOALS");
+			GUILayout.Label("");
 			hud.CategoryHeader("Multi-user map editing....AND");
 			hud.CategoryHeader("FURTHER Realms & Weapon Sets", true, false);
 			s += "With voxels only at first.  The easiest and fastest way to build things.  ";
@@ -95,6 +55,52 @@ public class AboutMenu {
 			s += "Would consider making travel through purgatory & dream realms mandatory.  The former upon death, and ";
 			s += "the latter by having an exhaustion/sleep meter that needs to be managed.  Likely the duration could be brief.  ";
 			GUILayout.Label(s);
+
+
+			if (GUILayout.Button("NEAR-TERM GOALS")) {
+				showingFarFuture = false;
+			}
+		}else{
+			hud.CategoryHeader("At The Moment");
+			s += "...this is a fully functional, fast-paced, old-school, arena-style multiplayer FPS.  ";
+			s += "That game-play foundation will never change.  ";
+			s += "However, there are not many populated indie multiplayer games out there.  ";
+			s += "So, I have quite a few OTHER stages/layers planned for the future.  ";
+			GUILayout.Label(s);
+			s = "";
+			
+			
+			GUILayout.Label("");
+			hud.CategoryHeader("NEAR-TERM GOALS");
+			hud.CategoryHeader("Rogue-lite FPS");
+			s += "I loved this concept since around 2006, but have been disappointed with the few that recently came onto the market.  ";
+			s += "The theme/setting would be somewhere between modern/near-future and sci-fi.  ";
+			s += "We will generate new maps, & item/monster-placements (in SP) for every game session.  ";
+			s += "We will have single player, coop AND EVEN PVP on Roguelike maps.  Choices.  Eventually we will ";
+			s += "also allow dungeon invasions from others (PURELY OPTIONAL).  Once this stage is 'done', the game ";
+			s += "will be released.  This ends the scope of what I want to promise on Kickstarter.  ";
+			s += "And I might want to reserve the right to drop a \"minor\" feature or 2.  :)";
+			GUILayout.Label(s);
+			s = "";
+			
+			
+			hud.CategoryHeader("Procedural weapons");
+			s += "This stage would introduce a magical/medieval-fantasy theme/setting.  ";
+			s += "The new weapon set will be magical spells & staves  .";
+			s += "You will 'create' spells on-the-fly, by selecting a combination of magic runes.  The combo determines how the spell works.  ";
+			s += "This will mean possibly millions of spells.  Depending on how granular the rune/component selection ends up being.  ";
+			s += "However they are designed to be balanced against each other in power.  A horizontal progression.  ";
+			s += "Giving you more variety & choice in how to ";
+			s += "divide & deliver your (potential) damage over the desired TTK period.  ";
+			s += "Not a power-level reward/advantage given for in-game grinding.  ";
+			s += "The traditional 90's style guns will remain as an option.  ";
+			GUILayout.Label(s);
+			s = "";
+
+
+			if (GUILayout.Button("FAR FUTURE GOALS")) {
+				showingFarFuture = true;
+			}
 		}
 	}
 }

@@ -953,24 +953,27 @@ public class Hud : MonoBehaviour {
 		"ToBe || !ToBe"};
 
 	string[] tipText = {
-		"TIP: Use the gravulator as often as possible to confuse your enemies",
+		"MODERN/MILITARY FPS PLAYERS: Exit please.  I do not value your feedback.  :)",
+		"TIP: Use the Gravulator as often as possible to confuse your enemies",
 		"TIP: Offense is often the best defense"};
 
 	float nextSplashUpdate = 0f;
 	float splashUpdateTime = 10f; // the time it takes for the splash message to update
 	string tSplash = ""; // the currently displayed splash
-	float tWidth = 0f; // temporary - of the current splash
 	Rect splashRect;
 	void displaySplash() {
 		if (Time.time > nextSplashUpdate) {
 			nextSplashUpdate = Time.time + splashUpdateTime;
-			if(showTips)
+
+			if (showTips)
 				tSplash = tipText[UnityEngine.Random.Range(0, tipText.Length)];
 			else
 				tSplash = splashText[UnityEngine.Random.Range(0, splashText.Length)];
-			tWidth = GetWidthLabel(tSplash) * 1.5f + 10f;
-			splashRect = new Rect((Screen.width - tWidth) / 2f, 0, tWidth, GetHeightBox(tSplash));
+
+			var wid = GetWidthBox(tSplash);
+			splashRect = new Rect((Screen.width - wid) / 2f, 0, wid, GetHeightBox(tSplash));
 		}
+
 		GUI.Box(splashRect, tSplash);
 	}
 
