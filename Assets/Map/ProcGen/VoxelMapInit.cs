@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MapGenInit : MonoBehaviour {
+public class VoxelMapInit : MonoBehaviour {
 
 	ProcGenVoxel vox;
-
-	// Use this for initialization
+	
 	void Start () {
 		vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
 		vox.MapSize.x = 64;
@@ -16,10 +15,5 @@ public class MapGenInit : MonoBehaviour {
 		vox.Build();
 		vox.Build3d();
 		vox.RemoveOriginals();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

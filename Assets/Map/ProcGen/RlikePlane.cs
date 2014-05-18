@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 public class RlikePlane : MonoBehaviour {
 	ProcGenMaze grid;
-	ProcGenVoxel vox;
 
 
 
@@ -31,16 +30,6 @@ public class RlikePlane : MonoBehaviour {
 			-grid.Scale.y*2, 
 			grid.Scale.z);
 		grid.Build3D();
-
-		vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
-		vox.MapSize.x = 64;
-		vox.MapSize.y = 32;
-		vox.MapSize.z = 64;
-		vox.Pos = new Vector3(-100f, 0f, 0f);
-		vox.Init();
-		vox.Build();
-		vox.Build3d();
-		vox.RemoveOriginals();
 	}
 
 

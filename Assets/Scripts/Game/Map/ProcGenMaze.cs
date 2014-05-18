@@ -79,8 +79,8 @@ public class ProcGenMaze {
 	public void Build () {
 		preBuild();
 
-		int numRooms = 0;
-		for (int i = 0; i < numTries && numRooms < numRooms; i++) {
+		int numRoomsMade = 0;
+		for (int i = 0; i < numTries && numRoomsMade < numRooms; i++) {
 			Vec2i t;
 			t.x = Random.Range(0, Max.x);
 			t.z = Random.Range(0, Max.z);
@@ -107,7 +107,7 @@ public class ProcGenMaze {
 					if /* not too big in total size */ ((end.x - start.x + 1) * (end.z - start.z + 1) <= MaxArea) {
 						if (num < (end.x - start.x + 1) * (end.z - start.z + 1) * MaxOverride) {
 							fillRect(start, end);
-							numRooms++;
+							numRoomsMade++;
 						}
 					}
 				}

@@ -261,6 +261,7 @@ public class ProcGenVoxel : ScriptableObject {
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(JumpHeight, MapSize.y);
 			t.z = Random.Range(0, MapSize.z);
+			if (columnOpen(t, MinHeight))
 			if (Block[t.x, t.y, t.z] && !Block[t.x, t.y - 1, t.z]) { // if this is the floor of any form above jump height
 				int d = floorScan(t.x - 1, t.y, t.z); // distance
 				if (d >= JumpHeight) {
