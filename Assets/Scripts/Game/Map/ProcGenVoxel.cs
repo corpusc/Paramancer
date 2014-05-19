@@ -261,10 +261,9 @@ public class ProcGenVoxel : ScriptableObject {
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(JumpHeight, MapSize.y);
 			t.z = Random.Range(0, MapSize.z);
-			if (columnOpen(t, MinHeight))
 			if (Block[t.x, t.y, t.z] && !Block[t.x, t.y - 1, t.z]) { // if this is the floor of any form above jump height
 				int d = floorScan(t.x - 1, t.y, t.z); // distance
-				if (d >= JumpHeight) {
+				if (d >= JumpHeight && columnOpen(t.x - 1, t.y, t.z, MinHeight)) {
 					var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
 					nj.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 					nj.transform.localScale = JumpPadScale;
@@ -272,7 +271,7 @@ public class ProcGenVoxel : ScriptableObject {
 					formsMade++;
 				} else {
 					d = floorScan(t.x + 1, t.y, t.z);
-					if (d >= JumpHeight) {
+					if (d >= JumpHeight && columnOpen(t.x + 1, t.y, t.z, MinHeight)) {
 						var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
 						nj.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 						nj.transform.localScale = JumpPadScale;
@@ -280,7 +279,7 @@ public class ProcGenVoxel : ScriptableObject {
 						formsMade++;
 					} else {
 						d = floorScan(t.x, t.y, t.z - 1);
-						if (d >= JumpHeight) {
+						if (d >= JumpHeight && columnOpen(t.x, t.y, t.z - 1, MinHeight)) {
 							var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
 							nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z - Scale.z);
 							nj.transform.localScale = JumpPadScale;
@@ -288,7 +287,7 @@ public class ProcGenVoxel : ScriptableObject {
 							formsMade++;
 						} else {
 							d = floorScan(t.x, t.y, t.z + 1);
-							if (d >= JumpHeight) {
+							if (d >= JumpHeight && columnOpen(t.x, t.y, t.z + 1, MinHeight)) {
 								var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
 								nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z + Scale.z);
 								nj.transform.localScale = JumpPadScale;
@@ -555,10 +554,18 @@ public class ProcGenVoxel : ScriptableObject {
 	}
 
 	// used for checking if a spawn can be placed, only checks a column of blocks
-	bool columnOpen (Vec3i s, int h) { // starting position, height from starting position(must not be out of borders)
+	bool columnOpen (Vec3i s, int h) { // starting position, height from starting position
 		for (int i = s.y; i <= s.y + h; i++)
 			if (!getBlock(s.x, i, s.z)) return false;
 
 		return true; // if we got here, it means all blocks we checked are open
+	}
+
+	bool columnOpen (int x, int y, int z, int h) { // position, height
+		Vec3i t;
+		t.x = x;
+		t.y = y;
+		t.z = z;
+		return columnOpen(t, h);
 	}
 }

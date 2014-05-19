@@ -138,7 +138,7 @@ public class Arsenal : MonoBehaviour {
 
 		if (hitNorm != Vector3.zero) {
 			GameObject nh = (GameObject)GameObject.Instantiate(BulletMark);
-			nh.transform.position = end + Vector3.Normalize(origin - end) * 0.01f;
+			nh.transform.position = end + hitNorm * 0.01f;
 			nh.transform.forward = -hitNorm;
 			nh.transform.localScale *= Guns[(int)weapon].MarkScale;
 			nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);

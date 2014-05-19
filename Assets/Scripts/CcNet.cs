@@ -223,22 +223,18 @@ public class CcNet : MonoBehaviour {
 	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit, bool alt, Vector3 hitNorm, bool sprint = false) {
 		// we have fired a shot, let's tell everyone about it so they can see it
 		//print ("Shot info received by net.Shoot(), alt = " + (alt ? "1" : "0"));
-		NetworkViewID bulletID = Network.AllocateViewID();
-		networkView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit, sprint, alt, hitNorm);
+		if (alt && weapon == Item.Spatula) {
+			log.BroadcastSystemMessage(getSpatulaMessage(), Color.magenta);
+		} else {
+			NetworkViewID bulletID = Network.AllocateViewID();
+			networkView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit, sprint, alt, hitNorm);
+		}
 	}
 	[RPC]
 	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, bool sprint, bool alt, Vector3 hitNorm, NetworkMessageInfo info) {
 		// somebody fired a shot, let's show it
 		latestPacket = Time.time;
-		if (alt && (Item)weapon == Item.Spatula) {
-			var le = new LogEntry();
-			le.Maker = "";
-			le.Color = Color.magenta;
-			le.Text = getSpatulaMessage();
-			log.Entries.Add(le);
-			log.TimeToHideEntireLog = Time.time+log.FadeTime;
-		}
-		else arse.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit, alt, hitNorm, sprint);
+		arse.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit, alt, hitNorm, sprint);
 	}
 	
 	public void RegisterHit(Item weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {

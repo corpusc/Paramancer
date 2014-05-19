@@ -121,4 +121,19 @@ public class CcLog : MonoBehaviour {
 		TimeToHideEntireLog = Time.time + FadeTime;
 		Sfx.PlayOmni("Chat - drip");
 	}
+
+	public void BroadcastSystemMessage(string msg, Color col) {
+		networkView.RPC("AddSystemMessage", RPCMode.All, msg, net.ColToVec(col));
+	}
+
+	[RPC]
+	void AddSystemMessage(string msg, Vector3 col) {
+		var en = new LogEntry(); // new entry
+		en.Maker = "";
+		en.Color = net.VecToCol(col);
+		en.Text = msg;
+		Entries.Add(en);
+		TimeToHideEntireLog = Time.time + FadeTime;
+		Sfx.PlayOmni("Chat - drip");
+	}
 }

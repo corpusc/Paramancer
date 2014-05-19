@@ -78,16 +78,14 @@ public class BeamParticle : MonoBehaviour {
 		}
 		mesh.colors = colors;
 
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, moveVec.normalized, out hit, moveVec.magnitude * Time.deltaTime, 1<<0))
+			moveVec = hit.normal * moveVec.magnitude;
+		
 		transform.position += moveVec * Time.deltaTime;
 		transform.rotation = Camera.main.transform.rotation;
 		//transform.forward = Camera.main.transform.forward + new Vector3(0f, Time.time, 0f); //for some reason, doesn't work
 		transform.localScale += Time.deltaTime * shrinkFactor;
-
-		/*
-		RaycastHit hit;
-		if(Physics.SphereCast(transform.position, transform.localScale.magnitude, moveVec.normalized, out hit, 100f, 1))
-			transform.position = Vector3.MoveTowards(transform.position, hit.point, Vector3.Distance(transform.position, hit.point) - transform.localScale.magnitude);
-			*/
 
 		moveVec *= Mathf.Pow(acceleration, Time.deltaTime);
 		life -= Time.deltaTime;

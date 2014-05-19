@@ -1002,7 +1002,6 @@ public class EntityClass : MonoBehaviour {
 		gameObject.layer = 2;
 		if (Physics.Raycast(bulletRay, out bulletHit, arse.Guns[(int)weapon].Range, bulletLayer)) {
 			bulletEnd = bulletHit.point;
-			hitNorm = bulletHit.normal;
 					
 			if (bulletHit.collider.gameObject.layer == 8) {
 				// hit a player, tell the server
@@ -1015,6 +1014,8 @@ public class EntityClass : MonoBehaviour {
 				}
 			
 				registerhit = true;
+			} else {
+				hitNorm = bulletHit.normal;
 			}
 		}
 	
