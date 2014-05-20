@@ -65,11 +65,16 @@ public class RocketScript : MonoBehaviour {
 					np.GetComponent<BeamParticle>().EndColor = Color.clear;
 				}
 			var hitInfo = new RaycastHit();
-			int layerMask = (1<<8) | 1;   //(1<<0);
+			int layerMask = 1;   //(1<<0);
 			var rayDirection = (transform.position - lastPos).normalized;
 			if (Physics.SphereCast(lastPos, 0.15f, rayDirection, out hitInfo, Vector3.Distance(transform.position, lastPos), layerMask)) {
 				//Debug.Log(hitInfo.collider.gameObject.name);
 				detonateMaybe(hitInfo.point, hitInfo.normal);
+			}
+			layerMask = 1<<8;
+			if (Physics.SphereCast(lastPos, 0.15f, rayDirection, out hitInfo, Vector3.Distance(transform.position, lastPos), layerMask)) {
+				//Debug.Log(hitInfo.collider.gameObject.name);
+				detonateMaybe(hitInfo.point, Vector3.zero);
 			}
 			
 			lastPos = transform.position;
