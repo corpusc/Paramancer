@@ -69,7 +69,8 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].DelayAlt = 2f; break; 
 				case Item.RocketLauncher:   Guns[i].ShotCol = Color.red; 
 					Guns[i].Delay = 1.5f; 
-					Guns[i].DelayAlt = 0.7f; break; 
+					Guns[i].DelayAlt = 0.7f;
+					Guns[i].MarkScale = 5f; break; // set for the launcher because the projectile has a negative value in the gun system
 				case Item.Swapper:   Guns[i].ShotCol = Color.magenta; 
 					Guns[i].Delay = 2f; 
 					Guns[i].DelayAlt = 2f; break; 
@@ -306,6 +307,8 @@ public class Arsenal : MonoBehaviour {
 			bombSoundObj.transform.position = detPos;
 			bombSoundObj.audio.clip = sfx_bombExplode;
 			bombSoundObj.audio.volume = 4f;
+		} else if (weapon == Item.RocketProjectile) {
+			print ("WARNING: Detonate() was called for a rocket!");
 		}
 		
 		for (int i=0; i<activeGrenades.Count; i++) {
@@ -325,7 +328,9 @@ public class Arsenal : MonoBehaviour {
 				
 			}
 		}
-		
+	}
+
+	public void DetonateRocket(Vector3 detPos, Vector3 hitNorm, NetworkViewID viewID) {
 		for (int i=0; i<activeRockets.Count; i++) {
 			if (viewID == activeRockets[i].viewID) {
 				// rocket jumping
@@ -334,8 +339,8 @@ public class Arsenal : MonoBehaviour {
 						if (Vector3.Distance(
 							net.players[k].Entity.transform.position, 
 							activeRockets[i].transform.position) 
-							< GetDetonationRadius(Item.RocketProjectile)
-						) {
+						    < GetDetonationRadius(Item.RocketProjectile)
+						    ) {
 							if (net.players[k].Entity.transform.position.y > activeRockets[i].transform.position.y) {
 								if (activeRockets[i].shooterID == net.players[k].viewID){
 									net.players[k].Entity.yMove = 14;
@@ -358,6 +363,15 @@ public class Arsenal : MonoBehaviour {
 				rocketSoundObj.audio.volume = 4f;
 				Destroy(activeRockets[i].gameObject);
 				activeRockets.RemoveAt(i);
+
+				if (hitNorm != Vector3.zero) {
+					GameObject nh = (GameObject)GameObject.Instantiate(BulletMark);
+					nh.transform.position = detPos + hitNorm * 0.03f;
+					nh.transform.forward = -hitNorm;
+					nh.transform.localScale *= Guns[(int)Item.RocketLauncher].MarkScale;
+					nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
+					nh.GetComponent<BulletMark>().MaxLife = 30f;
+				}
 			}
 		}
 	}

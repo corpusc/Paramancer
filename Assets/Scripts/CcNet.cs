@@ -179,6 +179,10 @@ public class CcNet : MonoBehaviour {
 		if (localPlayer.viewID == viewID) 
 			localPlayer.health = 100f;
 	}
+
+	public void DetonateRocket(Vector3 detPos, Vector3 hitNorm, NetworkViewID bulletID) {
+		arse.DetonateRocket(detPos, hitNorm, bulletID);
+	}
 	
 	public void Detonate(Item weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		// we are server and something detonated, tell everyone
@@ -187,7 +191,8 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		latestPacket = Time.time;
-		arse.Detonate((Item)weapon, position, bulletID);
+		if ((Item)weapon != Item.RocketProjectile) // rocket explosions are partially simulated client-side
+			arse.Detonate((Item)weapon, position, bulletID);
 		
 		if (isServer) {
 			// see if anyone gets hurt

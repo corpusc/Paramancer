@@ -69,19 +69,19 @@ public class RocketScript : MonoBehaviour {
 			var rayDirection = (transform.position - lastPos).normalized;
 			if (Physics.SphereCast(lastPos, 0.15f, rayDirection, out hitInfo, Vector3.Distance(transform.position, lastPos), layerMask)) {
 				//Debug.Log(hitInfo.collider.gameObject.name);
-				detonateMaybe();
+				detonateMaybe(hitInfo.point, hitInfo.normal);
 			}
 			
 			lastPos = transform.position;
 			
 			life -= Time.deltaTime;
 			if (life <= 0f) {
-				detonateMaybe();
+				detonateMaybe(transform.position, Vector3.zero);
 			}
 		}
 	}
 	
-	private void detonateMaybe() {
+	private void detonateMaybe(Vector3 preciseLocation, Vector3 hitNorm) {
 		if (Turning)
 		for (int i = 0; i < ExplosionParticles; i++) {
 			var np = (GameObject)GameObject.Instantiate(particle);
@@ -102,7 +102,7 @@ public class RocketScript : MonoBehaviour {
 		else
 		for (int i = 0; i < ExplosionParticles; i++) {
 			var np = (GameObject)GameObject.Instantiate(particle);
-			np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos;
+			np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos; // do NOT use preciseLocation because particles shouldn't spawn inside a wall(bouncing will mess up)
 			np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
 			np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.red, Color.yellow, Random.value);
 			np.GetComponent<BeamParticle>().EndColor = Color.Lerp(Color.Lerp(Color.red, Color.clear, 1f), Color.Lerp(Color.black, Color.clear, 1f), Random.Range(0f, 1f));
@@ -115,6 +115,8 @@ public class RocketScript : MonoBehaviour {
 		}
 		enabled = false;
 		if (net.isServer)
-			net.Detonate(Item.RocketProjectile, transform.position, shooterID, viewID);
+			net.Detonate(Item.RocketProjectile, preciseLocation, shooterID, viewID);
+
+		net.DetonateRocket(preciseLocation, hitNorm, viewID);
 	}
 }
