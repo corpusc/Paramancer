@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
 public class MatchSetup {
 	Vector2 scrollPos = Vector2.zero;
 	int matchId = 1;
@@ -9,18 +11,18 @@ public class MatchSetup {
 	MatchData[] matches;
 	List<MapData> maps = new List<MapData>();
 
-	// sizes, spans
+	// sizes, spans 
 	Rect screen;
-	Rect middleVerticalStrip; // ... of the screen (minus the header and start button heights)
+	Rect middleVerticalStrip; // ... of the screen (minus the header and start button heights) 
 	float thirdOfWidth;
 
 
 
 	public void Init() {
-		// load map preview pics
+		// load map preview pics 
 		UnityEngine.Object[] pics = Resources.LoadAll("Pic/MapPreview");
 		
-		// setup map configs
+		// setup map configs 
 		for (int i = 0; i < pics.Length; i++)
 			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
 		
@@ -28,19 +30,19 @@ public class MatchSetup {
 	}
 
 	public void Draw(bool serving, CcNet net, Hud hud, int vSpan) {
-		int qSpan = Screen.width / 4; // quarter of screen width span
+		int qSpan = Screen.width / 4; // quarter of screen width span 
 		Rect startButton = new Rect(qSpan, Screen.height - vSpan*4, qSpan*2, vSpan*4);
 		screen = new Rect(0, 0, Screen.width, Screen.height);
 		thirdOfWidth = screen.width / 3;
 
-		// show map picture background
+		// show map picture background 
 		for (int i=0; i<maps.Count; i++) {
 			if (maps[i].Name == matches[matchId].allowedLevels[mapId]) {
 				GUI.DrawTexture(screen, maps[i].Pic);
 			}
 		}
 
-		// -------------------- gui --------------------
+		// -------------------- gui -------------------- 
 		GUI.BeginGroup(screen);
 		
 		middleVerticalStrip = screen;

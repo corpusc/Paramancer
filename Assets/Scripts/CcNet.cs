@@ -24,13 +24,15 @@
 here's an idea that would work nice in single player....and if not being religiously slavish to the original rogue....
 	have a town with a shop in an overworld, and when you come to the surface to sell junk to him, have it persist
 	between games, so later characters can buy that stuff
-
-
  */
+
+
 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+
 
 public class CcNet : MonoBehaviour {
 	// avatar

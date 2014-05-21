@@ -11,7 +11,7 @@ public class PickupBoxScript : MonoBehaviour {
 	CcNet net;
 	GameObject localPlayer;
 	float sinny = 0f;
-	float zOff; // rotation offset, so that they aren't all pointed in the same direction
+	float zOff; // rotation offset, so that they aren't all pointed in the same direction 
 	Vector3 start;
 	bool isHealth;
 	
@@ -28,7 +28,7 @@ public class PickupBoxScript : MonoBehaviour {
 
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		sinny = Random.Range(0f, 4f);
-		//boxObj.transform.Rotate(0, 0, Random.Range(0f, 360f));        original setting for all BOX models
+		//boxObj.transform.Rotate(0, 0, Random.Range(0f, 360f));        original setting for all BOX models 
 		boxObj.transform.Rotate(270, 0, zOff);
 		boxObj.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
 		start = boxObj.transform.position + Vector3.up/3;

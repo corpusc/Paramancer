@@ -64,6 +64,8 @@ public class CcLog : MonoBehaviour {
 		}
 		
 		
+		// FIXME!!! so chat action can be rebound!!!! 
+		// handle typing 
 		Event e = Event.current;
 		if (Typing) {
 			TimeToHideEntireLog = Time.time + FadeTime;
