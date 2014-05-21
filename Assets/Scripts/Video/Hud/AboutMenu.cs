@@ -4,7 +4,7 @@ using System.Collections;
 public class AboutMenu {
 	bool showingFarFuture = false;
 
-	public void Draw(Hud hud) {
+	public bool Draw(Hud hud) {
 		string s = "";
 
 		if (showingFarFuture) {
@@ -19,12 +19,12 @@ public class AboutMenu {
 			s += "Instanced multiplayer however would allow for mixing it up with the weapons.  ";
 			s += "Here's some example weapon sets we're thinking of: \n\n";
 			s += "Sci-Fi guns \nSci-Fi NanoSwarms \nPsi-Fi amplified psionic powers \n(the latter 2 being hand attachments or tech \"gloves\").  \n\n";
-			s += "In order to keep ALL potential builders inspired to build in the Paraverse, ";
-			s += "we will half-assedly attempt to let users to build in whatever setting/theme they prefer.  ";
-			s += "Some possibilities:\n";
-			s += "Medieval Fantasy, \n\nSci-Fi, \nCyberPunk, \nSteamPunk, \nModern Day, \nVarious olden-time periods, ";
-			s += "\nGhost/Undead/Purgatory/AfterLife, \nDream Realm, \nAbstract Realm, \nToon Realm, \nApocalypse Du Jour\n\n....all are possibilities.  ";
-			s += "We will limit ourselves (initially) to the main 3-4 most popular settings.  ";
+			s += "In order to keep most potential map creators inspired to build in the Paraverse, ";
+			s += "we will half-assedly attempt to let users to build in whatever setting/theme they prefer, ";
+			s += "limiting ourselves (initially) to the main 3-4 most popular settings.  ";
+			s += "Some possibilities:\n\n";
+			s += "Modern Day-ish (albeit BUILD-games-style), \nSci-Fi, \nCyberPunk, \nSteamPunk, \nWestern, \nVarious olden-time periods, ";
+			s += "\nPurgatory/AfterLife/Ghost/Undead Realm, \nDream/Abstract Realm, \nToon Realm, \nApocalypse Du Jour\n\n";
 			s += "Anything that doesn't easily reconcile within \"the real world\" of Paramancer's fiction, can be ";
 			s += "represented as cyberspace/metaverse/VR.  ";
 			GUILayout.Label(s);
@@ -59,6 +59,7 @@ public class AboutMenu {
 
 			if (GUILayout.Button("NEAR-TERM GOALS")) {
 				showingFarFuture = false;
+				return true;
 			}
 		}else{
 			hud.CategoryHeader("At The Moment");
@@ -100,7 +101,10 @@ public class AboutMenu {
 
 			if (GUILayout.Button("FAR FUTURE GOALS")) {
 				showingFarFuture = true;
+				return true;
 			}
 		}
+
+		return false;
 	}
 }

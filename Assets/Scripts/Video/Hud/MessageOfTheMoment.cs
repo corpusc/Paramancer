@@ -7,7 +7,7 @@ public class MessageOfTheMoment {
 	float msgDura = 7f; // message/tip duration 
 	float nextTip;
 	string msg = ""; // the currently displayed splash 
-	Rect splashRect;
+	Rect r;
 	
 	string[] tipText = { // less than 2 entries would cause endless loop 
 		"MODERN/MILITARY FPS PLAYERS: Exit please, I do not value your feedback.  :)",
@@ -30,9 +30,9 @@ public class MessageOfTheMoment {
 
 			msg = newtip;
 			var wid = hud.GetWidthBox(msg);
-			splashRect = new Rect((Screen.width - wid) / 2f, 0, wid, hud.GetHeightBox(msg));
+			r = new Rect((Screen.width - wid) / 2f, 0, wid, hud.GetHeightBox(msg));
 		}
 		
-		GUI.Box(splashRect, msg);
+		GUI.Box(r, msg);
 	}
 }

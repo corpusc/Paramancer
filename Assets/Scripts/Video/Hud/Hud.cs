@@ -214,7 +214,8 @@ public class Hud : MonoBehaviour {
 			case HudMode.About:
 				// maybe this should be titled "ABOUT"?  would be more accurate?... and more standard 
 				menuBegin();
-				aboutMenu.Draw(this);
+				if /* future goals scope changed */ (aboutMenu.Draw(this))
+					scrollPos = Vector2.zero;
 				menuEnd();
 				break;
 			case HudMode.Controls:
