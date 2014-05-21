@@ -19,10 +19,12 @@ public class AboutMenu {
 			s += "Instanced multiplayer however would allow for mixing it up with the weapons.  ";
 			s += "Here's some example weapon sets we're thinking of: \n\n";
 			s += "Sci-Fi guns \nSci-Fi NanoSwarms \nPsi-Fi amplified psionic powers \n(the latter 2 being hand attachments or tech \"gloves\").  \n\n";
-			s += "In order to keep ALL potential builders inspired to build in the Paraverse, we will allow users to build in whatever setting/theme they prefer.  ";
+			s += "In order to keep ALL potential builders inspired to build in the Paraverse, ";
+			s += "we will half-assedly attempt to let users to build in whatever setting/theme they prefer.  ";
+			s += "Some possibilities:\n";
 			s += "Medieval Fantasy, \n\nSci-Fi, \nCyberPunk, \nSteamPunk, \nModern Day, \nVarious olden-time periods, ";
 			s += "\nGhost/Undead/Purgatory/AfterLife, \nDream Realm, \nAbstract Realm, \nToon Realm, \nApocalypse Du Jour\n\n....all are possibilities.  ";
-			s += "We may want to limit ourselves initially to the main 3-4 most popular settings.  ";
+			s += "We will limit ourselves (initially) to the main 3-4 most popular settings.  ";
 			s += "Anything that doesn't easily reconcile within \"the real world\" of Paramancer's fiction, can be ";
 			s += "represented as cyberspace/metaverse/VR.  ";
 			GUILayout.Label(s);
@@ -31,8 +33,6 @@ public class AboutMenu {
 
 			hud.CategoryHeader("Create ANY 3D Shapes");
 			s += "Enabling high fidelity, high polygon, richly detailed 3D designs of any kind.  ";
-			s += "Will also add fast & easy creation & customization of basic primitives: ";
-			s += "Sphere, Box, Cylinder, etc., similar to Second Life's \"prim\" system.  ";
 			s += "Voxel style building will remain as a rapid development tool.  So you can quickly \"block out\" rough designs that can be expanded upon with more love, time & details.  ";
 			GUILayout.Label(s);
 			s = "";
@@ -40,7 +40,7 @@ public class AboutMenu {
 
 			hud.CategoryHeader("Persistent Open World");
 			s += "Introduce a very-large, fully-explorable, contiguous, chunked overworld terrain.  ";
-			s += "Hand-place the best & most interesting indoor maps & dungeons (built by users) ";
+			s += "Hand-place the best & most interesting indoor maps & dungeons (mostly built by users) ";
 			s += "into select underground areas.  And outdoor maps onto the world terrain.  ";
 			s += "Like in prior stages of the game, users can choose their preferred ";
 			s += "scale & type of multiplayer.  ";
@@ -76,17 +76,17 @@ public class AboutMenu {
 			s += "I loved this concept since around 2006, but have been disappointed with the few that recently came onto the market.  ";
 			s += "The theme/setting would be somewhere between modern/near-future and sci-fi.  ";
 			s += "We will generate new maps, & item/monster-placements (in SP) for every game session.  ";
-			s += "We will have single player, coop AND EVEN PVP on Roguelike maps.  Choices.  Eventually we will ";
-			s += "also allow dungeon invasions from others (PURELY OPTIONAL).  Once this stage is 'done', the game ";
+			s += "We will have single player, coop AND EVEN PVP on Roguelike maps.  Eventually we will ";
+			s += "also allow dungeon invasions from others (PURELY OPTIONAL).  Choices.  Once this stage is \"done\", the game ";
 			s += "will be released.  This ends the scope of what I want to promise on Kickstarter.  ";
-			s += "And I might want to reserve the right to drop a \"minor\" feature or 2.  :)";
+			s += "And I might even drop a \"minor\" feature or 2.  :)";
 			GUILayout.Label(s);
 			s = "";
 			
 			
 			hud.CategoryHeader("Procedural weapons");
 			s += "This stage would introduce a magical/medieval-fantasy theme/setting.  ";
-			s += "The new weapon set will be magical spells & staves  .";
+			s += "The new weapon set will be magical spells & staves.  ";
 			s += "You will 'create' spells on-the-fly, by selecting a combination of magic runes.  The combo determines how the spell works.  ";
 			s += "This will mean possibly millions of spells.  Depending on how granular the rune/component selection ends up being.  ";
 			s += "However they are designed to be balanced against each other in power.  A horizontal progression.  ";

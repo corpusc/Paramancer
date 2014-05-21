@@ -53,12 +53,12 @@ public class Hud : MonoBehaviour {
 	// private
 	//GUISkin GUI.skin;
 	string defaultName = "Lazy Noob";
+	MessageOfTheMoment motm = new MessageOfTheMoment();
 	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
 	AboutMenu aboutMenu = new AboutMenu();
 	float tFOV = 45f;
-	bool showTips = true;
-	
+
 	// UI element sizes
 	int midX, midY; // middle of the screen
 	int vSpan = 20; // FIXME: hardwired vertical span of the text.  doubled in many places for button height
@@ -102,12 +102,11 @@ public class Hud : MonoBehaviour {
 		net.localPlayer.colC.b = PlayerPrefs.GetFloat("PlayerColC_B", Color.cyan.b);
 		net.localPlayer.colC.a = 1;
 		
-		// load settings
+		// load settings 
 		log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
 		tFOV = PlayerPrefs.GetFloat("FOV", 90f);
-		showTips = (PlayerPrefs.GetInt("showTips", 1) == 1);
 		//print ("Loaded FOV, value = " + tFOV.ToString());
 	}
 
@@ -460,18 +459,6 @@ public class Hud : MonoBehaviour {
 			PlayerPrefs.SetInt("GunBobbing", 0);
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
-
-		//show tips
-		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
-		showTips = TickBox.Display(showTips, "Show tips");
-		if (showTips)
-			PlayerPrefs.SetInt("showTips", 1);
-		else
-			PlayerPrefs.SetInt("showTips", 0);
-		GUILayout.FlexibleSpace();
-		GUILayout.EndHorizontal();
-		nextSplashUpdate = Time.time;
 
 		// chat fade
 		GUILayout.BeginHorizontal();
@@ -941,41 +928,6 @@ public class Hud : MonoBehaviour {
 
 
 
-	
-	string[] splashText = {
-		"There are 10 types of people: those who know binary and those who don't.",
-		"There are 10 types of people: those who know binary and those who don't.\nAnd those who didn't expect this joke to be in base 3.",
-		"sqrtf(-1.f)!",
-		"To understand what recursion is, you must first understand recursion.",
-		"while (!asleep) sheep++;",
-		"Gluten free!",
-		"I don\'t need glasses, I C#!",
-		"ToBe || !ToBe"};
-
-	string[] tipText = {
-		"MODERN/MILITARY FPS PLAYERS: Exit please.  I do not value your feedback.  :)",
-		"TIP: Use the Gravulator as often as possible to confuse your enemies",
-		"TIP: Offense is often the best defense"};
-
-	float nextSplashUpdate = 0f;
-	float splashUpdateTime = 10f; // the time it takes for the splash message to update
-	string tSplash = ""; // the currently displayed splash
-	Rect splashRect;
-	void displaySplash() {
-		if (Time.time > nextSplashUpdate) {
-			nextSplashUpdate = Time.time + splashUpdateTime;
-
-			if (showTips)
-				tSplash = tipText[UnityEngine.Random.Range(0, tipText.Length)];
-			else
-				tSplash = splashText[UnityEngine.Random.Range(0, splashText.Length)];
-
-			var wid = GetWidthBox(tSplash);
-			splashRect = new Rect((Screen.width - wid) / 2f, 0, wid, GetHeightBox(tSplash));
-		}
-
-		GUI.Box(splashRect, tSplash);
-	}
 
 
 
@@ -1158,7 +1110,7 @@ public class Hud : MonoBehaviour {
 		// dynamic buttons for all the servers/matches/instances currently in progress 
 		listMatchesInProgress(hS, r.y);
 
-		displaySplash();
+		motm.Draw(this);
 	}
 
 
