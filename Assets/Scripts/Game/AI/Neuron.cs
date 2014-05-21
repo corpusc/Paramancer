@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Neuron : MonoBehaviour {
-
 	// this has to be used in the form of a feedforward net
 	public float Threshold = 1f;
 	public float Base = 0f;
@@ -15,6 +14,11 @@ public class Neuron : MonoBehaviour {
 		for (int i = 0; i < InAxons.Count; i++) {
 			if (InAxons[i].Active) {
 				t += InAxons[i].Weight;
+			}
+		}
+		for (int i = 0; i < InAxons.Count; i++) {
+			if (InAxons[i].Active) {
+				t *= InAxons[i].Mult;
 			}
 		}
 
@@ -31,9 +35,10 @@ public class Neuron : MonoBehaviour {
 	}
 
 	// will randomly change the input axon weights
-	public void Mutate (float MaxMutation) {
+	public void Mutate (float MaxWeightMutation, float MaxMultMutation) {
 		for (int i = 0; i < InAxons.Count; i++) {
-			InAxons[i].Weight += Random.Range(-MaxMutation, MaxMutation);
+			InAxons[i].Weight += Random.Range(-MaxWeightMutation, MaxWeightMutation);
+			InAxons[i].Mult += Random.Range(-MaxMultMutation, MaxMultMutation);
 		}
 	}
 }
