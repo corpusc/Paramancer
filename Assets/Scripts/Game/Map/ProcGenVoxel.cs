@@ -9,7 +9,6 @@ public struct Vec3i {
 };
 
 public class ProcGenVoxel : ScriptableObject {
-
 	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc)
 	public Material[,,] Mat;
 	public Vec3i MapSize; // this is the resolution
@@ -58,8 +57,9 @@ public class ProcGenVoxel : ScriptableObject {
 	int numTries = 20000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
 	List<Material> MatPool = new List<Material>();
 
-	GameObject MapObject;
-	GameObject PrimObject;
+	GameObject mapObject;
+	GameObject primObject;
+	GameObject ffaSpawnBag;
 
 	// only sets everything up, doesn't build the level - call Build () and Build3d () manually
 	public void Init () {
@@ -75,12 +75,13 @@ public class ProcGenVoxel : ScriptableObject {
 		Torch = GameObject.Find("Torch"); // a GameObject called Torch must already be in the scene for this to work, it will be removed after everything is done by the script
 		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work, it will be removed after everything is done by the script
 		SpawnPoint = GameObject.Find("SpawnPoint"); // a GameObject called SpawnPoint must already be in the scene for this to work, it will be removed after everything is done by the script
-		MapObject = GameObject.Find("Map"); // an empty GameObject called Map should already be in the scene
-		PrimObject = GameObject.Find("Prims"); // an empty GameObject called Prims should already be in the secene
+		mapObject = GameObject.Find("Map"); // an empty GameObject container, already in the scene 
+		primObject = GameObject.Find("Prims"); // an empty GameObject container, already in the scene 
+		ffaSpawnBag = GameObject.Find("FFA Spawns"); // an empty GameObject container, already in the scene 
 	}
 
-	//this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d ()
-	public void Build () {
+	// this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d() 
+	public void Build() {
 		emptyMap();
 		preBuild();
 
@@ -160,7 +161,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.left;
 						np.renderer.material = Mat[i, j, k];
-						np.transform.parent = PrimObject.transform;
+						np.transform.parent = primObject.transform;
 					}
 					if (!getBlock(i + 1, j, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -168,7 +169,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.right;
 						np.renderer.material = Mat[i, j, k];
-						np.transform.parent = PrimObject.transform;
+						np.transform.parent = primObject.transform;
 					}
 					if (!getBlock(i, j, k - 1)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -176,7 +177,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.back;
 						np.renderer.material = Mat[i, j, k];
-						np.transform.parent = PrimObject.transform;
+						np.transform.parent = primObject.transform;
 					}
 					if (!getBlock(i, j, k + 1)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -184,7 +185,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.forward;
 						np.renderer.material = Mat[i, j, k];
-						np.transform.parent = PrimObject.transform;
+						np.transform.parent = primObject.transform;
 					}
 					if (!getBlock(i, j - 1, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -192,7 +193,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.down;
 						np.renderer.material = Mat[i, j, k];
-						np.transform.parent = PrimObject.transform;
+						np.transform.parent = primObject.transform;
 					}
 					if (!getBlock(i, j + 1, k)) {
 						var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -200,7 +201,7 @@ public class ProcGenVoxel : ScriptableObject {
 						np.transform.localScale = Scale;
 						np.transform.forward = Vector3.up;
 						np.renderer.material = Mat[i, j, k];
-						np.transform.parent = PrimObject.transform;
+						np.transform.parent = primObject.transform;
 					}
 			} // end of wall creation for the current block
 		} // end of block scan
@@ -219,35 +220,35 @@ public class ProcGenVoxel : ScriptableObject {
 					var nt = (GameObject)GameObject.Instantiate(Torch); // new torch
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x * 0.5f + TorchOffset, Scale.y * t.y, Scale.z * t.z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = MapObject.transform;
+					nt.transform.parent = mapObject.transform;
 					formsMade++;
 				}
 				else if (!getBlock(t.x + 1, t.y, t.z)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x * 0.5f - TorchOffset, Scale.y * t.y, Scale.z * t.z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = MapObject.transform;
+					nt.transform.parent = mapObject.transform;
 					formsMade++;
 				}
 				else if (!getBlock(t.x, t.y, t.z - 1)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z - Scale.z * 0.5f + TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = MapObject.transform;
+					nt.transform.parent = mapObject.transform;
 					formsMade++;
 				}
 				else if (!getBlock(t.x, t.y, t.z + 1)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z + Scale.z * 0.5f - TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = MapObject.transform;
+					nt.transform.parent = mapObject.transform;
 					formsMade++;
 				}
 				else if (!getBlock(t.x, t.y - 1, t.z)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y - Scale.y * 0.5f + TorchOffset, Scale.z * t.z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = MapObject.transform;
+					nt.transform.parent = mapObject.transform;
 					formsMade++;
 				}
 				// no torches on ceilings!
@@ -267,7 +268,7 @@ public class ProcGenVoxel : ScriptableObject {
 					var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
 					nj.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 					nj.transform.localScale = JumpPadScale;
-					nj.transform.parent = MapObject.transform;
+					nj.transform.parent = mapObject.transform;
 					formsMade++;
 				} else {
 					d = floorScan(t.x + 1, t.y, t.z);
@@ -275,7 +276,7 @@ public class ProcGenVoxel : ScriptableObject {
 						var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
 						nj.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 						nj.transform.localScale = JumpPadScale;
-						nj.transform.parent = MapObject.transform;
+						nj.transform.parent = mapObject.transform;
 						formsMade++;
 					} else {
 						d = floorScan(t.x, t.y, t.z - 1);
@@ -283,7 +284,7 @@ public class ProcGenVoxel : ScriptableObject {
 							var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
 							nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z - Scale.z);
 							nj.transform.localScale = JumpPadScale;
-							nj.transform.parent = MapObject.transform;
+							nj.transform.parent = mapObject.transform;
 							formsMade++;
 						} else {
 							d = floorScan(t.x, t.y, t.z + 1);
@@ -291,17 +292,17 @@ public class ProcGenVoxel : ScriptableObject {
 								var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
 								nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z + Scale.z);
 								nj.transform.localScale = JumpPadScale;
-								nj.transform.parent = MapObject.transform;
+								nj.transform.parent = mapObject.transform;
 								formsMade++;
 							}
 						}
 					}
 				}
-			} // end of checking the block for possible jump pad placing
-		} // end of placing jump pads
+			} // end of checking the block for possible jump pad placing 
+		} // end of placing jump pads 
 		
-		// place spawn points
-		formsMade = 0; // count spawn points as forms, no need for a separate var
+		// place spawn points 
+		formsMade = 0; // count spawn points as forms, no need for a separate var 
 		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
@@ -309,14 +310,14 @@ public class ProcGenVoxel : ScriptableObject {
 			t.z = Random.Range(0, MapSize.z);
 			if (columnOpen(t, MinHeight))
 			if (!getBlock(t.x, t.y - 1, t.z)) {
-				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				ns.transform.localScale = SpawnPointScale;
-				ns.transform.parent = MapObject.transform;
+				ns.transform.parent = ffaSpawnBag.transform;
 				formsMade++;
 			}
-		} // end of placing spawn points
-	} // end of Build3d()
+		} // end of placing spawn points 
+	} // end of Build3d() 
 	
 	// remove the originals so that they don't cause any trouble like spawning players outside the map
 	public void RemoveOriginals () {
