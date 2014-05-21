@@ -344,7 +344,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 29493733}
   m_Layer: 0
-  m_Name: Team1
+  m_Name: Red Team Spawns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -588,7 +588,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 168890943}
   m_Layer: 0
-  m_Name: Normal
+  m_Name: FFA Spawns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1219,7 +1219,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 669356363}
   m_Layer: 0
-  m_Name: Team2
+  m_Name: Blue Team Spawns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6677,9 +6677,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1892368674}
-  - 114: {fileID: 1892368675}
   m_Layer: 0
-  m_Name: _Spawns
+  m_Name: '[SPAWNS]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6699,27 +6698,6 @@ Transform:
   - {fileID: 29493733}
   - {fileID: 669356363}
   m_Father: {fileID: 0}
---- !u!114 &1892368675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1892368673}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5032ca37d027491888f20a2bf9123a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  normalSpawns:
-  - {fileID: 1927832988}
-  - {fileID: 1330829620}
-  - {fileID: 1510781309}
-  team1Spawns:
-  - {fileID: 1476452521}
-  - {fileID: 2025796444}
-  team2Spawns:
-  - {fileID: 1305518594}
-  - {fileID: 1229618028}
 --- !u!1 &1908506559
 GameObject:
   m_ObjectHideFlags: 0

@@ -1030,32 +1030,32 @@ public class EntityClass : MonoBehaviour {
 			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bulletHit.point);
 	}
 	
-	public void Respawn() {
-		Vector3 p = Vector3.up;
-		Vector3 a = Vector3.zero;
-		
-		var so = GameObject.Find("_Spawns"); // player spawns object
-		if (so != null) {
-			var ss = so.GetComponent<SpawnPointScript>(); // spawns script
-			
-			if (!net.CurrMatch.teamBased) {
-				int i = Random.Range(0, ss.normalSpawns.Length);
-				p = ss.normalSpawns[i].transform.position + Vector3.up;
-				a = ss.normalSpawns[i].transform.eulerAngles;
-			}else if (User.team == 1) {
-				int i = Random.Range(0, ss.team1Spawns.Length);
-				p = ss.team1Spawns[i].transform.position + Vector3.up;
-				a = ss.team1Spawns[i].transform.eulerAngles;
-			}else if (User.team == 2) {
-				int i = Random.Range(0, ss.team2Spawns.Length);
-				p = ss.team2Spawns[i].transform.position + Vector3.up;
-				a = ss.team2Spawns[i].transform.eulerAngles;
-			}
+	private Transform getRandomSpawn(string s) {
+		var go = GameObject.Find(s); // container for entity spawn positions 
+
+		if (go == null) {
+			Debug.LogError("*** Could not find a GameObject named: " + s + "!!! ***");
+			return null;
 		}
-		
-		transform.position = p;
+
+		int i = Random.Range(0, go.transform.childCount);
+
+		return go.transform.GetChild(i);
+	}
+
+	public void Respawn() {
+		Transform tran = null;
+		if (!net.CurrMatch.teamBased) {
+			tran = getRandomSpawn("FFA Spawns");
+		}else if (User.team == 1) {
+			tran = getRandomSpawn("Red Team Spawns");
+		}else if (User.team == 2) {
+			tran = getRandomSpawn("Blue Team Spawns");
+		}
+
+		transform.position = tran.position + Vector3.up;
 		transform.LookAt(transform.position + Vector3.forward, Vector3.up);
-		camAngle = a;
+		camAngle = tran.eulerAngles;
 		yMove = 0f;
 		moveVec = Vector3.zero;
 
