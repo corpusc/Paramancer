@@ -11,7 +11,7 @@ public struct Vec3i {
 public class ProcGenVoxel : ScriptableObject {
 	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc)
 	public Material[,,] Mat;
-	public Vec3i MapSize; // this is the resolution
+	public Vec3i MapSize; // this is the resolution(the actual size depends on this and the map scale)
 	public int Forms = 40; // the amount of rooms/halls to create on the ground floor
 	public int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor
 	public float MaxOverride = 0.15f; // only create a form if there aren't too many things already in there 
@@ -54,7 +54,7 @@ public class ProcGenVoxel : ScriptableObject {
 	// To create a map, set all the values you need, and call Init(), Build() and Build3d()
 
 	// private
-	int numTries = 20000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
+	int numTries = 50000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
 	List<Material> MatPool = new List<Material>();
 
 	GameObject mapObject;

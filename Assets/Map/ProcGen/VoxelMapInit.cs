@@ -11,6 +11,7 @@ public class VoxelMapInit : MonoBehaviour {
 		vox.MapSize.y = 32;
 		vox.MapSize.z = 64;
 		vox.Pos = Vector3.zero;
+		vox.Scale = Vector3.one * 2f;
 		vox.Init();
 		vox.Build();
 		vox.Build3d();
