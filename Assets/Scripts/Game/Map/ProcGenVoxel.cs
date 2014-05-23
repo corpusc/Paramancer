@@ -333,7 +333,7 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.localScale = WeaponSpawnScale;
 				ns.transform.parent = weaponSpawnBag.transform;
 				ns.GetComponent<PickupPoint>().pickupPointID = formsMade;
-				ns.GetComponent<PickupPoint>().pickupType = Random.Range(0, 5);
+				ns.GetComponent<PickupPoint>().pickupType = Random.Range(1, 6);
 				formsMade++;
 			}
 		} // end of placing weapon spawns

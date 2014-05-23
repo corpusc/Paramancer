@@ -25,6 +25,10 @@ public class MatchSetup {
 		// setup map configs 
 		for (int i = 0; i < pics.Length; i++)
 			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
+
+		for (int i = 0; i < maps.Count; i++) {
+			if (maps[i].Name == MatchData.gvName) maps[i].ProcGen = true;
+		}
 		
 		setupMatchTypes();
 	}

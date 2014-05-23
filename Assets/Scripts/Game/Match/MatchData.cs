@@ -30,7 +30,7 @@ public class MatchData {
 	public Item pickupSlot5 = Item.Pistol;
 
 	// private 
-	string gvName = "RoguelikeMapVoxel"; // user-facing name of procecurally generated voxel-style map generation 
+	public static string gvName = "RoguelikeMapVoxel"; // user-facing name of procecurally generated voxel-style map generation 
 	
 	
 	

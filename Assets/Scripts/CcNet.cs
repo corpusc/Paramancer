@@ -69,6 +69,8 @@ public class CcNet : MonoBehaviour {
 	public MatchData CurrMatch;
 	private GameObject basketball;
 
+	bool mapNeedsGenerating = false;
+
 	// personal stuff
 	public NetUser localPlayer;
 	public bool gunBobbing = true;
@@ -1261,9 +1263,14 @@ public class CcNet : MonoBehaviour {
 		// now let's load the level
 		preppingLevel = true;
 		Application.LoadLevel(levelName);
+		if (levelName == MatchData.gvName) mapNeedsGenerating = true;
+		else mapNeedsGenerating = false;
 	}
 	
 	void OnLevelWasLoaded() {
+		if (mapNeedsGenerating) {
+			VoxelMapInit.CreateMap();
+		}
 		if (preppingLevel) {
 			// level set up, let's play!
 			preppingLevel = false;

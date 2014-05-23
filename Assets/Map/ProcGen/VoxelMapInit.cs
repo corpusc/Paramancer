@@ -4,6 +4,7 @@ using System.Collections;
 public class VoxelMapInit : MonoBehaviour {
 
 	ProcGenVoxel vox;
+	static ProcGenVoxel s_vox;
 	
 	void Start () {
 		vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
@@ -16,5 +17,18 @@ public class VoxelMapInit : MonoBehaviour {
 		vox.Build();
 		vox.Build3d();
 		vox.RemoveOriginals();
+	}
+
+	public static void CreateMap () {
+		s_vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
+		s_vox.MapSize.x = 64;
+		s_vox.MapSize.y = 32;
+		s_vox.MapSize.z = 64;
+		s_vox.Pos = Vector3.zero;
+		s_vox.Scale = Vector3.one * 2f;
+		s_vox.Init();
+		s_vox.Build();
+		s_vox.Build3d();
+		s_vox.RemoveOriginals();
 	}
 }
