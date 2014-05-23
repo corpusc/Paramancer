@@ -48,6 +48,11 @@ public class ProcGenVoxel : ScriptableObject {
 	public GameObject SpawnPoint;
 	public Vector3 SpawnPointScale = Vector3.one;
 
+	public int WeaponSpawns = 10; // the amount of weapon spawns to be placed
+	public GameObject WeaponSpawn;
+	public Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
+	public float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on
+
 	// the maximal height of a room is determined by the map height & the room size
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth
 	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y
@@ -60,6 +65,7 @@ public class ProcGenVoxel : ScriptableObject {
 	GameObject mapObject;
 	GameObject primObject;
 	GameObject ffaSpawnBag;
+	GameObject weaponSpawnBag;
 
 	// only sets everything up, doesn't build the level - call Build () and Build3d () manually
 	public void Init () {
@@ -75,9 +81,11 @@ public class ProcGenVoxel : ScriptableObject {
 		Torch = GameObject.Find("Torch"); // a GameObject called Torch must already be in the scene for this to work, it will be removed after everything is done by the script
 		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work, it will be removed after everything is done by the script
 		SpawnPoint = GameObject.Find("SpawnPoint"); // a GameObject called SpawnPoint must already be in the scene for this to work, it will be removed after everything is done by the script
+		WeaponSpawn = GameObject.Find("WeaponSpawn"); // a GameObject called WeaponSpawn must already be in the scene, it will be removed afterwards by calling RemoveOriginals()
 		mapObject = GameObject.Find("Map"); // an empty GameObject container, already in the scene 
 		primObject = GameObject.Find("Prims"); // an empty GameObject container, already in the scene 
 		ffaSpawnBag = GameObject.Find("FFA Spawns"); // an empty GameObject container, already in the scene 
+		weaponSpawnBag = GameObject.Find("_PickupSpots"); // an empty GameObject container, must already be in the scene
 	}
 
 	// this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d() 
@@ -244,14 +252,7 @@ public class ProcGenVoxel : ScriptableObject {
 					nt.transform.parent = mapObject.transform;
 					formsMade++;
 				}
-				else if (!getBlock(t.x, t.y - 1, t.z)) {
-					var nt = (GameObject)GameObject.Instantiate(Torch);
-					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y - Scale.y * 0.5f + TorchOffset, Scale.z * t.z);
-					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = mapObject.transform;
-					formsMade++;
-				}
-				// no torches on ceilings!
+				// no torches on ceilings and floors!
 			} // end of scanning an individual block to see if a torch can be placed
 		} // end of placing torches
 		
@@ -308,7 +309,7 @@ public class ProcGenVoxel : ScriptableObject {
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
 			t.z = Random.Range(0, MapSize.z);
-			if (columnOpen(t, MinHeight))
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!getBlock(t.x, t.y - 1, t.z)) {
 				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
@@ -317,6 +318,25 @@ public class ProcGenVoxel : ScriptableObject {
 				formsMade++;
 			}
 		} // end of placing spawn points 
+
+		// place weapon spawns
+		formsMade = 0; // count weapon spawns as forms, no need for a separate var 
+		for (int i = 0; i < numTries && formsMade < WeaponSpawns; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!getBlock(t.x, t.y - 1, t.z)) {
+				var ns = (GameObject)GameObject.Instantiate(WeaponSpawn); // new weapon spawn
+				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y + WeaponSpawnOffset - Scale.y * 0.5f, Scale.z * t.z);
+				ns.transform.localScale = WeaponSpawnScale;
+				ns.transform.parent = weaponSpawnBag.transform;
+				ns.GetComponent<PickupPoint>().pickupPointID = formsMade;
+				ns.GetComponent<PickupPoint>().pickupType = Random.Range(0, 5);
+				formsMade++;
+			}
+		} // end of placing weapon spawns
 	} // end of Build3d() 
 	
 	// remove the originals so that they don't cause any trouble like spawning players outside the map
@@ -324,6 +344,7 @@ public class ProcGenVoxel : ScriptableObject {
 		GameObject.Destroy(Torch);
 		GameObject.Destroy(JumpPad);
 		GameObject.Destroy(SpawnPoint);
+		GameObject.Destroy(WeaponSpawn);
 	}
 
 	// private methods
