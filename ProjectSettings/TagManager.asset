@@ -17,7 +17,7 @@ TagManager:
   User Layer 10: LAVA
   User Layer 11: BasketRed
   User Layer 12: BasketBlue
-  User Layer 13: 
+  User Layer 13: JumpPads
   User Layer 14: 
   User Layer 15: 
   User Layer 16: 
@@ -36,3 +36,8 @@ TagManager:
   User Layer 29: 
   User Layer 30: 
   User Layer 31: DontDrawMe
+  m_SortingLayers:
+  - name: Default
+    userID: 0
+    uniqueID: 0
+    locked: 0
