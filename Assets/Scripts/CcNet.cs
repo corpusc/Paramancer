@@ -69,7 +69,6 @@ public class CcNet : MonoBehaviour {
 	public MatchData CurrMatch;
 	private GameObject basketball;
 
-	bool mapNeedsGenerating = false;
 
 	// personal stuff
 	public NetUser localPlayer;
@@ -1088,6 +1087,8 @@ public class CcNet : MonoBehaviour {
 		CurrMatch.pickupSlot3 = md.pickupSlot3;
 		CurrMatch.pickupSlot4 = md.pickupSlot4;
 		CurrMatch.pickupSlot5 = md.pickupSlot5;
+		CurrMatch.NeedsGenerating = md.NeedsGenerating;
+		CurrMatch.Seed = md.Seed;
 	}
 	
 	[RPC]
@@ -1145,7 +1146,7 @@ public class CcNet : MonoBehaviour {
 			targetTeam, CurrMatch.allowFriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
 			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
 			(int)CurrMatch.pickupSlot3, (int)CurrMatch.pickupSlot4, (int)CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
-			CurrMatch.basketball);
+			CurrMatch.basketball, CurrMatch.NeedsGenerating, CurrMatch.Seed);
 	}
 	
 	public float gameTimeLeft = 0f;
@@ -1156,7 +1157,7 @@ public class CcNet : MonoBehaviour {
 		float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, 
 		int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, 
 		int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, 
-		int playerLives, bool newGame, bool basketball, NetworkMessageInfo info
+		int playerLives, bool newGame, bool basketball, bool needsGen, int seed, NetworkMessageInfo info
 	) {
 		// we've received game info from the server
 		latestPacket = Time.time;
@@ -1211,6 +1212,8 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.pickupSlot3 = (Item)pickupSlot3;
 			CurrMatch.pickupSlot4 = (Item)pickupSlot4;
 			CurrMatch.pickupSlot5 = (Item)pickupSlot5;
+			CurrMatch.NeedsGenerating = needsGen;
+			CurrMatch.Seed = seed;
 		}
 		
 		if (targetTeam != -1) {
@@ -1263,13 +1266,11 @@ public class CcNet : MonoBehaviour {
 		// now let's load the level
 		preppingLevel = true;
 		Application.LoadLevel(levelName);
-		if (levelName == MatchData.gvName) mapNeedsGenerating = true;
-		else mapNeedsGenerating = false;
 	}
 	
 	void OnLevelWasLoaded() {
-		if (mapNeedsGenerating) {
-			VoxelMapInit.CreateMap();
+		if (CurrMatch.NeedsGenerating) {
+			VoxelMapInit.CreateMap(CurrMatch.Seed);
 		}
 		if (preppingLevel) {
 			// level set up, let's play!

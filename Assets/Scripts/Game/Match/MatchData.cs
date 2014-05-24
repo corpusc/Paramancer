@@ -28,6 +28,8 @@ public class MatchData {
 	public Item pickupSlot3 = Item.MachineGun;
 	public Item pickupSlot4 = Item.RailGun;
 	public Item pickupSlot5 = Item.Pistol;
+	public bool NeedsGenerating = false;
+	public int Seed = 0;
 
 	// private 
 	public static string gvName = "RoguelikeMapVoxel"; // user-facing name of procecurally generated voxel-style map generation 

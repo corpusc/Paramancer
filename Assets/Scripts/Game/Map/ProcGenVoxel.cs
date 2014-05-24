@@ -9,12 +9,13 @@ public struct Vec3i {
 };
 
 public class ProcGenVoxel : ScriptableObject {
+	public int Seed = 0;
 	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc)
 	public Material[,,] Mat;
 	public Vec3i MapSize; // this is the resolution(the actual size depends on this and the map scale)
 	public int Forms = 40; // the amount of rooms/halls to create on the ground floor
 	public int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor
-	public float MaxOverride = 0.15f; // only create a form if there aren't too many things already in there 
+	public float MaxOverride = 0.1f; // only create a form if there aren't too many things already in there 
 	public int MinFormWidth = 1;
 	public int MaxFormWidth = 16;
 	public int MaxArea = 100; // limits the creation of extremely large rooms, favorizes corridors
@@ -68,7 +69,10 @@ public class ProcGenVoxel : ScriptableObject {
 	GameObject weaponSpawnBag;
 
 	// only sets everything up, doesn't build the level - call Build () and Build3d () manually
+	// call Build() and Build3D() right after calling this for the random seed to work
 	public void Init () {
+		Random.seed = Seed;
+
 		Block = new bool[MapSize.x, MapSize.y, MapSize.z];
 		Mat = new Material[MapSize.x, MapSize.y, MapSize.z];
 

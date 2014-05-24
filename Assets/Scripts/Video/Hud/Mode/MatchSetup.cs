@@ -27,7 +27,10 @@ public class MatchSetup {
 			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
 
 		for (int i = 0; i < maps.Count; i++) {
-			if (maps[i].Name == MatchData.gvName) maps[i].ProcGen = true;
+			if (maps[i].Name == MatchData.gvName){
+				//MonoBehaviour.print("A map called " + maps[i].Name + " has been found, supposed to be roguelike");
+				maps[i].ProcGen = true;
+			}
 		}
 		
 		setupMatchTypes();
@@ -44,6 +47,7 @@ public class MatchSetup {
 			if (maps[i].Name == matches[matchId].allowedLevels[mapId]) {
 				GUI.DrawTexture(screen, maps[i].Pic);
 			}
+			//if (maps[i].ProcGen) MonoBehaviour.print("There exists a procedural map in the map list!");
 		}
 
 		// -------------------- gui -------------------- 
@@ -133,6 +137,8 @@ public class MatchSetup {
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
+
+			matches[matchId].Seed = Random.Range(0, 10000);
 		}else{ // custom, show options here
 
 			//hud.CategoryHeader("Custom Settings");
@@ -298,7 +304,27 @@ public class MatchSetup {
 			slotSelect(ref matches[matchId].pickupSlot4, 4);
 			slotSelect(ref matches[matchId].pickupSlot5, 5);
 
+
+			//MonoBehaviour.print("Current map name: " + maps[mapId].Name);
+			// roguelike map stuff
+			if (matches[matchId].allowedLevels[mapId] == MatchData.gvName) {
+				//MonoBehaviour.print("Current map is procedurally generated!");
+				GUILayout.BeginHorizontal();
+				GUILayout.Box("Map Seed");
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				matches[matchId].Seed = int.Parse(GUILayout.TextArea(matches[matchId].Seed.ToString()));
+				GUILayout.EndHorizontal();
+			}
+
 			GUILayout.EndScrollView();
+		}
+
+		if (matches[matchId].allowedLevels[mapId] == MatchData.gvName) {
+			matches[matchId].NeedsGenerating = true;
+		} else {
+			matches[matchId].NeedsGenerating = false;
 		}
 
 		GUILayout.FlexibleSpace();
@@ -307,7 +333,6 @@ public class MatchSetup {
 		}
 		
 		GUILayout.EndArea();
-
 
 
 		// START button 

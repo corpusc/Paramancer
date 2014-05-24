@@ -19,8 +19,9 @@ public class VoxelMapInit : MonoBehaviour {
 		vox.RemoveOriginals();
 	}
 
-	public static void CreateMap () {
+	public static void CreateMap (int seed) {
 		s_vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
+		s_vox.Seed = seed;
 		s_vox.MapSize.x = 64;
 		s_vox.MapSize.y = 32;
 		s_vox.MapSize.z = 64;
