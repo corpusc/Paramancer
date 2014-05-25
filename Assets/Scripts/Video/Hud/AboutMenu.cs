@@ -64,6 +64,7 @@ public class AboutMenu {
 		}else{
 			hud.CategoryHeader("At The Moment");
 			s += "...this is a fully functional, fast-paced, old-school, arena-style multiplayer FPS.  ";
+			s += "With unlimited, procedurally generated maps.  ";
 			s += "That game-play foundation will never change.  ";
 			s += "However, there are not many populated indie multiplayer games out there.  ";
 			s += "So, I have quite a few OTHER stages/layers planned for the future.  ";
@@ -74,11 +75,14 @@ public class AboutMenu {
 			GUILayout.Label("");
 			hud.CategoryHeader("NEAR-TERM GOALS");
 			hud.CategoryHeader("Rogue-lite FPS");
-			s += "I loved this concept since around 2006, but have been disappointed with the few that recently came onto the market.  ";
-			s += "The theme/setting would be somewhere between modern/near-future and sci-fi.  ";
-			s += "We will generate new maps, & item/monster-placements (in SP) for every game session.  ";
-			s += "We will have single player, coop AND EVEN PVP on Roguelike maps.  Eventually we will ";
-			s += "also allow dungeon invasions from others (PURELY OPTIONAL).  Choices.  Once this stage is \"done\", the game ";
+			s += "Adding single player (SP), and co-operative multiplayer.  ";
+			s += "I loved this concept and wanted to do this YEARS before RL-FPS games existed.  ";
+			s += "But i've been disappointed with the few that recently came onto the market.  ";
+			s += "And do any of them have multiplayer?";
+			s += "The theme/setting will be somewhere between comic-book-modern/near-future and sci-fi.  ";
+			s += "When starting a new dungeon crawl, you can choose to play by yourself, with some select friends, ";
+			s += "or with drop-in co-operative, OR, PVP-invasions..... from players across the world.  ";
+			s += "Once this stage is \"done\", the game ";
 			s += "will be released.  This ends the scope of what I want to promise on Kickstarter.  ";
 			s += "And I might even drop a \"minor\" feature or 2.  :)";
 			GUILayout.Label(s);
@@ -93,8 +97,9 @@ public class AboutMenu {
 			s += "However they are designed to be balanced against each other in power.  A horizontal progression.  ";
 			s += "Giving you more variety & choice in how to ";
 			s += "divide & deliver your (potential) damage over the desired TTK period.  ";
-			s += "Not a power-level reward/advantage given for in-game grinding.  ";
-			s += "The traditional 90's style guns will remain as an option.  ";
+			s += "Nothing will ever give a power-level reward/advantage for in-game grinding.  ";
+			s += "Any SP/COOP progression that we may add will not effect the eventual open world.  ";
+			s += "The traditional 90's-FPS-style guns will remain as an alternate option.  ";
 			GUILayout.Label(s);
 			s = "";
 

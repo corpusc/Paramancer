@@ -4,14 +4,15 @@ using System.Collections;
 
 
 public class MessageOfTheMoment {
-	float msgDura = 7f; // message/tip duration 
+	float msgDura = 9f; // message/tip duration 
 	float nextTip;
 	string msg = ""; // the currently displayed splash 
 	Rect r;
 	
 	string[] tipText = { // less than 2 entries would cause endless loop 
-		"MODERN/MILITARY FPS PLAYERS: Exit please, I do not value your feedback.  :)",
-		"TIP: Use the Gravulator as often as possible to confuse your enemies",
+		"This is PURE OLD SCHOOL ARENA ACTION!  Don't ask for MODERN/MILITARY FPS features!",
+		"TIP: In BYOG matches, use the Gravulator often, to confuse your enemies",
+		"TIP: Download the standalone version for better performance",
 		//"TIP: Sometimes offense is the best defense"
 	};
 

@@ -449,6 +449,15 @@ public class Hud : MonoBehaviour {
 
 		menuBegin();
 
+		// allow sidestepping to control config screen 
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		if (GUILayout.Button("Configure Mouse & Keys, or Controller")) {
+			Mode = HudMode.Controls;
+		}
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+
 		// misc settings 
 		// gun bob 
 		GUILayout.BeginHorizontal();
@@ -973,13 +982,14 @@ public class Hud : MonoBehaviour {
 		menuBegin();
 
 		CategoryHeader("Current team", false, false);
-		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game Design, Logos, Control Config");
-		GUILayout.Label("IceFlame       - Coding, Various media & effects, Announcer");
+		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game design, Logos, Control config");
+		GUILayout.Label("IceFlame       - Coding, Various media & effects, Announcer, ProcGen maps");
 
 		CategoryHeader("Engine", false);
 		GUILayout.Label("This is an extensively remodeled fork of a game made in a seven day game jam.  By Sophie Houlden");
 		GUILayout.Label("(sophiehoulden.com)");
-		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?!
+		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?! 
+		// ... because otherwise, the player is thrown out of the game to the website 
 		//if (GUILayout.Button("Sophie Houlden (web page)"))
 			//Application.OpenURL("http://sophiehoulden.com");  
 
