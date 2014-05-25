@@ -121,5 +121,7 @@ public class MatchData {
 				pickupSlot5 = Item.Random;
 				break;
 		}
+
+		Seed = Random.Range(0, 1000000);
 	}
 }

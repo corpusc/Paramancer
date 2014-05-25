@@ -26,6 +26,7 @@ public class MatchSetup {
 		for (int i = 0; i < pics.Length; i++)
 			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
 
+		// currently unused, but it might prove useful in the future
 		for (int i = 0; i < maps.Count; i++) {
 			if (maps[i].Name == MatchData.gvName){
 				//MonoBehaviour.print("A map called " + maps[i].Name + " has been found, supposed to be roguelike");
@@ -137,8 +138,6 @@ public class MatchSetup {
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
-
-			matches[matchId].Seed = Random.Range(0, 10000);
 		}else{ // custom, show options here
 
 			//hud.CategoryHeader("Custom Settings");
@@ -304,21 +303,21 @@ public class MatchSetup {
 			slotSelect(ref matches[matchId].pickupSlot4, 4);
 			slotSelect(ref matches[matchId].pickupSlot5, 5);
 
-
-			//MonoBehaviour.print("Current map name: " + maps[mapId].Name);
-			// roguelike map stuff
-			if (matches[matchId].allowedLevels[mapId] == MatchData.gvName) {
-				//MonoBehaviour.print("Current map is procedurally generated!");
-				GUILayout.BeginHorizontal();
-				GUILayout.Box("Map Seed");
-				GUILayout.EndHorizontal();
-
-				GUILayout.BeginHorizontal();
-				matches[matchId].Seed = int.Parse(GUILayout.TextArea(matches[matchId].Seed.ToString()));
-				GUILayout.EndHorizontal();
-			}
-
 			GUILayout.EndScrollView();
+		}
+		
+		
+		//MonoBehaviour.print("Current map name: " + maps[mapId].Name);
+		// roguelike map stuff
+		if (matches[matchId].allowedLevels[mapId] == MatchData.gvName) {
+			//MonoBehaviour.print("Current map is procedurally generated!");
+			GUILayout.BeginHorizontal();
+			GUILayout.Box("Map Seed");
+			GUILayout.EndHorizontal();
+			
+			GUILayout.BeginHorizontal();
+			matches[matchId].Seed = int.Parse(GUILayout.TextArea(matches[matchId].Seed.ToString()));
+			GUILayout.EndHorizontal();
 		}
 
 		if (matches[matchId].allowedLevels[mapId] == MatchData.gvName) {

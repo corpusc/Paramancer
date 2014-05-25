@@ -1058,6 +1058,7 @@ public class EntityClass : MonoBehaviour {
 		camAngle = tran.eulerAngles;
 		yMove = 0f;
 		moveVec = Vector3.zero;
+		ava.sprinting = false;
 
 		if (firstPersonGun) 
 			Destroy(firstPersonGun);

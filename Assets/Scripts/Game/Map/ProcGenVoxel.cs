@@ -16,8 +16,9 @@ public class ProcGenVoxel : ScriptableObject {
 	public int Forms = 40; // the amount of rooms/halls to create on the ground floor
 	public int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor
 	public float MaxOverride = 0.1f; // only create a form if there aren't too many things already in there 
-	public int MinFormWidth = 1;
-	public int MaxFormWidth = 16;
+	public int MinFormWidth = 2; // the minimal span of a form(this will end up being the width ussually)
+	public int MaxFormWidth = 16; // the maximal span of a form(this will end up being the length ussually)
+	public int MinArea = 20; // don't create tiny rooms that will not be noticed
 	public int MaxArea = 100; // limits the creation of extremely large rooms, favorizes corridors
 	public int MaxCorridorArea = 60; // for corridors/bridges above the ground floor
 	public Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map
@@ -45,7 +46,7 @@ public class ProcGenVoxel : ScriptableObject {
 	public int JumpHeight = 2; // the height that cannot be jumped over normally(needs a jump pad)(must be lesser than MapSize.y)
 	public float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on
 
-	public int SpawnPoints = 4; // the amount of spawn points to be placed
+	public int SpawnPoints = 4; // the amount of spawn points to be placed(of each type[FFA/red/blue])
 	public GameObject SpawnPoint;
 	public Vector3 SpawnPointScale = Vector3.one;
 
@@ -66,6 +67,8 @@ public class ProcGenVoxel : ScriptableObject {
 	GameObject mapObject;
 	GameObject primObject;
 	GameObject ffaSpawnBag;
+	GameObject blueSpawnBag;
+	GameObject redSpawnBag;
 	GameObject weaponSpawnBag;
 
 	// only sets everything up, doesn't build the level - call Build () and Build3d () manually
@@ -89,6 +92,8 @@ public class ProcGenVoxel : ScriptableObject {
 		mapObject = GameObject.Find("Map"); // an empty GameObject container, already in the scene 
 		primObject = GameObject.Find("Prims"); // an empty GameObject container, already in the scene 
 		ffaSpawnBag = GameObject.Find("FFA Spawns"); // an empty GameObject container, already in the scene 
+		blueSpawnBag = GameObject.Find("Blue Team Spawns"); // an empty GameObject container, already in the scene 
+		redSpawnBag = GameObject.Find("Red Team Spawns"); // an empty GameObject container, already in the scene 
 		weaponSpawnBag = GameObject.Find("_PickupSpots"); // an empty GameObject container, must already be in the scene
 	}
 
@@ -117,7 +122,7 @@ public class ProcGenVoxel : ScriptableObject {
 			if (containsBlocks(start, end)) {
 				if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
 					if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
-						if (getArea(start, end) <= MaxArea)
+						if (getArea(start, end) <= MaxArea && getArea(start, end) >= MinArea)
 
 						if (countBlocks(start, end) < getArea(start, end) * MaxOverride) {
 							fillRect(start, end);
@@ -306,7 +311,7 @@ public class ProcGenVoxel : ScriptableObject {
 			} // end of checking the block for possible jump pad placing 
 		} // end of placing jump pads 
 		
-		// place spawn points 
+		// place FFA spawn points 
 		formsMade = 0; // count spawn points as forms, no need for a separate var 
 		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
 			Vec3i t;
@@ -319,6 +324,40 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = ffaSpawnBag.transform;
+				formsMade++;
+			}
+		} // end of placing spawn points 
+
+		// place blue spawn points 
+		formsMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!getBlock(t.x, t.y - 1, t.z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
+				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = blueSpawnBag.transform;
+				formsMade++;
+			}
+		} // end of placing spawn points 
+
+		// place red spawn points 
+		formsMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!getBlock(t.x, t.y - 1, t.z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
+				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = redSpawnBag.transform;
 				formsMade++;
 			}
 		} // end of placing spawn points 

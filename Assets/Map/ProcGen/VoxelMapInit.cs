@@ -31,5 +31,6 @@ public class VoxelMapInit : MonoBehaviour {
 		s_vox.Build();
 		s_vox.Build3d();
 		s_vox.RemoveOriginals();
+		Random.seed = (int)(Time.time * 100f);
 	}
 }
