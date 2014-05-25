@@ -15,7 +15,7 @@ public class ProcGenVoxel : ScriptableObject {
 	public Vec3i MapSize; // this is the resolution(the actual size depends on this and the map scale)
 	public int Forms = 40; // the amount of rooms/halls to create on the ground floor
 	public int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor
-	public float MaxOverride = 0.1f; // only create a form if there aren't too many things already in there 
+	public float MaxOverride = 0.3f; // only create a form if there aren't too many things already in there 
 	public int MinFormWidth = 2; // the minimal span of a form(this will end up being the width ussually)
 	public int MaxFormWidth = 16; // the maximal span of a form(this will end up being the length ussually)
 	public int MinArea = 20; // don't create tiny rooms that will not be noticed
@@ -61,7 +61,7 @@ public class ProcGenVoxel : ScriptableObject {
 	// To create a map, set all the values you need, and call Init(), Build() and Build3d()
 
 	// private
-	int numTries = 50000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
+	int numTries = 200000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
 	List<Material> MatPool = new List<Material>();
 
 	GameObject mapObject;
@@ -124,7 +124,7 @@ public class ProcGenVoxel : ScriptableObject {
 					if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
 						if (getArea(start, end) <= MaxArea && getArea(start, end) >= MinArea)
 
-						if (countBlocks(start, end) < getArea(start, end) * MaxOverride) {
+						if (countBlocks(start, end) < getArea(start, end) * MaxOverride * (MaxFloorHeight + 1f)) {
 							fillRect(start, end);
 							formsMade++;
 						}
@@ -483,7 +483,7 @@ public class ProcGenVoxel : ScriptableObject {
 		a.z = s.z;
 		Vec3i b;
 		b.x = e.x;
-		b.y = 0;
+		b.y = MaxFloorHeight;
 		b.z = e.z;
 		return countBlocks(a, b);
 	}

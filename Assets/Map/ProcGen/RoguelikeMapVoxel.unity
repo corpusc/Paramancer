@@ -18,7 +18,7 @@ RenderSettings:
   m_FogDensity: .00999999978
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientLight: {r: .196078435, g: .196078435, b: .196078435, a: 1}
+  m_AmbientLight: {r: .156862751, g: .156862751, b: .156862751, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: b2da766d2c1c946cabb7137a07df94e6, type: 2}
   m_HaloStrength: .5
   m_FlareStrength: 1
