@@ -20,7 +20,7 @@ public class BeamParticle : MonoBehaviour {
 	public float f = 0.05f;
 	public float MinSize = 1f;
 	public float MaxSize = 3f;
-	public ParticleType type = ParticleType.Puff;
+	public ParticleType ParticType = ParticleType.Puff;
 	public float acceleration = 1f; // multiply the speed by this 
 
 	// private 
@@ -35,19 +35,18 @@ public class BeamParticle : MonoBehaviour {
 	void Start() {
 		shrinkFactor = new Vector3(f, f, f);
 
-		switch (type) {
-			
-		case ParticleType.Circle:
-			renderer.material = (Material)Resources.Load("Mat/Weap/RifleParticle", typeof(Material));
-			break;
-		case ParticleType.Multiple:
-			if (Random.value < 0.5f)
-				renderer.material = (Material)Resources.Load("Mat/Weap/MultipleParticle", typeof(Material));
-			else
-				renderer.material = (Material)Resources.Load("Mat/Weap/MultipleParticle2", typeof(Material));
-			break;
-		default:
-			break; // puff is loaded by default, from the inspector
+		switch (ParticType) {
+			case ParticleType.Circle:
+				renderer.material = (Material)Resources.Load("Mat/Weap/RifleParticle", typeof(Material));
+				break;
+			case ParticleType.Multiple:
+				if (Random.value < 0.5f)
+					renderer.material = (Material)Resources.Load("Mat/Weap/MultipleParticle", typeof(Material));
+				else
+					renderer.material = (Material)Resources.Load("Mat/Weap/MultipleParticle2", typeof(Material));
+				break;
+			default:
+				break; // puff is loaded by default, from the inspector 
 		}
 
 		mesh = GetComponent<MeshFilter>().mesh;

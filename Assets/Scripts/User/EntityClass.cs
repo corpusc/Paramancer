@@ -139,7 +139,7 @@ public class EntityClass : MonoBehaviour {
 			transform.position = -Vector3.up * 99f;
 		}
 	}
-	
+
 	public bool sendRPCUpdate = false;
 	float rpcCamTime = 0f;
 	void Update() {
@@ -147,18 +147,10 @@ public class EntityClass : MonoBehaviour {
 			net.localPlayer.Entity = this;
 		
 		if (User.health <= 0f) {
-			// shut off bomb
-			var fl = gunMesh1.transform.Find("Flash Light");
-			if (gunMesh1 != null && fl != null) {
-				fl.GetComponent<FlashlightScript>().visible = false;
-			}
-
-			fl = gunMesh2.transform.Find("Flash Light");
-			if (gunMesh2 != null && fl != null) {
-				fl.GetComponent<FlashlightScript>().visible = false;
-			} 
+			makeBombInvisible();
 		}
 
+		// if its been long enough since last frag, reset MultiFrag count 
 		if (Time.time - PrevFrag > 10f)
 			MultiFragCount = 0;
 
@@ -238,7 +230,7 @@ public class EntityClass : MonoBehaviour {
 					net.localPlayer.FraggedBy = null;
 					Camera.main.transform.parent = camHolder.transform;
 					Camera.main.transform.localPosition = Vector3.zero;
-					// this makes sure we can walk along walls/ceilings with proper mouselook orientation
+					// this makes sure we can walk along walls/ceilings with proper mouselook orientation 
 					Camera.main.transform.localRotation = Quaternion.Slerp(
 						Camera.main.transform.localRotation, 
 						Quaternion.Euler(Vector3.zero), 
@@ -635,7 +627,7 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		// if no friendly fire & on same team, make unshootable
-		if (net.CurrMatch.teamBased && !net.CurrMatch.allowFriendlyFire) {
+		if (net.CurrMatch.teamBased && !net.CurrMatch.FriendlyFire) {
 			if (User.team == net.localPlayer.team) {
 				gameObject.layer = 2;
 			}
@@ -776,7 +768,8 @@ public class EntityClass : MonoBehaviour {
 				}else{
 					gunBounce += Time.deltaTime * 15f;
 				}
-				firstPersonGun.transform.position += Vector3.up * Mathf.Sin(gunBounce) *0.05f;
+
+				firstPersonGun.transform.position += Vector3.up * Mathf.Sin(gunBounce) * 0.05f;
 			}
 			
 		}
@@ -897,7 +890,7 @@ public class EntityClass : MonoBehaviour {
 			if (GunInHand == Item.Bomb) {
 				if (gunMesh1 != null && 
 				    gunMesh1.transform.Find("Flash Light") != null) {
-					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().visible = false;
+					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().Visible = false;
 				}
 			}
 		}else{
@@ -1168,5 +1161,18 @@ public class EntityClass : MonoBehaviour {
 		audio.clip = clip;
 		audio.volume = volume;
 		audio.Play();
+	}
+
+	// private 
+	void makeBombInvisible() {
+		Transform fl = null;
+		
+		fl = gunMesh1.transform.Find("Flash Light");
+		if (gunMesh1 != null && fl != null)	
+			fl.GetComponent<FlashlightScript>().Visible = false;
+		
+		fl = gunMesh2.transform.Find("Flash Light");
+		if (gunMesh2 != null && fl != null)	
+			fl.GetComponent<FlashlightScript>().Visible = false;
 	}
 }

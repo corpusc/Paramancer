@@ -1,32 +1,36 @@
 using UnityEngine;
 using System.Collections;
 
+
+
+// takes care of the light and particles of the bomb 
 public class FlashlightScript : MonoBehaviour {
-	public float flashTime = 0.3f;
-	private float changeTime = 0f;
-	public Light otherlight;
+	public bool Visible = true;
+	// didn't find where these were set ....so i HAD moved them to private var section 
 	public GameObject bombObj;
+	public Light otherlight; // dunno what this means 
 	public ParticleSystem ps;
-	public bool visible = true;
-	
+
 	// private 
-	Arsenal artillery;
-	
+	float changeTime = 0f;
+	float flashTime = 0.3f;
+	Arsenal arse;
+
 	
 	
 	void Start () {
 		changeTime = Time.time + flashTime;
-		artillery = GameObject.Find("Main Program").GetComponent<Arsenal>();
+		arse = GameObject.Find("Main Program").GetComponent<Arsenal>();
 	}
 	
 	void Update () {
-		if (bombObj.renderer.enabled && visible) {
+		if (bombObj.renderer.enabled && Visible) {
 			if (Time.time > changeTime) {
 				changeTime += flashTime;
 				light.enabled = !light.enabled;
 				
 				if (light.enabled) 
-					artillery.BombBeep(transform.position);
+					arse.BombBeep(transform.position);
 			}
 			
 			otherlight.enabled = true;

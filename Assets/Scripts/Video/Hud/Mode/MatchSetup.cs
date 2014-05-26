@@ -45,7 +45,7 @@ public class MatchSetup {
 
 		// show map picture background 
 		for (int i=0; i<maps.Count; i++) {
-			if (maps[i].Name == matches[matchId].allowedLevels[mapId]) {
+			if (maps[i].Name == matches[matchId].Maps[mapId]) {
 				GUI.DrawTexture(screen, maps[i].Pic);
 			}
 			//if (maps[i].ProcGen) MonoBehaviour.print("There exists a procedural map in the map list!");
@@ -83,18 +83,18 @@ public class MatchSetup {
 		if (GUILayout.Button("<") ) {
 			mapId--;
 			if (mapId < 0) 
-				mapId += matches[matchId].allowedLevels.Count;
+				mapId += matches[matchId].Maps.Count;
 		}
 
 		if (GUILayout.Button(">") ) {
 			mapId++;
-			if (mapId >= matches[matchId].allowedLevels.Count) 
-				mapId -= matches[matchId].allowedLevels.Count;
+			if (mapId >= matches[matchId].Maps.Count) 
+				mapId -= matches[matchId].Maps.Count;
 		}
 
 		GUILayout.Label("Map:");
 		GUILayout.FlexibleSpace();
-		GUILayout.Label(matches[matchId].allowedLevels[mapId]);
+		GUILayout.Label(matches[matchId].Maps[mapId]);
 		GUILayout.FlexibleSpace();
 
 		GUILayout.EndHorizontal();
@@ -108,8 +108,8 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("Customize Match") ) {
 				int levelChangeIndex = 0;
-				for (int i=0; i<matches[0].allowedLevels.Count; i++) {
-					if (matches[0].allowedLevels[i] == matches[matchId].allowedLevels[mapId]) 
+				for (int i=0; i<matches[0].Maps.Count; i++) {
+					if (matches[0].Maps[i] == matches[matchId].Maps[mapId]) 
 						levelChangeIndex = i;
 				}
 				
@@ -119,7 +119,7 @@ public class MatchSetup {
 				matches[0].deathsSubtractScore = matches[matchId].deathsSubtractScore;
 				matches[0].respawnWait = matches[matchId].respawnWait;
 				matches[0].teamBased = matches[matchId].teamBased;
-				matches[0].allowFriendlyFire = matches[matchId].allowFriendlyFire;
+				matches[0].FriendlyFire = matches[matchId].FriendlyFire;
 				matches[0].pitchBlack = matches[matchId].pitchBlack;
 				matches[0].Duration = matches[matchId].Duration;
 				matches[0].winScore = matches[matchId].winScore;
@@ -220,7 +220,7 @@ public class MatchSetup {
 			if (matches[matchId].teamBased) {
 				GUILayout.BeginHorizontal();
 				GUILayout.FlexibleSpace();
-				matches[matchId].allowFriendlyFire = TickBox.Display(matches[matchId].allowFriendlyFire, "Allow Friendly Fire");
+				matches[matchId].FriendlyFire = TickBox.Display(matches[matchId].FriendlyFire, "Allow Friendly Fire");
 				GUILayout.FlexibleSpace();
 				GUILayout.EndHorizontal();
 
@@ -321,7 +321,7 @@ public class MatchSetup {
 		
 		//MonoBehaviour.print("Current map name: " + maps[mapId].Name);
 		// roguelike map stuff
-		if (matches[matchId].allowedLevels[mapId] == MatchData.gvName) {
+		if (matches[matchId].Maps[mapId] == MatchData.gvName) {
 			//MonoBehaviour.print("Current map is procedurally generated!");
 			GUILayout.BeginHorizontal();
 			GUILayout.Box("Map Seed");
@@ -332,7 +332,7 @@ public class MatchSetup {
 			GUILayout.EndHorizontal();
 		}
 
-		if (matches[matchId].allowedLevels[mapId] == MatchData.gvName) {
+		if (matches[matchId].Maps[mapId] == MatchData.gvName) {
 			matches[matchId].NeedsGenerating = true;
 		} else {
 			matches[matchId].NeedsGenerating = false;
@@ -353,7 +353,7 @@ public class MatchSetup {
 				net.serverGameChange = true;
 				Network.incomingPassword = net.password;
 				net.lastGameWasTeamBased = false;
-				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
+				net.AssignGameModeConfig(matches[matchId], matches[matchId].Maps[mapId]);
 				net.MatchTypeAndMap = net.CurrMatch.Name + "\n" + net.CurrMatch.levelName;
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initializing server, has public address: " + Network.HavePublicAddress().ToString());
@@ -364,7 +364,7 @@ public class MatchSetup {
 			if (GUI.Button(startButton, "Start Match!")) {
 				net.serverGameChange = true;
 				net.lastGameWasTeamBased = net.CurrMatch.teamBased;
-				net.AssignGameModeConfig(matches[matchId], matches[matchId].allowedLevels[mapId]);
+				net.AssignGameModeConfig(matches[matchId], matches[matchId].Maps[mapId]);
 				net.NetVI = Network.AllocateViewID();
 				net.RequestGameData();
 			}
@@ -414,9 +414,9 @@ public class MatchSetup {
 				matchId = matches.Length - 1;
 			
 			int mapChangeId = 0;
-			for (int i=0; i<matches[matchId].allowedLevels.Count; i++) {
-				if (matches[matchId].allowedLevels[i] == 
-				    matches[lastInt].allowedLevels[mapId]
+			for (int i=0; i<matches[matchId].Maps.Count; i++) {
+				if (matches[matchId].Maps[i] == 
+				    matches[lastInt].Maps[mapId]
 				    ) 
 					mapChangeId = i;
 			}
@@ -432,8 +432,8 @@ public class MatchSetup {
 				matchId = 0;
 			
 			int mapChangeId = 0;
-			for (int i=0; i<matches[matchId].allowedLevels.Count; i++) {
-				if (matches[matchId].allowedLevels[i] == matches[lastInt].allowedLevels[mapId]) 
+			for (int i=0; i<matches[matchId].Maps.Count; i++) {
+				if (matches[matchId].Maps[i] == matches[lastInt].Maps[mapId]) 
 					mapChangeId = i;
 			}
 			

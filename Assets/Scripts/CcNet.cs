@@ -206,7 +206,7 @@ public class CcNet : MonoBehaviour {
 					// player in range
 					bool skip = false;
 					// ignore if on the same team as the person who fired (unless bomb)
-					if (CurrMatch.teamBased && !CurrMatch.allowFriendlyFire) {
+					if (CurrMatch.teamBased && !CurrMatch.FriendlyFire) {
 						int shooterIndex = -1;
 						for (int k=0; k<players.Count; k++){
 							if (players[k].viewID == shooterID) 
@@ -341,8 +341,8 @@ public class CcNet : MonoBehaviour {
 				networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
 		
-		// let players see hit
-		networkView.RPC("ShowHit", RPCMode.All, weapon, hitPos, victimID);
+		// do hit effects 
+		networkView.RPC("DoHitEffects", RPCMode.All, weapon, hitPos, victimID);
 		
 		// check for game over
 		if (CurrMatch.winScore > 0) {
@@ -374,19 +374,18 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	[RPC]
-	void ShowHit(int weapon, Vector3 hitPos, NetworkViewID viewID) {
+	void DoHitEffects(int weapon, Vector3 hitPos, NetworkViewID viewID) {
 		int numGibs = 4;
-		
 		switch ((Item)weapon) {
-			case Item.GrenadeLauncher:                numGibs = 15; break;
+			case Item.GrenadeLauncher:        numGibs = 15; break;
 			case Item.MachineGun:             numGibs = 2; break;
-			case Item.RailGun:                  numGibs = 30; break;
-			case Item.RocketProjectile: numGibs = 20; break;
+			case Item.RailGun:                numGibs = 30; break;
+			case Item.RocketProjectile:       numGibs = 20; break;
 			case Item.Bomb:                   numGibs = 20; break;
 			
 			case Item.Suicide:                numGibs = 30; break;
 		}
-		numGibs *= 4;
+		numGibs *= 4; // increase damage spray across the board 
 		
 		for (int i=0; i<numGibs; i++) {
 			GameObject newSplat = (GameObject)GameObject.Instantiate(splatPrefab);
@@ -397,8 +396,10 @@ public class CcNet : MonoBehaviour {
 			if (players[i].viewID == viewID && 
 				players[i].local && 
 				players[i].health > 0f
-			) 
-				players[i].Entity.PlaySound("TakeDamage");
+			) {
+				players[i].Entity.PlaySound("guydamage"); // positioned at the hit player 
+				sfx.PlayOmni("TakeDamage"); // heard at same volume, regardless where the hit player is 
+			}
 		}
 	}
 	
@@ -1075,7 +1076,7 @@ public class CcNet : MonoBehaviour {
 		CurrMatch.deathsSubtractScore = md.deathsSubtractScore;
 		CurrMatch.killsIncreaseScore = md.killsIncreaseScore;
 		CurrMatch.teamBased = md.teamBased;
-		CurrMatch.allowFriendlyFire = md.allowFriendlyFire;
+		CurrMatch.FriendlyFire = md.FriendlyFire;
 		CurrMatch.pitchBlack = md.pitchBlack;
 		CurrMatch.restockTime = md.restockTime;
 		CurrMatch.playerLives = md.playerLives;
@@ -1144,7 +1145,7 @@ public class CcNet : MonoBehaviour {
 		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, 
 			CurrMatch.Name, CurrMatch.levelName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, 
 			CurrMatch.respawnWait, CurrMatch.deathsSubtractScore, CurrMatch.killsIncreaseScore, CurrMatch.teamBased, 
-			targetTeam, CurrMatch.allowFriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
+			targetTeam, CurrMatch.FriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
 			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
 			(int)CurrMatch.pickupSlot3, (int)CurrMatch.pickupSlot4, (int)CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
 			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.NeedsGenerating, CurrMatch.Seed);
@@ -1202,7 +1203,7 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.deathsSubtractScore = deathsSubtractScore;
 			CurrMatch.killsIncreaseScore = killsIncreaseScore;
 			CurrMatch.teamBased = teamBased;
-			CurrMatch.allowFriendlyFire = allowFriendlyFire;
+			CurrMatch.FriendlyFire = allowFriendlyFire;
 			CurrMatch.pitchBlack = pitchBlack;
 			CurrMatch.playerLives = playerLives;
 			CurrMatch.basketball = basketball;

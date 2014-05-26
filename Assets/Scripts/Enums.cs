@@ -113,16 +113,18 @@ public enum UserAction {
 	MoveUp,
 	MoveDown,
 	
-	Activate, // fire/activate/use whatever you are holding
+	Activate, // fire/activate/use whatever you are holding/wielding 
 	Alt,
 	Next,
 	Previous,
-	Sprint, // for sound: something like GO SPEED RACER GO?
+	Sprint, // for sound: something like GO SPEED RACER GO? 
 	Chat,
-	Menu, // for sound: "gotta change something... HOLD ON!"?
+	Menu, // for sound: "gotta change something... HOLD ON!"? 
 	Scores,
-	SwapTeam, // for sound: "WASSUP GUYS, the other team SUCKS"?
-	Suicide, // for sound: "there's nothing left for me here!"?
+	SwapTeam, // for sound: "WASSUP GUYS, the other team SUCKS"? 
+	Suicide, // for sound: "there's nothing left for me here!"? 
+
+		// sound suggestions are player located sounds (not omni) 
 	
 	Count
 }
@@ -130,15 +132,14 @@ public enum UserAction {
 public enum ParticleType {
 	Circle,
 	Puff,
-	Multiple,
+	Multiple, // what does this mean? 
 
 	Count
 }
 
 
 
-//procweap parts
-
+// procweap parts 
 public enum Barrel {
 	Double,
 	Muted,
@@ -147,44 +148,44 @@ public enum Barrel {
 	Count
 }
 
-public enum UnderBarrel { //activate with z?
-	Bayonet, //instakill anyone close enough and right in front of you
-	Laser, //deal damage per second to enemies directly in front of you
+public enum UnderBarrel { //activate with z? 
+	Bayonet, // instakill anyone close enough and right in front of you 
+	Laser, // deal damage per second to enemies directly in front of you 
 	Flashlight,
-	Kamikaze, //go boom! when you die, activatable
+	Kamikaze, // go boom! when you die, activatable 
 	Gravulator,
 	Swapper,
 	GrapplingHook,
-	OozeLeaker, //an ooze that slows everyone who enters it
+	OozeLeaker, // an ooze that slows everyone who enters it (NEEDS TO IGNORE OTHER PLAYERS IF WE END UP HAVING THIS  :) 
 
 	Count
 }
 
-public enum OverBarrel { //activate with x?
-	Scope, //zoom
-	Forcefield, //damage all enemies that are close
-	DamageReductor, //dmg *= 0.95f
-	Unhitter, //activate to enter a mode where you can't move/shoot, but you can't be hit(only lasts 3 seconds)
+public enum OverBarrel { // activate with x? 
+	Scope, // zoom
+	Forcefield, // damage all enemies that are close 
+	DamageReductor, // dmg *= 0.95f 
+	Unhitter, // activate to enter a mode where you can't move/shoot, but you can't be hit(only lasts 3 seconds) 
 	Flamethrower,
 
 	Count
 }
 
 public enum FiringChamber {
-	Large, //for grenades/rockets
-	Vaporizing, //jets of glowing-hot gasses fly out of your gun to the sides, dealing damage
-	Vacuum, //no shot sound
-	Amortized, //no knockback
+	Large, // for grenades/rockets 
+	Vaporizing, // jets of glowing-hot gasses fly out of your gun to the sides, dealing damage 
+	Vacuum, // no shot sound 
+	Amortized, // no knockback 
 
 	Count
 }
 
 public enum MainBody {
-	Light, //move 10% faster
-	Electromagnetic, //railgun effect, consume energy for more damage
-	Immortality, //if (health - dmg <= 0f && cooldown == 0f) health = 1f;
-	Cushioned, //if (dmg > 30f) dmg = lerp(dmg, 30f, 0.1f);
-	Ethereal, //instant respawn
+	Light, // move 10% faster 
+	Electromagnetic, // railgun effect, consume energy for more damage 
+	Immortality, // if (health - dmg <= 0f && cooldown == 0f) health = 1f; 
+	Cushioned, // if (dmg > 30f) dmg = lerp(dmg, 30f, 0.1f); 
+	Ethereal, // instant respawn 
 
 	Count
 }
@@ -193,10 +194,10 @@ public enum Ammo {
 	Rocket,
 	Grenade,
 	SmokeGrenade,
-	Tape, //for machine guns
-	Pull, //...anyone hit towards you
-	Push, //...-,,- away from you
-	Tesla, //damage nearby enemies
+	Tape, // for machine guns 
+	Pull, // ...anyone hit towards you 
+	Push, // ...-,,- away from you 
+	Tesla, // damage nearby enemies 
 
 	Count
 }

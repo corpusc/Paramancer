@@ -102,7 +102,7 @@ public class RocketScript : MonoBehaviour {
 			np.GetComponent<BeamParticle>().MinSize = 6f;
 			np.GetComponent<BeamParticle>().MaxSize = 8f;
 			np.GetComponent<BeamParticle>().acceleration = 0.1f;
-			np.GetComponent<BeamParticle>().type = ParticleType.Multiple;
+			np.GetComponent<BeamParticle>().ParticType = ParticleType.Multiple;
 		}
 		else
 		for (int i = 0; i < ExplosionParticles; i++) {
@@ -116,7 +116,7 @@ public class RocketScript : MonoBehaviour {
 			np.GetComponent<BeamParticle>().MinSize = 6f;
 			np.GetComponent<BeamParticle>().MaxSize = 8f;
 			np.GetComponent<BeamParticle>().acceleration = 0.1f;
-			np.GetComponent<BeamParticle>().type = ParticleType.Multiple;
+			np.GetComponent<BeamParticle>().ParticType = ParticleType.Multiple;
 		}
 		enabled = false;
 		if (net.isServer)

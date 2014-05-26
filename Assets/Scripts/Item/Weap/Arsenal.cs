@@ -12,18 +12,22 @@ public class Arsenal : MonoBehaviour {
 	public GameObject rocketPrefab;
 	public GameObject soundObjectPrefab;
 	public GameObject BulletMark;
-	
-	public AudioClip sfx_grenadeExplode;
-	public AudioClip sfx_rocketExplode;
+
+	// SOUNDS 
+	// 		activates 
+	public AudioClip sfx_spatula;
 	public AudioClip sfx_machinegunshoot;
 	public AudioClip sfx_pistolshoot;
 	public AudioClip sfx_rifleshoot;
 	public AudioClip sfx_grenadethrow;
 	public AudioClip sfx_swappershoot;
-	public AudioClip sfx_bombBeep;
+	// 		explosions 
+	public AudioClip sfx_grenadeExplode;
+	public AudioClip sfx_rocketExplode;
 	public AudioClip sfx_bombExplode;
-	public AudioClip sfx_spatula;
-	
+	// 		while holding 
+	public AudioClip sfx_bombBeep;
+
 	public int WidestIcon;
 	public int TallestIcon;
 	public GunData[] Guns;
@@ -35,11 +39,11 @@ public class Arsenal : MonoBehaviour {
 	
 	
 	
-	void Start () {
+	void Start() {
 		net = GetComponent<CcNet>();
 		
-		// weapon media
-		// load the 3 kinds of resources that weapons need
+		// weapon media 
+		// load the 3 kinds of resources that weapons need 
 		Object[] mats = Resources.LoadAll("Mat/Weap");
 		Object[] prefabs = Resources.LoadAll("Prefab/Weap");
 		Texture[] pics = Resources.LoadAll<Texture>("Pic/Weap");
@@ -60,7 +64,7 @@ public class Arsenal : MonoBehaviour {
 				case Item.GrenadeLauncher:   Guns[i].ShotCol = S.Orange; 
 					Guns[i].Delay = 0.25f; 
 					Guns[i].DelayAlt = 0.25f; break; 
-				case Item.MachineGun:   Guns[i].ShotCol = Color.green; 
+				case Item.MachineGun:   Guns[i].ShotCol = Color.cyan; 
 					Guns[i].Delay = 0.1f; 
 					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; break; // unique 
 				case Item.RailGun:   Guns[i].ShotCol = Color.cyan; 
@@ -146,7 +150,7 @@ public class Arsenal : MonoBehaviour {
 			nh.GetComponent<BulletMark>().MaxLife = 30f;
 		}
 		
-		// beam
+		// beam 
 		//beam.GetComponent<BeamEffect>().start = origin;
 		var beam = (GameObject)GameObject.Instantiate(Beam);
 		var b = beam.GetComponent<BeamEffect>();
@@ -162,13 +166,13 @@ public class Arsenal : MonoBehaviour {
 		if (weapon == Item.Pistol)
 			b.renderer.material.color = Color.white;
 		
-		// flash
+		// flash 
 		var muzzleFlash = (GameObject)GameObject.Instantiate(muzzleFlashPrefab);
 		muzzleFlash.transform.position = origin;
 		if (localFire) 
 			muzzleFlash.transform.position = localStart - (Camera.main.transform.right * 0.2f);
 		
-		// rifle/rail trail
+		// rail trail 
 		if (weapon == Item.RailGun) {
 			Vector3 beamStart = origin;
 			if (localFire) 
@@ -192,7 +196,7 @@ public class Arsenal : MonoBehaviour {
 				np.GetComponent<BeamParticle>().MaxSize = 0.4f;
 				np.GetComponent<BeamParticle>().StartColor = Color.blue;
 				np.GetComponent<BeamParticle>().EndColor = Color.clear;
-				np.GetComponent<BeamParticle>().type = ParticleType.Circle;
+				np.GetComponent<BeamParticle>().ParticType = ParticleType.Circle;
 				progress += 0.20f;
 				angle += 24f;
 			}

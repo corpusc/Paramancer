@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 0042310694968438b84bb52dd60433eb
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 16
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
@@ -17,16 +17,18 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    optimizeGameObjects: 0
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
     clipAnimations: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .800000012
+    globalScale: .600000024
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -49,7 +51,6 @@ ModelImporter:
   humanDescription:
     human: []
     skeleton: []
-    handles: []
     armTwist: .5
     foreArmTwist: .5
     upperLegTwist: .5
@@ -59,6 +60,6 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  additionalBone: 1
   animationType: 1
+  additionalBone: 1
   userData: 

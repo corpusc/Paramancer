@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class MatchData {
 	// 'mode select' stuff
 	public string Name = "";
-	public string Descript; // description
-	public List<string> allowedLevels;
+	public string Descript; // description 
+	public List<string> Maps; // valid maps 
 	// specific mode/game settings stuff
 	public string levelName; // ...to load/play in
 	public int winScore = 30;
@@ -15,7 +15,7 @@ public class MatchData {
 	public bool deathsSubtractScore = true;
 	public bool killsIncreaseScore = true;
 	public bool teamBased = false;
-	public bool allowFriendlyFire = false;
+	public bool FriendlyFire = false;
 	public bool pitchBlack = false;
 	public Item spawnGunA = Item.Pistol;
 	public Item spawnGunB = Item.GrenadeLauncher;
@@ -32,14 +32,14 @@ public class MatchData {
 	public int Seed = 0;
 	public float MoveSpeedMult = 1f; // the movement speed multiplier
 	
-	public static string gvName = "RoguelikeMapVoxel"; // user-facing name of procecurally generated voxel-style map generation 
+	public static string gvName = "[Generated]"; // user-facing name of procedural voxel-style map generation 
 	
 	
 	
 	public MatchData(Match match) {
 		var all /*'''*/ = new List<string>() { gvName, "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 		var hasGoalsAndCeilings = new List<string>() { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
-		allowedLevels = all;
+		Maps = all;
 
 		switch (match) {
 			case Match.Custom:
@@ -49,8 +49,8 @@ public class MatchData {
 			case Match.BringYourOwnGravity:
 				Name = "Bring Your Own Gravity"; //  A Gravity Of Your Own?  Gravity Is/Gets Personal? 
 				Descript = "Each player has their own, independent, changeable gravity";
-				allowedLevels = hasGoalsAndCeilings;
-				allowedLevels.Insert(0, gvName);
+				Maps = hasGoalsAndCeilings;
+				Maps.Insert(0, gvName);
 				spawnGunA = Item.Gravulator;
 				spawnGunB = Item.Pistol;
 				pickupSlot5 = Item.RocketLauncher;
@@ -79,7 +79,7 @@ public class MatchData {
 			case Match.BBall:
 				Name = "BBall";
 				Descript = "Shooting hoops...and GUNS!  GANGSTA!";
-				allowedLevels = hasGoalsAndCeilings;
+				Maps = hasGoalsAndCeilings;
 				deathsSubtractScore = false;
 				killsIncreaseScore = false;
 				teamBased = true;
