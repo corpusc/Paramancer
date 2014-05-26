@@ -133,6 +133,7 @@ public class MatchSetup {
 				matches[0].restockTime = matches[matchId].restockTime;
 				matches[0].playerLives = matches[matchId].playerLives;
 				matches[0].basketball = matches[matchId].basketball;
+				matches[0].MoveSpeedMult = matches[matchId].MoveSpeedMult;
 				
 				matchId = 0;
 			}
@@ -244,6 +245,17 @@ public class MatchSetup {
 			matches[matchId].restockTime = S.GetInt(GUILayout.TextField(matches[matchId].restockTime.ToString()) );
 			GUILayout.Label("(secs)");
 			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("Time Multiplier:");
+			GUILayout.Label(matches[matchId].MoveSpeedMult.ToString());
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			matches[matchId].MoveSpeedMult = GUILayout.HorizontalSlider(matches[matchId].MoveSpeedMult, 0.1f, 10f);
 			GUILayout.EndHorizontal();
 
 			GUILayout.Label("");

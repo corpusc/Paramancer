@@ -1089,6 +1089,7 @@ public class CcNet : MonoBehaviour {
 		CurrMatch.pickupSlot5 = md.pickupSlot5;
 		CurrMatch.NeedsGenerating = md.NeedsGenerating;
 		CurrMatch.Seed = md.Seed;
+		CurrMatch.MoveSpeedMult = md.MoveSpeedMult;
 	}
 	
 	[RPC]
@@ -1146,7 +1147,7 @@ public class CcNet : MonoBehaviour {
 			targetTeam, CurrMatch.allowFriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
 			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
 			(int)CurrMatch.pickupSlot3, (int)CurrMatch.pickupSlot4, (int)CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
-			CurrMatch.basketball, CurrMatch.NeedsGenerating, CurrMatch.Seed);
+			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.NeedsGenerating, CurrMatch.Seed);
 	}
 	
 	public float gameTimeLeft = 0f;
@@ -1157,7 +1158,7 @@ public class CcNet : MonoBehaviour {
 		float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, 
 		int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, 
 		int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, 
-		int playerLives, bool newGame, bool basketball, bool needsGen, int seed, NetworkMessageInfo info
+		int playerLives, bool newGame, bool basketball, float speedUp, bool needsGen, int seed, NetworkMessageInfo info
 	) {
 		// we've received game info from the server
 		latestPacket = Time.time;
@@ -1214,6 +1215,7 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.pickupSlot5 = (Item)pickupSlot5;
 			CurrMatch.NeedsGenerating = needsGen;
 			CurrMatch.Seed = seed;
+			CurrMatch.MoveSpeedMult = speedUp;
 		}
 		
 		if (targetTeam != -1) {

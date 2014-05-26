@@ -251,8 +251,8 @@ public class EntityClass : MonoBehaviour {
 					if (hud.Mode == HudMode.Playing || 
 						hud.Mode == HudMode.Editing
 					) {
-						camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.LookSensitivity * invY;
-						camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.LookSensitivity;
+						camAngle.x -= Input.GetAxis("Mouse Y") * locUser.LookSensitivity * invY;
+						camAngle.y += Input.GetAxis("Mouse X") * locUser.LookSensitivity;
 						float max = 89f; // degrees up or down limit
 						if (camAngle.x >  max) 
 							camAngle.x =  max;
@@ -266,6 +266,7 @@ public class EntityClass : MonoBehaviour {
 					}
 
 					sprintRelease += Time.deltaTime;
+					Time.timeScale = net.CurrMatch.MoveSpeedMult;
 					
 					camHolder.transform.localEulerAngles = camAngle;
 					Vector3 inputVector = Vector3.zero; 

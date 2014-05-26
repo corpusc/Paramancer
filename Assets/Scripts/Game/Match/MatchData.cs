@@ -30,8 +30,8 @@ public class MatchData {
 	public Item pickupSlot5 = Item.Pistol;
 	public bool NeedsGenerating = false;
 	public int Seed = 0;
-
-	// private 
+	public float MoveSpeedMult = 1f; // the movement speed multiplier
+	
 	public static string gvName = "RoguelikeMapVoxel"; // user-facing name of procecurally generated voxel-style map generation 
 	
 	

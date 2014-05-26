@@ -193,6 +193,7 @@ GameObject:
   - 135: {fileID: 937186070}
   - 23: {fileID: 937186069}
   - 108: {fileID: 937186068}
+  - 114: {fileID: 937186073}
   m_Layer: 13
   m_Name: JumpPad
   m_TagString: Untagged
@@ -286,6 +287,25 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!114 &937186073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 937186067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1431e61875fe64a4d8ac0cd571d94d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  litInPitchBlack: 0
+  OnlyPitchBlack: 0
+  MovingRandomly: 0
+  Flickering: 0
+  DirChangeTime: 500
+  MaxSpeed: 2
+  FlickerTimer: 30
+  MaxWanderDistance: 80
 --- !u!1 &1179156997
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,6 +318,7 @@ GameObject:
   - 136: {fileID: 1179157000}
   - 23: {fileID: 1179156999}
   - 108: {fileID: 1179156998}
+  - 114: {fileID: 1179157003}
   m_Layer: 0
   m_Name: Torch
   m_TagString: Untagged
@@ -392,6 +413,25 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!114 &1179157003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1179156997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1431e61875fe64a4d8ac0cd571d94d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  litInPitchBlack: 0
+  OnlyPitchBlack: 0
+  MovingRandomly: 0
+  Flickering: 0
+  DirChangeTime: 500
+  MaxSpeed: 2
+  FlickerTimer: 30
+  MaxWanderDistance: 80
 --- !u!1 &1297443169
 GameObject:
   m_ObjectHideFlags: 0

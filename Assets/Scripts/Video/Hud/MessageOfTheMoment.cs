@@ -23,7 +23,7 @@ public class MessageOfTheMoment {
 
 	public void Draw(Hud hud) {
 		if (Time.time > nextTip) {
-			nextTip += msgDura;
+			nextTip = Time.time + msgDura;
 
 			string newtip = "";
 

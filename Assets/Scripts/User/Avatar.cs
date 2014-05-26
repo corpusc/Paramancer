@@ -38,6 +38,7 @@ public class Avatar : MonoBehaviour {
 			sprintActivatedTime = (sprintActivatedTime - Time.deltaTime < 0f) 
 				? 0f 
 				: (sprintActivatedTime - Time.deltaTime);
+
 		
 
 		isGrounded = false;
