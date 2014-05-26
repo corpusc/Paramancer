@@ -20,15 +20,14 @@ public class MatchSetup {
 
 	public void Init() {
 		// load map preview pics 
-		UnityEngine.Object[] pics = Resources.LoadAll("Pic/MapPreview");
+		Object[] pics = Resources.LoadAll("Pic/MapPreview");
 		
 		// setup map configs 
 		for (int i = 0; i < pics.Length; i++)
 			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
 
-		// currently unused, but it might prove useful in the future
 		for (int i = 0; i < maps.Count; i++) {
-			if (maps[i].Name == MatchData.gvName){
+			if (maps[i].Name == MatchData.ProcGenName){
 				//MonoBehaviour.print("A map called " + maps[i].Name + " has been found, supposed to be roguelike");
 				maps[i].ProcGen = true;
 			}
@@ -321,7 +320,7 @@ public class MatchSetup {
 		
 		//MonoBehaviour.print("Current map name: " + maps[mapId].Name);
 		// roguelike map stuff
-		if (matches[matchId].Maps[mapId] == MatchData.gvName) {
+		if (matches[matchId].Maps[mapId] == MatchData.ProcGenName) {
 			//MonoBehaviour.print("Current map is procedurally generated!");
 			GUILayout.BeginHorizontal();
 			GUILayout.Box("Map Seed");
@@ -332,7 +331,7 @@ public class MatchSetup {
 			GUILayout.EndHorizontal();
 		}
 
-		if (matches[matchId].Maps[mapId] == MatchData.gvName) {
+		if (matches[matchId].Maps[mapId] == MatchData.ProcGenName) {
 			matches[matchId].NeedsGenerating = true;
 		} else {
 			matches[matchId].NeedsGenerating = false;

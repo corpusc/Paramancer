@@ -21,10 +21,6 @@ public class Arsenal : MonoBehaviour {
 	public AudioClip sfx_rifleshoot;
 	public AudioClip sfx_grenadethrow;
 	public AudioClip sfx_swappershoot;
-	// 		explosions 
-	public AudioClip sfx_grenadeExplode;
-	public AudioClip sfx_rocketExplode;
-	public AudioClip sfx_bombExplode;
 	// 		while holding 
 	public AudioClip sfx_bombBeep;
 
@@ -252,30 +248,30 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<net.players.Count; i++) {
 			if (net.players[i].viewID == shooterID) {
 				switch (weapon) {
-					case Item.Pistol:           playSfx(i, sfx_pistolshoot); break;
-					case Item.GrenadeLauncher:  playSfx(i, sfx_grenadethrow); break;
-					case Item.MachineGun:       playSfx(i, sfx_machinegunshoot); break;
-					case Item.Spatula:          playSfx(i, sfx_spatula); break;
-					case Item.RailGun:          playSfx(i, sfx_rifleshoot); break;
-					case Item.RocketLauncher:   playSfx(i, sfx_grenadethrow); break;
-					// case Item.GravGun: *** the activation sound is currently located along with jump/land sfx. //FIXME?
+					case Item.Pistol:           playPitchedSfx(i, sfx_pistolshoot); break;
+					case Item.GrenadeLauncher:  playPitchedSfx(i, sfx_grenadethrow); break;
+					case Item.MachineGun:       playPitchedSfx(i, sfx_machinegunshoot); break;
+					case Item.Spatula:          playPitchedSfx(i, sfx_spatula); break;
+					case Item.RailGun:          playPitchedSfx(i, sfx_rifleshoot); break;
+					case Item.RocketLauncher:   playPitchedSfx(i, sfx_grenadethrow); break;
+					// case Item.GravGun: *** the activation sound is currently located along with jump/land sfx. //FIXME? 
 					// it's not sending the shot sound trigger over the net. 
 					// so a pursuer has to look around for a flee'er (since you can't hear them) 
 					// when they enter into a large space/room.  this may be a good thing? 
-					case Item.Swapper:         playSfx(i, sfx_swappershoot); break;
+					case Item.Swapper:         playPitchedSfx(i, sfx_swappershoot); break;
 				}
 			}
 		}
 	}
 		
-	void playSfx(int i, AudioClip ac) {
+	void playPitchedSfx(int i, AudioClip ac) { // randomly pitched for variety 
 		net.players[i].Entity.weaponSoundObj.audio.clip = ac;
 		
-		
-		if /* local user */ (net.players[i].viewID == net.localPlayer.viewID) 
+		// if local user 
+		if (net.players[i].viewID == net.localPlayer.viewID) 
 			net.players[i].Entity.weaponSoundObj.audio.volume = 0.3f;
 		
-		net.players[i].Entity.weaponSoundObj.audio.pitch = Random.Range(0.9f,1.1f);
+		net.players[i].Entity.weaponSoundObj.audio.pitch = Random.Range(0.9f, 1.1f);
 		net.players[i].Entity.weaponSoundObj.audio.Play();
 	}
 	
@@ -297,10 +293,10 @@ public class Arsenal : MonoBehaviour {
 	}
 	
 	public void BombBeep(Vector3 pos) {
-		GameObject bombBeepObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
-		bombBeepObj.transform.position = pos;
-		bombBeepObj.audio.clip = sfx_bombBeep;
-		bombBeepObj.audio.volume = 1f;
+		var o = (GameObject)GameObject.Instantiate(soundObjectPrefab); // bomb beep object 
+		o.transform.position = pos;
+		o.audio.clip = sfx_bombBeep;
+		o.audio.volume = 1f;
 	}
 	
 	public void Detonate(Item weapon, Vector3 detPos, NetworkViewID viewID) {
@@ -311,7 +307,7 @@ public class Arsenal : MonoBehaviour {
 				
 			GameObject bombSoundObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
 			bombSoundObj.transform.position = detPos;
-			bombSoundObj.audio.clip = sfx_bombExplode;
+			bombSoundObj.audio.clip = Sfx.Get("ExplodeBomb");
 			bombSoundObj.audio.volume = 4f;
 		} else if (weapon == Item.RocketProjectile) {
 			print ("WARNING: Detonate() was called for a rocket!");
@@ -325,7 +321,7 @@ public class Arsenal : MonoBehaviour {
 				
 				GameObject grenadeSoundObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
 				grenadeSoundObj.transform.position = activeGrenades[i].transform.position;
-				grenadeSoundObj.audio.clip = sfx_grenadeExplode;
+				grenadeSoundObj.audio.clip = Sfx.Get("ExplodeGrenade");
 				grenadeSoundObj.audio.volume = 2f;
 				
 				
@@ -360,12 +356,12 @@ public class Arsenal : MonoBehaviour {
 					}
 				}
 				
-				// detonate rocket
+				// detonate rocket 
 				GameObject grenadeFlash = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
 				grenadeFlash.transform.position = activeRockets[i].transform.position;
 				GameObject rocketSoundObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
 				rocketSoundObj.transform.position = activeRockets[i].transform.position;
-				rocketSoundObj.audio.clip = sfx_rocketExplode;
+				rocketSoundObj.audio.clip = Sfx.Get("ExplodeRocket");
 				rocketSoundObj.audio.volume = 4f;
 				Destroy(activeRockets[i].gameObject);
 				activeRockets.RemoveAt(i);

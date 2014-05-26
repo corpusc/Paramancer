@@ -22,7 +22,7 @@ public class MatchData {
 	public float restockTime = 12f;
 	public int playerLives = 0;
 	public bool basketball = false;
-	// what is in the level pickupslots?
+	// pickupslots 
 	public Item pickupSlot1 = Item.Health;
 	public Item pickupSlot2 = Item.GrenadeLauncher;
 	public Item pickupSlot3 = Item.MachineGun;
@@ -30,14 +30,14 @@ public class MatchData {
 	public Item pickupSlot5 = Item.Pistol;
 	public bool NeedsGenerating = false;
 	public int Seed = 0;
-	public float MoveSpeedMult = 1f; // the movement speed multiplier
+	public float MoveSpeedMult = 1f; // the movement speed multiplier 
 	
-	public static string gvName = "[Generated]"; // user-facing name of procedural voxel-style map generation 
+	public static string ProcGenName = "[Generated]"; // user-facing name of procedurally generated voxel-style maps 
 	
 	
 	
 	public MatchData(Match match) {
-		var all /*'''*/ = new List<string>() { gvName, "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
+		var all /*'''*/ = new List<string>() { ProcGenName, "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 		var hasGoalsAndCeilings = new List<string>() { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		Maps = all;
 
@@ -50,7 +50,7 @@ public class MatchData {
 				Name = "Bring Your Own Gravity"; //  A Gravity Of Your Own?  Gravity Is/Gets Personal? 
 				Descript = "Each player has their own, independent, changeable gravity";
 				Maps = hasGoalsAndCeilings;
-				Maps.Insert(0, gvName);
+				Maps.Insert(0, ProcGenName);
 				spawnGunA = Item.Gravulator;
 				spawnGunB = Item.Pistol;
 				pickupSlot5 = Item.RocketLauncher;

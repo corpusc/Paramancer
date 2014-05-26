@@ -21,8 +21,9 @@ public static class Sfx {
 	static Sfx() {
 		handleFolder("Announce");
 		handleFolder("Av");
+		handleFolder("Explode");
 		handleFolder("Misc");
-		handleFolder("Shoot");
+		handleFolder("Activate");
 	}
 
 	public static void PlayOmni(string s) { // seemingly positionless sound.  FIXME? cuz that requires unchecking 3D/threeD?
