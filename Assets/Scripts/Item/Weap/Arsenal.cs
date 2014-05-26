@@ -103,6 +103,7 @@ public class Arsenal : MonoBehaviour {
 	}
 	
 	public void Clear() {
+		// FIXME?  should we be clearing out rockets here too? 
 		for (int i=0; i<activeGrenades.Count; i++) {
 			if (activeGrenades[i] != null && activeGrenades[i].gameObject != null) 
 				Destroy(activeGrenades[i].gameObject);
@@ -219,16 +220,17 @@ public class Arsenal : MonoBehaviour {
 				break;
 			
 			case Item.GrenadeLauncher:
-				GameObject newGrenade = (GameObject)GameObject.Instantiate(grenadeBulletPrefab);
-				newGrenade.GetComponent<GrenadeScript>().start = origin;
-				newGrenade.GetComponent<GrenadeScript>().direction = direction;
-				newGrenade.GetComponent<GrenadeScript>().startTime = time;
-				newGrenade.GetComponent<GrenadeScript>().viewID = bulletID;
-				newGrenade.GetComponent<GrenadeScript>().shooterID = shooterID;
-				newGrenade.GetComponent<GrenadeScript>().detonationTime = 3f;
-				newGrenade.GetComponent<GrenadeScript>().ThrowFaster = sprint;
+				var ng = (GameObject)GameObject.Instantiate(grenadeBulletPrefab);
+				var gs = ng.GetComponent<GrenadeScript>();
+				gs.start = origin;
+				gs.direction = direction;
+				gs.startTime = time;
+				gs.viewID = bulletID;
+				gs.shooterID = shooterID;
+				gs.detonationTime = 3f;
+				gs.ThrowFaster = sprint;
 				
-				activeGrenades.Add(newGrenade.GetComponent<GrenadeScript>());
+				activeGrenades.Add(gs);
 				break;
 			
 			case Item.RocketLauncher:
@@ -251,16 +253,16 @@ public class Arsenal : MonoBehaviour {
 			if (net.players[i].viewID == shooterID) {
 				switch (weapon) {
 					case Item.Pistol:           playSfx(i, sfx_pistolshoot); break;
-					case Item.GrenadeLauncher:        playSfx(i, sfx_grenadethrow); break;
+					case Item.GrenadeLauncher:  playSfx(i, sfx_grenadethrow); break;
 					case Item.MachineGun:       playSfx(i, sfx_machinegunshoot); break;
 					case Item.Spatula:          playSfx(i, sfx_spatula); break;
 					case Item.RailGun:          playSfx(i, sfx_rifleshoot); break;
-					case Item.RocketLauncher: playSfx(i, sfx_grenadethrow); break;
-					// case Item.GravGun: *** soundwise, the activation sound is currently located along with jump/land sfx //FIXME
-					// OR........if doing this automatically sends the shot sound trigger over the net, maybe its good to 
-					// make a pursuer have to look around instead of audibly telling him the exact direction a flee'er 
-					// when they enter into a large space? 
-					case Item.Swapper:        playSfx(i, sfx_swappershoot); break;
+					case Item.RocketLauncher:   playSfx(i, sfx_grenadethrow); break;
+					// case Item.GravGun: *** the activation sound is currently located along with jump/land sfx. //FIXME?
+					// it's not sending the shot sound trigger over the net. 
+					// so a pursuer has to look around for a flee'er (since you can't hear them) 
+					// when they enter into a large space/room.  this may be a good thing? 
+					case Item.Swapper:         playSfx(i, sfx_swappershoot); break;
 				}
 			}
 		}

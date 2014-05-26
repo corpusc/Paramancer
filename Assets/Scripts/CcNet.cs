@@ -398,7 +398,7 @@ public class CcNet : MonoBehaviour {
 				players[i].health > 0f
 			) {
 				players[i].Entity.PlaySound("guydamage"); // positioned at the hit player 
-				sfx.PlayOmni("TakeDamage"); // heard at same volume, regardless where the hit player is 
+				Sfx.PlayOmni("TakeDamage"); // heard at same volume, regardless where the hit player is 
 			}
 		}
 	}
