@@ -16,7 +16,7 @@ public class Hud : MonoBehaviour {
 	public float VSpanButton; // button vertical span
 	public float VSpanLabel; // label vertical span
 	public Rect Window = new Rect(0, 0, 600, 400); // background for most menus 
-	private HudMode mode = HudMode.PreMenu;
+	private HudMode mode = HudMode.SplashLogos;
 	public HudMode Mode {
 		get { return mode; }
 		set {
@@ -199,8 +199,8 @@ public class Hud : MonoBehaviour {
 //				joinMatchInProgress();
 //				break;
 
-			case HudMode.PreMenu:
-				preMenu();
+			case HudMode.SplashLogos:
+				showSplashLogos();
 				break;
 
 			case HudMode.MainMenu:
@@ -1024,7 +1024,16 @@ public class Hud : MonoBehaviour {
 	
 	
 	
+	void showSplashLogos() {
+		Rect r = new Rect(0, 0, Screen.width, Screen.height);
+		GUI.DrawTexture(r, Pics.Get("blackTex"));
+		GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));
+
+		if (Time.time > 5f || Debug.isDebugBuild)
+			Mode = HudMode.MainMenu;
+	}
 	
+
 
 	
 	
@@ -1045,13 +1054,6 @@ public class Hud : MonoBehaviour {
 		return false;
 	}
 
-	void preMenu() {
-		Rect r = new Rect(0, 0, Screen.width, Screen.height);
-		GUI.DrawTexture(r, Pics.Get("blackTex"));
-		GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));
-		if (Time.time > 2f) Mode = HudMode.MainMenu;
-	}
-
 	void menuMain() {
 		float hS = 112; // half the horizontal span of menu items 
 
@@ -1060,6 +1062,7 @@ public class Hud : MonoBehaviour {
 		// 'Paramancer' dimensions are close to perfect square, so midX can be both wid & hei 
 		GUI.DrawTexture(new Rect(0, Screen.height-paraWid, paraWid, paraWid), Pics.Get("Logo - Paramancer"));
 
+		// 		company logo 
 		float cazWid = paraWid/2;
 		var r = new Rect(cazWid/2, 0, cazWid, cazWid/2);
 		//GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));

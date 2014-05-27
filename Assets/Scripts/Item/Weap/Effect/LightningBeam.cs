@@ -18,13 +18,14 @@ public class LightningBeam : MonoBehaviour {
 
 	void Start() {
 		lr = GetComponent<LineRenderer>();
+
+		if (hit) 
+			col = new Color(0, 1, 1, 1f);
+		else 
+			col = new Color(1, 1, 0, 1f);
 		
-		
-		
-		if (hit) col = new Color(0,1,1,0.35f);
-		if (!hit) col = new Color(1,0.5f,0,0.35f);
-		
-		lr.SetColors(col,col);
+		lr.SetColors(col, col);
+		lr.SetWidth(0.1f, 0.5f);
 		
 		float distance = Vector3.Distance(start,end);
 		Vector3 direction = (end-start).normalized;

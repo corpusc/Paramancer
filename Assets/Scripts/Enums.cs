@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public enum ControlDevice {
@@ -49,7 +49,7 @@ public enum Match {
 
 public enum HudMode {
 	// Offline
-	PreMenu,
+	SplashLogos,
 	MainMenu,
 	NewGame,         // see comment below VVVVVVVVVV 
 	Connecting,

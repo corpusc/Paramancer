@@ -107,11 +107,16 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 		
-		var nb = (GameObject)GameObject.Instantiate(LightningBeamPrefab);
-		nb.GetComponent<LightningBeam>().start = origin;
-		if (localFire && !hit) nb.GetComponent<LightningBeam>().start = localstart;
-		nb.GetComponent<LightningBeam>().end = end;
-		nb.GetComponent<LightningBeam>().hit = hit;
+		var lbp = (GameObject)GameObject.Instantiate(LightningBeamPrefab);
+		var lb = lbp.GetComponent<LightningBeam>();
+
+		if (localFire && !hit) 
+			lb.start = localstart;
+		else
+			lb.start = origin;
+
+		lb.end = end;
+		lb.hit = hit;
 	}
 
 	void shootHitscan(Vector3 origin, Vector3 end, NetworkViewID shooterID, Item weapon, Vector3 hitNorm) {
