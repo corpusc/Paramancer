@@ -63,8 +63,8 @@ public static class Sfx {
 
 		switch (s) {
 			case "Announce":
-				// hmmm, guess we want them to be 3D afterall....to at least hear what it sounds like
-				// with announcements coming from the player who achieved something (like a MultiFrag)
+				// hmmm, I guess we want them to be 3D for now....to at least hear what it sounds like 
+				// with announcements coming from the player who achieved something (like a MultiFrag) 
 
 				// make all these non-locational (2D)
 //				foreach (var ac in aClips) {
@@ -86,7 +86,7 @@ public static class Sfx {
 				case "Catch": nc.Volume = 0.4f; break;
 				case "click": nc.Volume = 0.2f; break;
 				case "Die": nc.Volume = 1f; break;
-				case "GravGun": nc.Volume = 0.4f; break;
+				case "Gravulator": nc.Volume = 0.4f; break;
 				case "guncocked": nc.Volume = 0.2f; break;
 				case "Land": nc.Volume = 0.5f; break;
 				case "Swapped": nc.Volume = 0.4f; break;

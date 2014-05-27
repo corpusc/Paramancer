@@ -15,12 +15,7 @@ public class Arsenal : MonoBehaviour {
 
 	// SOUNDS 
 	// 		activates 
-	public AudioClip sfx_spatula;
-	public AudioClip sfx_machinegunshoot;
-	public AudioClip sfx_pistolshoot;
-	public AudioClip sfx_rifleshoot;
 	public AudioClip sfx_grenadethrow;
-	public AudioClip sfx_swappershoot;
 	// 		while holding 
 	public AudioClip sfx_bombBeep;
 
@@ -248,17 +243,14 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<net.players.Count; i++) {
 			if (net.players[i].viewID == shooterID) {
 				switch (weapon) {
-					case Item.Pistol:           playPitchedSfx(i, sfx_pistolshoot); break;
 					case Item.GrenadeLauncher:  playPitchedSfx(i, sfx_grenadethrow); break;
-					case Item.MachineGun:       playPitchedSfx(i, sfx_machinegunshoot); break;
-					case Item.Spatula:          playPitchedSfx(i, sfx_spatula); break;
-					case Item.RailGun:          playPitchedSfx(i, sfx_rifleshoot); break;
 					case Item.RocketLauncher:   playPitchedSfx(i, sfx_grenadethrow); break;
-					// case Item.GravGun: *** the activation sound is currently located along with jump/land sfx. //FIXME? 
+					// case Item.Gravulator: 
+					// *** the activation sound is currently located along with jump/land sfx. //FIXME? 
 					// it's not sending the shot sound trigger over the net. 
 					// so a pursuer has to look around for a flee'er (since you can't hear them) 
 					// when they enter into a large space/room.  this may be a good thing? 
-					case Item.Swapper:         playPitchedSfx(i, sfx_swappershoot); break;
+					default: playPitchedSfx(i, Sfx.Get(weapon.ToString())); break;
 				}
 			}
 		}

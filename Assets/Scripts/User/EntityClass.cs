@@ -839,7 +839,7 @@ public class EntityClass : MonoBehaviour {
 					ForceLook(lookPos);
 					camHolder.transform.localEulerAngles = camAngle;
 					Camera.main.transform.rotation = tempRot;
-					PlaySound("GravGun");
+					PlaySound("Gravulator");
 				}
 				
 				sendRPCUpdate = true;
