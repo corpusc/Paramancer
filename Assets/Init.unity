@@ -322,6 +322,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GoToPrevMenu: << Back <<
   TopOfMaxedLog: 0
+  Log: {fileID: 0}
   Font: {fileID: 12800000, guid: 6dcecc57693b1d2419e4eb77f98caf4c, type: 3}
   GS:
     m_Name: 
@@ -415,13 +416,6 @@ MonoBehaviour:
   rocketPrefab: {fileID: 100008, guid: 25e20a6aa62c1484a885c7c782a77d9f, type: 2}
   soundObjectPrefab: {fileID: 100000, guid: e86b6e853a30b4e2a9ef054ac49d6367, type: 2}
   BulletMark: {fileID: 100000, guid: e59b379acf30d804da93c18bad9a4da4, type: 2}
-  sfx_spatula: {fileID: 8300000, guid: 0fd275ada7832f648a93f103d137247f, type: 3}
-  sfx_machinegunshoot: {fileID: 8300000, guid: 80eb9cf2a70c64cbf9d8eec92c594ce9, type: 3}
-  sfx_pistolshoot: {fileID: 8300000, guid: 910a402d773125c409f036802c152da5, type: 3}
-  sfx_rifleshoot: {fileID: 8300000, guid: aa2383076672f4596aa86efe7637d3df, type: 3}
-  sfx_grenadethrow: {fileID: 8300000, guid: 1d76523fac103be49b2c4c186b5761bc, type: 3}
-  sfx_swappershoot: {fileID: 8300000, guid: d28c124d7f4ba42349a9e85d3cf0e601, type: 3}
-  sfx_bombBeep: {fileID: 8300000, guid: 983c3e484036e420093be50b2e4028d6, type: 3}
   WidestIcon: 0
   TallestIcon: 0
 --- !u!114 &1973207299

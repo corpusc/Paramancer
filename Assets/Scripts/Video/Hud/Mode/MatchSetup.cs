@@ -238,6 +238,17 @@ public class MatchSetup {
 			matches[matchId].MoveSpeedMult = GUILayout.HorizontalSlider(matches[matchId].MoveSpeedMult, 0.1f, 10f);
 			GUILayout.EndHorizontal();
 
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("Gravity Force:");
+			GUILayout.Label(matches[matchId].Gravity.ToString());
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			
+			GUILayout.BeginHorizontal();
+			matches[matchId].Gravity = GUILayout.HorizontalSlider(matches[matchId].Gravity, 0.1f, 30f);
+			GUILayout.EndHorizontal();
+
 			GUILayout.Label("");
 			GUILayout.Label("");
 

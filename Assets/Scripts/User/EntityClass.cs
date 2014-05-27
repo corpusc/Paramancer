@@ -235,7 +235,6 @@ public class EntityClass : MonoBehaviour {
 					}
 
 					sprintRelease += Time.deltaTime;
-					Time.timeScale = net.CurrMatch.MoveSpeedMult;
 					
 					camHolder.transform.localEulerAngles = camAngle;
 					Vector3 inputVector = Vector3.zero; 
@@ -296,7 +295,7 @@ public class EntityClass : MonoBehaviour {
 							net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
 						}
 					}else{
-						yMove -= Time.deltaTime * 10f;
+						yMove -= Time.deltaTime * net.CurrMatch.Gravity;
 					}
 
 					ava.Move(transform.up * yMove * Time.deltaTime * 5f);

@@ -1091,6 +1091,7 @@ public class CcNet : MonoBehaviour {
 		CurrMatch.NeedsGenerating = md.NeedsGenerating;
 		CurrMatch.Seed = md.Seed;
 		CurrMatch.MoveSpeedMult = md.MoveSpeedMult;
+		CurrMatch.Gravity = md.Gravity;
 	}
 	
 	[RPC]
@@ -1148,7 +1149,7 @@ public class CcNet : MonoBehaviour {
 			targetTeam, CurrMatch.FriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
 			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
 			(int)CurrMatch.pickupSlot3, (int)CurrMatch.pickupSlot4, (int)CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
-			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.NeedsGenerating, CurrMatch.Seed);
+			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.Gravity, CurrMatch.NeedsGenerating, CurrMatch.Seed);
 	}
 	
 	public float gameTimeLeft = 0f;
@@ -1159,10 +1160,13 @@ public class CcNet : MonoBehaviour {
 		float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, 
 		int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, 
 		int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, 
-		int playerLives, bool newGame, bool basketball, float speedUp, bool needsGen, int seed, NetworkMessageInfo info
+		int playerLives, bool newGame, bool basketball, float speedUp, float GForce, bool needsGen, int seed, NetworkMessageInfo info
 	) {
 		// we've received game info from the server
 		latestPacket = Time.time;
+		
+		Time.timeScale = speedUp;
+		Physics.gravity = new Vector3(0f, -GForce, 0f);
 		
 		if (NetVI != null && 
 			NetVI == viewID && 
@@ -1217,6 +1221,7 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.NeedsGenerating = needsGen;
 			CurrMatch.Seed = seed;
 			CurrMatch.MoveSpeedMult = speedUp;
+			CurrMatch.Gravity = GForce;
 		}
 		
 		if (targetTeam != -1) {
@@ -1546,6 +1551,8 @@ public class CcNet : MonoBehaviour {
 	
 	void OnDisconnectedFromServer(NetworkDisconnection netDis) {
 		Debug.Log("Disconnected from server");
+		Time.timeScale = 1f;
+		Physics.gravity = new Vector3(0f, -10f, 0f);
 		if (isServer) 
 			return;
 		

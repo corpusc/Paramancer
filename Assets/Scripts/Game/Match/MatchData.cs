@@ -30,7 +30,8 @@ public class MatchData {
 	public Item pickupSlot5 = Item.Pistol;
 	public bool NeedsGenerating = false;
 	public int Seed = 0;
-	public float MoveSpeedMult = 1f; // the movement speed multiplier 
+	public float MoveSpeedMult = 1f; // the mtime speed multiplier 
+	public float Gravity = 10f;
 	
 	public static string ProcGenName = "Generated with seed"; // user-facing name of procedurally generated voxel-style maps 
 	
