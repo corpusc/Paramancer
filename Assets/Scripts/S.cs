@@ -11,29 +11,19 @@ static public class S {
 	public const int K = 1000; // K = 1000. Like the thing you see on statistics pages.
 	
 	// colors 
-	// shouty/shimmery color that cycles back and forth between 2 colors 
+	// shouty/shimmery colors that cycle back & forth tween 2 colors 
 	static float point; // ...between them 
 	static bool increasing = true; // ... towards the limit of 1f 
-	//static private shoutyColor;
-	static public Color ShoutyColor { 
+	static public Color ShoutyBlue { 
 		get { 
-			if (increasing) {
-				point += Time.deltaTime * 1.3f;
-				
-				if (point > 1f) {
-					point = 1f;
-					increasing = false;
-				}
-			}else{ // decreasing 
-				point -= Time.deltaTime * 1.3f;
-				
-				if (point < 0f) {
-					point = 0f;
-					increasing = true;
-				}
-			}
-			
+			moveTween0and1();
 			return Color.Lerp(Color.cyan, Color.blue, point);
+		} 
+	}
+	static public Color ShoutyGreen { 
+		get { 
+			moveTween0and1();
+			return Color.Lerp(new Color(0f, 0.3f, 0f, 1f), Color.green, point);
 		} 
 	}
 	// 		transparent 
@@ -46,12 +36,34 @@ static public class S {
 	public static Color PurpleLight = Color.Lerp(Purple, Color.white, 0.5f);
 	public static Color Orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
 
+	// private 
+	static float ccs = 1.2f; // color change speed 
+
+
 	static public int GetInt(string v) {
 		return Convert.ToInt32(v.Trim(), new CultureInfo("en-US"));
 	}
 	
 	static public double GetDouble(string v) {
 		return Convert.ToDouble(v.Trim(), new CultureInfo("en-US"));
+	}
+
+	static void moveTween0and1() {
+		if (increasing) {
+			point += Time.deltaTime * ccs;
+			
+			if (point > 1f) {
+				point = 1f;
+				increasing = false;
+			}
+		}else{ // decreasing 
+			point -= Time.deltaTime * ccs;
+			
+			if (point < 0f) {
+				point = 0f;
+				increasing = true;
+			}
+		}
 	}
 
 	static public string GetSpacedOut(string s) {
@@ -69,7 +81,7 @@ static public class S {
 	}
 
 	static public void SetShoutyColor() {
-		GUI.color = ShoutyColor;
+		GUI.color = ShoutyBlue;
 	}
 	
 	static public void GUIOutlinedLabel(Rect r, string s) {

@@ -697,21 +697,19 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	public GameObject aimBone;
-	private Vector3 gunInertia = Vector3.zero;
-	private Vector3 gunRecoil = Vector3.zero;
-	private Vector3 gunRot = Vector3.zero;
-	private float gunBounce = 0f;
+	// private 
+	Vector3 gunInertia = Vector3.zero;
+	Vector3 gunRecoil = Vector3.zero;
+	float gunBounce = 0f;
 	void moveFPGun() {
 		if (firstPersonGun == null) 
 			return;
 		
 		// angle
-		firstPersonGun.transform.eulerAngles = gunRot;
 		Quaternion fromRot = firstPersonGun.transform.rotation;
-		firstPersonGun.transform.localEulerAngles = new Vector3( -90, 0, 0);
+		firstPersonGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
 		firstPersonGun.transform.rotation = Quaternion.Slerp(fromRot, firstPersonGun.transform.rotation, Time.deltaTime * 30f);
-		gunRot = firstPersonGun.transform.eulerAngles;
-		
+
 		firstPersonGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
 		
 		gunInertia -= (gunInertia-new Vector3(0f, yMove, 0f)) * Time.deltaTime * 5f;

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -46,7 +46,7 @@ public class RlikePlane : MonoBehaviour {
 		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 		if (wallPointNear(ray)) {
-			cwt.GO.renderer.material.color = S.ShoutyColor;
+			cwt.GO.renderer.material.color = S.ShoutyBlue;
 		}else{
 			if (cwt != null) {
 				cwt.GO.renderer.material.color = Color.white;

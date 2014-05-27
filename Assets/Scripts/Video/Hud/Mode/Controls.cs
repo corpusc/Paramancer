@@ -60,6 +60,8 @@ using UnityEngine;
 using System.Collections;
 
 public class Controls : MonoBehaviour {
+	public BindData Draggee = null; // user action that is attached to pointer 
+
 	public int HeightOfKeyboard;
 	public Texture currDevPic;
 
@@ -74,7 +76,6 @@ public class Controls : MonoBehaviour {
 	int maxX = 21;
 	int maxY = numMouseButtonRows + numKeyRows;
 	int span;
-	BindData draggee = null; // user action that is attached to pointer.  it's still dragging if you're not HOLDING LMB?!
 	Vector3 mouPos; // converted Input.mousePosition to sensible coordinates
 	// VVVVV matching indices VVVVVVV
 	KeyCode[] codes; // first build this for cleaner looking initialization of values
@@ -195,33 +196,33 @@ public class Controls : MonoBehaviour {
 			int tkId; // targeted key id
 			var tk = targetedKey(out tkId);
 			if (tk == null) { // not a valid area, so discard draggee 
-				if (draggee != null) {
-					draggee.Id = latestUnboundKey;
-					draggee.KeyCode = codes[latestUnboundKey];
+				if (Draggee != null) {
+					Draggee.Id = latestUnboundKey;
+					Draggee.KeyCode = codes[latestUnboundKey];
 				}
 				
-				draggee = null; // 
+				Draggee = null; // 
 			}else{ // over a valid key
-				if (draggee == null) {
+				if (Draggee == null) {
 					// pick it up
 					for (int i = 0; i < CcInput.BindData.Length; i++) {
 						if (tkId == CcInput.BindData[i].Id) {
 							latestUnboundKey = CcInput.BindData[i].Id;
 							//CcInput.BindData[i].Id = 9999;       FIXME?   why the fuck did i do this?  some concern that was never finished i guess 
-							draggee = CcInput.BindData[i];
+							Draggee = CcInput.BindData[i];
 						}
 					}
 				}else{ // we were dragging
 					// change bind settings
-					draggee.Id = tkId;
-					draggee.KeyCode = tk.KeyCode;
+					Draggee.Id = tkId;
+					Draggee.KeyCode = tk.KeyCode;
 					
 					// if there was something else there, that's the new draggee
 					bool anotherWasBoundThere = false;
 					BindData theOther = null;
 					for (int i = 0; i < CcInput.BindData.Length; i++) {
-						if (draggee != CcInput.BindData[i] && 
-							draggee.Id == CcInput.BindData[i].Id)
+						if (Draggee != CcInput.BindData[i] && 
+							Draggee.Id == CcInput.BindData[i].Id)
 						{
 							anotherWasBoundThere = true;
 							theOther = CcInput.BindData[i];
@@ -230,9 +231,9 @@ public class Controls : MonoBehaviour {
 					
 					if (anotherWasBoundThere) {
 						theOther.Id = 9999;
-						draggee = theOther;
+						Draggee = theOther;
 					}else
-						draggee = null;
+						Draggee = null;
 				}
 			}
 		}
@@ -286,7 +287,7 @@ public class Controls : MonoBehaviour {
 		// draw action icons 
 		var bd = CcInput.BindData;
 		for (int i = 0; i < bd.Length; i++) {
-			if (bd[i] != draggee) {
+			if (bd[i] != Draggee) {
 				// get the right color
 				if (pushingOrHoveringOver(bd[i].Id))
 					GUI.color = Color.cyan;
@@ -342,9 +343,9 @@ public class Controls : MonoBehaviour {
 		}
 		
 		// draw action icon near pointer if it's being moved 
-		if (draggee != null) {
+		if (Draggee != null) {
 			GUI.color = S.Purple;
-			S.GUIDrawOutlinedTexture(new Rect(mouPos.x-span/2, mouPos.y/*+span/2*/, span, span), draggee.Pic, ScaleMode.ScaleToFit);
+			S.GUIDrawOutlinedTexture(new Rect(mouPos.x-span/2, mouPos.y/*+span/2*/, span, span), Draggee.Pic, ScaleMode.ScaleToFit);
 		}
 
 		GUI.color = Color.white;
@@ -359,7 +360,7 @@ public class Controls : MonoBehaviour {
 
 	string targetedBind() {
 		for (int i = 0; i < CcInput.BindData.Length; i++) {
-			if ((draggee == null || CcInput.BindData[i].Id != draggee.Id) &&
+			if ((Draggee == null || CcInput.BindData[i].Id != Draggee.Id) &&
 				keyData[CcInput.BindData[i].Id].Rect.Contains(mouPos) ) {
 				return S.GetSpacedOut(CcInput.BindData[i].Action.ToString());
 			}

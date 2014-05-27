@@ -162,7 +162,7 @@ public class Hud : MonoBehaviour {
 		}
 
 		//setupSkin();
-		GUI.skin.button.hover.textColor = S.ShoutyColor;
+		GUI.skin.button.hover.textColor = S.ShoutyBlue;
 		GUI.skin.button.active.textColor = S.Purple;
 
 		// if screen dimensions changed 
@@ -742,10 +742,15 @@ public class Hud : MonoBehaviour {
 
 		// inform user of remapping abilities 
 		centeredLabel("Press keys to LIGHT THEM UP");
-		S.SetShoutyColor();
-		centeredLabel("Left-Click on actions to move them elsewhere");
+		if (controls.Draggee == null) {
+			S.SetShoutyColor();
+			centeredLabel("Left-Click to change actions");
+		}else{
+			GUI.color = S.ShoutyGreen;
+			centeredLabel("DROP ONTO NEW KEY");
+		}
 		GUI.color = Color.white;
-		centeredLabel("Right-Click on keys to swap them with others");
+		centeredLabel("Right-Click to move keys");
 		GUILayout.Label("");
 
 		// look inversion 

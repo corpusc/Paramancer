@@ -44,7 +44,7 @@ public class MatchData {
 		switch (match) {
 			case Match.Custom:
 				Name = "Custom";
-				Descript = "Have it your way!  All the exact settings you prefer.";
+				Descript = "Have it your way";
 				break;
 			case Match.BringYourOwnGravity:
 				Name = "Bring Your Own Gravity"; //  A Gravity Of Your Own?  Gravity Is/Gets Personal? 
@@ -55,7 +55,7 @@ public class MatchData {
 				spawnGunB = Item.Pistol;
 				pickupSlot5 = Item.RocketLauncher;
 				break;
-			case Match.GrueFood:
+			case Match.Blackout:
 				Name = "Blackout";
 				Descript = "Careful when you spark one up!";
 				pitchBlack = true;
@@ -109,11 +109,11 @@ public class MatchData {
 				break;
 			case Match.WeaponLottery:
 				Name = "Weapon Lottery";
-				Descript = "Assigned weaponry is a crap shoot!  CRAP! SHOOT!";
+				Descript = "Assigned weaponry is a crapshoot.  CRAP! SHOOT!";
 				winScore = 20;
+				restockTime = 2f;
 				spawnGunA = Item.Random;
 				spawnGunB = Item.Random;
-				restockTime = 2f;
 				pickupSlot1 = Item.Random;
 				pickupSlot2 = Item.Random;
 				pickupSlot3 = Item.Random;

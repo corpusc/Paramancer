@@ -37,7 +37,7 @@ public enum Crosshair {
 public enum Match {
 	Custom,
 	BringYourOwnGravity,
-	GrueFood,
+	Blackout,
 	FFAFragMatch,
 	BBall,
 	TeamFragMatch,
