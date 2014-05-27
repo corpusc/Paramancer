@@ -22,6 +22,7 @@ public static class Sfx {
 		handleFolder("Announce");
 		handleFolder("Av");
 		handleFolder("Explode");
+		handleFolder("Loop");
 		handleFolder("Misc");
 		handleFolder("Activate");
 	}

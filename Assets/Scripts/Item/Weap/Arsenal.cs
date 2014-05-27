@@ -13,12 +13,6 @@ public class Arsenal : MonoBehaviour {
 	public GameObject soundObjectPrefab;
 	public GameObject BulletMark;
 
-	// SOUNDS 
-	// 		activates 
-	public AudioClip sfx_grenadethrow;
-	// 		while holding 
-	public AudioClip sfx_bombBeep;
-
 	public int WidestIcon;
 	public int TallestIcon;
 	public GunData[] Guns;
@@ -243,13 +237,13 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<net.players.Count; i++) {
 			if (net.players[i].viewID == shooterID) {
 				switch (weapon) {
-					case Item.GrenadeLauncher:  playPitchedSfx(i, sfx_grenadethrow); break;
-					case Item.RocketLauncher:   playPitchedSfx(i, sfx_grenadethrow); break;
 					// case Item.Gravulator: 
 					// *** the activation sound is currently located along with jump/land sfx. //FIXME? 
 					// it's not sending the shot sound trigger over the net. 
 					// so a pursuer has to look around for a flee'er (since you can't hear them) 
 					// when they enter into a large space/room.  this may be a good thing? 
+					case Item.GrenadeLauncher:  playPitchedSfx(i, Sfx.Get("boosh")); break;
+					case Item.RocketLauncher:   playPitchedSfx(i, Sfx.Get("boosh")); break;
 					default: playPitchedSfx(i, Sfx.Get(weapon.ToString())); break;
 				}
 			}
@@ -287,20 +281,20 @@ public class Arsenal : MonoBehaviour {
 	public void BombBeep(Vector3 pos) {
 		var o = (GameObject)GameObject.Instantiate(soundObjectPrefab); // bomb beep object 
 		o.transform.position = pos;
-		o.audio.clip = sfx_bombBeep;
+		o.audio.clip = Sfx.Get("BombBeep");
 		o.audio.volume = 1f;
 	}
 	
 	public void Detonate(Item weapon, Vector3 detPos, NetworkViewID viewID) {
 		if (weapon == Item.Bomb) {
-			GameObject bombFlash = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
-			bombFlash.transform.position = detPos;
-			bombFlash.transform.localScale *= 2f;
+			var o = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
+			o.transform.position = detPos;
+			o.transform.localScale *= 2f;
 				
-			GameObject bombSoundObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
-			bombSoundObj.transform.position = detPos;
-			bombSoundObj.audio.clip = Sfx.Get("ExplodeBomb");
-			bombSoundObj.audio.volume = 4f;
+			var bomb = (GameObject)GameObject.Instantiate(soundObjectPrefab);
+			bomb.transform.position = detPos;
+			bomb.audio.clip = Sfx.Get("ExplodeBomb");
+			bomb.audio.volume = 4f;
 		} else if (weapon == Item.RocketProjectile) {
 			print ("WARNING: Detonate() was called for a rocket!");
 		}
@@ -308,13 +302,13 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<activeGrenades.Count; i++) {
 			if (viewID == activeGrenades[i].viewID) {
 				
-				GameObject grenadeFlash = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
-				grenadeFlash.transform.position = activeGrenades[i].transform.position;
+				var o = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
+				o.transform.position = activeGrenades[i].transform.position;
 				
-				GameObject grenadeSoundObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
-				grenadeSoundObj.transform.position = activeGrenades[i].transform.position;
-				grenadeSoundObj.audio.clip = Sfx.Get("ExplodeGrenade");
-				grenadeSoundObj.audio.volume = 2f;
+				var nade = (GameObject)GameObject.Instantiate(soundObjectPrefab);
+				nade.transform.position = activeGrenades[i].transform.position;
+				nade.audio.clip = Sfx.Get("ExplodeGrenade");
+				nade.audio.volume = 2f;
 				
 				
 				Destroy(activeGrenades[i].gameObject);

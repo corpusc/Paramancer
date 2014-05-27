@@ -4,7 +4,7 @@ using System.Collections;
 
 
 public class NetUser {
-	// dunno
+	// dunno 
 	public NetworkViewID viewID;
 	
 	// networking

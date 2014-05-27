@@ -93,9 +93,9 @@ public class CcLog : MonoBehaviour {
 						
 					if (newEntry != "") {
 						if (net.Connected) {
-							networkView.RPC("AddToLog", RPCMode.All, net.localPlayer.name + ":", newEntry, net.ColToVec(net.localPlayer.colA) );
+							networkView.RPC("AddToLog", RPCMode.All, net.localPlayer.name + ":", newEntry, S.ColToVec(net.localPlayer.colA) );
 						}else{
-							AddToLog(net.localPlayer.name + ":", newEntry, net.ColToVec(net.localPlayer.colA) );
+							AddToLog(net.localPlayer.name + ":", newEntry, S.ColToVec(net.localPlayer.colA) );
 						}
 					}
 					
@@ -114,25 +114,27 @@ public class CcLog : MonoBehaviour {
 	}
 	
 	[RPC]
-	void AddToLog(string name, string s, Vector3 col) {
+	public void AddToLog(string name, string s, Vector3 col) {
 		var en = new LogEntry(); // new entry
 		en.Maker = name;
-		en.Color = net.VecToCol(col);
+		en.Color = S.VecToCol(col);
 		en.Text = s;
 		Entries.Add(en);
 		TimeToHideEntireLog = Time.time + FadeTime;
-		Sfx.PlayOmni("Chat - drip");
+
+		if (name != "+")
+			Sfx.PlayOmni("Chat - drip");
 	}
 
 	public void BroadcastSystemMessage(string msg, Color col) {
-		networkView.RPC("AddSystemMessage", RPCMode.All, msg, net.ColToVec(col));
+		networkView.RPC("AddSystemMessage", RPCMode.All, msg, S.ColToVec(col));
 	}
 
 	[RPC]
 	void AddSystemMessage(string msg, Vector3 col) {
 		var en = new LogEntry(); // new entry
 		en.Maker = "";
-		en.Color = net.VecToCol(col);
+		en.Color = S.VecToCol(col);
 		en.Text = msg;
 		Entries.Add(en);
 		TimeToHideEntireLog = Time.time + FadeTime;

@@ -8,6 +8,7 @@ public class Hud : MonoBehaviour {
 	public float TopOfMaxedLog = 0f; // the maximum height it can be, without overlapping anything else 
 
 	// gui 
+	public CcLog Log;
 	public Font Font;
 	public GUIStyle GS;
 	public GUIContent GC;
@@ -66,7 +67,6 @@ public class Hud : MonoBehaviour {
 
 	// scripts
 	CcNet net;
-	CcLog log;
 	Arsenal arse;
 	Controls controls;
 	LocalUser locUser;
@@ -79,7 +79,7 @@ public class Hud : MonoBehaviour {
 
 		// scripts
 		net = GetComponent<CcNet>();
-		log = GetComponent<CcLog>();
+		Log = GetComponent<CcLog>();
 		arse = GetComponent<Arsenal>();
 		controls = GetComponent<Controls>();
 		locUser = GetComponent<LocalUser>();
@@ -103,7 +103,7 @@ public class Hud : MonoBehaviour {
 		net.localPlayer.colC.a = 1;
 		
 		// load settings 
-		log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
+		Log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
 		tFOV = PlayerPrefs.GetFloat("FOV", 90f);
@@ -474,8 +474,8 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
 		SizedLabel("Chat/Log fade time:   ");
-		log.FadeTime = (float)S.GetInt(GUILayout.TextField(log.FadeTime.ToString()));
-		PlayerPrefs.SetFloat("textFadeTime", log.FadeTime);
+		Log.FadeTime = (float)S.GetInt(GUILayout.TextField(Log.FadeTime.ToString()));
+		PlayerPrefs.SetFloat("textFadeTime", Log.FadeTime);
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 

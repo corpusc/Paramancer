@@ -87,9 +87,9 @@ public class EntityClass : MonoBehaviour {
 	public int Spectatee = 0;
 	
 	// scripts
-	public CcNet net;
 	// private handles to other scripts 
 	Hud hud; // FIXME?  won't need this anymore once playingHud gets drawn correctly? *****************
+	CcNet net;
 	Arsenal arse;
 	LocalUser locUser;
 
@@ -193,35 +193,12 @@ public class EntityClass : MonoBehaviour {
 		if (isLocal) {
 			if (!Spectating) {
 				Vector3 lastPos = transform.position;
-				if (User.health > 0f) {
-					if (offeredPickup != "") {
-						for (int i=0; i<arse.Guns.Length; i++) {
-							if (offeredPickup == arse.Guns[i].Name) {
-								if (!arse.Guns[i].Carrying) {
-									arse.Guns[i].Carrying = true;
-									arse.Guns[(int)GunOnBack].Cooldown =
-										arse.Guns[(int)GunInHand].Cooldown;
-									GunOnBack = GunInHand;
 
-									GunInHand = (Item)i;
-									arse.Guns[(int)GunInHand].Cooldown = 0f;
-									weaponSwitchingSoundAndVisual();
-									currentOfferedPickup.Pickup();
-								}
-							}
-						}
-						
-						if (offeredPickup == "Health" && User.health < 100f){
-							net.ConsumeHealth(User.viewID);
-							net.localPlayer.health = 100f;
-							User.health = 100f;
-							PlaySound("guncocked");
-							currentOfferedPickup.Pickup();
-						}
-					}
+				// item pick up 
+				if (User.health > 0f) {
+					handlePickingUpItem();
 				}
-				
-				offeredPickup = "";
+				offeredPickup = ""; // must do after the above check 
 				
 				if (User.health > 0f) {
 					if (Camera.main.transform.parent == null) 
@@ -1174,5 +1151,38 @@ public class EntityClass : MonoBehaviour {
 		fl = gunMesh2.transform.Find("Flash Light");
 		if (gunMesh2 != null && fl != null)	
 			fl.GetComponent<FlashlightScript>().Visible = false;
+	}
+
+	void handlePickingUpItem() {
+		if (offeredPickup != "") {
+			if (offeredPickup == "Health") {
+				if (User.health < 100f) {
+					net.ConsumeHealth(User.viewID);
+					net.localPlayer.health = 100f;
+					User.health = 100f;
+					PlaySound("guncocked");
+
+					currentOfferedPickup.Pickup();
+					hud.Log.AddToLog("+", offeredPickup, S.ColToVec(Color.gray));
+				}
+			}else{ // must be a weapon 
+				for (int i=0; i<arse.Guns.Length; i++) {
+					if (offeredPickup == arse.Guns[i].Name) {
+						if (!arse.Guns[i].Carrying) {
+							arse.Guns[i].Carrying = true;
+							arse.Guns[(int)GunOnBack].Cooldown =
+								arse.Guns[(int)GunInHand].Cooldown;
+							GunOnBack = GunInHand;
+							
+							GunInHand = (Item)i;
+							arse.Guns[(int)GunInHand].Cooldown = 0f;
+							weaponSwitchingSoundAndVisual();
+							currentOfferedPickup.Pickup();
+							hud.Log.AddToLog("+", offeredPickup, S.ColToVec(Color.gray));
+						}
+					}
+				}
+			}
+		}
 	}
 }

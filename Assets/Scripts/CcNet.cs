@@ -475,7 +475,7 @@ public class CcNet : MonoBehaviour {
 				if (victimID != fraggerID)
 					players[i].Entity.PlaySound("Die");
 
-				// lives
+				// lives 
 				players[i].lives--;
 				if (CurrMatch.playerLives > 0 &&
 				    players[i].lives <= 0 && 
@@ -484,7 +484,7 @@ public class CcNet : MonoBehaviour {
 					players[i].Entity.Spectating = true;
 				}
 
-				// basketball
+				// basketball 
 				if (CurrMatch.basketball && players[i].hasBall) {
 					players[i].hasBall = false;
 
@@ -494,7 +494,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		// set some unused?! totals
+		// set some unused?! totals 
 		if (localPlayer.viewID == fraggerID) 
 			localPlayer.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz? NOTE: they could be used for statistics
 		if (localPlayer.viewID == victimID) { // if local player was the victim 
@@ -502,7 +502,7 @@ public class CcNet : MonoBehaviour {
 			localPlayer.FraggedBy = players[fraggerIdx].Entity.gameObject;
 		}
 		
-		// lives
+		// lives 
 		if (isServer && 
 			Connected && 
 			!gameOver && 
@@ -1010,7 +1010,7 @@ public class CcNet : MonoBehaviour {
 		if (viewID == localPlayer.viewID) 
 			localShopforLocalPeople = true;
 		
-		AddPlayer(localShopforLocalPeople, viewID, VecToCol(cA), VecToCol(cB), VecToCol(cC), head, name, np, targetTeam, lives);
+		AddPlayer(localShopforLocalPeople, viewID, S.VecToCol(cA), S.VecToCol(cB), S.VecToCol(cC), head, name, np, targetTeam, lives);
 		
 		if (levelLoaded) {
 			// only instantiate the actual object of the player if we are in the right level
@@ -1300,7 +1300,7 @@ public class CcNet : MonoBehaviour {
 			
 			// tell everyone we're here
 			networkView.RPC("NewPlayer", RPCMode.AllBuffered, localPlayer.viewID, localPlayer.name, 
-				ColToVec(localPlayer.colA), ColToVec(localPlayer.colB), ColToVec(localPlayer.colC), 
+                S.ColToVec(localPlayer.colA), S.ColToVec(localPlayer.colB), S.ColToVec(localPlayer.colC), 
 				localPlayer.headType, Network.player, localPlayer.team, CurrMatch.playerLives);
 			
 			// make sure we know about pickup spawn points
@@ -1606,25 +1606,5 @@ public class CcNet : MonoBehaviour {
 		newMsg.Text = "<< Host has left >>";
 		log.Entries.Add(newMsg);
 		log.TimeToHideEntireLog = Time.time + log.FadeTime;
-	}
-	
-	
-	
-	// misc
-	public Vector3 ColToVec(Color colIn) {
-		// convert colour to a vector
-		Vector3 retVec = Vector3.zero;
-		retVec.x = colIn.r;
-		retVec.y = colIn.g;
-		retVec.z = colIn.b;
-		return retVec;
-	}
-	public Color VecToCol(Vector3 vecIn) {
-		// convert vector to a color
-		Color retCol = Color.white;
-		retCol.r = vecIn.x;
-		retCol.g = vecIn.y;
-		retCol.b = vecIn.z;
-		return retCol;
 	}
 }

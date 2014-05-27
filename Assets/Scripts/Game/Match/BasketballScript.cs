@@ -62,7 +62,7 @@ public class BasketballScript : MonoBehaviour {
 	}
 	
 	void Update() {
-		var col = net.ColToVec(new Color(1f, 0.5f, 0f, 1f));
+		var col = S.ColToVec(new Color(1f, 0.5f, 0f, 1f));
 
 		if (!held) {
 			transform.position += moveVector * Time.deltaTime;
