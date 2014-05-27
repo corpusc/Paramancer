@@ -500,5 +500,10 @@ public class MatchSetup {
 		matches = new MatchData[(int)Match.Count];
 		for (int i = 0; i < matches.Length; i++)
 			matches[i] = new MatchData((Match)i);
+
+		if (Debug.isDebugBuild) {
+			mapId = 2;
+			matchId = matches.Length-1;
+		}
 	}
 }
