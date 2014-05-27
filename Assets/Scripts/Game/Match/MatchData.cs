@@ -121,6 +121,35 @@ public class MatchData {
 				pickupSlot4 = Item.Random;
 				pickupSlot5 = Item.Random;
 				break;
+			case Match.AstroFun:
+				Name = "Astro Fun";
+				Descript = "The map was teleported to the Moon... Jump hiiiigh!";
+				Gravity = 2f;
+				break;
+			case Match.SlowMo:
+				Name = "Slow Motion";
+				Descript = "Who used the time machine?!";
+				MoveSpeedMult = 0.2f;
+				spawnGunA = Item.RocketLauncher;
+				spawnGunB = Item.GrenadeLauncher;
+				pickupSlot1 = Item.Gravulator;
+				pickupSlot2 = Item.Health;
+				pickupSlot3 = Item.Spatula;
+				pickupSlot4 = Item.Swapper;
+				pickupSlot5 = Item.Bomb;
+				break;
+			case Match.HighSpeed:
+				Name = "High Speed";
+				Descript = "Who used the time machine... again?!";
+				MoveSpeedMult = 1.8f;
+				spawnGunA = Item.RocketLauncher;
+				spawnGunB = Item.GrenadeLauncher;
+				pickupSlot1 = Item.Gravulator;
+				pickupSlot2 = Item.Health;
+				pickupSlot3 = Item.MachineGun;
+				pickupSlot4 = Item.Pistol;
+				pickupSlot5 = Item.RailGun;
+				break;
 		}
 
 		Seed = Random.Range(0, 1000000);

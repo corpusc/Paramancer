@@ -44,6 +44,9 @@ public enum Match {
 	YouOnlyLiveThrice,
 	InstaGib,
 	WeaponLottery,
+	AstroFun,
+	SlowMo,
+	HighSpeed,
 	Count
 }
 
@@ -134,7 +137,7 @@ public enum UserAction {
 public enum ParticleType {
 	Circle,
 	Puff,
-	Multiple, // what does this mean? 
+	Multiple, //these are many particles stacked upon each other in 1 image(for performance reasons)
 
 	Count
 }

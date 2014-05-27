@@ -514,7 +514,7 @@ public class MatchSetup {
 
 		if (Debug.isDebugBuild) {
 			mapId = 2;
-			matchId = matches.Length-1;
+			matchId = (int)Match.WeaponLottery;
 		}
 	}
 }
