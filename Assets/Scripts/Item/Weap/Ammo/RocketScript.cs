@@ -3,8 +3,8 @@ using System.Collections;
 
 public class RocketScript : MonoBehaviour {
 	public GameObject particle;
-	public int MinParticlesPerFrame = 6;
-	public int MaxParticlesPerFrame = 10;
+	public int MinPtsPerSecond = 300;
+	public int MaxPtsPerSecond = 500;
 	public int ExplosionParticles = 200;
 	public float ExplosionSize = 0.4f;
 	public float ForwardOffset = 1f; // prevents running into your own rocket when you have lags
@@ -35,7 +35,7 @@ public class RocketScript : MonoBehaviour {
 				transform.forward = Vector3.Normalize(transform.forward + Random.insideUnitSphere * Time.deltaTime * Turn);
 			Vector3 moveForward = transform.forward * Time.deltaTime * 600f / (life < 16f ? 1f : Mathf.Pow(life - 15f, 2f));
 			transform.position += moveForward;
-			int c_pts = Random.Range(MinParticlesPerFrame, MaxParticlesPerFrame);
+			int c_pts = (int)((float)Random.Range(MinPtsPerSecond, MaxPtsPerSecond) * Time.deltaTime);
 			if(Turning)
 				for (int i = 0; i < c_pts; i++) {
 					var np = (GameObject)GameObject.Instantiate(particle);
