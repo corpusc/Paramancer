@@ -16,11 +16,18 @@ public class PlayingHud {
 	int crosshairRadius = 16;
 	Color prevCrossHair;
 	float prevTick;
+	int picId = 0;
 	public float Draw(CcNet net, Arsenal arse, int midX, int midY, float lvs, Hud hud) {
+		if (CcInput.Started(UserAction.TakePicture)) {
+			var ps = "Paramancer " + picId; // pic string 
+		    Application.CaptureScreenshot(ps);
+			hud.Log.AddToLog("+", "Taking a picture named: " + ps + ".png", S.ColToVec(Color.grey));
+			picId++;
+			return 0f;
+		}
+
 		var locEnt = net.localPlayer.Entity;
-//		if (locEnt == null)
-//			return;
-		
+
 		var gunACooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
 		Item gunA = locEnt.GunInHand;
 		Item gunB = locEnt.GunOnBack;

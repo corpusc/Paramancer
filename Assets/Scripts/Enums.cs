@@ -119,7 +119,9 @@ public enum UserAction {
 	Previous,
 	Sprint, // for sound: something like GO SPEED RACER GO? 
 	Chat,
+
 	Menu, // for sound: "gotta change something... HOLD ON!"? 
+	TakePicture,
 	Scores,
 	SwapTeam, // for sound: "WASSUP GUYS, the other team SUCKS"? 
 	Suicide, // for sound: "there's nothing left for me here!"? 

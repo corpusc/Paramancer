@@ -124,6 +124,9 @@ public static class CcInput {
 				case UserAction.Menu:
 					bind(i, KeyCode.Escape);
 					break;
+				case UserAction.TakePicture:
+					bind(i, KeyCode.Print);
+					break;
 				case UserAction.Scores:
 					bind(i, KeyCode.Tab);
 					break;
