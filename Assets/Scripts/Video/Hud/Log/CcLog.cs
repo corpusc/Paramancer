@@ -89,13 +89,15 @@ public class CcLog : MonoBehaviour {
 					}
 				
 					Typing = false;
-					//AddToLog(net.localPlayer.name + ":", "e.keyCode == KeyCode.Return", net.ColToVec(net.localPlayer.colA) );
 						
+					// if input box not empty, add entry 
 					if (newEntry != "") {
 						if (net.Connected) {
-							networkView.RPC("AddToLog", RPCMode.All, net.localPlayer.name + ":", newEntry, S.ColToVec(net.localPlayer.colA) );
+							networkView.RPC("AddToLog", RPCMode.All, 
+			                	net.localPlayer.name + ":", newEntry, S.ColToVec(net.localPlayer.colA) );
 						}else{
-							AddToLog(net.localPlayer.name + ":", newEntry, S.ColToVec(net.localPlayer.colA) );
+							AddToLog(
+								net.localPlayer.name + ":", newEntry, S.ColToVec(net.localPlayer.colA) );
 						}
 					}
 					
@@ -107,9 +109,15 @@ public class CcLog : MonoBehaviour {
 					GUI.FocusControl("TextField");
 					break;
 			}
-		}else if (e.keyCode == KeyCode.Return) {
-			if (e.type == EventType.KeyDown)
-				Typing = true;
+		}else{ // not typing 
+			// if not appropriate to enter chat/commands 
+			if (hud.Mode != HudMode.Playing)
+				return;
+
+			if (e.keyCode == KeyCode.Return) {
+				if (e.type == EventType.KeyDown)
+					Typing = true;
+			}
 		}
 	}
 	
