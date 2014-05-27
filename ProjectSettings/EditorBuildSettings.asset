@@ -28,4 +28,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Map/ProcGen/DebugRoguelikeVoxel.unity
   - enabled: 1
-    path: Assets/Map/ProcGen/[Generated].unity
+    path: Assets/Map/ProcGen/Generated with seed.unity

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class MuzzleFlashLightScript : MonoBehaviour {
+public class MuzzleFlash : MonoBehaviour {
 	void Update() {
 		light.range -= Time.deltaTime * 20f;
 

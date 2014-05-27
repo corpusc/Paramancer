@@ -32,7 +32,7 @@ public class MatchData {
 	public int Seed = 0;
 	public float MoveSpeedMult = 1f; // the movement speed multiplier 
 	
-	public static string ProcGenName = "[Generated]"; // user-facing name of procedurally generated voxel-style maps 
+	public static string ProcGenName = "Generated with seed"; // user-facing name of procedurally generated voxel-style maps 
 	
 	
 	

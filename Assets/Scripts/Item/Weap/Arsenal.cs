@@ -43,33 +43,33 @@ public class Arsenal : MonoBehaviour {
 			Guns[i].Prefab = (GameObject)prefabs[i];
 			
 			switch ((Item)i) {
-				case Item.Pistol:   Guns[i].ShotCol = Color.white; 
+				case Item.Pistol:   Guns[i].Color = Color.white; 
 					Guns[i].Delay = 0.3f; 
 					Guns[i].DelayAlt = 0.3f; break; 
-				case Item.GrenadeLauncher:   Guns[i].ShotCol = S.Orange; 
+				case Item.GrenadeLauncher:   Guns[i].Color = S.Orange; 
 					Guns[i].Delay = 0.25f; 
 					Guns[i].DelayAlt = 0.25f; break; 
-				case Item.MachineGun:   Guns[i].ShotCol = Color.cyan; 
+				case Item.MachineGun:   Guns[i].Color = Color.cyan; 
 					Guns[i].Delay = 0.1f; 
 					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; break; // unique 
-				case Item.RailGun:   Guns[i].ShotCol = Color.cyan; 
+				case Item.RailGun:   Guns[i].Color = Color.cyan; 
 					Guns[i].Delay = 2f;
 					Guns[i].MarkScale = 2f;
 					Guns[i].DelayAlt = 2f; break; 
-				case Item.RocketLauncher:   Guns[i].ShotCol = Color.red; 
+				case Item.RocketLauncher:   Guns[i].Color = Color.red; 
 					Guns[i].Delay = 1.5f; 
 					Guns[i].DelayAlt = 0.7f;
 					Guns[i].MarkScale = 5f; break; // set for the launcher because the projectile has a negative value in the gun system
-				case Item.Swapper:   Guns[i].ShotCol = Color.magenta; 
+				case Item.Swapper:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 2f; 
 					Guns[i].DelayAlt = 2f; break; 
-				case Item.Gravulator:   Guns[i].ShotCol = Color.green; 
+				case Item.Gravulator:   Guns[i].Color = Color.green; 
 					Guns[i].Delay = 1f; 
 					Guns[i].DelayAlt = 1f; break; 
-				case Item.Bomb:   Guns[i].ShotCol = Color.yellow; 
+				case Item.Bomb:   Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 1f; 
 					Guns[i].DelayAlt = 1f; break; 
-				case Item.Spatula:   Guns[i].ShotCol = Color.magenta; 
+				case Item.Spatula:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 1f;  
 					Guns[i].DelayAlt = 4f;
 					Guns[i].Range = 3f; break;
@@ -147,16 +147,18 @@ public class Arsenal : MonoBehaviour {
 			b.start = origin;
 
 		b.end = end;
-		b.col = Guns[(int)weapon].ShotCol;
+		b.col = Guns[(int)weapon].Color;
 
 		if (weapon == Item.Pistol)
 			b.renderer.material.color = Color.white;
 		
-		// flash 
-		var muzzleFlash = (GameObject)GameObject.Instantiate(muzzleFlashPrefab);
-		muzzleFlash.transform.position = origin;
-		if (localFire) 
-			muzzleFlash.transform.position = localStart - (Camera.main.transform.right * 0.2f);
+		// muzzle flash 
+		var mf = (GameObject)GameObject.Instantiate(muzzleFlashPrefab);
+		mf.light.color = Guns[(int)weapon].Color;
+		mf.transform.position = origin;
+		if (localFire) { // Sophie didn't allow remote player flashes? 
+			mf.transform.position = localStart - (Camera.main.transform.right * 0.2f);
+		}
 		
 		// rail trail 
 		if (weapon == Item.RailGun) {

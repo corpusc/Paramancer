@@ -76,33 +76,16 @@ public class MatchSetup {
 		// match type change might need us to show a different (allowed) map
 		selectMatchType();
 
-		// select map
-		GUILayout.BeginHorizontal();
-
-		if (GUILayout.Button("<") ) {
-			mapId--;
-			if (mapId < 0) 
-				mapId += matches[matchId].Maps.Count;
+		// if not custom 
+		if (matchId != 0) {
+			showMapSelector();
 		}
 
-		if (GUILayout.Button(">") ) {
-			mapId++;
-			if (mapId >= matches[matchId].Maps.Count) 
-				mapId -= matches[matchId].Maps.Count;
-		}
 
-		GUILayout.Label("Map:");
-		GUILayout.FlexibleSpace();
-		GUILayout.Label(matches[matchId].Maps[mapId]);
-		GUILayout.FlexibleSpace();
 
-		GUILayout.EndHorizontal();
-
-		// description 
-		GUILayout.Label(matches[matchId].Descript);
-		
-		// customize button, or show all options 
-		if (matchId != 0) { // if not custom 
+		// show customize button, OR show all custom options 
+		// if not custom 
+		if (matchId != 0) {
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("Customize Match") ) {
@@ -138,14 +121,15 @@ public class MatchSetup {
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
-		}else{ // custom, show options here
-
+		}else{ // custom, show options here 
 			//hud.CategoryHeader("Custom Settings");
 			GUILayout.Label("");
 			GUILayout.Box("Custom Settings");
 
 			scrollPos = GUILayout.BeginScrollView(scrollPos);
 			
+			showMapSelector();
+
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.Box("Limits");
@@ -168,9 +152,8 @@ public class MatchSetup {
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Time:");
+			GUILayout.Label("Minutes:");
 			matches[matchId].Duration = (float)S.GetDouble( GUILayout.TextField(matches[matchId].Duration.ToString()) );
-			GUILayout.Label("(mins)");
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
@@ -219,7 +202,7 @@ public class MatchSetup {
 			if (matches[matchId].teamBased) {
 				GUILayout.BeginHorizontal();
 				GUILayout.FlexibleSpace();
-				matches[matchId].FriendlyFire = TickBox.Display(matches[matchId].FriendlyFire, "Allow Friendly Fire");
+				matches[matchId].FriendlyFire = TickBox.Display(matches[matchId].FriendlyFire, "Friendly Fire");
 				GUILayout.FlexibleSpace();
 				GUILayout.EndHorizontal();
 
@@ -317,19 +300,7 @@ public class MatchSetup {
 			GUILayout.EndScrollView();
 		}
 		
-		
-		//MonoBehaviour.print("Current map name: " + maps[mapId].Name);
-		// roguelike map stuff
-		if (matches[matchId].Maps[mapId] == MatchData.ProcGenName) {
-			//MonoBehaviour.print("Current map is procedurally generated!");
-			GUILayout.BeginHorizontal();
-			GUILayout.Box("Map Seed");
-			GUILayout.EndHorizontal();
-			
-			GUILayout.BeginHorizontal();
-			matches[matchId].Seed = int.Parse(GUILayout.TextArea(matches[matchId].Seed.ToString()));
-			GUILayout.EndHorizontal();
-		}
+		//print("Current map name: " + maps[mapId].Name);
 
 		if (matches[matchId].Maps[mapId] == MatchData.ProcGenName) {
 			matches[matchId].NeedsGenerating = true;
@@ -373,12 +344,6 @@ public class MatchSetup {
 	}
 
 	void serverSetup(CcNet net, Hud hud) {
-		// num users 
-		GUILayout.BeginHorizontal();
-		hud.SizedLabel("Max Connections: " + net.connections);
-		net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32));
-		GUILayout.EndHorizontal();
-
 		// server name 
 		GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
@@ -387,14 +352,26 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
-		GUILayout.BeginHorizontal(); {
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("Password: ");
-			net.password = GUILayout.TextField(net.password, GUILayout.MinWidth(16));
-			GUILayout.FlexibleSpace();
-		} GUILayout.EndHorizontal();
+		// num users 
+		var maxUsers = "Max Users: ";
+		float w = hud.GetWidthLabel(maxUsers + " 32");
 
 		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		GUILayout.Label(maxUsers + net.connections, GUILayout.MinWidth(w));
+		net.connections = (int)Mathf.Round(GUILayout.HorizontalSlider(net.connections, 2, 32, GUILayout.MinWidth(64)));
+		GUILayout.FlexibleSpace();
+		//GUILayout.EndHorizontal();
+
+		// pw 
+		//GUILayout.BeginHorizontal();
+
+		GUILayout.FlexibleSpace();
+		GUILayout.Label("Password: ");
+		net.password = GUILayout.TextField(net.password, GUILayout.MinWidth(16));
+		GUILayout.FlexibleSpace();
+
+		// port 
 		GUILayout.FlexibleSpace();
 		GUILayout.Label("Port: ");
 		net.listenPort = S.GetInt(GUILayout.TextField(net.listenPort.ToString ()));
@@ -403,6 +380,8 @@ public class MatchSetup {
 	}
 
 	void selectMatchType() {
+		GUILayout.Label("");
+
 		GUILayout.BeginHorizontal();
 		
 		if (GUILayout.Button("<") ) {
@@ -448,6 +427,15 @@ public class MatchSetup {
 
 
 		GUILayout.EndHorizontal();
+
+		// description 
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		GUILayout.Label(matches[matchId].Descript);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+
+		GUILayout.Label("");
 	}
 
 	void slotSelect(ref Item item, int slot) {
@@ -471,6 +459,43 @@ public class MatchSetup {
 		GUILayout.FlexibleSpace();
 
 		GUILayout.EndHorizontal();
+	}
+
+	void showMapSelector() {
+		// [<] [>]   buttons 
+		GUILayout.BeginHorizontal();
+		
+		if (GUILayout.Button("<") ) {
+			mapId--;
+			if (mapId < 0) 
+				mapId += matches[matchId].Maps.Count;
+		}
+		
+		if (GUILayout.Button(">") ) {
+			mapId++;
+			if (mapId >= matches[matchId].Maps.Count) 
+				mapId -= matches[matchId].Maps.Count;
+		}
+
+		GUILayout.Label ("Map:");
+		GUILayout.FlexibleSpace ();
+		// set friendly map text for player 
+		var n = matches [matchId].Maps [mapId];
+		// name of map/scene 
+		var pgName = MatchData.ProcGenName;
+		if (n == pgName) {
+			GUILayout.Label ("(" + pgName + ": ");
+			matches [matchId].Seed = int.Parse (GUILayout.TextArea (matches [matchId].Seed.ToString ()));
+			GUILayout.Label (") ");
+		}
+		else {
+			// handmade map 
+			GUILayout.Label (n);
+		}
+		GUILayout.FlexibleSpace ();
+
+		GUILayout.EndHorizontal();
+		GUILayout.Label("");
 	}
 	
 	void setupMatchTypes() {

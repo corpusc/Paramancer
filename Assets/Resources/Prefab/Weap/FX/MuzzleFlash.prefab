@@ -11,7 +11,7 @@ GameObject:
   - 108: {fileID: 10800000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: MuzzleFlashLightPrefab
+  m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -71,7 +71,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75b6f4f7d8d5d47b49f5c0dae6b82fe0, type: 3}
+  m_Script: {fileID: 11500000, guid: 2898343ddc568e64ba471bac1f3a84f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &100100000
