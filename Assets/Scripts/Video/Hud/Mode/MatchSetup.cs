@@ -122,8 +122,6 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 		}else{ // custom, show options here 
-			//hud.CategoryHeader("Custom Settings");
-			GUILayout.Label("");
 			GUILayout.Box("Custom Settings");
 
 			scrollPos = GUILayout.BeginScrollView(scrollPos);

@@ -950,55 +950,59 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void FireBullet(Item weapon, bool alt = false) {
-		// fire hitscan type gun
-		Vector3 bulletStart = Camera.main.transform.position;
-		Vector3 bulletDirection = Camera.main.transform.forward;
-		Vector3 bulletEnd;
+		// fire hitscan type gun 
+		// b ==  bullet/bolt 
+		Vector3 bStart = Camera.main.transform.position;
+		Vector3 bOri = Camera.main.transform.forward;
+		Vector3 bEnd;
 		Vector3 hitNorm = Vector3.zero;
 		bool hit = false;
 		bool registerhit = false;
 		int hitPlayer = -1;
-		bulletEnd = bulletStart + (bulletDirection * arse.Guns[(int)weapon].Range);
+		bEnd = bStart + (bOri * arse.Guns[(int)weapon].Range);
 	
 		if (weapon == Item.MachineGun) {
-			float shakeValue = 0.01f;
-			bulletDirection += new Vector3(Random.Range(-shakeValue,shakeValue),Random.Range(-shakeValue,shakeValue),Random.Range(-shakeValue,shakeValue));
-			bulletDirection.Normalize();
+			float ex = 0.01f; // extent from center 
+			bOri += new Vector3(
+				Random.Range(-ex, ex),
+				Random.Range(-ex, ex),
+				Random.Range(-ex, ex));
+			bOri.Normalize();
 		}
 				
-		Ray bulletRay = new Ray(bulletStart, bulletDirection);
-		RaycastHit bulletHit = new RaycastHit();
+		var bRay = new Ray(bStart, bOri);
+		var bHit = new RaycastHit();
 		int bulletLayer = (1<<0) | (1<<8); // walls & players
 				
 		gameObject.layer = 2;
-		if (Physics.Raycast(bulletRay, out bulletHit, arse.Guns[(int)weapon].Range, bulletLayer)) {
-			bulletEnd = bulletHit.point;
+		if (Physics.Raycast(bRay, out bHit, arse.Guns[(int)weapon].Range, bulletLayer)) {
+			bEnd = bHit.point;
 					
-			if (bulletHit.collider.gameObject.layer == 8) {
+			if (bHit.collider.gameObject.layer == 8) {
 				// hit a player, tell the server
 				hit = true;
 				
 				for (int i=0; i<net.players.Count; i++) {
-					if (bulletHit.collider.gameObject == net.players[i].Entity.gameObject){
+					if (bHit.collider.gameObject == net.players[i].Entity.gameObject){
 						hitPlayer = i;
 					}
 				}
 			
 				registerhit = true;
 			} else {
-				hitNorm = bulletHit.normal;
+				hitNorm = bHit.normal;
 			}
 		}
 	
 		gameObject.layer = 8;
-		bulletStart = transform.position;
-		bulletStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
+		bStart = transform.position;
+		bStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
 		// RPC the shot, regardless
-		net.Shoot(weapon, bulletStart, bulletDirection, bulletEnd, net.localPlayer.viewID, hit, alt, hitNorm);
+		net.Shoot(weapon, bStart, bOri, bEnd, net.localPlayer.viewID, hit, alt, hitNorm);
 
 		if (alt && weapon == Item.Spatula) return;
 		if (registerhit) 
-			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bulletHit.point);
+			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bHit.point);
 	}
 	
 	private Transform getRandomSpawn(string s) {

@@ -57,7 +57,7 @@ public class MatchData {
 				break;
 			case Match.GrueFood:
 				Name = "Blackout";
-				Descript = "Careful when you spark one up.....your GUN that is";
+				Descript = "Careful when you spark one up!";
 				pitchBlack = true;
 				pickupSlot1 = Item.GrenadeLauncher;
 				pickupSlot2 = Item.MachineGun;
@@ -67,7 +67,7 @@ public class MatchData {
 				break;
 			case Match.FFAFragMatch:
 				Name = "FFA Fragmatch";
-				Descript = "Frag count is ALL that counts in this freestyle Free For All!";
+				Descript = "Frag count is ALL that counts in this freestyle Free For All";
 				respawnWait = 1f;
 				break;
 			case Match.TeamFragMatch:
@@ -98,7 +98,7 @@ public class MatchData {
 				break;
 			case Match.InstaGib:
 				Name = "InstaGib";
-				Descript = "Rail Guns & Spatulas.  One hit and you're dead";
+				Descript = "Rail Guns & Spatulas.  One hit & you're dead";
 				spawnGunA = Item.RailGun;
 				spawnGunB = Item.Spatula;
 				pickupSlot1 = Item.None;
