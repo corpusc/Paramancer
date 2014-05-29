@@ -8,11 +8,10 @@ public class Brain : MonoBehaviour {
 	public int NumInputs;
 	public int NumOutputs;
 	public int NumLobes;
-	public float DistSize = 0.1f; // the scale of the "bump" in the middle of the distribution
+	public float DistSize = 10f; // the scale of the "bump" in the middle of the distribution
 
 	public List<PseudoNeuron> InNeurons; // of the whole brain
 	public List<PseudoNeuron> OutNeurons;
-	// distribute neurons per lobe in a gaussian-like way
 
 	public void Init () {
 		// init lists
@@ -69,7 +68,7 @@ public class Brain : MonoBehaviour {
 		}
 	}
 
-	public float[] Think (float[] Inputs) {
+	public float[] Think (params float[] Inputs) {
 		for (int i = 0; i < NumInputs; i++) {
 			InNeurons[i].Value = Inputs[i];
 			InNeurons[i].ProcessOutput();
@@ -89,6 +88,6 @@ public class Brain : MonoBehaviour {
 
 	int getNumNeurons (int i) {
 		if (i < 0) return NumInputs;
-		return Mathf.CeilToInt(Mathf.Lerp((float)NumInputs, (float)NumOutputs, ((float)i) / (float)(NumLobes - 1)) + (float)(NumLobes - i) * (float)(i + 1) * DistSize);
+		return Mathf.CeilToInt(Mathf.Lerp((float)NumInputs, (float)NumOutputs, ((float)i) / (float)(NumLobes - 1)) + (float)(NumLobes - i) / (float)NumLobes * DistSize);
 	}
 }
