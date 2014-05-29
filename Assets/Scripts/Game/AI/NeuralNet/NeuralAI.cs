@@ -4,7 +4,8 @@ using System.Collections;
 public class NeuralAI : MonoBehaviour {
 
 	public Brain MainBrain;
-	public Vector3 TargetPos;
+
+	public Vector3 TargetPos; // "target" = the player the AI is attacking
 
 	public float TargetHealth;
 	public float Health;
@@ -16,6 +17,7 @@ public class NeuralAI : MonoBehaviour {
 	public float DownDist;
 
 	public float[] Memory;
+	public float NumMemories = 5;
 
 	public float[] Output;
 	public int NumOutputs;
@@ -26,8 +28,8 @@ public class NeuralAI : MonoBehaviour {
 		MainBrain.NumOutputs = NumOutputs;
 		MainBrain.NumLobes = 6;
 		MainBrain.Init();
-		Memory = new float[5];
-		Output = new float[NumOutputs];
+		Memory = new float[NumMemories];
+		Output = new float[NumOutputs + NumMemories];
 	}
 
 	public void Think () {
@@ -35,6 +37,9 @@ public class NeuralAI : MonoBehaviour {
 		                TargetHealth, Health,
 		                ForwardDist, RightDist, LeftDist, UpDist, DownDist,
 		                Memory[0], Memory[1], Memory[2], Memory[3], Memory[4]);
+		for (int i = 0; i < NumMemories; i++) {
+			Memory[i] = Output[NumOutputs + i];
+		}
 	}
 
 	public void Mutate (float MaxWeightMutation, float MaxMultMutation) {
