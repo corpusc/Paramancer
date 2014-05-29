@@ -45,6 +45,7 @@ public class Hud : MonoBehaviour {
 					break;
 				case HudMode.Settings:
 					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+					headSliderPos = (float)net.localPlayer.headType / ((float)Head.Count - 1f);
 					break;
 			}
 		}

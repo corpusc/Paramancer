@@ -17,7 +17,7 @@ public class NeuralAI : MonoBehaviour {
 	public float DownDist;
 
 	public float[] Memory;
-	public float NumMemories = 5;
+	public int NumMemories = 5;
 
 	public float[] Output;
 	public int NumOutputs;

@@ -47,6 +47,7 @@ public class ProcGenVoxel : ScriptableObject {
 	public float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on
 
 	public int SpawnPoints = 4; // the amount of spawn points to be placed(of each type[FFA/red/blue])
+	public int MonsterSpawns = 6;
 	public GameObject SpawnPoint;
 	public Vector3 SpawnPointScale = Vector3.one;
 
@@ -70,6 +71,7 @@ public class ProcGenVoxel : ScriptableObject {
 	GameObject blueSpawnBag;
 	GameObject redSpawnBag;
 	GameObject weaponSpawnBag;
+	GameObject monsterSpawnBag;
 
 	// only sets everything up, doesn't build the level - call Build () and Build3d () manually
 	// call Build() and Build3D() right after calling this for the random seed to work
@@ -95,6 +97,7 @@ public class ProcGenVoxel : ScriptableObject {
 		blueSpawnBag = GameObject.Find("Blue Team Spawns"); // an empty GameObject container, already in the scene 
 		redSpawnBag = GameObject.Find("Red Team Spawns"); // an empty GameObject container, already in the scene 
 		weaponSpawnBag = GameObject.Find("_PickupSpots"); // an empty GameObject container, must already be in the scene
+		monsterSpawnBag = GameObject.Find("Monster Spawns"); // an empty GameObject container, must already be in the scene
 	}
 
 	// this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d() 
@@ -358,6 +361,23 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = redSpawnBag.transform;
+				formsMade++;
+			}
+		} // end of placing spawn points 
+
+		// place monster spawn points 
+		formsMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && formsMade < MonsterSpawns; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!getBlock(t.x, t.y - 1, t.z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
+				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = monsterSpawnBag.transform;
 				formsMade++;
 			}
 		} // end of placing spawn points 
