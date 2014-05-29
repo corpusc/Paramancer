@@ -916,7 +916,7 @@ public class EntityClass : MonoBehaviour {
 			}
 		}
 		
-		if (!net.CurrMatch.pitchBlack || !User.local) {
+		if (!(net.CurrMatch.pitchBlack || net.CurrMatch.NeedsGenerating) || !User.local) {
 			firstPersonLight.enabled = false;
 		
 		}
