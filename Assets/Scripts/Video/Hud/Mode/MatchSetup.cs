@@ -261,15 +261,24 @@ public class MatchSetup {
 			// spawn gun A
 			GUILayout.BeginHorizontal();
 
-			if (GUILayout.Button("<")) 
+			if (GUILayout.Button("<")) {
 				matches[matchId].spawnGunA--;
+				if (matches[matchId].spawnGunA == Item.None) //FIXME: added due to a problem with GunInHand being < 0
+					matches[matchId].spawnGunA--;
+			}
 			if (matches[matchId].spawnGunA < Item.Random) 
 				matches[matchId].spawnGunA = Item.Count-1;
 			
-			if (GUILayout.Button(">")) 
+			if (GUILayout.Button(">")) {
 				matches[matchId].spawnGunA++;
+				if (matches[matchId].spawnGunA == Item.None)
+					matches[matchId].spawnGunA++;
+			}
 			if (matches[matchId].spawnGunA >= Item.Count) 
 				matches[matchId].spawnGunA = Item.Random;
+
+			if (matches[matchId].spawnGunA == matches[matchId].spawnGunB && matches[matchId].spawnGunA != Item.Random)
+				matches[matchId].spawnGunB++;
 
 			GUILayout.Label("Inventory A: ");
 			GUILayout.FlexibleSpace();
@@ -281,14 +290,20 @@ public class MatchSetup {
 			// spawn gun B
 			GUILayout.BeginHorizontal();
 
-			if (GUILayout.Button("<")) 
+			if (GUILayout.Button("<")) {
 				matches[matchId].spawnGunB--;
+				if (matches[matchId].spawnGunA == matches[matchId].spawnGunB && matches[matchId].spawnGunA != Item.Random || matches[matchId].spawnGunB == Item.None)
+					matches[matchId].spawnGunB--;
+			}
 			if (matches[matchId].spawnGunB < Item.Random) 
 				matches[matchId].spawnGunB = Item.Count-1;
 			
-			if (GUILayout.Button(">")) 
+			if (GUILayout.Button(">")) {
 				matches[matchId].spawnGunB++;
-			if (matches[matchId].spawnGunB >= Item.Count) 
+				if (matches[matchId].spawnGunA == matches[matchId].spawnGunB && matches[matchId].spawnGunA != Item.Random || matches[matchId].spawnGunB == Item.None)
+					matches[matchId].spawnGunB++;
+			}
+			if (matches[matchId].spawnGunB >= Item.Count || matches[matchId].spawnGunB == Item.None) 
 				matches[matchId].spawnGunB = Item.Random;
 
 			GUILayout.Label("Inventory B: ");

@@ -918,7 +918,8 @@ public class EntityClass : MonoBehaviour {
 		
 		if (!(net.CurrMatch.pitchBlack || net.CurrMatch.NeedsGenerating) || !User.local) {
 			firstPersonLight.enabled = false;
-		
+		} else {
+			firstPersonLight.enabled = true;
 		}
 		
 		if (!User.local && net.CurrMatch.pitchBlack) {
@@ -1041,8 +1042,9 @@ public class EntityClass : MonoBehaviour {
 
 		if (GunInHand == Item.Random)
 			GunInHand = (Item)Random.Range(0, arse.Guns.Length);
-		if (GunOnBack == Item.Random)
+		if (GunOnBack == Item.Random) do {
 			GunOnBack = (Item)Random.Range(0, arse.Guns.Length);
+		} while (GunOnBack == GunInHand);
 
 		prevGunInHand = Item.None;
 		prevGunOnBack = Item.None;

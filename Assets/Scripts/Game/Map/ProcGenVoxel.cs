@@ -497,15 +497,20 @@ public class ProcGenVoxel : ScriptableObject {
 
 	// gets the taken area of the floor
 	int countBlocks (Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
+		int m = 0; // the temporary var for storing the maximal amount of blocks in a level
 		Vec3i a;
 		a.x = s.x;
-		a.y = 0;
 		a.z = s.z;
 		Vec3i b;
 		b.x = e.x;
-		b.y = MaxFloorHeight;
 		b.z = e.z;
-		return countBlocks(a, b);
+		for (int i = 0; i <= MaxFloorHeight; i++) {
+			a.y = i;
+			b.y = i;
+			int t = countBlocks(a, b);
+			if (t > m) m = t;
+		}
+		return m;
 	}
 
 	// gets the taken area of the floor
@@ -538,7 +543,7 @@ public class ProcGenVoxel : ScriptableObject {
 		a.z = s.z;
 		Vec3i b;
 		b.x = e.x;
-		b.y = 0;
+		b.y = MaxFloorHeight;
 		b.z = e.z;
 		return containsBlocks (a, b);
 	}
