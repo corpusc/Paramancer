@@ -19,7 +19,7 @@ RenderSettings:
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientLight: {r: .200000003, g: .200000003, b: .200000003, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: d5c42b8515af57c4cb67f48bc9f34d5d, type: 2}
   m_HaloStrength: .5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1646,7 +1646,7 @@ GameObject:
   - 33: {fileID: 1016270721}
   - 23: {fileID: 1016270720}
   m_Layer: 0
-  m_Name: 3 Rifle
+  m_Name: 3 RailGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1692,7 +1692,7 @@ MeshFilter:
     type: 2}
   m_PrefabInternal: {fileID: 1339397638}
   m_GameObject: {fileID: 1016270718}
-  m_Mesh: {fileID: 4300000, guid: 42cd0a7425e4747209a671f456a19706, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 79f1501b6b514704ca85b23a8b03b80e, type: 3}
 --- !u!1 &1029412242
 GameObject:
   m_ObjectHideFlags: 0
