@@ -26,10 +26,9 @@ public class Arsenal : MonoBehaviour {
 	
 	void Start() {
 		net = GetComponent<CcNet>();
-		Texture[] pics = Resources.LoadAll<Texture>("Pic/Weap");
 
 		// setup guns 
-		Guns = new GunData[(int)Item.Count]; // 9 atm 
+		Guns = new GunData[(int)Item.Count];
 
 		string s = "";
 		for (int i = 0; i < Guns.Length; i++) {
@@ -40,24 +39,33 @@ public class Arsenal : MonoBehaviour {
 
 			switch ((Item)i) {
 				case Item.GrenadeLauncher:
-					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Low Poly Grenade Launcher 1.1 - Daniel Mendes/Prefabs/" + n);
-					Guns[i].Mat =    (Material)  Resources.Load("Item/Weap/Low Poly Grenade Launcher 1.1 - Daniel Mendes/Materials/" + n); 
+					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Gun/Low Poly " + n + " 1.1 - Daniel Mendes/Prefabs/" + n);
+					Guns[i].Mat =    (Material)  Resources.Load("Item/Weap/Gun/Low Poly " + n + " 1.1 - Daniel Mendes/Materials/" + n); 
+					Guns[i].Pic =      Resources.Load<Texture> ("Item/Weap/Gun/" + n + "/" + n); 
 					break;
-				default:
-					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/" + n + "/" + n + " PREFAB");
-					Guns[i].Mat =      Resources.Load<Material>("Item/Weap/" + n + "/" + n); 
+					default:
+					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Gun/" + n + "/" + n + " PREFAB");
+					Guns[i].Mat =      Resources.Load<Material>("Item/Weap/Gun/" + n + "/" + n); 
+					Guns[i].Pic =      Resources.Load<Texture> ("Item/Weap/Gun/" + n + "/" + n); 
 					break;
 			}
 
 			s += n + ",  ";
-			//Debug.Log("parTIC weap: " + n);
+			
+			// set widest icon 
+			int w = Guns[i].Pic.width;
+			if (WidestIcon < w) 
+				WidestIcon = w;
+			
+			// set tallest icon
+			int h = Guns[i].Pic.height;
+			if (TallestIcon < h) 
+				TallestIcon = h;
 		}
 		Debug.Log("Weapons: " + s);
 
 		// pics   (FOR NOW, cycle by id/index into an alphabetized LoadAll() array 
 		for (int i = 0; i < Guns.Length; i++) {
-			Guns[i].Pic = pics[i];
-
 			switch ((Item)i) {
 				case Item.Pistol:   Guns[i].Color = Color.white; 
 					Guns[i].Delay = 0.3f; 
@@ -90,16 +98,6 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].DelayAlt = 4f;
 					Guns[i].Range = 3f; break;
 			}
-			
-			// set widest icon 
-			int w = pics[i].width;
-			if (WidestIcon < w) 
-				WidestIcon = w;
-			
-			// set tallest icon
-			int h = pics[i].height;
-			if (TallestIcon < h) 
-				TallestIcon = h;
 		}
 	}
 	
