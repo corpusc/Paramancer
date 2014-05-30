@@ -427,7 +427,7 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					// grav gun arrow
+					// gravulator arrow 
 					if (GunInHand == Item.Gravulator) {
 						if (gravArrowObj == null) {
 							gravArrowObj = (GameObject)GameObject.Instantiate(gravArrowPrefab);

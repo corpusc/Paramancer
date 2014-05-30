@@ -26,27 +26,43 @@ public class Arsenal : MonoBehaviour {
 	
 	void Start() {
 		net = GetComponent<CcNet>();
-		
-		// weapon media 
-		// load the 3 kinds of resources that weapons need 
-		Object[] mats = Resources.LoadAll("Mat/Weap");
-		Object[] prefabs = Resources.LoadAll("Prefab/Weap");
 		Texture[] pics = Resources.LoadAll<Texture>("Pic/Weap");
 
-		// setup guns
-		Guns = new GunData[9];
+		// setup guns 
+		Guns = new GunData[(int)Item.Count]; // 9 atm 
+
+		string s = "";
 		for (int i = 0; i < Guns.Length; i++) {
 			Guns[i] = new GunData();
-			Guns[i].Name = S.GetSpacedOut("" + (Item)i);
+
+			var n = S.GetSpacedOut("" + (Item)i);
+			Guns[i].Name = n;
+
+			switch ((Item)i) {
+				case Item.GrenadeLauncher:
+					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Low Poly Grenade Launcher 1.1 - Daniel Mendes/Prefabs/" + n);
+					Guns[i].Mat =    (Material)  Resources.Load("Item/Weap/Low Poly Grenade Launcher 1.1 - Daniel Mendes/Materials/" + n); 
+					break;
+				default:
+					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/" + n + "/" + n + " PREFAB");
+					Guns[i].Mat =      Resources.Load<Material>("Item/Weap/" + n + "/" + n); 
+					break;
+			}
+
+			s += n + ",  ";
+			//Debug.Log("parTIC weap: " + n);
+		}
+		Debug.Log("Weapons: " + s);
+
+		// pics   (FOR NOW, cycle by id/index into an alphabetized LoadAll() array 
+		for (int i = 0; i < Guns.Length; i++) {
 			Guns[i].Pic = pics[i];
-			Guns[i].Mat = (Material)mats[i];
-			Guns[i].Prefab = (GameObject)prefabs[i];
-			
+
 			switch ((Item)i) {
 				case Item.Pistol:   Guns[i].Color = Color.white; 
 					Guns[i].Delay = 0.3f; 
 					Guns[i].DelayAlt = 0.3f; break; 
-				case Item.GrenadeLauncher:   Guns[i].Color = S.Orange; 
+				case Item.GrenadeLauncher:   Guns[i].Color = Color.green; 
 					Guns[i].Delay = 0.25f; 
 					Guns[i].DelayAlt = 0.25f; break; 
 				case Item.MachineGun:   Guns[i].Color = Color.cyan; 
@@ -59,7 +75,7 @@ public class Arsenal : MonoBehaviour {
 				case Item.RocketLauncher:   Guns[i].Color = Color.red; 
 					Guns[i].Delay = 1.5f; 
 					Guns[i].DelayAlt = 0.7f;
-					Guns[i].MarkScale = 5f; break; // set for the launcher because the projectile has a negative value in the gun system
+					Guns[i].MarkScale = 5f; break; // set for the launcher because the projectile has a negative value in the gun system 
 				case Item.Swapper:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 2f; 
 					Guns[i].DelayAlt = 2f; break; 
@@ -75,7 +91,7 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].Range = 3f; break;
 			}
 			
-			// set widest icon
+			// set widest icon 
 			int w = pics[i].width;
 			if (WidestIcon < w) 
 				WidestIcon = w;
