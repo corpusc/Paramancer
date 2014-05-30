@@ -7,10 +7,19 @@ public class PseudoNeuron : MonoBehaviour {
 	public float Value = 0f;
 	public List<Axon> InAxons;
 	public List<Axon> OutAxons;
+	public float[] Imps;
+
+	// assumes that OutAxons have already been initialized
+	public void InitImps () {
+		Imps = new float[OutAxons.Count];
+		for (int i = 0; i < OutAxons.Count; i++) {
+			Imps[i] = 1f;
+		}
+	}
 	
 	public void ProcessOutput () {
 		for (int i = 0; i < OutAxons.Count; i++) {
-			OutAxons[i].Weight = Value;
+			OutAxons[i].Weight = Value * Imps[i];
 			OutAxons[i].Active = true;
 		}
 	}
@@ -35,6 +44,10 @@ public class PseudoNeuron : MonoBehaviour {
 		for (int i = 0; i < InAxons.Count; i++) {
 			InAxons[i].Weight += Random.Range(-MaxWeightMutation, MaxWeightMutation);
 			InAxons[i].Mult += Random.Range(-MaxMultMutation, MaxMultMutation);
+		}
+
+		for (int i = 0; i < Imps.Length; i++) {
+			Imps[i] += Random.Range(-MaxWeightMutation, MaxWeightMutation);
 		}
 	}
 

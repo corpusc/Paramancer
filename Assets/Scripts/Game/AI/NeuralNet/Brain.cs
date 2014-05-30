@@ -43,6 +43,7 @@ public class Brain : MonoBehaviour {
 			for (int j = 0; j < Lobes[0].Neurons.Count; j++) {
 				InNeurons[i].OutAxons.Add (Lobes[0].Neurons[j].InAxons[i]);
 			}
+			InNeurons[i].InitImps();
 		}
 
 		for (int i = 0; i < OutNeurons.Count; i++) {
@@ -65,6 +66,10 @@ public class Brain : MonoBehaviour {
 
 		for (int i = 0; i < OutNeurons.Count; i++) {
 			OutNeurons[i].Mutate(MaxWeightMutation, MaxMultMutation);
+		}
+
+		for (int i = 0; i < InNeurons.Count; i++) {
+			InNeurons[i].Mutate(MaxWeightMutation, MaxMultMutation);
 		}
 	}
 
