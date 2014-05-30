@@ -3,40 +3,43 @@ using System.Collections;
 
 public class RocketScript : MonoBehaviour {
 	public GameObject particle;
-	public int MinPtsPerSecond = 300;
+	public int MinPtsPerSecond = 300; // pts == points? 
 	public int MaxPtsPerSecond = 500;
 	public int ExplosionParticles = 200;
 	public float ExplosionSize = 0.4f;
-	public float ForwardOffset = 1f; // prevents running into your own rocket when you have lags
+	public float ForwardOffset = 1f; // prevents running into your own rocket when you have lags (doesn't work....prob need to filter out rocket owner's body )
 	public float Turn = 2f;
 	public bool Turning = false;
 	public float MinParticleSpeed = 5f;
 	public float MaxParticleSpeed = 8f;
-	public float PMR = 1f; // Particle Movement Randomness
+	public float PMR = 1f; // Particle Movement Randomness 
 	public float ExplosionSpeed = 8f;
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;
 	
-	private CcNet net;
-	private Vector3 lastPos;
-	private float life = 20f;
+	// private 
+	CcNet net;
+	Vector3 lastPos;
+	float life = 20f;
 	
 	
 	
-	void Start () {
+	void Start() {
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		lastPos = transform.position;
 		transform.position += transform.forward * ForwardOffset;
 	}
 	
-	void Update () {
-		if (enabled){
+	void Update() {
+		if (enabled) {
 			if (Turning)
 				transform.forward = Vector3.Normalize(transform.forward + Random.insideUnitSphere * Time.deltaTime * Turn);
+
 			Vector3 moveForward = transform.forward * Time.deltaTime * 600f / (life < 16f ? 1f : Mathf.Pow(life - 15f, 2f));
 			transform.position += moveForward;
-			int c_pts = (int)((float)Random.Range(MinPtsPerSecond, MaxPtsPerSecond) * Time.deltaTime);
-			if(Turning)
+			int c_pts = (int)((float)Random.Range(MinPtsPerSecond, MaxPtsPerSecond) * Time.deltaTime); // what the hell does this stand for? don't use underscores 
+
+			if (Turning) {
 				for (int i = 0; i < c_pts; i++) {
 					var np = (GameObject)GameObject.Instantiate(particle);
 					float offMagn = moveForward.magnitude / 2f;
@@ -50,7 +53,7 @@ public class RocketScript : MonoBehaviour {
 					np.GetComponent<BeamParticle>().MidColorPos = Random.Range(0.4f, 0.5f);
 					np.GetComponent<BeamParticle>().EndColor = Color.clear;
 				}
-			else
+			}else{
 				for (int i = 0; i < c_pts; i++) {
 					var np = (GameObject)GameObject.Instantiate(particle);
 					float offMagn = moveForward.magnitude / 2f;
@@ -64,6 +67,8 @@ public class RocketScript : MonoBehaviour {
 					np.GetComponent<BeamParticle>().MidColorPos = Random.Range(0.4f, 0.6f);
 					np.GetComponent<BeamParticle>().EndColor = Color.clear;
 				}
+			}
+
 			var hitInfo = new RaycastHit();
 			int layerMask = 1;   //(1<<0);
 			var rayDirection = (transform.position - lastPos).normalized;
@@ -87,37 +92,39 @@ public class RocketScript : MonoBehaviour {
 	}
 	
 	private void detonateMaybe(Vector3 preciseLocation, Vector3 hitNorm) {
-		if (Turning)
-		for (int i = 0; i < ExplosionParticles; i++) {
-			var np = (GameObject)GameObject.Instantiate(particle);
-			np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos;
-			np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
-			np.GetComponent<BeamParticle>().StartColor = Color.Lerp (Color.green, Color.yellow, Random.value);
-			np.GetComponent<BeamParticle>().UseMidColor = true;
-			np.GetComponent<BeamParticle>().MidColor = Color.Lerp (Color.green, Color.blue, Random.value);
-			np.GetComponent<BeamParticle>().MidColorPos = 0.7f;
-			np.GetComponent<BeamParticle>().EndColor = Color.clear;
-			np.GetComponent<BeamParticle>().life = 2.5f;
-			np.GetComponent<BeamParticle>().f = -2f;
-			np.GetComponent<BeamParticle>().MinSize = 6f;
-			np.GetComponent<BeamParticle>().MaxSize = 8f;
-			np.GetComponent<BeamParticle>().acceleration = 0.1f;
-			np.GetComponent<BeamParticle>().ParticType = ParticleType.Multiple;
+		if (Turning) {
+			for (int i = 0; i < ExplosionParticles; i++) {
+				var np = (GameObject)GameObject.Instantiate(particle);
+				np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos;
+				np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
+				np.GetComponent<BeamParticle>().StartColor = Color.Lerp (Color.green, Color.yellow, Random.value);
+				np.GetComponent<BeamParticle>().UseMidColor = true;
+				np.GetComponent<BeamParticle>().MidColor = Color.Lerp (Color.green, Color.blue, Random.value);
+				np.GetComponent<BeamParticle>().MidColorPos = 0.7f;
+				np.GetComponent<BeamParticle>().EndColor = Color.clear;
+				np.GetComponent<BeamParticle>().life = 2.5f;
+				np.GetComponent<BeamParticle>().f = -2f;
+				np.GetComponent<BeamParticle>().MinSize = 6f;
+				np.GetComponent<BeamParticle>().MaxSize = 8f;
+				np.GetComponent<BeamParticle>().acceleration = 0.1f;
+				np.GetComponent<BeamParticle>().ParticType = ParticleType.Multiple;
+			}
+		}else{
+			for (int i = 0; i < ExplosionParticles; i++) {
+				var np = (GameObject)GameObject.Instantiate(particle);
+				np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos; // do NOT use preciseLocation because particles shouldn't spawn inside a wall (bouncing will mess up) 
+				np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
+				np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.red, Color.yellow, Random.value);
+				np.GetComponent<BeamParticle>().EndColor = Color.Lerp(Color.Lerp(Color.red, Color.clear, 1f), Color.Lerp(Color.black, Color.clear, 1f), Random.Range(0f, 1f));
+				np.GetComponent<BeamParticle>().life = 2.5f;
+				np.GetComponent<BeamParticle>().f = -2f;
+				np.GetComponent<BeamParticle>().MinSize = 6f;
+				np.GetComponent<BeamParticle>().MaxSize = 8f;
+				np.GetComponent<BeamParticle>().acceleration = 0.1f;
+				np.GetComponent<BeamParticle>().ParticType = ParticleType.Multiple;
+			}
 		}
-		else
-		for (int i = 0; i < ExplosionParticles; i++) {
-			var np = (GameObject)GameObject.Instantiate(particle);
-			np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos; // do NOT use preciseLocation because particles shouldn't spawn inside a wall(bouncing will mess up)
-			np.GetComponent<BeamParticle>().MaxSpeed = ExplosionSpeed;
-			np.GetComponent<BeamParticle>().StartColor = Color.Lerp(Color.red, Color.yellow, Random.value);
-			np.GetComponent<BeamParticle>().EndColor = Color.Lerp(Color.Lerp(Color.red, Color.clear, 1f), Color.Lerp(Color.black, Color.clear, 1f), Random.Range(0f, 1f));
-			np.GetComponent<BeamParticle>().life = 2.5f;
-			np.GetComponent<BeamParticle>().f = -2f;
-			np.GetComponent<BeamParticle>().MinSize = 6f;
-			np.GetComponent<BeamParticle>().MaxSize = 8f;
-			np.GetComponent<BeamParticle>().acceleration = 0.1f;
-			np.GetComponent<BeamParticle>().ParticType = ParticleType.Multiple;
-		}
+
 		enabled = false;
 		if (net.isServer)
 			net.Detonate(Item.RocketProjectile, preciseLocation, shooterID, viewID);
