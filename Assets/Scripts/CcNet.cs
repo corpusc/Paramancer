@@ -1092,6 +1092,7 @@ public class CcNet : MonoBehaviour {
 		CurrMatch.Seed = md.Seed;
 		CurrMatch.MoveSpeedMult = md.MoveSpeedMult;
 		CurrMatch.Gravity = md.Gravity;
+		CurrMatch.style = md.style;
 	}
 	
 	[RPC]
@@ -1149,7 +1150,7 @@ public class CcNet : MonoBehaviour {
 			targetTeam, CurrMatch.FriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
 			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
 			(int)CurrMatch.pickupSlot3, (int)CurrMatch.pickupSlot4, (int)CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
-			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.Gravity, CurrMatch.NeedsGenerating, CurrMatch.Seed);
+			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.Gravity, CurrMatch.NeedsGenerating, CurrMatch.Seed, (int)CurrMatch.style);
 	}
 	
 	public float gameTimeLeft = 0f;
@@ -1160,7 +1161,8 @@ public class CcNet : MonoBehaviour {
 		float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, 
 		int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, 
 		int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, 
-		int playerLives, bool newGame, bool basketball, float speedUp, float GForce, bool needsGen, int seed, NetworkMessageInfo info
+		int playerLives, bool newGame, bool basketball, float speedUp, float GForce, bool needsGen, int seed, int style,
+	    NetworkMessageInfo info
 	) {
 		// we've received game info from the server
 		latestPacket = Time.time;
@@ -1222,6 +1224,7 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.Seed = seed;
 			CurrMatch.MoveSpeedMult = speedUp;
 			CurrMatch.Gravity = GForce;
+			CurrMatch.style = (GameStyle)style;
 		}
 		
 		if (targetTeam != -1) {
@@ -1278,7 +1281,7 @@ public class CcNet : MonoBehaviour {
 	
 	void OnLevelWasLoaded() {
 		if (CurrMatch.NeedsGenerating) {
-			VoxelMapInit.CreateMap(CurrMatch.Seed);
+			VoxelMapInit.CreateMap(CurrMatch.Seed, CurrMatch.style);
 		}
 		if (preppingLevel) {
 			// level set up, let's play!

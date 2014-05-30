@@ -32,6 +32,7 @@ public class MatchData {
 	public int Seed = 0;
 	public float MoveSpeedMult = 1f; // the mtime speed multiplier 
 	public float Gravity = 10f;
+	public GameStyle style = GameStyle.SciFi;
 	
 	public static string ProcGenName = "Generated with seed"; // user-facing name of procedurally generated voxel-style maps 
 	

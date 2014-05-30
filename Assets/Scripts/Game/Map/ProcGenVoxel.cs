@@ -34,6 +34,8 @@ public class ProcGenVoxel : ScriptableObject {
 	public int MaxCorridorStartHeight = 5; // the maximal height at which corridors & bridges are created
 	public bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed
 
+	public GameStyle Style = GameStyle.SciFi; // used to control the placing of art assets & the texture images
+
 	// assets to be placed on the map
 	public int Torches = 40; // the amount of torches placed on the map
 	public GameObject Torch;

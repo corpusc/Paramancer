@@ -142,3 +142,11 @@ public enum ParticleType {
 
 	Count
 }
+
+public enum GameStyle {
+	SciFi,
+	Medieval,
+	SteamPunk,
+
+	Count
+}
