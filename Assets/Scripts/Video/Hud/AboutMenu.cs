@@ -20,7 +20,7 @@ public class AboutMenu {
 			s += "Here's some example weapon sets we're thinking of: \n\n";
 			s += "Sci-Fi guns \nSci-Fi NanoSwarms \nPsi-Fi amplified psionic powers \n(the latter 2 being hand attachments or tech \"gloves\").  \n\n";
 			s += "In order to keep most potential map creators inspired to build in the Paraverse, ";
-			s += "we will half-assedly attempt to let users to build in whatever setting/theme they prefer, ";
+			s += "we will half-assedly attempt to let users build in whatever setting/theme they prefer, ";
 			s += "limiting ourselves (initially) to the main 3-4 most popular settings.  ";
 			s += "Some possibilities:\n\n";
 			s += "Modern Day-ish (albeit BUILD-games-style), \nSci-Fi, \nCyberPunk, \nSteamPunk, \nWestern, \nVarious olden-time periods, ";
@@ -78,7 +78,7 @@ public class AboutMenu {
 			s += "Adding single player (SP), and co-operative multiplayer.  ";
 			s += "I loved this concept and wanted to do this YEARS before RL-FPS games existed.  ";
 			s += "But i've been disappointed with the few that recently came onto the market.  ";
-			s += "And do any of them have multiplayer?";
+			s += "And do any of them have multiplayer?  ";
 			s += "The theme/setting will be somewhere between comic-book-modern/near-future and sci-fi.  ";
 			s += "When starting a new dungeon crawl, you can choose to play by yourself, with some select friends, ";
 			s += "or with drop-in co-operative, OR, PVP-invasions..... from players across the world.  ";
