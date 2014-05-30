@@ -43,7 +43,7 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].Mat =    (Material)  Resources.Load("Item/Weap/Gun/Low Poly " + n + " 1.1 - Daniel Mendes/Materials/" + n); 
 					Guns[i].Pic =      Resources.Load<Texture> ("Item/Weap/Gun/" + n + "/" + n); 
 					break;
-					default:
+				default:
 					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Gun/" + n + "/" + n + " PREFAB");
 					Guns[i].Mat =      Resources.Load<Material>("Item/Weap/Gun/" + n + "/" + n); 
 					Guns[i].Pic =      Resources.Load<Texture> ("Item/Weap/Gun/" + n + "/" + n); 
@@ -75,7 +75,7 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].DelayAlt = 0.25f; break; 
 				case Item.MachineGun:   Guns[i].Color = Color.cyan; 
 					Guns[i].Delay = 0.1f; 
-					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; break; // unique 
+					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; break; // only 1 with AutoFire 
 				case Item.RailGun:   Guns[i].Color = Color.cyan; 
 					Guns[i].Delay = 2f;
 					Guns[i].MarkScale = 2f;
@@ -96,7 +96,7 @@ public class Arsenal : MonoBehaviour {
 				case Item.Spatula:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 1f;  
 					Guns[i].DelayAlt = 4f;
-					Guns[i].Range = 3f; break;
+					Guns[i].Range = 3f; break; // only 1 with Range 
 			}
 		}
 	}
