@@ -865,7 +865,7 @@ public class EntityClass : MonoBehaviour {
 			if (GunInHand == Item.Bomb) {
 				if (gunMesh1 != null && 
 				    gunMesh1.transform.Find("Flash Light") != null) {
-					gunMesh1.transform.Find("Flash Light").GetComponent<FlashlightScript>().Visible = false;
+					gunMesh1.transform.Find("Flash Light").GetComponent<FlashingLight>().Visible = false;
 				}
 			}
 		}else{
@@ -1150,11 +1150,11 @@ public class EntityClass : MonoBehaviour {
 		
 		fl = gunMesh1.transform.Find("Flash Light");
 		if (gunMesh1 != null && fl != null)	
-			fl.GetComponent<FlashlightScript>().Visible = false;
+			fl.GetComponent<FlashingLight>().Visible = false;
 		
 		fl = gunMesh2.transform.Find("Flash Light");
 		if (gunMesh2 != null && fl != null)	
-			fl.GetComponent<FlashlightScript>().Visible = false;
+			fl.GetComponent<FlashingLight>().Visible = false;
 	}
 
 	void handlePickingUpItem() {

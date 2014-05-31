@@ -4,11 +4,11 @@ using System.Collections;
 
 
 // takes care of the light and particles of the bomb 
-public class FlashlightScript : MonoBehaviour {
+public class FlashingLight : MonoBehaviour {
 	public bool Visible = true;
 	// didn't find where these were set ....so i HAD moved them to private var section 
 	public GameObject bombObj;
-	public Light otherlight; // dunno what this means 
+	public Light Sparks;
 	public ParticleSystem ps;
 
 	// private 
@@ -18,12 +18,12 @@ public class FlashlightScript : MonoBehaviour {
 
 	
 	
-	void Start () {
+	void Start() {
 		changeTime = Time.time + flashTime;
 		arse = GameObject.Find("Main Program").GetComponent<Arsenal>();
 	}
 	
-	void Update () {
+	void Update() {
 		if (bombObj.renderer.enabled && Visible) {
 			if (Time.time > changeTime) {
 				changeTime += flashTime;
@@ -33,12 +33,12 @@ public class FlashlightScript : MonoBehaviour {
 					arse.BombBeep(transform.position);
 			}
 			
-			otherlight.enabled = true;
+			Sparks.enabled = true;
 			
 			if (!ps.isPlaying) 
 				ps.Play();
 		}else{
-			otherlight.enabled = false;
+			Sparks.enabled = false;
 			light.enabled = false;
 			
 			if (ps.isPlaying) {

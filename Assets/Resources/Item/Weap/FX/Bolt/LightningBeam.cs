@@ -22,7 +22,7 @@ public class LightningBeam : MonoBehaviour {
 		if (hit) 
 			col = new Color(0, 1, 0, 1f);
 		else 
-			col = new Color(1, 0, 1, 1f);
+			col = new Color(1, 0, 0.5f, 1f);
 		
 		lr.SetColors(col, col);
 		lr.SetWidth(0.1f, 0.7f);
