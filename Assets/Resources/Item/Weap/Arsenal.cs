@@ -228,7 +228,7 @@ public class Arsenal : MonoBehaviour {
 			case Item.GrenadeLauncher:
 				var ng = (GameObject)GameObject.Instantiate(grenadeBulletPrefab);
 				var gs = ng.GetComponent<GrenadeScript>();
-				gs.start = origin;
+				gs.start = origin + direction; // start a bit outwards 
 				gs.direction = direction;
 				gs.startTime = time;
 				gs.viewID = bulletID;
@@ -241,7 +241,7 @@ public class Arsenal : MonoBehaviour {
 			
 			case Item.RocketLauncher:
 					var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
-					nr.transform.position = origin;
+					nr.transform.position = origin + direction; // start a bit outwards 
 					nr.transform.LookAt(origin + direction);
 					
 					var	rs = nr.GetComponent<RocketScript>();

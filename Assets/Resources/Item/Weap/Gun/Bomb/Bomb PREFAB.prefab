@@ -220,12 +220,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bff7e7a169ee54e98bbdc15ba0676bfb, type: 3}
+  m_Script: {fileID: 11500000, guid: f36b589f82e049d488fde963ea9f26d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Visible: 1
   bombObj: {fileID: 100006}
-  otherlight: {fileID: 10800002}
+  Sparks: {fileID: 10800002}
   ps: {fileID: 19800000}
 --- !u!198 &19800000
 ParticleSystem:

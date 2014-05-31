@@ -45,9 +45,13 @@ public class GrenadeScript : MonoBehaviour {
 				layerMask)
 			) {
 				if (hitInfo.collider.GetType() == typeof(CharacterController)) {
-					// i like players being able to hurt theirselves with careless grenade tosses,
+					// i like players being able to hurt themselves with careless grenade tosses,
 					// but some kinda FIXME needed for insta self kills while throwing and sprinting forward?
-					maybeDetonate();
+
+					// if we're NOT hitting who shot us 
+					//if (hitInfo.collider.networkView != net.localPlayer.Entity.networkView) {
+						maybeDetonate();
+					//}
 				}else{
 					transform.position = hitInfo.point + (hitInfo.normal*0.15f);
 					moveVector = Vector3.Reflect(moveVector, hitInfo.normal);
@@ -69,7 +73,7 @@ public class GrenadeScript : MonoBehaviour {
 		alive = false;
 
 		if (net.isServer) {
-			net.Detonate (Item.GrenadeLauncher, transform.position, shooterID, viewID);
+			net.Detonate(Item.GrenadeLauncher, transform.position, shooterID, viewID);
 		}
 	}
 }
