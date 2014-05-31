@@ -2523,10 +2523,8 @@ Transform:
   - {fileID: 900126656}
   - {fileID: 691332000}
   - {fileID: 772389097}
-  - {fileID: 693602232}
   - {fileID: 72816272}
   - {fileID: 576756236}
-  - {fileID: 951513653}
   - {fileID: 1177765412}
   - {fileID: 1212703467}
   - {fileID: 1598213092}
@@ -2539,6 +2537,8 @@ Transform:
   - {fileID: 1292091680}
   - {fileID: 1357554841}
   - {fileID: 1467654568}
+  - {fileID: 693602232}
+  - {fileID: 951513653}
   m_Father: {fileID: 0}
 --- !u!1 &990742415
 GameObject:
@@ -5040,13 +5040,13 @@ Light:
   m_Enabled: 1
   serializedVersion: 3
   m_Type: 2
-  m_Color: {r: 1, g: .132352948, b: .47342813, a: 1}
+  m_Color: {r: 1, g: .404665351, b: 0, a: 1}
   m_Intensity: 8
   m_Range: 11.7700005
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 0
     m_Resolution: -1
     m_Strength: 1
     m_Bias: .0500000007

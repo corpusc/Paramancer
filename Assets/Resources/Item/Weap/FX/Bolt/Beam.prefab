@@ -41,6 +41,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   start: {x: 0, y: 0, z: 0}
   end: {x: 0, y: 0, z: 0}
+  col: {r: 1, g: 1, b: 1, a: 1}
 --- !u!120 &12000000
 LineRenderer:
   m_ObjectHideFlags: 1

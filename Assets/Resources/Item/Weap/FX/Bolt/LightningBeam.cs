@@ -2,30 +2,30 @@ using UnityEngine;
 using System.Collections;
 
 
+
 public class LightningBeam : MonoBehaviour {
-	private LineRenderer lr;
-	
-	private Color col = new Color(1,1,1,0.5f);
 	public Vector3 start;
 	public Vector3 end;
-	
 	public bool hit = false;
 	
-	private Vector3[] points;
-	private Vector3[] moves;
-	
+	// private 
+	Vector3[] points;
+	Vector3[] moves;
+	LineRenderer lr;
+	Color col = new Color(1,1,1,0.5f);
+
 
 
 	void Start() {
 		lr = GetComponent<LineRenderer>();
 
 		if (hit) 
-			col = new Color(0, 1, 1, 1f);
+			col = new Color(0, 1, 0, 1f);
 		else 
-			col = new Color(1, 1, 0, 1f);
+			col = new Color(1, 0, 1, 1f);
 		
 		lr.SetColors(col, col);
-		lr.SetWidth(0.1f, 0.5f);
+		lr.SetWidth(0.1f, 0.7f);
 		
 		float distance = Vector3.Distance(start,end);
 		Vector3 direction = (end-start).normalized;

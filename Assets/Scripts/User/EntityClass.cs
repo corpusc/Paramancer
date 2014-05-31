@@ -78,7 +78,7 @@ public class EntityClass : MonoBehaviour {
 	public Item GunOnBack = Item.GrenadeLauncher;
 	private Item prevGunInHand = Item.None;
 	private Item prevGunOnBack = Item.None;
-	public GameObject firstPersonGun;
+	public GameObject HudGun;
 	int swapperLockTarget = -1;
 	
 	// network
@@ -161,8 +161,8 @@ public class EntityClass : MonoBehaviour {
 
 		if (Spectating && isLocal) {
 			if (net.players.Count > 0) {
-				if (firstPersonGun) 
-					firstPersonGun.renderer.enabled = false;
+				if (HudGun) 
+					HudGun.renderer.enabled = false;
 				
 				if (CcInput.Started(UserAction.Activate) ||
 					net.players[Spectatee].lives <= 0
@@ -611,11 +611,11 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		if (User.hasBall) {
-			if (User.local && firstPersonGun && firstPersonGun.renderer) 
-				firstPersonGun.renderer.enabled = false;
+			if (User.local && HudGun && HudGun.renderer) 
+				HudGun.renderer.enabled = false;
 		}else{
-			if (User.local && firstPersonGun && firstPersonGun.renderer && User.health > 0f) 
-				firstPersonGun.renderer.enabled = true;
+			if (User.local && HudGun && HudGun.renderer && User.health > 0f) 
+				HudGun.renderer.enabled = true;
 		}
 	}
 
@@ -646,21 +646,21 @@ public class EntityClass : MonoBehaviour {
 			prevGunInHand = GunInHand;
 			
 			if (User.local) {
-				if (firstPersonGun != null) 
-					Destroy(firstPersonGun);
+				if (HudGun != null) 
+					Destroy(HudGun);
 				
 				if (GunInHand >= Item.Pistol) {
-					firstPersonGun = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
+					HudGun = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
 				}else{
-					firstPersonGun = new GameObject();
+					HudGun = new GameObject();
 				}
 				
-				firstPersonGun.transform.parent = Camera.main.transform;    // correct
-				firstPersonGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
-				firstPersonGun.transform.localPosition = gunOffs;
+				HudGun.transform.parent = Camera.main.transform;    // correct 
+				//HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
+				HudGun.transform.localPosition = gunOffs;
 				
-				if (firstPersonGun.renderer) 
-					firstPersonGun.renderer.castShadows = false;
+				if (HudGun.renderer) 
+					HudGun.renderer.castShadows = false;
 			}
 			
 			sendRPCUpdate = true;
@@ -702,20 +702,20 @@ public class EntityClass : MonoBehaviour {
 	Vector3 gunRecoil = Vector3.zero;
 	float gunBounce = 0f;
 	void moveFPGun() {
-		if (firstPersonGun == null) 
+		if (HudGun == null) 
 			return;
 		
 		// angle
-		Quaternion fromRot = firstPersonGun.transform.rotation;
-		firstPersonGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
-		firstPersonGun.transform.rotation = Quaternion.Slerp(fromRot, firstPersonGun.transform.rotation, Time.deltaTime * 30f);
+		Quaternion fromRot = HudGun.transform.rotation;
+		HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
+		HudGun.transform.rotation = Quaternion.Slerp(fromRot, HudGun.transform.rotation, Time.deltaTime * 30f);
 
-		firstPersonGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
+		HudGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
 		
 		gunInertia -= (gunInertia-new Vector3(0f, yMove, 0f)) * Time.deltaTime * 5f;
 		if (gunInertia.y < -3f) 
 			gunInertia.y = -3f;
-		firstPersonGun.transform.localPosition += gunInertia * 0.1f;
+		HudGun.transform.localPosition += gunInertia * 0.1f;
 		
 		float recoilRest = 5f;
 		switch ((Item)GunInHand) {
@@ -734,7 +734,7 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		gunRecoil -= gunRecoil * Time.deltaTime * recoilRest;
-		firstPersonGun.transform.localPosition += gunRecoil * 0.1f;
+		HudGun.transform.localPosition += gunRecoil * 0.1f;
 		
 		if (grounded) {
 			if (moveVec.magnitude > 0.1f && net.gunBobbing){
@@ -744,7 +744,7 @@ public class EntityClass : MonoBehaviour {
 					gunBounce += Time.deltaTime * 15f;
 				}
 
-				firstPersonGun.transform.position += Vector3.up * Mathf.Sin(gunBounce) * 0.05f;
+				HudGun.transform.position += Vector3.up * Mathf.Sin(gunBounce) * 0.05f;
 			}
 			
 		}
@@ -905,15 +905,15 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		if (User.local && 
-		    firstPersonGun != null && 
-			firstPersonGun.renderer && 
+		    HudGun != null && 
+			HudGun.renderer && 
 			GunInHand >= Item.Pistol
 		) {
 			if (visible) {
-				firstPersonGun.renderer.enabled = false;
+				HudGun.renderer.enabled = false;
 			}else{
-				firstPersonGun.renderer.enabled = true;
-				firstPersonGun.renderer.material = arse.Guns[(int)GunInHand].Mat;
+				HudGun.renderer.enabled = true;
+				HudGun.renderer.material = arse.Guns[(int)GunInHand].Mat;
 			}
 		}
 		
@@ -1034,8 +1034,8 @@ public class EntityClass : MonoBehaviour {
 		moveVec = Vector3.zero;
 		ava.sprinting = false;
 
-		if (firstPersonGun) 
-			Destroy(firstPersonGun);
+		if (HudGun) 
+			Destroy(HudGun);
 		
 		// assign spawn guns
 		GunInHand = net.CurrMatch.spawnGunA;
