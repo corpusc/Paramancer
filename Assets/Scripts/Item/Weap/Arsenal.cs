@@ -102,7 +102,7 @@ public class Arsenal : MonoBehaviour {
 	}
 	
 	public void Clear() {
-		// FIXME?  should we be clearing out rockets here too? 
+		// FIXME?  should we be clearing out rockets here too? if not, change method name to be more specific, since its not a Clear'ing of the whole Arsenal system 
 		for (int i=0; i<activeGrenades.Count; i++) {
 			if (activeGrenades[i] != null && activeGrenades[i].gameObject != null) 
 				Destroy(activeGrenades[i].gameObject);

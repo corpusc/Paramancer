@@ -146,6 +146,7 @@ public class EntityClass : MonoBehaviour {
 		if (User.local)
 			net.localPlayer.Entity = this;
 		
+		// if dead... 
 		if (User.health <= 0f) {
 			makeBombInvisible();
 		}
