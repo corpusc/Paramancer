@@ -240,18 +240,18 @@ public class Arsenal : MonoBehaviour {
 				break;
 			
 			case Item.RocketLauncher:
-					var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
-					nr.transform.position = origin + direction; // start a bit outwards 
-					nr.transform.LookAt(origin + direction);
-					
-					var	rs = nr.GetComponent<RocketScript>();
-					rs.viewID = bulletID;
-					rs.shooterID = shooterID;
-					
-					activeRockets.Add(nr.GetComponent<RocketScript>());
+				var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
+				nr.transform.position = origin;// + direction; // start a bit outwards 
+				nr.transform.LookAt(origin + direction);
+				
+				var	rs = nr.GetComponent<RocketScript>();
+				rs.viewID = bulletID;
+				rs.shooterID = shooterID;
+				
+				activeRockets.Add(nr.GetComponent<RocketScript>());
 
-					if (alt)
-						rs.Turning = true;
+				if (alt)
+					rs.Turning = true;
 				break;
 		}
 		
@@ -264,7 +264,7 @@ public class Arsenal : MonoBehaviour {
 					// so a pursuer has to look around for a flee'er (since you can't hear them) 
 					// when they enter into a large space/room.  this may be a good thing? 
 					case Item.GrenadeLauncher:  playPitchedSfx(i, Sfx.Get("boosh")); break;
-					case Item.RocketLauncher:   playPitchedSfx(i, Sfx.Get("boosh")); break;
+					case Item.RocketLauncher:   playPitchedSfx(i, Sfx.Get("shot_bazooka")); break;
 					default: playPitchedSfx(i, Sfx.Get(weapon.ToString())); break;
 				}
 			}
@@ -284,16 +284,25 @@ public class Arsenal : MonoBehaviour {
 	
 	public float GetWeaponDamage(Item weapon) {
 		switch (weapon) {
-			case Item.Pistol:         return 40f;
-			case Item.GrenadeLauncher:        return 60f;
-			case Item.MachineGun:     return 15f;
-			case Item.Spatula:          return 105f;
-			case Item.RailGun:          return 105f;
-			case Item.RocketProjectile: return 70f;
+			case Item.Pistol:         
+			return 40f;
+			case Item.GrenadeLauncher:        
+			return 60f;
+			case Item.MachineGun:     
+			return 15f;
+			case Item.Spatula:          
+			return 105f;
+			case Item.RailGun:          
+			return 105f;
+			case Item.RocketProjectile: 
+			return 70f;
 			
-			case Item.Lava:           return 9999f;
-			case Item.Bomb:           return 9999f;
-			case Item.Suicide:        return 9999f;
+			case Item.Lava:           
+			return 9999f;
+			case Item.Bomb:           
+			return 9999f;
+			case Item.Suicide:        
+			return 9999f;
 		}
 
 		return 0f;
@@ -349,10 +358,10 @@ public class Arsenal : MonoBehaviour {
 							net.players[k].Entity.transform.position, 
 							activeRockets[i].transform.position) 
 						    < GetDetonationRadius(Item.RocketProjectile)
-						    ) {
+					    ) {
 							if (net.players[k].Entity.transform.position.y > activeRockets[i].transform.position.y) {
 								if (activeRockets[i].shooterID == net.players[k].viewID){
-									net.players[k].Entity.yMove = 14;
+									net.players[k].Entity.yMove = 9;
 								}else{
 									net.players[k].Entity.yMove = 5;
 								}
@@ -368,8 +377,8 @@ public class Arsenal : MonoBehaviour {
 				grenadeFlash.transform.position = activeRockets[i].transform.position;
 				GameObject rocketSoundObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
 				rocketSoundObj.transform.position = activeRockets[i].transform.position;
-				rocketSoundObj.audio.clip = Sfx.Get("ExplodeRocket");
-				rocketSoundObj.audio.volume = 4f;
+				rocketSoundObj.audio.clip = Sfx.Get("explosion_bazooka");
+				rocketSoundObj.audio.volume = 10f;
 				Destroy(activeRockets[i].gameObject);
 				activeRockets.RemoveAt(i);
 

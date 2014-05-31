@@ -302,7 +302,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		if (players[vi].health <= 0f) {
-			//player died
+			// player died 
 			players[vi].health = 0f;
 			killShot = true;
 		}
