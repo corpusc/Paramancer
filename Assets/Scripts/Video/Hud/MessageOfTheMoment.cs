@@ -10,10 +10,9 @@ public class MessageOfTheMoment {
 	Rect r;
 	
 	string[] tipText = { // less than 2 entries would cause endless loop 
-		"  This is PURE OLD SCHOOL ARENA ACTION  \n  Don't ask for MODERN/MILITARY FPS features!  ",
+		"  This is PURE OLD SCHOOL ARENA ACTION!  \n  Don't ask for MODERN/MILITARY FPS features!  ",
 		"TIP: In BYOG matches, use the Gravulator to confuse your enemies",
 		"TIP: Download the stand-alone version for better performance",
-		"TIP: Sometimes offense is the best defense",
 	};
 
 

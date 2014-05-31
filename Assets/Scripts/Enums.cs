@@ -12,7 +12,7 @@ public enum ControlDevice {
 	Count,
 }
 
-public enum Head {
+public enum Head { // ...to wear over avatars' normal heads (currently, replaces Sophie's stick figure avatar, which is a seperate model) 
 	NormalHead,
 	CardboardBoxHead,
 	FishHead,
@@ -44,7 +44,7 @@ public enum Match {
 	YouOnlyLiveThrice,
 	InstaGib,
 	WeaponLottery,
-	AstroFun,
+	LowGravity,
 	SlowMo,
 	HighSpeed,
 	Count
@@ -100,7 +100,7 @@ public enum Item {
 public enum UserAction {
 	// when changing weapon names, also change in "Item" enum 
 	// these are for selecting/equipping with 1 touch 
-	Pistol,
+	Pistol, // if these ever change, then modify testing for this range (thru Spatula) in SetDefaultBinds() 
 	GrenadeLauncher,
 	MachineGun, // 2
 	RailGun,

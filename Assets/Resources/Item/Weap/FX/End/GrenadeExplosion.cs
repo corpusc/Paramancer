@@ -16,6 +16,8 @@ public class GrenadeExplosion : MonoBehaviour {
 	void Update() {
 		var expandSpeed = 35f;
 		var shrinkSpeed = 20f;
+
+		// scaling 
 		var ls = transform.localScale;
 
 		if (expanding) {
@@ -32,12 +34,15 @@ public class GrenadeExplosion : MonoBehaviour {
 		}
 
 		transform.localScale = ls;
-		
+
+		// rotation & light 
+		if (light != null)
+			light.range = transform.localScale.x * 3f;
+		transform.eulerAngles += oriSpeed;
+
+		// cleanup 
 		if (transform.localScale.x < 0.1f) 
 			Destroy(gameObject);
-
-		light.range = transform.localScale.x * 3f;
-		transform.eulerAngles += oriSpeed;
 	}
 	
 	float rand() {

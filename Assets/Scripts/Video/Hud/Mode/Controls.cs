@@ -20,7 +20,9 @@
 // * supports MMO thumbpads.....BUT POINTLESS TO MENTION THIS UNTIL ITS GOT HOTBAR FUNC!?!, altho maybe tease with it!
 // * maybe use current icons and start price at $5 and say its so cheap cuz i plan to upgrade icons
 
-// ------------------absolutely necessary for 1st release
+// ------------------absolutely necessary for 1st release 
+// replace "Left-Click" and such with mouse icon that shows LMB being pressed 
+// put mostly transparent scrollwheel graphic behind gun icons panel 
 // FIXME: high up actions like screenshot, currently has HoverPanels drawn under menu window 
 // #1, use .SetPixel
 		// if more than half transparent, turn to black if any neighbor is less than half transparent

@@ -6,12 +6,10 @@ public static class CcInput {
 
 	// private 
 	static float currWheel;
-	static Texture[] pics;
 
 
 	
 	static CcInput() {
-		pics = Resources.LoadAll<Texture>("Pic/Hud/Action");
 		SetDefaultBinds();
 	}
 
@@ -60,28 +58,24 @@ public static class CcInput {
 		return false;
 	}
 	
-	static void loadPic(int i, string s) {
-		BindData[i].Pic = Resources.Load<Texture>("Pic/Weap/" + s);
-	}
-	
 	static void bind(int i, KeyCode kc) {
 		BindData[i].KeyCode = (KeyCode)PlayerPrefs.GetInt("" + (UserAction)i, (int)kc);
 	}
 
-	public static void SetDefaultBinds() {
-		// bind default keys/pics to user actions
+	public static void SetDefaultBinds() { // bind default keys/pics to user actions 
 		for (int i = 0; i < (int)UserAction.Count; i++) {
+			// weapon names have spaces in them currently, so specialcase those 
+			var s = "" + (UserAction)i;
+			if (i >= (int)UserAction.Pistol &&
+			    i <= (int)UserAction.Spatula)
+			{
+				s = S.GetSpacedOut(s);
+			}
+
+			// the rest 
 			BindData[i] = new BindData();
 			BindData[i].Action = (UserAction)i;
-			
-			// get pic from list
-			Texture pic = null;
-			for (int j = 0; j < pics.Length; j++) {
-				if ((UserAction)i + "" == pics[j].name)
-					pic = pics[j];
-			}
-			
-			BindData[i].Pic = pic;
+			BindData[i].Pic = Pics.Get(s);
 			
 			switch ((UserAction)i) {
 				case UserAction.MoveForward: 
@@ -141,39 +135,30 @@ public static class CcInput {
 					
 				case UserAction.Pistol:
 					bind(i, KeyCode.Alpha2);
-					loadPic(i, "0 " + (UserAction)i);
 					break;
 				case UserAction.GrenadeLauncher:
 					bind(i, KeyCode.X);
-					loadPic(i, "1 " + (UserAction)i);
 					break;
 				case UserAction.MachineGun:
 					bind(i, KeyCode.Alpha3);
-					loadPic(i, "2 " + (UserAction)i);
 					break;
 				case UserAction.RailGun:
 					bind(i, KeyCode.G);
-					loadPic(i, "3 " + (UserAction)i);
 					break;
 				case UserAction.RocketLauncher:
 					bind(i, KeyCode.V);
-					loadPic(i, "4 " + (UserAction)i);
 					break;
 				case UserAction.Swapper:
 					bind(i, KeyCode.W);
-					loadPic(i, "5 " + (UserAction)i);
 					break;
 				case UserAction.Gravulator:
 					bind(i, KeyCode.R);
-					loadPic(i, "6 " + (UserAction)i);
 					break;
 				case UserAction.Bomb:
 					bind(i, KeyCode.C);
-					loadPic(i, "7 " + (UserAction)i);
 					break;
 				case UserAction.Spatula:
 					bind(i, KeyCode.Alpha1);
-					loadPic(i, "8 " + (UserAction)i);
 					break;
 			}
 		}

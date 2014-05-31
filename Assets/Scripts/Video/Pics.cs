@@ -20,6 +20,7 @@ public static class Pics {
 	
 	static Pics() {
 		handleFolder("Hud");
+		handleFolder("Item/Weap/Gun", false);
 		//handleFolder("Hud/Control/GamePad");
 	}
 	
@@ -52,9 +53,14 @@ public static class Pics {
 //		return null;
 //	}
 	
-	static void handleFolder(string s) {
+	static void handleFolder(string s, bool inPicFolder = true) {
 		string feedback = "";
-		var tPics = Resources.LoadAll<Texture>("Pic/" + s);
+		string path = s;
+
+		if (inPicFolder)
+			path = "Pic/" + s;
+		
+		var tPics = Resources.LoadAll<Texture>(path);
 		
 		// add to the master collection that includes files from all folders 
 		foreach (var cl in tPics) {

@@ -60,7 +60,6 @@ public static class Sfx {
 
 	static void handleFolder(string s) {
 		string feedback = "";
-
 		var aClips = Resources.LoadAll<AudioClip>("SFX/" + s);
 
 		switch (s) {

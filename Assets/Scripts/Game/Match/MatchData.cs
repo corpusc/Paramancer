@@ -122,9 +122,9 @@ public class MatchData {
 				pickupSlot4 = Item.Random;
 				pickupSlot5 = Item.Random;
 				break;
-			case Match.AstroFun:
-				Name = "Astro Fun";
-				Descript = "The map was teleported to the Moon... Jump hiiiigh!";
+			case Match.LowGravity:
+				Name = "Low Gravity";
+				Descript = "...";
 				Gravity = 2f;
 				break;
 			case Match.SlowMo:

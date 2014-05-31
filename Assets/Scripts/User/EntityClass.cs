@@ -1018,18 +1018,18 @@ public class EntityClass : MonoBehaviour {
 	}
 
 	public void Respawn() {
-		Transform tran = null;
+		Transform t = null;
 		if (!net.CurrMatch.teamBased) {
-			tran = getRandomSpawn("FFA Spawns");
+			t = getRandomSpawn("FFA Spawns");
 		}else if (User.team == 1) {
-			tran = getRandomSpawn("Red Team Spawns");
+			t = getRandomSpawn("Red Team Spawns");
 		}else if (User.team == 2) {
-			tran = getRandomSpawn("Blue Team Spawns");
+			t = getRandomSpawn("Blue Team Spawns");
 		}
 
-		transform.position = tran.position + Vector3.up;
+		transform.position = t.position + Vector3.up;
 		transform.LookAt(transform.position + Vector3.forward, Vector3.up);
-		camAngle = tran.eulerAngles;
+		camAngle = t.eulerAngles;
 		yMove = 0f;
 		moveVec = Vector3.zero;
 		ava.sprinting = false;
@@ -1043,7 +1043,7 @@ public class EntityClass : MonoBehaviour {
 
 		if (GunInHand == Item.Random)
 			GunInHand = (Item)Random.Range(0, arse.Guns.Length);
-		if (GunOnBack == Item.Random) do {
+		if (GunOnBack == Item.Random) do { // make sure we don't have 2 of the same weapon 
 			GunOnBack = (Item)Random.Range(0, arse.Guns.Length);
 		} while (GunOnBack == GunInHand);
 
