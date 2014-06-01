@@ -1053,8 +1053,14 @@ public class EntityClass : MonoBehaviour {
 		// clear & setup inventory
 		for (int i = 0; i < arse.Guns.Length; i++) {
 			arse.Guns[i].Cooldown = 0f;
-			arse.Guns[i].Carrying = false;
+
+			if (Debug.isDebugBuild)
+				arse.Guns[i].Carrying = true; // carry full arsenal if in IDE 
+			else
+				arse.Guns[i].Carrying = false;
 		}
+
+		// carry visible guns 
 		arse.Guns[(int)GunInHand].Carrying = true;
 		arse.Guns[(int)GunOnBack].Carrying = true;
 	}

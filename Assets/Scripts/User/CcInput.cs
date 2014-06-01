@@ -133,6 +133,7 @@ public static class CcInput {
 					
 					
 					
+				// weapons 
 				case UserAction.Pistol:
 					bind(i, KeyCode.Alpha2);
 					break;
