@@ -290,7 +290,7 @@ public class EntityClass : MonoBehaviour {
 					
 					if (grounded) {
 						yMove = 0f;
-						if (CcInput.Started(UserAction.MoveUp)) {
+						if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && ava.JumpBoosetd)) {
 							yMove = ava.JumpBoosetd ? 7f : 4f;
 							PlaySound("Jump");
 							net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);

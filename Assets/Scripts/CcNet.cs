@@ -73,6 +73,7 @@ public class CcNet : MonoBehaviour {
 	// personal stuff
 	public NetUser localPlayer;
 	public bool gunBobbing = true;
+	public bool JumpAuto = true;
 
 	bool twoMinsAnnounced = false;
 	bool oneMinAnnounced = false;
@@ -390,6 +391,7 @@ public class CcNet : MonoBehaviour {
 		for (int i=0; i<numGibs; i++) {
 			GameObject newSplat = (GameObject)GameObject.Instantiate(splatPrefab);
 			newSplat.transform.position = hitPos;
+			newSplat.GetComponent<SplatScript>().Gravity = CurrMatch.Gravity;
 		}
 		
 		for (int i=0; i<players.Count; i++) {

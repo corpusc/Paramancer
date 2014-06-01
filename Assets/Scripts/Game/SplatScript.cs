@@ -2,8 +2,10 @@ using UnityEngine;
 using System.Collections;
 
 public class SplatScript : MonoBehaviour {
+	public float Gravity = 10f;
+
 	private Vector3 moveVec = Vector3.zero;
-	private float life = 1f;
+	private float life = 2f;
 	
 
 	
@@ -15,7 +17,7 @@ public class SplatScript : MonoBehaviour {
 	
 	void Update() {
 		transform.position += moveVec * Time.deltaTime;
-		moveVec.y -= 15f * Time.deltaTime;
+		moveVec.y -= Gravity * Time.deltaTime;
 		moveVec.x -= (0-moveVec.x) * Time.deltaTime * -3f;
 		moveVec.z -= (0-moveVec.z) * Time.deltaTime * -3f;
 		

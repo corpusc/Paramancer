@@ -106,6 +106,7 @@ public class Hud : MonoBehaviour {
 		// load settings 
 		Log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
+		net.JumpAuto = PlayerPrefs.GetInt("JumpAuto", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
 		tFOV = PlayerPrefs.GetFloat("FOV", 90f);
 		//print ("Loaded FOV, value = " + tFOV.ToString());
@@ -467,6 +468,17 @@ public class Hud : MonoBehaviour {
 			PlayerPrefs.SetInt("GunBobbing", 1);
 		else
 			PlayerPrefs.SetInt("GunBobbing", 0);
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+
+		// auto jump on jump pad
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		net.JumpAuto = TickBox.Display(net.JumpAuto, "Automatically jump on jump pads");
+		if (net.JumpAuto)
+			PlayerPrefs.SetInt("JumpAuto", 1);
+		else
+			PlayerPrefs.SetInt("JumpAuto", 0);
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 

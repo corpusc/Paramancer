@@ -152,7 +152,7 @@ public class Arsenal : MonoBehaviour {
 			nh.transform.forward = -hitNorm;
 			nh.transform.localScale *= Guns[(int)weapon].MarkScale;
 			nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
-			nh.GetComponent<BulletMark>().MaxLife = 30f;
+			nh.GetComponent<BulletMark>().MaxLife = 10f;
 		}
 		
 		// beam 
