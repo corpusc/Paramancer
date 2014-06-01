@@ -104,6 +104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d1e67bb31230b43b1311bce015efa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxExpand: 0
+  ExpandSpeed: 0
 --- !u!23 &193867306
 Renderer:
   m_ObjectHideFlags: 0
@@ -364,6 +366,7 @@ MonoBehaviour:
   broadcastPos: 0
   lastGameWasTeamBased: 0
   gunBobbing: 1
+  JumpAuto: 1
   gameTimeLeft: 0
   NextMatchTime: 0
 --- !u!114 &1973207296
