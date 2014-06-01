@@ -80,6 +80,9 @@ public class EntityClass : MonoBehaviour {
 	private Item prevGunOnBack = Item.None;
 	public GameObject HudGun;
 	int swapperLockTarget = -1;
+
+	// powerups
+	GameObject powerUpBag = GameObject.Find("PowerUps");
 	
 	// network
 	public bool isLocal = true;
@@ -108,6 +111,7 @@ public class EntityClass : MonoBehaviour {
 		hud = o.GetComponent<Hud>();
 		arse = o.GetComponent<Arsenal>();
 		locUser = o.GetComponent<LocalUser>();
+		powerUpBag = GameObject.Find("PowerUps");
 
 		// new female model 
 		//CurrModel = Models.Get("Joan");
@@ -195,9 +199,10 @@ public class EntityClass : MonoBehaviour {
 			if (!Spectating) {
 				Vector3 lastPos = transform.position;
 
-				// item pick up 
+				// item pick up, powerups
 				if (User.health > 0f) {
 					handlePickingUpItem();
+					ApplyPowerUps();
 				}
 				offeredPickup = ""; // must do after the above check 
 				
@@ -1003,17 +1008,43 @@ public class EntityClass : MonoBehaviour {
 		if (registerhit) 
 			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bHit.point);
 	}
-	
+
+	public void ApplyPowerUps () {
+		// scan for closest powerup
+		GameObject co = powerUpBag; // current best match
+		float bestDist = 99999f; // the best distance, squared
+		for (int i = 0; i < powerUpBag.transform.childCount; i++) {
+			float tDist = Vector3.SqrMagnitude(powerUpBag.transform.GetChild(i).position - transform.position); // temporary
+			if (tDist < bestDist) {
+				bestDist = tDist;
+				co = powerUpBag.transform.GetChild(i).gameObject;
+			}
+		}
+
+		if (bestDist > 3f) return;
+
+		//apply effects
+		switch (co.name) {
+		case "SpeedBoost":
+			ava.SpeedBoostEnd = Time.time + 3f * Time.timeScale;
+			// speed boosts aren't consumed
+			break;
+		default:
+			print("WARNING: Unknown powerup type called " + co.name);
+			break;
+		}
+	}
+
 	private Transform getRandomSpawn(string s) {
 		var go = GameObject.Find(s); // container for entity spawn positions 
-
+		
 		if (go == null) {
 			Debug.LogError("*** Could not find a GameObject named: " + s + "!!! ***");
 			return null;
 		}
-
+		
 		int i = Random.Range(0, go.transform.childCount);
-
+		
 		return go.transform.GetChild(i);
 	}
 

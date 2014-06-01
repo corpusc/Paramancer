@@ -11,6 +11,10 @@ public class Avatar : MonoBehaviour {
 	public float SprintMultiplier = 2.0f;
 	public Vector3 UpVector = new Vector3(0.0f, 1.0f, 0.0f);
 	public bool sprinting = false;
+
+	// powerups
+	public float SpeedBoost = 2f;
+	public float SpeedBoostEnd = 0f; // the time at which the speed boost ends
 	
 	// private 
 	float sprintActivatedTime = 0f;
@@ -38,6 +42,10 @@ public class Avatar : MonoBehaviour {
 			sprintActivatedTime = (sprintActivatedTime - Time.deltaTime < 0f) 
 				? 0f 
 				: (sprintActivatedTime - Time.deltaTime);
+
+		if (Time.time <= SpeedBoostEnd) {
+			moveVector *= SpeedBoost;
+		}
 
 		
 
