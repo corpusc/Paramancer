@@ -59,7 +59,7 @@ public class MatchData {
 				break;
 			case Match.Blackout:
 				Name = "Blackout";
-				Descript = "Careful when you spark one up!";
+				Descript = "Careful when you spark one up! (Your gun, that is)";
 				pitchBlack = true;
 				pickupSlot1 = Item.GrenadeLauncher;
 				pickupSlot2 = Item.MachineGun;
