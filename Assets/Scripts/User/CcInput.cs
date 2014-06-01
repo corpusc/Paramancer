@@ -104,10 +104,10 @@ public static class CcInput {
 					bind(i, KeyCode.Mouse1);
 					break;
 				case UserAction.Next:
-					bind(i, KeyCode.N);
+					bind(i, KeyCode.LeftArrow);
 					break;
 				case UserAction.Previous:
-					bind(i, KeyCode.P);
+					bind(i, KeyCode.RightArrow);
 					break;
 				case UserAction.Sprint:
 					bind(i, KeyCode.LeftShift);
@@ -125,10 +125,10 @@ public static class CcInput {
 					bind(i, KeyCode.Tab);
 					break;
 				case UserAction.SwapTeam:
-					bind(i, KeyCode.T);
+					bind(i, KeyCode.KeypadEnter);
 					break;
 				case UserAction.Suicide:
-					bind(i, KeyCode.K);
+					bind(i, KeyCode.KeypadMinus);
 					break;
 					
 					
@@ -159,7 +159,7 @@ public static class CcInput {
 					bind(i, KeyCode.C);
 					break;
 				case UserAction.Spatula:
-					bind(i, KeyCode.Alpha1);
+					bind(i, KeyCode.Q);
 					break;
 			}
 		}

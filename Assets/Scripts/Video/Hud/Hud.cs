@@ -220,7 +220,6 @@ public class Hud : MonoBehaviour {
 				menuEnd();
 				break;
 			case HudMode.Controls:
-				drawControlsAdjunct();
 				break;
 				
 			case HudMode.Settings:
@@ -738,18 +737,13 @@ public class Hud : MonoBehaviour {
 
 
 
-	void drawControlsAdjunct() {
+	public void DrawControlsAdjunct() {
 		menuBegin(S.WhiteTRANS, true, true);
 
 		// inform user of remapping abilities 
 		centeredLabel("Press keys to LIGHT THEM UP");
-		if (controls.Draggee == null) {
-			S.SetShoutyColor();
-			centeredLabel("Left-Click to change actions");
-		}else{
-			GUI.color = S.ShoutyGreen;
-			centeredLabel("DROP ONTO NEW KEY");
-		}
+		S.SetShoutyColor();
+		centeredLabel("Left-Click to change actions");
 		GUI.color = Color.white;
 		centeredLabel("Right-Click to move keys");
 		GUILayout.Label("");

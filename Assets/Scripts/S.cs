@@ -20,10 +20,10 @@ static public class S {
 			return Color.Lerp(Color.cyan, Color.blue, point);
 		} 
 	}
-	static public Color ShoutyGreen { 
+	static public Color ShoutyPurple { 
 		get { 
 			moveTween0and1();
-			return Color.Lerp(new Color(0f, 0.3f, 0f, 1f), Color.green, point);
+			return Color.Lerp(/*new Color(0f, 0.3f, 0f, 1f)*/ Color.magenta, Purple, point);
 		} 
 	}
 	// 		transparent 
@@ -32,9 +32,9 @@ static public class S {
 	public static Color BlueTRANS = new Color(0f, 0f, 1f, 0.35f);
 	public static Color PurpleTRANS = new Color(0.2f, 0f, 0.3f, 0.8f);
 	// 		opaque
-	public static Color Purple = new Color(0.8f, 0f, 1f, 1f);
+	public static Color Purple = new Color(0.4f, 0f, 0.5f, 1f);
 	public static Color PurpleLight = Color.Lerp(Purple, Color.white, 0.5f);
-	public static Color Orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
+	public static Color Orange = Color.Lerp(Color.red, Color.yellow, 0.4f);
 
 	// private 
 	static float ccs = 1.2f; // color change speed 
