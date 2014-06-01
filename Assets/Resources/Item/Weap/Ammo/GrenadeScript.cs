@@ -31,7 +31,7 @@ public class GrenadeScript : MonoBehaviour {
 	void Update () {
 		if (alive) {
 			transform.position += moveVector * Time.deltaTime;
-			moveVector.y -= Time.deltaTime * 10f;
+			moveVector.y -= Time.deltaTime * net.CurrMatch.Gravity;
 			int layerMask = (1<<8) | 1;    //(1<<0);
 			Vector3 rayDirection = (transform.position - lastPos).normalized;
 			

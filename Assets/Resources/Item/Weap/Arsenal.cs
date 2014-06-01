@@ -319,7 +319,6 @@ public class Arsenal : MonoBehaviour {
 		if (weapon == Item.Bomb) {
 			var o = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
 			o.transform.position = detPos;
-			o.transform.localScale *= 2f;
 				
 			var bomb = (GameObject)GameObject.Instantiate(soundObjectPrefab);
 			bomb.transform.position = detPos;
