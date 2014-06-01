@@ -233,7 +233,7 @@ public class Arsenal : MonoBehaviour {
 				gs.startTime = time;
 				gs.viewID = bulletID;
 				gs.shooterID = shooterID;
-				gs.detonationTime = 3f;
+				gs.detonationTime = Random.Range(2.5f, 3.5f); // so that there's no effect of an explosion "hanging" in one place when you shoot a few nades w/out moving
 				gs.ThrowFaster = sprint;
 				
 				activeGrenades.Add(gs);
@@ -241,7 +241,7 @@ public class Arsenal : MonoBehaviour {
 			
 			case Item.RocketLauncher:
 				var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
-				nr.transform.position = origin;// + direction; // start a bit outwards 
+				nr.transform.position = origin; // + direction; // start a bit outwards 
 				nr.transform.LookAt(origin + direction);
 				
 				var	rs = nr.GetComponent<RocketScript>();

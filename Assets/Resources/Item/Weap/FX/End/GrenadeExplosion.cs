@@ -2,38 +2,28 @@ using UnityEngine;
 using System.Collections;
 
 public class GrenadeExplosion : MonoBehaviour {
-	bool expanding = true;
+	public float MaxExpand;
+	public float ExpandSpeed;
+
+
 	Vector3 oriSpeed;
+	float cExpand = 0f; // current expand val
+	float f = 0.2f;
 
 
 	void Start() {
-		var f = 0.2f;
 		transform.localScale = new Vector3(f,f,f);
 		// orientation/rotation speeds 
 		oriSpeed = new Vector3(rand(), rand(), rand());
+
+		MaxExpand = Random.Range(8f, 12f);
+		ExpandSpeed = Random.Range(20f, 40f);
 	}
 
 	void Update() {
-		var expandSpeed = 35f;
-		var shrinkSpeed = 20f;
-
-		// scaling 
-		var ls = transform.localScale;
-
-		if (expanding) {
-			ls.x += Time.deltaTime * expandSpeed;
-			ls.y += Time.deltaTime * expandSpeed;
-			ls.z += Time.deltaTime * expandSpeed;
-
-			if (transform.localScale.x > 5f)
-				expanding = false;
-		}else{ // shrinking 
-			ls.x -= Time.deltaTime * shrinkSpeed;
-			ls.y -= Time.deltaTime * shrinkSpeed;
-			ls.z -= Time.deltaTime * shrinkSpeed;
-		}
-
-		transform.localScale = ls;
+		// expanding
+		cExpand += Time.deltaTime * ExpandSpeed;
+		transform.localScale = new Vector3(f,f,f) * cExpand * (MaxExpand - cExpand); // gaussian-like distribution
 
 		// rotation & light 
 		if (light != null)
