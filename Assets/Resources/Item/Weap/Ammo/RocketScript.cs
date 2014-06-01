@@ -8,7 +8,7 @@ public class RocketScript : MonoBehaviour {
 	public int ExplosionParticles = 200;
 	public float ExplosionSize = 0.4f;
 	public float ForwardOffset = 1f; // prevents running into your own rocket when you have lags (doesn't work....prob need to filter out rocket owner's body )
-	public float Turn = 2f;
+	public float Turn = 300f;
 	public bool Turning = false;
 	public float MinParticleSpeed = 5f;
 	public float MaxParticleSpeed = 8f;
@@ -20,6 +20,8 @@ public class RocketScript : MonoBehaviour {
 	// private 
 	CcNet net;
 	Vector3 lastPos;
+	Vector3 oriForward; // the originial forward direction
+	Vector3 oriTurn; // the original turning
 	float life = 20f;
 	
 	
@@ -27,20 +29,22 @@ public class RocketScript : MonoBehaviour {
 	void Start() {
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		lastPos = transform.position;
+		oriForward = transform.forward;
+		oriTurn = Vector3.Normalize(Vector3.Lerp(transform.forward, transform.up, 0.2f));
 		transform.position += transform.forward * ForwardOffset;
 	}
 	
 	void Update() {
 		if (enabled) {
 			if (Turning)
-				transform.forward = Vector3.Normalize(transform.forward + Random.insideUnitSphere * Time.deltaTime * Turn);
+				transform.forward = Quaternion.AngleAxis(life * Turn, oriForward) * oriTurn;
 
 			Vector3 moveForward = transform.forward * Time.deltaTime * 600f / (life < 16f ? 1f : Mathf.Pow(life - 15f, 2f));
 			transform.position += moveForward;
-			int c_pts = (int)((float)Random.Range(MinPtsPerSecond, MaxPtsPerSecond) * Time.deltaTime); // what the hell does this stand for? don't use underscores 
+			int currentParts = (int)((float)Random.Range(MinPtsPerSecond, MaxPtsPerSecond) * Time.deltaTime); // the amount of particles to spawn in the current frame
 
 			if (Turning) {
-				for (int i = 0; i < c_pts; i++) {
+				for (int i = 0; i < currentParts; i++) {
 					var np = (GameObject)GameObject.Instantiate(particle);
 					float offMagn = moveForward.magnitude / 2f;
 					Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
@@ -54,7 +58,7 @@ public class RocketScript : MonoBehaviour {
 					np.GetComponent<BeamParticle>().EndColor = Color.clear;
 				}
 			}else{
-				for (int i = 0; i < c_pts; i++) {
+				for (int i = 0; i < currentParts; i++) {
 					var np = (GameObject)GameObject.Instantiate(particle);
 					float offMagn = moveForward.magnitude / 2f;
 					Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
