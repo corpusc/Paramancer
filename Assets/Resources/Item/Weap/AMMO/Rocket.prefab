@@ -332,6 +332,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particle: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9, type: 2}
+  FlightSpeed: 120
+  BaseFlightSpeed: 20
   MinPtsPerSecond: 300
   MaxPtsPerSecond: 500
   ExplosionParticles: 200

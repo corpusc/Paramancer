@@ -21,7 +21,8 @@ public class BeamParticle : MonoBehaviour {
 	public float MinSize = 1f;
 	public float MaxSize = 3f;
 	public ParticleType ParticType = ParticleType.Puff;
-	public float acceleration = 1f; // multiply the speed by this 
+	public float acceleration = 1f; // multiply the speed by this
+	public float MaxRotationSpeed = 360f;
 
 	// private 
 	Mesh mesh;
@@ -29,11 +30,13 @@ public class BeamParticle : MonoBehaviour {
 	Color[] colors;
 	Vector3 shrinkFactor;
 	float maxLife;
+	float RotationSpeed; // the actual rotation speed
 
 
 
 	void Start() {
 		shrinkFactor = new Vector3(f, f, f);
+		RotationSpeed = Random.Range(-MaxRotationSpeed, MaxRotationSpeed);
 
 		switch (ParticType) {
 			case ParticleType.Circle:
@@ -59,7 +62,7 @@ public class BeamParticle : MonoBehaviour {
 		life -= Random.Range(0f, 0.5f);
 		maxLife = life;
 		moveVec *= MaxSpeed;
-		transform.rotation = Camera.main.transform.rotation;
+		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * RotationSpeed);
 	}
 	
 	void Update() {
@@ -79,10 +82,10 @@ public class BeamParticle : MonoBehaviour {
 
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, moveVec.normalized, out hit, moveVec.magnitude * Time.deltaTime, 1<<0))
-			moveVec = hit.normal * moveVec.magnitude;
+			moveVec = Vector3.Reflect(moveVec, hit.normal);
 		
 		transform.position += moveVec * Time.deltaTime;
-		transform.rotation = Camera.main.transform.rotation;
+		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * RotationSpeed);
 		//transform.forward = Camera.main.transform.forward + new Vector3(0f, Time.time, 0f); //for some reason, doesn't work
 		transform.localScale += Time.deltaTime * shrinkFactor;
 

@@ -3,7 +3,9 @@ using System.Collections;
 
 public class RocketScript : MonoBehaviour {
 	public GameObject particle;
-	public int MinPtsPerSecond = 300; // pts == points? 
+	public float FlightSpeed = 120f; // accelerates to this
+	public float BaseFlightSpeed = 20f; // starts at this speed
+	public int MinPtsPerSecond = 300; // pts == particles
 	public int MaxPtsPerSecond = 500;
 	public int ExplosionParticles = 200;
 	public float ExplosionSize = 0.4f;
@@ -21,8 +23,9 @@ public class RocketScript : MonoBehaviour {
 	CcNet net;
 	Vector3 lastPos;
 	Vector3 oriForward; // the originial forward direction
-	Vector3 oriTurn; // the original turning
-	float life = 20f;
+	Vector3 oriUp; // the original up direction
+	float life = 10f;
+	float maxLife;
 	
 	
 	
@@ -30,16 +33,19 @@ public class RocketScript : MonoBehaviour {
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		lastPos = transform.position;
 		oriForward = transform.forward;
-		oriTurn = Vector3.Normalize(Vector3.Lerp(transform.forward, transform.up, 0.2f));
+		oriUp = transform.up;
 		transform.position += transform.forward * ForwardOffset;
+		maxLife = life;
 	}
 	
 	void Update() {
 		if (enabled) {
-			if (Turning)
-				transform.forward = Quaternion.AngleAxis(life * Turn, oriForward) * oriTurn;
+			if (Turning) {
+				Vector3 turnVec = Vector3.Normalize(Vector3.Lerp(oriForward, oriUp, Mathf.Lerp(0.3f, 0.8f, (maxLife - life) / maxLife)));
+				transform.forward = Quaternion.AngleAxis(life * Turn, oriForward) * turnVec;
+			}
 
-			Vector3 moveForward = transform.forward * Time.deltaTime * 600f / (life < 16f ? 1f : Mathf.Pow(life - 15f, 2f));
+			Vector3 moveForward = (transform.forward * Time.deltaTime) * (FlightSpeed * (maxLife - life) / maxLife + BaseFlightSpeed);
 			transform.position += moveForward;
 			int currentParts = (int)((float)Random.Range(MinPtsPerSecond, MaxPtsPerSecond) * Time.deltaTime); // the amount of particles to spawn in the current frame
 
