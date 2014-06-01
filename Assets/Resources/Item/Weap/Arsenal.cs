@@ -165,7 +165,7 @@ public class Arsenal : MonoBehaviour {
 		else
 			b.start = origin;
 
-		b.end = end;
+		b.end = end - Vector3.Normalize(b.end - b.start) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending
 		b.col = Guns[(int)weapon].Color;
 
 		if (weapon == Item.Pistol)

@@ -124,7 +124,7 @@ public class MatchData {
 				break;
 			case Match.LowGravity:
 				Name = "Low Gravity";
-				Descript = "...";
+				Descript = "I believe I can fly!";
 				Gravity = 2f;
 				break;
 			case Match.SlowMo:

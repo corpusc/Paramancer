@@ -66,7 +66,7 @@ public class PlayingHud {
 				// show time left
 				string s = TimeStringFromSecs(net.gameTimeLeft);
 				GUI.color = Color.black;
-				GUI.Label(new Rect(midX-11, 5, 200, 30), s);
+				GUI.Label(new Rect(midX-11, 5, 200, 30), s); // these are used for a text shadow
 				GUI.Label(new Rect(midX-9, 5, 200, 30), s);
 				GUI.Label(new Rect(midX-10, 4, 200, 30), s);
 				GUI.Label(new Rect(midX-10, 6, 200, 30), s);
@@ -75,6 +75,18 @@ public class PlayingHud {
 				GUI.Label(new Rect(midX-10, 5, 200, 30), s);
 			}
 		}
+
+		// Frames per second
+		int currFPS = (int)(1f / Time.deltaTime * Time.timeScale); // current
+		int avgFPS = (int)(Time.frameCount / Time.time); // average
+		string FPStext =  "Current FPS: " + currFPS.ToString() + ", average FPS: " + avgFPS.ToString();
+		GUI.color = Color.black;
+		GUI.Label(new Rect(midX-101, 35, 280, 30), FPStext);
+		GUI.Label(new Rect(midX-99, 35, 280, 30), FPStext);
+		GUI.Label(new Rect(midX-100, 34, 280, 30), FPStext);
+		GUI.Label(new Rect(midX-100, 36, 280, 30), FPStext);
+		GUI.color = Color.white;
+		GUI.Label(new Rect(midX-100, 35, 280, 30), FPStext);
 
 		// lives
 		if (net.CurrMatch.playerLives > 0) {
