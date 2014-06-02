@@ -653,8 +653,8 @@ public class EntityClass : MonoBehaviour {
 	} // end of Update() 
 
 	void weaponSwitchingSoundAndVisual() {
-		gunRecoil += Vector3.right * 5f;
-		gunRecoil -= Vector3.up * 6f;
+		gunRecoil += Vector3.right * 3f;
+		gunRecoil -= Vector3.up * 4f;
 		PlaySound("guncocked");
 		net.SendTINYUserUpdate(User.viewID, UserAction.Next);
 	}

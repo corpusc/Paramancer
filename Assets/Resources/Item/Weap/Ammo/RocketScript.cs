@@ -4,7 +4,7 @@ using System.Collections;
 public class RocketScript : MonoBehaviour {
 	public GameObject particle;
 	public float FlightSpeed = 120f; // accelerates to this
-	public float BaseFlightSpeed = 20f; // starts at this speed
+	public float BaseFlightSpeed = 40f; // starts at this speed
 	public int MinPtsPerSecond = 300; // pts == particles
 	public int MaxPtsPerSecond = 500;
 	public int ExplosionParticles = 200;

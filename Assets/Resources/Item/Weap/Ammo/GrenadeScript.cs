@@ -25,7 +25,7 @@ public class GrenadeScript : MonoBehaviour {
 		transform.position = start + direction * ForwardOffset;
 		lastPos = start;
 		detonationTime += Time.time;
-		moveVector = direction * (ThrowFaster ? 35f : 25f);
+		moveVector = direction * (ThrowFaster ? 45f : 35f);
 	}
 	
 	void Update () {
