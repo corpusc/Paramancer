@@ -475,7 +475,7 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					// select specific weapon
+					// select specific weapon 
 					for (int i = (int)UserAction.Pistol; i <= (int)UserAction.Spatula; i++) {
 						if (CcInput.Started((UserAction)i)) {
 							if (/* not already equipped, but carrying */ 
@@ -1001,37 +1001,37 @@ public class EntityClass : MonoBehaviour {
 		gameObject.layer = 8;
 		bStart = transform.position;
 		bStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
-		// RPC the shot, regardless
+		// RPC the shot, regardless 
 		net.Shoot(weapon, bStart, bOri, bEnd, net.localPlayer.viewID, hit, alt, hitNorm);
 
-		if (alt && weapon == Item.Spatula) return;
 		if (registerhit) 
 			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bHit.point);
 	}
 
 	public void ApplyPowerUps () {
-		// scan for closest powerup
-		GameObject co = powerUpBag; // current best match
-		float bestDist = 99999f; // the best distance, squared
+		// scan for closest powerup 
+		GameObject co = powerUpBag; // current best match 
+		float bestDist = 99999f; // the best distance, squared 
 		for (int i = 0; i < powerUpBag.transform.childCount; i++) {
-			float tDist = Vector3.SqrMagnitude(powerUpBag.transform.GetChild(i).position - transform.position); // temporary
+			float tDist = Vector3.SqrMagnitude(powerUpBag.transform.GetChild(i).position - transform.position); // temporary 
 			if (tDist < bestDist) {
 				bestDist = tDist;
 				co = powerUpBag.transform.GetChild(i).gameObject;
 			}
 		}
 
-		if (bestDist > 3f) return;
+		if (bestDist > 3f) 
+			return;
 
-		//apply effects
+		// apply effects 
 		switch (co.name) {
-		case "SpeedBoost":
-			ava.SpeedBoostEnd = Time.time + 3f * Time.timeScale;
-			// speed boosts aren't consumed
-			break;
-		default:
-			print("WARNING: Unknown powerup type called " + co.name);
-			break;
+			case "SpeedBoost":
+				ava.SpeedBoostEnd = Time.time + 3f * Time.timeScale;
+				// speed boosts aren't consumed 
+				break;
+			default:
+				print("WARNING: Unknown powerup type called " + co.name);
+				break;
 		}
 	}
 

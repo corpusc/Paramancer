@@ -41,9 +41,12 @@ public class NetUser {
 
 
 	public void InstantiateEntity(GameObject entityPrefab) {
-		Debug.Log("InstantiateEntity()");
-		if (Entity != null) 
+		if (Entity == null) {
+			Debug.Log("NetUser.InstantiateEntity() --- 'Entity' was null at this point....all is well");
+		}else{
+			Debug.Log("'Entity' NOT null, so....EXITING InstantiateEntity() at the top");
 			return;
+		}
 		
 		var o = (GameObject)GameObject.Instantiate(entityPrefab);
 		Entity = o.GetComponent<EntityClass>();
@@ -54,8 +57,7 @@ public class NetUser {
 		//fpsEntity.viewID = viewID;
 		Entity.isLocal = local;
 		Entity.User = this;
-		Debug.Log("just setup NetUser.Entity");
-		
+
 		if (local && lives < 0) {
 			currentScore = -99;
 			Entity.Spectating = true;

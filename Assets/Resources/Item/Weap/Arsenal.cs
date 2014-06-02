@@ -140,11 +140,12 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<net.players.Count; i++) {
 			if (net.players[i].viewID == shooterID && net.players[i].local){
 				localFire = true;
-				localStart = net.players[i].Entity.HudGun.transform.position + (Camera.main.transform.forward*0.5f);
+				localStart = net.players[i].Entity.HudGun.transform.position + (Camera.main.transform.forward * 0.5f);
 			}
 		}
 
-		if (weapon == Item.Spatula) return; // no trail or effects
+		if (weapon == Item.Spatula) // no trail or effects
+			return;
 
 		if (hitNorm != Vector3.zero) {
 			GameObject nh = (GameObject)GameObject.Instantiate(BulletMark);
