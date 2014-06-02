@@ -2908,16 +2908,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MultiFragCount: 0
   PrevFrag: 0
-  EnergyLeft: 1
   camHolder: {fileID: 100002}
   FOV: 90
   grounded: 0
   yMove: 0
   firstPersonLight: {fileID: 10800000}
   weaponSoundObj: {fileID: 100118}
-  offeredPickup: 
-  currentOfferedPickup: {fileID: 0}
-  animObj: {fileID: 100080}
   swapperCrossX: 0
   swapperCrossY: 0
   swapperLocked: 0
@@ -2937,16 +2933,21 @@ MonoBehaviour:
   colA: {r: 0, g: 0, b: 0, a: 0}
   colB: {r: .996078432, g: .996078432, b: .996078432, a: 0}
   colC: {r: .741176486, g: .741176486, b: .741176486, a: 0}
-  headType: 0
   meshObj: {fileID: 100064}
-  gunMesh1: {fileID: 100066}
-  gunMesh2: {fileID: 100070}
   GunInHand: 0
   GunOnBack: 1
-  firstPersonGun: {fileID: 0}
+  HudGun: {fileID: 0}
+  gunMesh1: {fileID: 100066}
+  gunMesh2: {fileID: 100070}
   isLocal: 1
   Spectating: 0
   Spectatee: 0
+  animObj: {fileID: 100080}
+  Model: {fileID: 100134, guid: b943155b96d8b2a4fbf1faf20adc46b0, type: 3}
+  headType: 0
+  SprintEnergy: 1
+  offeredPickup: 
+  currentOfferedPickup: {fileID: 0}
   sendRPCUpdate: 0
   aimBone: {fileID: 100038}
 --- !u!114 &11400002
