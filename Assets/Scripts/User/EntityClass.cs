@@ -2,19 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
 public class EntityClass : MonoBehaviour {
 	public NetUser User;
-	private CharacterController cc;
-	private Avatar ava;
 
 	// frag 
 	public int MultiFragCount = 0;
 	public float PrevFrag = 0f;
-
-	// sprinting 
-	public float EnergyLeft = 1f; // 0-1
-	float sprintRelease = 0f;
-	float maxSprintRelease = 0.7f;
 
 	// cam 
 	public GameObject camHolder;
@@ -23,8 +18,6 @@ public class EntityClass : MonoBehaviour {
 	private Vector3 lastCamAngle = Vector3.zero;
 
 	// misc 
-	private bool prevCrouching = false; // crouching in previous frame? 
-	private bool crouched = false;
 	public bool grounded;
 	private Vector3 moveVec = Vector3.zero;
 	public float yMove = 0f;
@@ -36,13 +29,6 @@ public class EntityClass : MonoBehaviour {
 	public Light firstPersonLight;
 	public GameObject weaponSoundObj;
 
-	// nearby pickup 
-	public string offeredPickup = "";
-	public PickupBoxScript currentOfferedPickup;
-	
-	// skeletally animated model 
-	public GameObject animObj;
-	
 	// swapper 
 	public int swapperCrossX = 0;
 	public int swapperCrossY = 0;
@@ -60,49 +46,67 @@ public class EntityClass : MonoBehaviour {
 	// FIXME: resources that should be loaded elsewhere 
 	public GameObject[] heads;
 
-	// avatar settings 
-	//public GameObject CurrModel;
-	private Vector3 gunOffs = new Vector3(0.47f, -0.48f, 0.84f); // offset of gun from camera (self, 1st person)
-	private Vector3 remoteGunOffs = new Vector3(0.074f, 0.46f, 0.84f); // offset of gun from aimBone (other players)
-	public Color colA;
+	public Color colA; 
 	public Color colB;
 	public Color colC;
-	public int headType = 0;
-	
 	public GameObject meshObj; // CLEANME:   NOT SURE WHAT THIS IS ATM 
-	public GameObject gunMesh1;
-	public GameObject gunMesh2;
-	
+
 	// inventory 
 	public Item GunInHand = Item.Pistol;
 	public Item GunOnBack = Item.GrenadeLauncher;
-	private Item prevGunInHand = Item.None;
-	private Item prevGunOnBack = Item.None;
 	public GameObject HudGun;
-	int swapperLockTarget = -1;
+	public GameObject gunMesh1;
+	public GameObject gunMesh2;
 
-	// powerups
-	GameObject powerUpBag = GameObject.Find("PowerUps");
-	
 	// network
 	public bool isLocal = true;
+
+	// misc 
 	public bool Spectating = false;
 	public int Spectatee = 0;
-	
-	// scripts
-	// private handles to other scripts 
+
+	// body 
+	public GameObject animObj; // skeletally animated model 
+	public GameObject Model;
+	public int headType = 0;
+	public float SprintEnergy = 1f; // 0-1 
+	// 		nearby pickup 
+	public string offeredPickup = "";
+	public PickupBoxScript currentOfferedPickup;
+
+
+
+	// private 
+	// misc 
+	GameObject powerUpBag = GameObject.Find("PowerUps");
+	// 		scripts 
 	Hud hud; // FIXME?  won't need this anymore once playingHud gets drawn correctly? *****************
 	CcNet net;
-	Arsenal arse;
 	LocalUser locUser;
+	int swapperLockTarget = -1;
 
-	
+	// body 
+	CcBody bod;
+	CharacterController cc;
+	float sprintRelease = 0f;
+	float maxSprintRelease = 0.7f;
+	bool crouchingPrev = false; // crouching in previous frame? 
+	bool crouching = false;
+
+	// 		inventory 
+	Arsenal arse;
+	Item prevGunInHand = Item.None;
+	Item prevGunOnBack = Item.None;
+	Vector3 hudGunOffs = new Vector3(0.47f, -0.48f, 0.84f); // offset of gun from camera (self, 1st person)
+	Vector3 remoteGunOffs = new Vector3(0.074f, 0.46f, 0.84f); // offset of gun from aimBone (other players)
+
+
 	
 	void Start() {
 		// components 
 		// add 
-		if (ava == null) 
-			ava = gameObject.AddComponent<Avatar>();
+		if (bod == null) 
+			bod = gameObject.AddComponent<CcBody>();
 
 		// get 
 		cc = GetComponent<CharacterController>();
@@ -114,8 +118,8 @@ public class EntityClass : MonoBehaviour {
 		powerUpBag = GameObject.Find("PowerUps");
 
 		// new female model 
-		//CurrModel = Models.Get("Joan");
-		//CurrModel.SetActive(true);
+		Model = Models.Get("Mia");
+		Model.SetActive(true);
 		//CurrModel.hideFlags = HideFlags.None;    //.DontSave; // ....to the scene. AND don't DESTROY when new scene loads 
 
 
@@ -145,6 +149,7 @@ public class EntityClass : MonoBehaviour {
 	}
 
 	public bool sendRPCUpdate = false;
+	bool previouslyLockedCursor = true; // this is just so that clicking back into the screen won't fire explosive or gravgun immediately 
 	float rpcCamTime = 0f;
 	void Update() {
 		if (User.local)
@@ -186,10 +191,17 @@ public class EntityClass : MonoBehaviour {
 				float invY = 1f;
 				if (locUser.LookInvert)
 					invY = -1f;
-				camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.LookSensitivity * invY;
-				camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.LookSensitivity;
-				if (camAngle.x>85f) camAngle.x = 85f;
-				if (camAngle.x<-85f) camAngle.x = -85f;
+
+				if (Screen.lockCursor) {
+					camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.LookSensitivity * invY;
+					camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.LookSensitivity;
+
+					if (camAngle.x > 85f) 
+						camAngle.x = 85f;
+					if (camAngle.x < -85f) 
+						camAngle.x = -85f;
+				}
+
 				Camera.main.transform.eulerAngles = camAngle;
 				Camera.main.transform.Translate(0,0,-3);
 			}
@@ -225,7 +237,8 @@ public class EntityClass : MonoBehaviour {
 					if (locUser.LookInvert) 
 						invY = -1f;
 					
-					if (hud.Mode == HudMode.Playing || 
+					if (Screen.lockCursor &&
+						hud.Mode == HudMode.Playing || 
 						hud.Mode == HudMode.Editing
 					) {
 						camAngle.x -= Input.GetAxis("Mouse Y") * locUser.LookSensitivity * invY;
@@ -238,7 +251,7 @@ public class EntityClass : MonoBehaviour {
 					}
 
 					if (CcInput.Started(UserAction.Sprint)) {
-						ava.sprinting = !ava.sprinting;
+						bod.sprinting = !bod.sprinting;
 						sprintRelease = 0f;
 					}
 
@@ -263,29 +276,29 @@ public class EntityClass : MonoBehaviour {
 						sprintRelease = 0f;
 
 					if (sprintRelease > maxSprintRelease)
-						ava.sprinting = false;
+						bod.sprinting = false;
 					
 					//inputVector.y = 0f;
 					inputVector.Normalize();
 
-					ava.UpVector = animObj.transform.up;
+					bod.UpVector = animObj.transform.up;
 					
-					if (!crouched) {
-						ava.Move(inputVector * Time.deltaTime * 10f);
+					if (!crouching) {
+						bod.Move(inputVector * Time.deltaTime * 10f);
 					}else{
-						ava.Move(inputVector * Time.deltaTime * 5f);
+						bod.Move(inputVector * Time.deltaTime * 5f);
 					}
 					
-					EnergyLeft = ava.GetEnergy();
+					SprintEnergy = bod.GetEnergy();
 					
 					
 					if (yMove <= 0f) {
-						ava.Move(transform.up * -0.2f);
+						bod.Move(transform.up * -0.2f);
 						bool landed = grounded;
-						grounded = ava.isGrounded;
+						grounded = bod.isGrounded;
 						
 						if (!grounded) 
-							ava.Move(transform.up * 0.2f);
+							bod.Move(transform.up * 0.2f);
 						
 						if (!landed && grounded) {
 							PlaySound("Land");
@@ -297,8 +310,8 @@ public class EntityClass : MonoBehaviour {
 					
 					if (grounded) {
 						yMove = 0f;
-						if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && ava.JumpBoosetd)) {
-							yMove = ava.JumpBoosetd ? 7f : 4f;
+						if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && bod.JumpBoosted)) {
+							yMove = bod.JumpBoosted ? 7f : 4f;
 							PlaySound("Jump");
 							net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
 						}
@@ -306,11 +319,11 @@ public class EntityClass : MonoBehaviour {
 						yMove -= Time.deltaTime * net.CurrMatch.Gravity;
 					}
 
-					ava.Move(transform.up * yMove * Time.deltaTime * 5f);
+					bod.Move(transform.up * yMove * Time.deltaTime * 5f);
 					
-					crouched = false;
+					crouching = false;
 					if (CcInput.Holding(UserAction.MoveDown)) 
-						crouched = true;
+						crouching = true;
 					
 					moveVec = inputVector;
 					
@@ -331,7 +344,7 @@ public class EntityClass : MonoBehaviour {
 						sendRPCUpdate = true;
 					if (moveVec != lastMoveVector) 
 						sendRPCUpdate = true;
-					if (crouched != prevCrouching) 
+					if (crouching != crouchingPrev) 
 						sendRPCUpdate = true;
 					//if (yMove != lastYmove) sendRPCUpdate = true;
 					if (User.health != lastHealth) 
@@ -343,12 +356,12 @@ public class EntityClass : MonoBehaviour {
 					
 					lastCamAngle = camAngle;
 					lastMoveVector = moveVec;
-					prevCrouching = crouched;
+					crouchingPrev = crouching;
 					lastYmove = yMove;
 					lastHealth = User.health;
 					
 					if (sendRPCUpdate) {
-						net.SendUserUpdate(User.viewID, transform.position, camAngle, crouched, moveVec, yMove, 
+						net.SendUserUpdate(User.viewID, transform.position, camAngle, crouching, moveVec, yMove, 
 							(int)GunInHand, (int)GunOnBack, transform.up, transform.forward);
 						sendRPCUpdate = false;
 						
@@ -462,14 +475,15 @@ public class EntityClass : MonoBehaviour {
 					
 					if /* we can shoot */ (
 						gun.Cooldown <= 0f &&
-						Screen.lockCursor && 
+						Screen.lockCursor && previouslyLockedCursor &&
 						!User.hasBall && 
 						GunInHand >= Item.Pistol
 					) {
-						if /*gun repeats while pressed*/ (arse.Guns[(int)GunInHand].AutoFire) {
+						// if gun repeats while pressed 
+						if (arse.Guns[(int)GunInHand].AutoFire) {
 							if (CcInput.Holding(UserAction.Activate))
 								Fire(gun);
-						}else{ // single shot
+						}else{ // nope...single shot 
 							if (CcInput.Started(UserAction.Activate))
 								Fire(gun);
 							if (CcInput.Started(UserAction.Alt))
@@ -550,7 +564,7 @@ public class EntityClass : MonoBehaviour {
 			}
 		}
 		
-		if (!crouched) {
+		if (!crouching) {
 			camHolder.transform.localPosition = Vector3.up * 0.7f;
 		}else{
 			camHolder.transform.localPosition = Vector3.zero;
@@ -624,6 +638,8 @@ public class EntityClass : MonoBehaviour {
 			if (User.local && HudGun && HudGun.renderer && User.health > 0f) 
 				HudGun.renderer.enabled = true;
 		}
+
+		previouslyLockedCursor = Screen.lockCursor;
 	}
 
 	void weaponSwitchingSoundAndVisual() {
@@ -664,7 +680,7 @@ public class EntityClass : MonoBehaviour {
 				
 				HudGun.transform.parent = Camera.main.transform;    // correct 
 				//HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
-				HudGun.transform.localPosition = gunOffs;
+				HudGun.transform.localPosition = hudGunOffs;
 				
 				if (HudGun.renderer) 
 					HudGun.renderer.castShadows = false;
@@ -745,7 +761,7 @@ public class EntityClass : MonoBehaviour {
 		
 		if (grounded) {
 			if (moveVec.magnitude > 0.1f && net.gunBobbing){
-				if (crouched){
+				if (crouching){
 					gunBounce += Time.deltaTime * 6f;
 				}else{
 					gunBounce += Time.deltaTime * 15f;
@@ -778,7 +794,7 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
 			case Item.GrenadeLauncher:
-				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, Vector3.zero, ava.sprinting);
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, Vector3.zero, bod.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
 			case Item.MachineGun:
@@ -842,19 +858,19 @@ public class EntityClass : MonoBehaviour {
 		Material[] mats = meshObj.renderer.materials;
 		var inv = Mats.Get("InvisibleShadow");
 
-		var newMatA = new Material(Mats.Get("ColorA"));
-		var newMatB = new Material(Mats.Get("ColorB"));
-		var newMatC = new Material(Mats.Get("ColorC"));
-		newMatA.color = User.colA;
-		newMatB.color = User.colB;
-		newMatC.color = User.colC;
+		var a = new Material(Mats.Get("ColorA"));
+		var b = new Material(Mats.Get("ColorB"));
+		var c = new Material(Mats.Get("ColorC"));
+		a.color = User.colA;
+		b.color = User.colB;
+		c.color = User.colC;
 		
 		if (net.CurrMatch.teamBased) {
 			if (User.team == 1) {
-				newMatA.color = Color.red;
+				a.color = Color.red;
 			}
 			if (User.team == 2) {
-				newMatA.color = Color.cyan;
+				a.color = Color.cyan;
 			}
 		}
 		
@@ -876,9 +892,9 @@ public class EntityClass : MonoBehaviour {
 				}
 			}
 		}else{
-			mats[0] = newMatA;
-			mats[1] = newMatB;
-			mats[2] = newMatC;
+			mats[0] = a;
+			mats[1] = b;
+			mats[2] = c;
 			meshObj.renderer.materials = mats;
 			
 			if (GunInHand >= 0 && gunMesh1.renderer) 
@@ -899,7 +915,7 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		if (visible) {
-			heads[0].renderer.material = newMatA;
+			heads[0].renderer.material = a;
 			heads[1].renderer.material = Mats.Get("CardboardBox");
 			heads[2].renderer.material = Mats.Get("Fish");
 			heads[3].renderer.material = Mats.Get("Banana");
@@ -1028,7 +1044,7 @@ public class EntityClass : MonoBehaviour {
 		// apply effects 
 		switch (co.name) {
 			case "SpeedBoost":
-				ava.SpeedBoostEnd = Time.time + 3f * Time.timeScale;
+				bod.SpeedBoostEnd = Time.time + 3f * Time.timeScale;
 				// speed boosts aren't consumed 
 				break;
 			default:
@@ -1065,7 +1081,7 @@ public class EntityClass : MonoBehaviour {
 		camAngle = t.eulerAngles;
 		yMove = 0f;
 		moveVec = Vector3.zero;
-		ava.sprinting = false;
+		bod.sprinting = false;
 
 		if (HudGun) 
 			Destroy(HudGun);
@@ -1113,26 +1129,26 @@ public class EntityClass : MonoBehaviour {
 		
 		if (cc == null) 
 			cc = GetComponent<CharacterController>();
-		if (ava == null) 
-			ava = gameObject.AddComponent<Avatar>();
+		if (bod == null) 
+			bod = gameObject.AddComponent<CcBody>();
 		
 		float timeDelta = (float)(Network.time - lastUpdateTime);
 		lastUpdateTime = Network.time;
 
-		ava.UpVector = animObj.transform.up;
+		bod.UpVector = animObj.transform.up;
 		
-		if (crouched) {
-			ava.Move(moveVec * timeDelta * 5f);
+		if (crouching) {
+			bod.Move(moveVec * timeDelta * 5f);
 		}else{
-			ava.Move(moveVec * timeDelta * 10f);
+			bod.Move(moveVec * timeDelta * 10f);
 		}
 		
 		if (yMove <= 0f) {
-			ava.Move(transform.up * -0.2f);
-			grounded = ava.isGrounded;
+			bod.Move(transform.up * -0.2f);
+			grounded = bod.isGrounded;
 
 			if (!grounded) 
-				ava.Move(transform.up * 0.2f);
+				bod.Move(transform.up * 0.2f);
 		}else{
 			grounded = false;
 		}
@@ -1143,7 +1159,7 @@ public class EntityClass : MonoBehaviour {
 			yMove -= timeDelta * 10f;
 		}
 		
-		ava.Move(transform.up * yMove * timeDelta * 5f);
+		bod.Move(transform.up * yMove * timeDelta * 5f);
 	}
 	
 	public void UpdatePlayer(Vector3 pos, Vector3 ang, bool crouch, Vector3 move, float yMovement, double time, 
@@ -1152,7 +1168,7 @@ public class EntityClass : MonoBehaviour {
 		transform.position = pos;
 		camHolder.transform.eulerAngles = ang;
 		camAngle = ang;
-		crouched = crouch;
+		crouching = crouch;
 		moveVec = move;
 		yMove = yMovement;
 		lastUpdateTime = time;

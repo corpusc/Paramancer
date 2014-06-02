@@ -96,7 +96,7 @@ public class AboutMenu {
 			s += "This will mean possibly millions of spells.  Depending on how granular the rune/component selection ends up being.  ";
 			s += "However they are designed to be balanced against each other in power.  A horizontal progression.  ";
 			s += "Giving you more variety & choice in how to ";
-			s += "divide & deliver your (potential) damage over the desired TTK period.  ";
+			s += "divide/spread your (potential) damage.  ";
 			s += "Nothing will ever give a power-level reward/advantage for in-game grinding.  ";
 			s += "Any SP/COOP progression that we may add will not effect the eventual open world.  ";
 			s += "The traditional 90's-FPS-style guns will remain as an alternate option.  ";

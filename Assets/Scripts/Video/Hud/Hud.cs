@@ -291,8 +291,7 @@ public class Hud : MonoBehaviour {
 			var r = new Rect(0, 0, Screen.width, Screen.height);
 			r.x += mar;    r.width -= mar*2;
 			r.y += mar;   r.height -= mar*2;				
-			GUI.Button(r, "To grab mouse cursor,\n" +
-			           "Unity REQUIRES clicking on the game screen");
+			GUI.Button(r, "To grab mouse cursor,\nUnity REQUIRES clicking on the game screen");
 		}
 	}
 	

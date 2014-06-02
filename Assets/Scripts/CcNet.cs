@@ -84,14 +84,14 @@ public class CcNet : MonoBehaviour {
 	float gameStartTime = 0f;
 
 	// private
-	// scripts
-	CcLog log;
-	Hud hud;
-	Arsenal arse;
 	GameObject entityPrefab;
 	GameObject pickupBoxPrefab;
 	GameObject splatPrefab;
 	GameObject basketballPrefab;
+	// scripts
+	CcLog log;
+	Hud hud;
+	Arsenal arse;
 
 
 	
@@ -114,7 +114,7 @@ public class CcNet : MonoBehaviour {
 				case "Basketball": basketballPrefab = (GameObject)p; break;	
 				case "FPSEntity": entityPrefab = (GameObject)p; break;				
 				case "PickupBox": pickupBoxPrefab = (GameObject)p; break;	
-				case "SplatCube": splatPrefab = (GameObject)p; break;	
+				case "Giblet": splatPrefab = (GameObject)p; break;	
 			}
 			
 		}
@@ -382,21 +382,21 @@ public class CcNet : MonoBehaviour {
 			
 			case Item.Suicide:                numGibs = 30; break;
 		}
-		numGibs *= 4; // increase damage spray across the board 
+		numGibs *= 4; // increase giblets across the board 
 		
 		for (int i=0; i<numGibs; i++) {
-			GameObject newSplat = (GameObject)GameObject.Instantiate(splatPrefab);
-			newSplat.transform.position = hitPos;
-			newSplat.GetComponent<SplatScript>().Gravity = CurrMatch.Gravity;
+			GameObject g = (GameObject)GameObject.Instantiate(splatPrefab);
+			g.transform.position = hitPos;
+			g.GetComponent<SplatScript>().Gravity = CurrMatch.Gravity;
 		}
 		
 		for (int i=0; i<players.Count; i++) {
 			if (players[i].viewID == viewID && 
-				players[i].local && 
+				//players[i].local && 
 				players[i].health > 0f
 			) {
 				players[i].Entity.PlaySound("guydamage"); // positioned at the hit player 
-				Sfx.PlayOmni("TakeDamage"); // heard at same volume, regardless where the hit player is 
+				Sfx.PlayOmni("TakeDamage"); // heard at same volume (& centered panning), regardless of where the hit player is 
 			}
 		}
 	}

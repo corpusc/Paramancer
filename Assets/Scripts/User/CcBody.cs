@@ -3,9 +3,9 @@ using System.Collections;
 
 
 
-public class Avatar : MonoBehaviour {
+public class CcBody : MonoBehaviour {
 	public bool isGrounded = false;
-	public bool JumpBoosetd = false;
+	public bool JumpBoosted = false;
 	public float radius = 0.5f;
 	public float MiddleOfHead = 2f;
 	public float SprintMultiplier = 2.0f;
@@ -56,8 +56,8 @@ public class Avatar : MonoBehaviour {
 		RaycastHit headHit = new RaycastHit();
 		int collisionLayer = 1<<0;
 
-		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, 1<<13)) JumpBoosetd = true;
-		else JumpBoosetd = false;
+		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, 1<<13)) JumpBoosted = true;
+		else JumpBoosted = false;
 		
 		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, collisionLayer)) {
 			transform.position = coreHit.point + (coreHit.normal*radius*1.1f);

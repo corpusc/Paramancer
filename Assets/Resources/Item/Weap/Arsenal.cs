@@ -57,12 +57,11 @@ public class Arsenal : MonoBehaviour {
 			if (WidestIcon < w) 
 				WidestIcon = w;
 			
-			// set tallest icon
+			// set tallest icon 
 			int h = Guns[i].Pic.height;
 			if (TallestIcon < h) 
 				TallestIcon = h;
 		}
-		Debug.Log("Weapons: " + s);
 
 		// pics   (FOR NOW, cycle by id/index into an alphabetized LoadAll() array 
 		for (int i = 0; i < Guns.Length; i++) {

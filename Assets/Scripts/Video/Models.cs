@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
-using System.Collections;
+//using System.Collections;
 using System.Collections.Generic;
 
+
+
 public static class Models {
-	
-	// private
+	// private 
 	static Dictionary<string, GameObject> models = new Dictionary<string, GameObject>();
-	
-	
+
+
 	
 	static Models() {
 		Debug.Log("----------------- Models constructor -----------------");
-		//handleFolder("Women");
+		handleFolder("Av");
 	}
-	
-	
+
 	public static GameObject Get(string s) { // hash lookups in a Dictionary are fast right? 
 		if (models.ContainsKey(s))
 			return models[s];
@@ -45,7 +45,7 @@ public static class Models {
 	
 	static void handleFolder(string s) {
 		string feedback = "";
-		var tmodels = Resources.LoadAll<GameObject>("Model/" + s);
+		var tmodels = Resources.LoadAll<GameObject>(s);
 		
 		// add to the master collection that includes files from all folders 
 		foreach (var cl in tmodels) {
