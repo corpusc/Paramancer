@@ -14503,6 +14503,7 @@ GameObject:
   - 4: {fileID: 423545593}
   - 198: {fileID: 423545595}
   - 199: {fileID: 423545594}
+  - 114: {fileID: 423545596}
   m_Layer: 0
   m_Name: SpeedBoost
   m_TagString: Untagged
@@ -15606,6 +15607,18 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!114 &423545596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 423545592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa6e747ec32eb7d43afd79cd8a01b365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RespawnTime: 0
 --- !u!1 &424151961
 GameObject:
   m_ObjectHideFlags: 0
@@ -31912,6 +31925,7 @@ GameObject:
   - 4: {fileID: 1025221643}
   - 198: {fileID: 1025221645}
   - 199: {fileID: 1025221644}
+  - 114: {fileID: 1025221646}
   m_Layer: 0
   m_Name: SpeedBoost
   m_TagString: Untagged
@@ -33015,6 +33029,18 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!114 &1025221646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1025221642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa6e747ec32eb7d43afd79cd8a01b365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RespawnTime: 0
 --- !u!1 &1030116240
 GameObject:
   m_ObjectHideFlags: 0

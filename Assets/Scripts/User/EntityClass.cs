@@ -255,6 +255,8 @@ public class EntityClass : MonoBehaviour {
 						sprintRelease = 0f;
 					}
 
+					bod.TickEnergy();
+
 					sprintRelease += Time.deltaTime;
 					
 					camHolder.transform.localEulerAngles = camAngle;
@@ -1044,8 +1046,14 @@ public class EntityClass : MonoBehaviour {
 		// apply effects 
 		switch (co.name) {
 			case "SpeedBoost":
-				bod.SpeedBoostEnd = Time.time + 3f * Time.timeScale;
+				bod.SpeedBoostEnd = Time.time + 2f * Time.timeScale;
 				// speed boosts aren't consumed 
+				break;
+			case "EnergyRegenBoost":
+				if (co.GetComponent<PowerUpPoint>().RespawnTime <= Time.time) {
+					bod.SprintRegenEnd = Time.time + 8f * Time.timeScale;
+					co.GetComponent<PowerUpPoint>().RespawnTime = Time.time + 16f * Time.timeScale;
+				}
 				break;
 			default:
 				print("WARNING: Unknown powerup type called " + co.name);

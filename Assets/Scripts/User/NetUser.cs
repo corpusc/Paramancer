@@ -48,7 +48,8 @@ public class NetUser {
 			return;
 		}
 		
-		var o = (GameObject)GameObject.Instantiate(entityPrefab);
+		GameObject o;
+		o = (GameObject)GameObject.Instantiate(entityPrefab);
 		Entity = o.GetComponent<EntityClass>();
 		Entity.colA = colA;
 		Entity.colB = colB;

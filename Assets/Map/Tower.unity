@@ -34620,6 +34620,7 @@ GameObject:
   - 4: {fileID: 780513066}
   - 198: {fileID: 780513068}
   - 199: {fileID: 780513067}
+  - 114: {fileID: 780513069}
   m_Layer: 0
   m_Name: SpeedBoost
   m_TagString: Untagged
@@ -35723,6 +35724,18 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!114 &780513069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 780513065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa6e747ec32eb7d43afd79cd8a01b365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RespawnTime: 0
 --- !u!1 &784689093
 GameObject:
   m_ObjectHideFlags: 0
@@ -43777,6 +43790,7 @@ GameObject:
   - 4: {fileID: 973702597}
   - 198: {fileID: 973702599}
   - 199: {fileID: 973702598}
+  - 114: {fileID: 973702600}
   m_Layer: 0
   m_Name: SpeedBoost
   m_TagString: Untagged
@@ -44880,6 +44894,18 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!114 &973702600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 973702596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa6e747ec32eb7d43afd79cd8a01b365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RespawnTime: 0
 --- !u!1 &975500163
 GameObject:
   m_ObjectHideFlags: 0
@@ -75171,6 +75197,7 @@ GameObject:
   - 4: {fileID: 1629646462}
   - 198: {fileID: 1629646464}
   - 199: {fileID: 1629646463}
+  - 114: {fileID: 1629646465}
   m_Layer: 0
   m_Name: SpeedBoost
   m_TagString: Untagged
@@ -76274,6 +76301,18 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!114 &1629646465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1629646461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa6e747ec32eb7d43afd79cd8a01b365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RespawnTime: 0
 --- !u!1 &1631377543
 GameObject:
   m_ObjectHideFlags: 0

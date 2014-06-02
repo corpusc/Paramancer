@@ -15,39 +15,38 @@ public class CcBody : MonoBehaviour {
 	// powerups
 	public float SpeedBoost = 2f;
 	public float SpeedBoostEnd = 0f; // the time at which the speed boost ends
+	public float SprintRegenSpeed = 0.3f; // set when you pick up a regen buff
+	public float SprintRegenEnd = 0f;
 	
 	// private 
 	float sprintActivatedTime = 0f;
 	const float sprintDuration = 5f;
-	
-	public void Move(Vector3 moveVector, bool startSprint = false) {
-		// no move? no expensive spherecasts!
-		if (moveVector.magnitude < 0.001f){
-			//sprinting = false; //if the player stopped moving, they also stopped sprinting
-			return;
-		}
-		
-		// sprinting
-		if (startSprint) 
-			sprinting = !sprinting;
-		
-		// let's go
+
+	public void TickEnergy () {
+
 		if (sprintActivatedTime > sprintDuration) 
 			sprinting = false;
-		
+
+		if (Time.time > SprintRegenEnd)
+			SprintRegenSpeed = 0.3f;
+		else
+			SprintRegenSpeed = 1f;
+
+		// regenerate energy
+		if (!sprinting)
+			sprintActivatedTime = Mathf.Max(sprintActivatedTime - Time.deltaTime * SprintRegenSpeed, 0f);
+	}
+	
+	public void Move(Vector3 moveVector) {
+
 		if (sprinting) {
 			moveVector *= SprintMultiplier;
 			sprintActivatedTime += Time.deltaTime;
-		}else 
-			sprintActivatedTime = (sprintActivatedTime - Time.deltaTime < 0f) 
-				? 0f 
-				: (sprintActivatedTime - Time.deltaTime);
+		}
 
 		if (Time.time <= SpeedBoostEnd) {
 			moveVector *= SpeedBoost;
 		}
-
-		
 
 		isGrounded = false;
 		Ray coreRay = new Ray(transform.position, moveVector);

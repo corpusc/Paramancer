@@ -58,8 +58,11 @@ public class ProcGenVoxel : ScriptableObject {
 	public Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
 	public float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on
 
+	// powerups
 	public int SpeedBoosts = 4;
+	public int RegenBoosts = 4;
 	public GameObject SpeedBoost;
+	public GameObject RegenBoost;
 
 	// the maximal height of a room is determined by the map height & the room size
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth
@@ -98,6 +101,7 @@ public class ProcGenVoxel : ScriptableObject {
 		SpawnPoint = GameObject.Find("SpawnPoint"); // a GameObject called SpawnPoint must already be in the scene for this to work, it will be removed after everything is done by the script
 		WeaponSpawn = GameObject.Find("WeaponSpawn"); // a GameObject called WeaponSpawn must already be in the scene, it will be removed afterwards by calling RemoveOriginals()
 		SpeedBoost = GameObject.Find("SpeedBoost"); // an empty GameObject, must already be in the scene, will be removed by RemoveOriginals()
+		RegenBoost = GameObject.Find("EnergyRegenBoost"); // an empty GameObject, must already be in the scene, will be removed by RemoveOriginals()
 		mapObject = GameObject.Find("Map"); // an empty GameObject container, already in the scene 
 		primObject = GameObject.Find("Prims"); // an empty GameObject container, already in the scene 
 		ffaSpawnBag = GameObject.Find("FFA Spawns"); // an empty GameObject container, already in the scene 
@@ -404,6 +408,23 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				ns.transform.parent = powerUpBag.transform;
 				ns.name = "SpeedBoost"; // must set this so that EntityClass recognizes it correctly
+				formsMade++;
+			}
+		} // end of placing speed boosts
+
+		// regen boosts
+		formsMade = 0; // count regen boosts as forms, no need for a separate var 
+		for (int i = 0; i < numTries && formsMade < RegenBoosts; i++) {
+			Vec3i t;
+			t.x = Random.Range(0, MapSize.x);
+			t.y = Random.Range(0, MapSize.y);
+			t.z = Random.Range(0, MapSize.z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!getBlock(t.x, t.y - 1, t.z)) {
+				var nb = (GameObject)GameObject.Instantiate(RegenBoost); // new regen boost
+				nb.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
+				nb.transform.parent = powerUpBag.transform;
+				nb.name = "EnergyRegenBoost"; // must set this so that EntityClass recognizes it correctly
 				formsMade++;
 			}
 		} // end of placing speed boosts

@@ -12,7 +12,7 @@ GameObject:
   - 23: {fileID: 2300000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: SplatCube
+  m_Name: Giblet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,6 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1405a4eb81384fe2b825593e3151fe9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Gravity: 10
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
