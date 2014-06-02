@@ -78,7 +78,7 @@ public class EntityClass : MonoBehaviour {
 
 	// private 
 	// misc 
-	GameObject powerUpBag = GameObject.Find("PowerUps");
+	GameObject powerUpBag;
 	// 		scripts 
 	Hud hud; // FIXME?  won't need this anymore once playingHud gets drawn correctly? *****************
 	CcNet net;
@@ -110,7 +110,8 @@ public class EntityClass : MonoBehaviour {
 
 		// get 
 		cc = GetComponent<CharacterController>();
-		var o = GameObject.Find("Main Program");
+		GameObject o;
+		o = GameObject.Find("Main Program");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
 		arse = o.GetComponent<Arsenal>();
@@ -1068,7 +1069,8 @@ public class EntityClass : MonoBehaviour {
 	}
 
 	private Transform getRandomSpawn(string s) {
-		var go = GameObject.Find(s); // container for entity spawn positions 
+		GameObject go;
+		go = GameObject.Find(s); // container for entity spawn positions 
 		
 		if (go == null) {
 			Debug.LogError("*** Could not find a GameObject named: " + s + "!!! ***");
