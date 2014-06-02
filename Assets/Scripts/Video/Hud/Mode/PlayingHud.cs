@@ -60,35 +60,24 @@ public class PlayingHud {
 
 		GUI.color = Color.white;
 		
-		// time remaining
+		// time remaining 
 		if (!net.gameOver) {
 			if (net.CurrMatch.Duration > 0f) {
-				// show time left
+				// show time left 
 				string s = TimeStringFromSecs(net.gameTimeLeft);
-				GUI.color = Color.black;
-				GUI.Label(new Rect(midX-11, 5, 200, 30), s); // these are used for a text shadow
-				GUI.Label(new Rect(midX-9, 5, 200, 30), s);
-				GUI.Label(new Rect(midX-10, 4, 200, 30), s);
-				GUI.Label(new Rect(midX-10, 6, 200, 30), s);
-				
 				GUI.color = Color.white;
-				GUI.Label(new Rect(midX-10, 5, 200, 30), s);
+				S.OutlinedLabel(new Rect(midX-10, 5, 200, 30), s);
 			}
 		}
 
-		// Frames per second
-		int currFPS = (int)(1f / Time.deltaTime * Time.timeScale); // current
-		int avgFPS = (int)(Time.frameCount / Time.time); // average
+		// Frames per second 
+		int currFPS = (int)(1f / Time.deltaTime * Time.timeScale); // current 
+		int avgFPS = (int)(Time.frameCount / Time.time); // average 
 		string FPStext =  "Current FPS: " + currFPS.ToString() + ", average FPS: " + avgFPS.ToString();
-		GUI.color = Color.black;
-		GUI.Label(new Rect(midX-101, 35, 280, 30), FPStext);
-		GUI.Label(new Rect(midX-99, 35, 280, 30), FPStext);
-		GUI.Label(new Rect(midX-100, 34, 280, 30), FPStext);
-		GUI.Label(new Rect(midX-100, 36, 280, 30), FPStext);
 		GUI.color = Color.white;
-		GUI.Label(new Rect(midX-100, 35, 280, 30), FPStext);
+		S.OutlinedLabel(new Rect(midX-100, 35, 280, 30), FPStext);
 
-		// lives
+		// lives 
 		if (net.CurrMatch.playerLives > 0) {
 			int lifeCount = 0;
 			for (int i=0; i<net.players.Count; i++) {
@@ -106,7 +95,7 @@ public class PlayingHud {
 		Color gcol = GUI.color;
 		if (locEnt.Spectating) {
 			string s = "Spectating: " + net.players[locEnt.Spectatee].name + "\n\nYou will be able to play once this round is over.";
-			S.GUIOutlinedLabel(new Rect(5, 5, 300, 60), s);
+			S.OutlinedLabel(new Rect(5, 5, 300, 60), s);
 		}
 		
 		// weapon cooldown (atm, only used for coloring equipped item) 
@@ -191,10 +180,10 @@ public class PlayingHud {
 				var forName = r;
 				forName.x = Screen.width - w;
 				forName.width = w;
-				S.GUIOutlinedLabel(forName, g.Name); // name
+				S.OutlinedLabel(forName, g.Name); // name
 			}else if ((Item)i == gunB) {
 				GUI.DrawTexture(r, g.Pic);
-				S.GUIOutlinedLabel(r, "on back"); // name
+				S.OutlinedLabel(r, "on back"); // name
 			}else{
 				GUI.DrawTexture(r, g.Pic);
 			}

@@ -84,7 +84,7 @@ static public class S {
 		GUI.color = ShoutyBlue;
 	}
 	
-	static public void GUIOutlinedLabel(Rect r, string s) {
+	static public void OutlinedLabel(Rect r, string s) {
 		Color prevColor = GUI.color;
 		GUI.color = Color.black;
 		

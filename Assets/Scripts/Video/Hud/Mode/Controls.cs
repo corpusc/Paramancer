@@ -317,7 +317,7 @@ public class Controls : MonoBehaviour {
 				
 			// draw 
 			rect.x += rect.width/5;
-			S.GUIOutlinedLabel(rect, keyData[i].Text);
+			S.OutlinedLabel(rect, keyData[i].Text);
 		}
 
 
@@ -342,7 +342,7 @@ public class Controls : MonoBehaviour {
 			rect.y += h/2;
 			// don't really need to shrink this actually......otherwise: rect.width = wid*2 
 			S.SetShoutyColor();
-			S.GUIOutlinedLabel(rect, s);
+			S.OutlinedLabel(rect, s);
 		}
 		
 		// if carrying an action icon near the cursor 
@@ -357,7 +357,7 @@ public class Controls : MonoBehaviour {
 				h*2);
 			
 			GUI.color = S.ShoutyPurple;
-			S.GUIOutlinedLabel(rect, s);
+			S.OutlinedLabel(rect, s);
 		}
 
 		// draw action icon near pointer if it's being moved 

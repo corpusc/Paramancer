@@ -53,13 +53,12 @@ public class Hud : MonoBehaviour {
 
 
 	// private
-	//GUISkin GUI.skin;
 	string defaultName = "Lazy Noob";
 	MessageOfTheMoment motm = new MessageOfTheMoment();
 	PlayingHud playHud = new PlayingHud();
 	MatchSetup matchSetup = new MatchSetup();
 	AboutMenu aboutMenu = new AboutMenu();
-	float tFOV = 45f;
+	float tFOV = 90f;
 
 	// UI element sizes
 	int midX, midY; // middle of the screen
@@ -256,7 +255,7 @@ public class Hud : MonoBehaviour {
 		{
 			string s = "Next Game in: " +  Mathf.FloorToInt(net.NextMatchTime).ToString() + " seconds.";
 			S.SetShoutyColor();
-			S.GUIOutlinedLabel(new Rect(midX-50, 5, 200, 30), s);
+			S.OutlinedLabel(new Rect(midX-50, 5, 200, 30), s);
 		}
 	}
 
@@ -504,11 +503,10 @@ public class Hud : MonoBehaviour {
 		// FOV slider 
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
-		float tVal = tFOV * 2f;
 		var s = "FOV (field of view): ";
 		float wid = GetWidthLabel(s + "188.8");
-		GUILayout.Label(s + tVal.ToString("#.#"), GUILayout.MinWidth(wid));
-		tFOV = GUILayout.HorizontalSlider(tFOV, 20f, 80f, GUILayout.MinWidth(128));
+		GUILayout.Label(s + tFOV.ToString("#.#"), GUILayout.MinWidth(wid));
+		tFOV = GUILayout.HorizontalSlider(tFOV, 50f, 160f, GUILayout.MinWidth(128));
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
