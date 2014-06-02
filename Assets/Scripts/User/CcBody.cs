@@ -23,7 +23,7 @@ public class CcBody : MonoBehaviour {
 	public void Move(Vector3 moveVector, bool startSprint = false) {
 		// no move? no expensive spherecasts!
 		if (moveVector.magnitude < 0.001f){
-			//sprinting = false; //if the player stopped moving, they also stopped sprinting
+			//sprinting = false; // if the player stopped moving, they also stopped sprinting 
 			return;
 		}
 		
