@@ -49,7 +49,6 @@ public class EntityClass : MonoBehaviour {
 	public Color colA; 
 	public Color colB;
 	public Color colC;
-	public GameObject meshObj; // CLEANME:   NOT SURE WHAT THIS IS ATM 
 
 	// inventory 
 	public Item GunInHand = Item.Pistol;
@@ -66,6 +65,7 @@ public class EntityClass : MonoBehaviour {
 	public int Spectatee = 0;
 
 	// body 
+	public GameObject meshObj; // the stick figure body (no head), with a scarf.  only used too change its .renderer.materials (colors) 
 	public GameObject animObj; // skeletally animated model 
 	public GameObject Model; // new kind, intended for mecanim 
 	public int headType = 0;
@@ -687,7 +687,7 @@ public class EntityClass : MonoBehaviour {
 				}
 				
 				HudGun.transform.parent = Camera.main.transform;    // correct 
-				//HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
+				HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
 				HudGun.transform.localPosition = hudGunOffs;
 				
 				if (HudGun.renderer) 
