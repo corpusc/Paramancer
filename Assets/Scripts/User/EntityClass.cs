@@ -67,7 +67,7 @@ public class EntityClass : MonoBehaviour {
 
 	// body 
 	public GameObject animObj; // skeletally animated model 
-	public GameObject Model;
+	public GameObject Model; // new kind, intended for mecanim 
 	public int headType = 0;
 	public float SprintEnergy = 1f; // 0-1 
 	// 		nearby pickup 
@@ -118,9 +118,9 @@ public class EntityClass : MonoBehaviour {
 		powerUpBag = GameObject.Find("PowerUps");
 
 		// new female model 
-		Model = Models.Get("Mia");
-		Model.SetActive(true);
-		//CurrModel.hideFlags = HideFlags.None;    //.DontSave; // ....to the scene. AND don't DESTROY when new scene loads 
+		//Model = (GameObject)GameObject.Instantiate(Models.Get("Mia"));
+		//Model.SetActive(true);
+		//Model.hideFlags = HideFlags.None;    //.DontSave; // ....to the scene. AND don't DESTROY when new scene loads 
 
 
 
@@ -641,8 +641,15 @@ public class EntityClass : MonoBehaviour {
 				HudGun.renderer.enabled = true;
 		}
 
+		// sync model to body 
+		var v = transform.position;
+		v.y -= 0.9f; // FIXME: i think height is 1.8 
+		//Model.transform.position = v;
+		//Model.transform.rotation = transform.rotation;
+		//Model.transform.localEulerAngles = new Vector3(0, bod.transform.eulerAngles.y, 0);
+
 		previouslyLockedCursor = Screen.lockCursor;
-	}
+	} // end of Update() 
 
 	void weaponSwitchingSoundAndVisual() {
 		gunRecoil += Vector3.right * 5f;
@@ -658,7 +665,6 @@ public class EntityClass : MonoBehaviour {
 
 			if (GunInHand >= Item.Pistol) {
 				gunMesh1 = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
-				//gunMesh1 = (GameObject)GameObject.Instantiate(Models.Get("Joan"));
 			}else{
 				gunMesh1 = new GameObject();
 			}
