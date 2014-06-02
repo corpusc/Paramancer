@@ -168,7 +168,7 @@ public class EntityClass : MonoBehaviour {
 		if (isLocal) {
 			// Camera.main.aspect == the horizontal proportion (compared to the vertical proportion of 1.0) 
 			// Camera.main.fieldOfView == VERTICAL FOV 
-			Camera.main.fieldOfView = (1.0f/Camera.main.aspect) * FOV;
+			Camera.main.fieldOfView = FOV / Camera.main.aspect;
 		}
 
 		if (Spectating && isLocal) {

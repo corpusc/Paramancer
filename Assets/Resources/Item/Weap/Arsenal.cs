@@ -94,7 +94,7 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].DelayAlt = 1f; break; 
 				case Item.Spatula:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 1f;  
-					Guns[i].DelayAlt = 4f;
+					Guns[i].DelayAlt = 1f;
 					Guns[i].Range = 3f; break; // only 1 with Range 
 			}
 		}

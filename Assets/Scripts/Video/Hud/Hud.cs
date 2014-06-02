@@ -225,6 +225,8 @@ public class Hud : MonoBehaviour {
 			case HudMode.Settings:
 				avatarView();
 				drawSettings();
+				if (net != null && net.localPlayer != null && net.localPlayer.Entity != null)
+					net.localPlayer.Entity.FOV = tFOV;
 				break;
 			
 			case HudMode.Credits:
@@ -505,7 +507,7 @@ public class Hud : MonoBehaviour {
 		var s = "FOV (field of view): ";
 		float wid = GetWidthLabel(s + "188.8");
 		GUILayout.Label(s + tFOV.ToString("#.#"), GUILayout.MinWidth(wid));
-		tFOV = GUILayout.HorizontalSlider(tFOV, 50f, 160f, GUILayout.MinWidth(128));
+		tFOV = GUILayout.HorizontalSlider(tFOV, 50f, 290f, GUILayout.MinWidth(192));
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
