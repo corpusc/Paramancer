@@ -22,20 +22,7 @@ public class CcBody : MonoBehaviour {
 	float sprintActivatedTime = 0f;
 	const float sprintDuration = 5f;
 	
-<<<<<<< HEAD
 	public void TickEnergy () {
-=======
-	public void Move(Vector3 moveVector, bool startSprint = false) {
-		// no move? no expensive spherecasts!
-		if (moveVector.magnitude < 0.001f){
-			//sprinting = false; // if the player stopped moving, they also stopped sprinting 
-			return;
-		}
-		
-		// sprinting
-		if (startSprint) 
-			sprinting = !sprinting;
->>>>>>> 13663e674c5907ccbcb7340e7469b108989d5f30
 		
 		if (sprintActivatedTime > sprintDuration) 
 			sprinting = false;
