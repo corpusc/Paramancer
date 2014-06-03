@@ -1070,7 +1070,7 @@ public class CcNet : MonoBehaviour {
 		CurrMatch.Seed = md.Seed;
 		CurrMatch.MoveSpeedMult = md.MoveSpeedMult;
 		CurrMatch.Gravity = md.Gravity;
-		CurrMatch.style = md.style;
+		CurrMatch.Theme = md.Theme;
 	}
 	
 	[RPC]
@@ -1128,7 +1128,7 @@ public class CcNet : MonoBehaviour {
 			targetTeam, CurrMatch.FriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
 			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
 			(int)CurrMatch.pickupSlot3, (int)CurrMatch.pickupSlot4, (int)CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
-			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.Gravity, CurrMatch.NeedsGenerating, CurrMatch.Seed, (int)CurrMatch.style);
+			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.Gravity, CurrMatch.NeedsGenerating, CurrMatch.Seed, (int)CurrMatch.Theme);
 	}
 	
 	public float gameTimeLeft = 0f;
@@ -1202,7 +1202,7 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.Seed = seed;
 			CurrMatch.MoveSpeedMult = speedUp;
 			CurrMatch.Gravity = GForce;
-			CurrMatch.style = (GameStyle)style;
+			CurrMatch.Theme = (Theme)style;
 		}
 		
 		if (targetTeam != -1) {
@@ -1259,7 +1259,7 @@ public class CcNet : MonoBehaviour {
 	
 	void OnLevelWasLoaded() {
 		if (CurrMatch.NeedsGenerating) {
-			VoxelMapInit.CreateMap(CurrMatch.Seed, CurrMatch.style);
+			VoxelMapInit.CreateMap(CurrMatch.Seed, CurrMatch.Theme);
 		}
 		if (preppingLevel) {
 			// level set up, let's play!

@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class VoxelMapInit : MonoBehaviour {
-
 	ProcGenVoxel vox;
 	static ProcGenVoxel s_vox;
-	
-	void Start () {
+
+
+
+	void Start() {
 		vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
 		vox.MapSize.x = 64;
 		vox.MapSize.y = 32;
@@ -19,7 +20,7 @@ public class VoxelMapInit : MonoBehaviour {
 		vox.RemoveOriginals();
 	}
 
-	public static void CreateMap (int seed) {
+	public static void CreateMap(int seed) {
 		s_vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
 		s_vox.Seed = seed;
 		s_vox.MapSize.x = 64;
@@ -34,10 +35,10 @@ public class VoxelMapInit : MonoBehaviour {
 		Random.seed = (int)(Time.time * 100f);
 	}
 
-	public static void CreateMap (int seed, GameStyle style) {
+	public static void CreateMap(int seed, Theme theme) {
 		s_vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
 		s_vox.Seed = seed;
-		s_vox.Style = style;
+		s_vox.Theme = theme;
 		s_vox.MapSize.x = 64;
 		s_vox.MapSize.y = 32;
 		s_vox.MapSize.z = 64;

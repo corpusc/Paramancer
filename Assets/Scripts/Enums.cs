@@ -1,7 +1,26 @@
 using UnityEngine;
 using System.Collections;
 
+
+
+public enum RuleSet {
+	// anything < RuleSet.Arena includes a campaign.
+	// where you battle your way thru a series of maps (or dungeon floors), 
+	// fighting monsters along the way.  there will be a variety of items 
+	// to collect in your inventory, and to use at strategic moments, 
+	// to help you in your quest.  at the end, you must defeat a boss monster, 
+	// and get/save the MacGuffin/damsel (or perform some heroic act) 
+	
+	Solo, // singleplayer 
+	Coop, // multiplayer (PVE/co-operative)... players cannot hurt each other 
+	Invasion, // multiplayer (PVP)... players CAN hurt each other 
+	Arena, // pure PVP.  no mobs/monsters, no campaign, and probably VERY FEW items/pickups (outside of guns) 
+
+	Count
+}
+
 public enum ControlDevice {
+	// anything with "mouse" in it also includes the keyboard 
 	Hydra,
 	LeftyMouse,
 	LeftyMMOMouse,
@@ -12,7 +31,8 @@ public enum ControlDevice {
 	Count,
 }
 
-public enum Head { // ...to wear over avatars' normal heads (currently, replaces Sophie's stick figure avatar, which is a seperate model) 
+public enum Head { // ...to wear over normal avatars' heads 
+	// (currently, REPLACES Sophie's stick figure avatar head, because it's a seperate model) 
 	NormalHead,
 	CardboardBoxHead,
 	FishHead,
@@ -143,7 +163,7 @@ public enum ParticleType {
 	Count
 }
 
-public enum GameStyle {
+public enum Theme {
 	SciFi,
 	Medieval,
 	SteamPunk,

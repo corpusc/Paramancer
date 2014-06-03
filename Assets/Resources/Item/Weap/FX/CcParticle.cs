@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class BeamParticle : MonoBehaviour {
+public class CcParticle : MonoBehaviour {
 	private Vector3 moveVec = Random.insideUnitSphere;
 	public Vector3 MoveVec {
 		get { return moveVec; }
@@ -21,7 +21,7 @@ public class BeamParticle : MonoBehaviour {
 	public float MinSize = 1f;
 	public float MaxSize = 3f;
 	public ParticleType ParticType = ParticleType.Puff;
-	public float acceleration = 1f; // multiply the speed by this
+	public float acceleration = 1f; // multiply the speed by this 
 	public float MaxRotationSpeed = 360f;
 
 	// private 
@@ -30,13 +30,13 @@ public class BeamParticle : MonoBehaviour {
 	Color[] colors;
 	Vector3 shrinkFactor;
 	float maxLife;
-	float RotationSpeed; // the actual rotation speed
+	float rotSpeed; // the actual rotation speed 
 
 
 
 	void Start() {
 		shrinkFactor = new Vector3(f, f, f);
-		RotationSpeed = Random.Range(-MaxRotationSpeed, MaxRotationSpeed);
+		rotSpeed = Random.Range(-MaxRotationSpeed, MaxRotationSpeed);
 
 		switch (ParticType) {
 			case ParticleType.Circle:
@@ -62,11 +62,11 @@ public class BeamParticle : MonoBehaviour {
 		life -= Random.Range(0f, 0.5f);
 		maxLife = life;
 		moveVec *= MaxSpeed;
-		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * RotationSpeed);
+		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * rotSpeed);
 	}
 	
 	void Update() {
-		if(UseMidColor) {
+		if (UseMidColor) {
 			if(life > maxLife * MidColorPos)
 				for (var i = 0; i < vertices.Length; i++) {
 				colors[i] = Color.Lerp(MidColor, StartColor, (life - maxLife * MidColorPos) / (maxLife * MidColorPos));
@@ -75,8 +75,8 @@ public class BeamParticle : MonoBehaviour {
 				colors[i] = Color.Lerp(EndColor, MidColor, life / (maxLife * MidColorPos));
 			}
 		} else {
-		for (var i = 0; i < vertices.Length; i++)
-			colors[i] = Color.Lerp(EndColor, StartColor, life / maxLife);
+			for (var i = 0; i < vertices.Length; i++)
+				colors[i] = Color.Lerp(EndColor, StartColor, life / maxLife);
 		}
 		mesh.colors = colors;
 
@@ -85,7 +85,7 @@ public class BeamParticle : MonoBehaviour {
 			moveVec = Vector3.Reflect(moveVec, hit.normal);
 		
 		transform.position += moveVec * Time.deltaTime;
-		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * RotationSpeed);
+		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * rotSpeed);
 		//transform.forward = Camera.main.transform.forward + new Vector3(0f, Time.time, 0f); //for some reason, doesn't work
 		transform.localScale += Time.deltaTime * shrinkFactor;
 

@@ -198,12 +198,12 @@ public class Arsenal : MonoBehaviour {
 				v = Quaternion.AngleAxis(angle, Camera.main.transform.forward) * v;
 				var center = beamStart + (beamDir * progress);
 				np.transform.position = center + v;
-				np.GetComponent<BeamParticle>().MoveVec = v;
-				np.GetComponent<BeamParticle>().MinSize = 0.4f;
-				np.GetComponent<BeamParticle>().MaxSize = 0.4f;
-				np.GetComponent<BeamParticle>().StartColor = Color.blue;
-				np.GetComponent<BeamParticle>().EndColor = Color.clear;
-				np.GetComponent<BeamParticle>().ParticType = ParticleType.Circle;
+				np.GetComponent<CcParticle>().MoveVec = v;
+				np.GetComponent<CcParticle>().MinSize = 0.4f;
+				np.GetComponent<CcParticle>().MaxSize = 0.4f;
+				np.GetComponent<CcParticle>().StartColor = Color.blue;
+				np.GetComponent<CcParticle>().EndColor = Color.clear;
+				np.GetComponent<CcParticle>().ParticType = ParticleType.Circle;
 				progress += 0.20f;
 				angle += 24f;
 			}

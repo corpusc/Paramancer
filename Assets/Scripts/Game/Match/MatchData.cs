@@ -3,14 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MatchData {
-	// 'mode select' stuff
+	public float MoveSpeedMult = 1f; // the mtime speed multiplier 
+	public float Gravity = 10f;
+	public Theme Theme = Theme.SciFi;
+	// proc gen 
+	public bool NeedsGenerating = false;
+	public int Seed = 0;
+	public static string ProcGenName = "Generated with seed"; // user-facing name of procedurally generated voxel-style maps 
+	// 'mode select' 
 	public string Name = "";
 	public string Descript; // description 
 	public List<string> Maps; // valid maps 
-	// specific mode/game settings stuff
-	public string levelName; // ...to load/play in
+	// specific match/game settings 
+	public string levelName; // ...to load/play in 
 	public int winScore = 30;
-	public float Duration = 13f; // (negative for infinite)
+	public float Duration = 13f; // (negative for infinite) 
 	public float respawnWait = 2f;
 	public bool deathsSubtractScore = true;
 	public bool killsIncreaseScore = true;
@@ -28,18 +35,11 @@ public class MatchData {
 	public Item pickupSlot3 = Item.MachineGun;
 	public Item pickupSlot4 = Item.RailGun;
 	public Item pickupSlot5 = Item.Pistol;
-	public bool NeedsGenerating = false;
-	public int Seed = 0;
-	public float MoveSpeedMult = 1f; // the mtime speed multiplier 
-	public float Gravity = 10f;
-	public GameStyle style = GameStyle.SciFi;
-	
-	public static string ProcGenName = "Generated with seed"; // user-facing name of procedurally generated voxel-style maps 
-	
+
 	
 	
 	public MatchData(Match match) {
-		var all /*'''*/ = new List<string>() { ProcGenName, "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
+		var all = new List<string>() { ProcGenName, "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
 		var hasGoalsAndCeilings = new List<string>() { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
 		Maps = all;
 
