@@ -1044,7 +1044,7 @@ public class Hud : MonoBehaviour {
 		GUI.DrawTexture(r, Pics.Get("blackTex"));
 		GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));
 
-		if (Time.time > 5f || Debug.isDebugBuild)
+		if (Time.time > 7f || Debug.isDebugBuild)
 			Mode = HudMode.MainMenu;
 	}
 	

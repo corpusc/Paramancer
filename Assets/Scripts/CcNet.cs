@@ -65,16 +65,17 @@ public class CcNet : MonoBehaviour {
 	private bool preppingLevel = false;
 	private bool levelLoaded = false;
 	
-	// game modes/types
+	// game modes/types 
 	public MatchData CurrMatch;
 	private GameObject basketball;
 
 
-	// personal stuff
+	// personal stuff 
 	public NetUser localPlayer;
 	public bool gunBobbing = true;
 	public bool JumpAuto = true;
 
+	// announcements 
 	bool twoMinsAnnounced = false;
 	bool oneMinAnnounced = false;
 	bool thirtySecsAnnounced = false;
@@ -83,12 +84,12 @@ public class CcNet : MonoBehaviour {
 
 	float gameStartTime = 0f;
 
-	// private
+	// private 
 	GameObject entityPrefab;
 	GameObject pickupBoxPrefab;
 	GameObject splatPrefab;
 	GameObject basketballPrefab;
-	// scripts
+	// scripts 
 	CcLog log;
 	Hud hud;
 	Arsenal arse;
@@ -762,12 +763,7 @@ public class CcNet : MonoBehaviour {
 				if (!pickupPoints[i].stocked) {
 					pickupPoints[i].RestockTime -= Time.deltaTime;
 					if (pickupPoints[i].RestockTime <= 0f) {
-						Gun item =  (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
-
-						if (item == Gun.None) {
-							item = Gun.Health;
-						}
-
+						Gun item = (Gun)pickupPoints[i].pickupPointID;
 						networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
 					}
 				}
@@ -1272,10 +1268,22 @@ public class CcNet : MonoBehaviour {
 			var p = GameObject.Find("_PickupSpots");
 			if (p != null) {
 				string s = "items: ";
+				// consumable list so guns only appear once (intially), and the rest are healthpacks 
+				var guns = new List<Gun>();
+				for (int i = 0; i < (int)Gun.Count; i++)
+					guns.Add((Gun)i);						
+
 				foreach (Transform child in p.transform) {
-					Gun item = (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
-					if (item == Gun.None)
+					//Gun item = (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
+					Gun item;
+
+					if (guns.Count > 0) {
+						int i = (int)Random.Range(0, guns.Count);
+						item = guns[i];
+						guns.RemoveAt(i);
+					}else{
 						item = Gun.Health;
+					}
 
 					PickupPoint pp = child.GetComponent<PickupPoint>();
 					pp.pickupPointID = (int)item;

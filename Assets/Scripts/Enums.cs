@@ -16,11 +16,10 @@ public enum RuleSet {
 	Invasion, // multiplayer (PVP)... players CAN hurt each other 
 	Arena, // pure PVP.  no mobs/monsters, no campaign, and probably VERY FEW items/pickups (outside of guns) 
 
-	Count
+	Count,
 }
 
-public enum ControlDevice {
-	// anything with "mouse" in it also includes the keyboard 
+public enum ControlDevice {	// anything with "mouse" in it also includes the keyboard 
 	Hydra,
 	LeftyMouse,
 	LeftyMMOMouse,

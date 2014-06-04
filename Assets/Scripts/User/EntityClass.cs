@@ -1112,9 +1112,9 @@ public class EntityClass : MonoBehaviour {
 		for (int i = 0; i < arse.Guns.Length; i++) {
 			arse.Guns[i].Cooldown = 0f;
 
-			if (Debug.isDebugBuild)
-				arse.Guns[i].Carrying = true; // carry full arsenal if in IDE 
-			else
+//			if (Debug.isDebugBuild)
+//				arse.Guns[i].Carrying = true; // carry full arsenal if in IDE 
+//			else
 				arse.Guns[i].Carrying = false;
 		}
 

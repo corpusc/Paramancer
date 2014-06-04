@@ -25,10 +25,11 @@ public class MatchData {
 	public bool FriendlyFire = false;
 	public bool pitchBlack = false;
 	public Gun spawnGunA = Gun.Pistol;
-	public Gun spawnGunB = Gun.GrenadeLauncher;
+	public Gun spawnGunB = Gun.Spatula;
 	public float restockTime = 12f;
 	public int playerLives = 0;
 	public bool basketball = false;
+	public RuleSet RuleSet = RuleSet.Arena;
 	// pickupslots 
 	public Gun pickupSlot1 = Gun.Health;
 	public Gun pickupSlot2 = Gun.GrenadeLauncher;
@@ -55,17 +56,11 @@ public class MatchData {
 				Maps.Insert(0, ProcGenName);
 				spawnGunA = Gun.Gravulator;
 				spawnGunB = Gun.Pistol;
-				pickupSlot5 = Gun.RocketLauncher;
 				break;
 			case Match.Blackout:
 				Name = "Blackout";
 				Descript = "Careful when you spark one up! (Your gun, that is)";
 				pitchBlack = true;
-				pickupSlot1 = Gun.GrenadeLauncher;
-				pickupSlot2 = Gun.MachineGun;
-				pickupSlot3 = Gun.RailGun;
-				pickupSlot4 = Gun.RocketLauncher;
-				pickupSlot5 = Gun.Bomb;
 				break;
 			case Match.FFAFragMatch:
 				Name = "FFA Fragmatch";
@@ -76,7 +71,6 @@ public class MatchData {
 				Name = "Team Fragmatch";
 				Descript = "Frag count is what counts, but don't hurt your mates!";
 				teamBased = true;
-				pickupSlot5 = Gun.RocketLauncher;
 				break;
 			case Match.BBall:
 				Name = "BBall";
@@ -86,10 +80,6 @@ public class MatchData {
 				killsIncreaseScore = false;
 				teamBased = true;
 				basketball = true;
-				pickupSlot2 = Gun.MachineGun;
-				pickupSlot3 = Gun.RailGun;
-				pickupSlot4 = Gun.RocketLauncher;
-				pickupSlot5 = Gun.Swapper;
 				break;
 			case Match.YouOnlyLiveThrice:
 				Name = "YOLT! (You Only Live Thrice)";
@@ -120,11 +110,6 @@ public class MatchData {
 				MoveSpeedMult = 0.2f;
 				spawnGunA = Gun.RocketLauncher;
 				spawnGunB = Gun.GrenadeLauncher;
-				pickupSlot1 = Gun.Gravulator;
-				pickupSlot2 = Gun.Health;
-				pickupSlot3 = Gun.Spatula;
-				pickupSlot4 = Gun.Swapper;
-				pickupSlot5 = Gun.Bomb;
 				break;
 			case Match.HighSpeed:
 				Name = "High Speed";
@@ -132,14 +117,12 @@ public class MatchData {
 				MoveSpeedMult = 1.8f;
 				spawnGunA = Gun.RocketLauncher;
 				spawnGunB = Gun.GrenadeLauncher;
-				pickupSlot1 = Gun.Gravulator;
-				pickupSlot2 = Gun.Health;
-				pickupSlot3 = Gun.MachineGun;
-				pickupSlot4 = Gun.Pistol;
-				pickupSlot5 = Gun.RailGun;
 				break;
 		}
 
 		Seed = Random.Range(0, 1000000);
+
+		if (Debug.isDebugBuild)
+			restockTime = 2f;
 	}
 }
