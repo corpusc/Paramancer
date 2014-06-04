@@ -38,7 +38,10 @@ public class CcBody : MonoBehaviour {
 	}
 	
 	public void Move(Vector3 moveVector) {
-		
+		// if not moving, don't do these expensive spherecasts 
+		if (moveVector.magnitude < 0.001f)
+			return;
+
 		if (sprinting) {
 			moveVector *= SprintMultiplier;
 			sprintActivatedTime += Time.deltaTime;
@@ -55,13 +58,17 @@ public class CcBody : MonoBehaviour {
 		RaycastHit headHit = new RaycastHit();
 		int collisionLayer = 1<<0;
 		
-		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, 1<<13)) JumpBoosted = true;
-		else JumpBoosted = false;
+		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, 1<<13)) 
+			JumpBoosted = true;
+		else 
+			JumpBoosted = false;
 		
 		if (Physics.SphereCast(coreRay, radius, out coreHit, moveVector.magnitude, collisionLayer)) {
 			transform.position = coreHit.point + (coreHit.normal*radius*1.1f);
-		}else if (Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, collisionLayer) &&
-		          !Physics.Raycast(transform.position + MiddleOfHead * UpVector, -UpVector, MiddleOfHead, collisionLayer)) {
+		}else 
+		if (Physics.SphereCast(headRay, radius, out headHit, moveVector.magnitude, collisionLayer) &&
+			!Physics.Raycast(transform.position + MiddleOfHead * UpVector, -UpVector, MiddleOfHead, collisionLayer)
+		) {
 			transform.position = headHit.point + (headHit.normal*radius*1.1f) - MiddleOfHead * UpVector;
 		}else{
 			transform.position += moveVector;

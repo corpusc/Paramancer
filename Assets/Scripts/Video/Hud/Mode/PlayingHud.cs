@@ -32,29 +32,29 @@ public class PlayingHud {
 		Gun gunA = locEnt.GunInHand;
 		Gun gunB = locEnt.GunOnBack;
 		
-		// bars/meters
-		// the larger bars centered along bottom of screen
-		int barW = Screen.width/3; // width of entire possible meter space
+		// bars/meters 
+		// the larger bars centered along bottom of screen 
+		int barW = Screen.width/3; // width of entire possible meter space 
 		int barHW = barW/2; // half width
 		int bm = 2; // black border margin
 		int hY = Screen.height-32; // health y pos
-		GUI.DrawTexture(new Rect(midX-barHW-bm, hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line
-		GUI.DrawTexture(new Rect(midX+barHW,    hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line
+		GUI.DrawTexture(new Rect(midX-barHW-bm, hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line 
+		GUI.DrawTexture(new Rect(midX+barHW,    hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line 
 
-		// health bar
-		int hH = 11; // health height
+		// damage bar 
+		int hH = 11; // health height 
 		int healthW = (int)((float)barW * (1f - net.localPlayer.health/100f));
 		health.SetBarColor(net.localPlayer.health/100f);
-		GUI.DrawTexture(new Rect(midX-healthW/2-bm, hY-bm, healthW+bm*2, hH+bm*2), Pics.Black); // background/outline
+		GUI.DrawTexture(new Rect(midX-healthW/2-bm, hY-bm, healthW+bm*2, hH+bm*2), Pics.Black); // background/outline 
 		GUI.DrawTexture(new Rect(midX-healthW/2, hY, healthW, hH), Pics.White);
 		GUI.DrawTexture(new Rect(midX-8, hY-4, 16, 16), Pics.Health);
 
-		// energy bar
-		int eH = 7; // energy height
-		int eY = Screen.height-13; // energy y pos
+		// exhaustion bar 
+		int eH = 7; // energy height 
+		int eY = Screen.height-13; // energy y pos 
 		int energyW = (int)((float)barW * (1f - locEnt.SprintEnergy));
 		energy.SetBarColor(locEnt.SprintEnergy, false);
-		GUI.DrawTexture(new Rect(midX-energyW/2-bm, eY-bm, energyW+bm*2, eH+bm*2), Pics.Black); // background/outline
+		GUI.DrawTexture(new Rect(midX-energyW/2-bm, eY-bm, energyW+bm*2, eH+bm*2), Pics.Black); // background/outline 
 		GUI.DrawTexture(new Rect(midX-energyW/2, eY, energyW, eH), Pics.White);
 		S.GUIDrawOutlinedTexture(new Rect(midX-8, eY-4, 16, 16), sprint);
 

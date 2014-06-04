@@ -569,15 +569,11 @@ public class CcNet : MonoBehaviour {
 
 		// special per-weapon 
 		if (weapon == Gun.Spatula) {
-			switch (Random.Range(0, 8)) {
-				case 0:	return f + " showed Spatula City to " + v + "!";
+			switch (Random.Range(0, 4)) {
+				case 0:	return f + " really gave " + v + " the SPAAA-TCHOOO-LAAH treatment!";
 				case 1:	return f + " spatulated " + v + "!";
-				case 2:	return f + " had three spatulas too much, " + v + " had one too little.";
-				case 3:	return f + " sent " + v + " to the land of the blossoming spatulas!";
-				case 4:	return f + " mashed " + v + "'s head with a spatula!";
-				case 5: return v + " was shown spatula power by " + f + "!";
-				case 6: return f + " showed spatula power to " + v + "!";
-				case 7: return v + " didn't figure out that " + f + "'s spatula was magical!";
+				case 2:	return f + " really flipped " + v + " out!";
+				case 3: return f + " showed spatula power to " + v + "!";
 				default: return "....";
 			}
 		}
