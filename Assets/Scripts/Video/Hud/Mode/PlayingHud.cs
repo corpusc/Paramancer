@@ -29,8 +29,8 @@ public class PlayingHud {
 		var locEnt = net.localPlayer.Entity;
 
 		var gunACooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
-		Item gunA = locEnt.GunInHand;
-		Item gunB = locEnt.GunOnBack;
+		Gun gunA = locEnt.GunInHand;
+		Gun gunB = locEnt.GunOnBack;
 		
 		// bars/meters
 		// the larger bars centered along bottom of screen
@@ -99,7 +99,7 @@ public class PlayingHud {
 		}
 		
 		// weapon cooldown (atm, only used for coloring equipped item) 
-		if (gunA >= Item.Pistol) {
+		if (gunA >= Gun.Pistol) {
 			float coolDownPercent = 50f; // more like: 0f to 50f
 			if (arse.Guns[(int)gunA].Delay > 0f) {
 				coolDownPercent = (gunACooldown / arse.Guns[(int)gunA].Delay) * 50f;
@@ -114,7 +114,7 @@ public class PlayingHud {
 		var old = GUI.matrix; // we need to store this, cuz we only want to spin the crosshairs
 		GUIUtility.RotateAroundPivot(-Camera.main.transform.rotation.eulerAngles.y, new Vector2(midX, midY));
 
-		if (gunA != Item.Gravulator) {
+		if (gunA != Gun.Gravulator) {
 		GUI.DrawTexture(new Rect(
 			midX-crosshairRadius, 
 			midY-crosshairRadius, 
@@ -122,7 +122,7 @@ public class PlayingHud {
 			crosshairRadius*2), Pics.crossHair);
 		}
 
-		if (gunA == Item.Swapper) {
+		if (gunA == Gun.Swapper) {
 			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.swapperCrosshair.Length);
 			if (!locEnt.swapperLocked) 
 				swapperFrame = 0;
@@ -173,7 +173,7 @@ public class PlayingHud {
 			
 			var g = arse.Guns[i];
 			GUI.color = new Color(1f, 1f, 1f, 0.2f); // trans white
-			if /*'*/ ((Item)i == gunA) {
+			if /*'*/ ((Gun)i == gunA) {
 				GUI.color = prevCrossHair;
 				GUI.DrawTexture(r, g.Pic);
 				float w = hud.GetWidthLabel(g.Name) + 5;
@@ -181,7 +181,7 @@ public class PlayingHud {
 				forName.x = Screen.width - w;
 				forName.width = w;
 				S.OutlinedLabel(forName, g.Name); // name
-			}else if ((Item)i == gunB) {
+			}else if ((Gun)i == gunB) {
 				GUI.DrawTexture(r, g.Pic);
 				S.OutlinedLabel(r, "on back"); // name
 			}else{

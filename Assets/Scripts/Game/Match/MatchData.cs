@@ -24,17 +24,17 @@ public class MatchData {
 	public bool teamBased = false;
 	public bool FriendlyFire = false;
 	public bool pitchBlack = false;
-	public Item spawnGunA = Item.Pistol;
-	public Item spawnGunB = Item.GrenadeLauncher;
+	public Gun spawnGunA = Gun.Pistol;
+	public Gun spawnGunB = Gun.GrenadeLauncher;
 	public float restockTime = 12f;
 	public int playerLives = 0;
 	public bool basketball = false;
 	// pickupslots 
-	public Item pickupSlot1 = Item.Health;
-	public Item pickupSlot2 = Item.GrenadeLauncher;
-	public Item pickupSlot3 = Item.MachineGun;
-	public Item pickupSlot4 = Item.RailGun;
-	public Item pickupSlot5 = Item.Pistol;
+	public Gun pickupSlot1 = Gun.Health;
+	public Gun pickupSlot2 = Gun.GrenadeLauncher;
+	public Gun pickupSlot3 = Gun.MachineGun;
+	public Gun pickupSlot4 = Gun.RailGun;
+	public Gun pickupSlot5 = Gun.Pistol;
 
 	
 	
@@ -53,19 +53,19 @@ public class MatchData {
 				Descript = "Each player has their own, independent, changeable gravity";
 				Maps = hasGoalsAndCeilings;
 				Maps.Insert(0, ProcGenName);
-				spawnGunA = Item.Gravulator;
-				spawnGunB = Item.Pistol;
-				pickupSlot5 = Item.RocketLauncher;
+				spawnGunA = Gun.Gravulator;
+				spawnGunB = Gun.Pistol;
+				pickupSlot5 = Gun.RocketLauncher;
 				break;
 			case Match.Blackout:
 				Name = "Blackout";
 				Descript = "Careful when you spark one up! (Your gun, that is)";
 				pitchBlack = true;
-				pickupSlot1 = Item.GrenadeLauncher;
-				pickupSlot2 = Item.MachineGun;
-				pickupSlot3 = Item.RailGun;
-				pickupSlot4 = Item.RocketLauncher;
-				pickupSlot5 = Item.Bomb;
+				pickupSlot1 = Gun.GrenadeLauncher;
+				pickupSlot2 = Gun.MachineGun;
+				pickupSlot3 = Gun.RailGun;
+				pickupSlot4 = Gun.RocketLauncher;
+				pickupSlot5 = Gun.Bomb;
 				break;
 			case Match.FFAFragMatch:
 				Name = "FFA Fragmatch";
@@ -76,7 +76,7 @@ public class MatchData {
 				Name = "Team Fragmatch";
 				Descript = "Frag count is what counts, but don't hurt your mates!";
 				teamBased = true;
-				pickupSlot5 = Item.RocketLauncher;
+				pickupSlot5 = Gun.RocketLauncher;
 				break;
 			case Match.BBall:
 				Name = "BBall";
@@ -86,41 +86,41 @@ public class MatchData {
 				killsIncreaseScore = false;
 				teamBased = true;
 				basketball = true;
-				pickupSlot2 = Item.MachineGun;
-				pickupSlot3 = Item.RailGun;
-				pickupSlot4 = Item.RocketLauncher;
-				pickupSlot5 = Item.Swapper;
+				pickupSlot2 = Gun.MachineGun;
+				pickupSlot3 = Gun.RailGun;
+				pickupSlot4 = Gun.RocketLauncher;
+				pickupSlot5 = Gun.Swapper;
 				break;
 			case Match.YouOnlyLiveThrice:
 				Name = "YOLT! (You Only Live Thrice)";
 				Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
 				Duration = 0f;
 				killsIncreaseScore = false;
-				pickupSlot5 = Item.RocketLauncher;
+				pickupSlot5 = Gun.RocketLauncher;
 				break;
 			case Match.InstaGib:
 				Name = "InstaGib";
 				Descript = "Rail Guns & Spatulas.  One hit & you're dead";
-				spawnGunA = Item.RailGun;
-				spawnGunB = Item.Spatula;
-				pickupSlot1 = Item.None;
-				pickupSlot2 = Item.None;
-				pickupSlot3 = Item.None;
-				pickupSlot4 = Item.None;
-				pickupSlot5 = Item.None;
+				spawnGunA = Gun.RailGun;
+				spawnGunB = Gun.Spatula;
+				pickupSlot1 = Gun.None;
+				pickupSlot2 = Gun.None;
+				pickupSlot3 = Gun.None;
+				pickupSlot4 = Gun.None;
+				pickupSlot5 = Gun.None;
 				break;
 			case Match.WeaponLottery:
 				Name = "Weapon Lottery";
 				Descript = "Assigned weaponry is a crapshoot.  CRAP! SHOOT!";
 				winScore = 20;
 				restockTime = 2f;
-				spawnGunA = Item.Random;
-				spawnGunB = Item.Random;
-				pickupSlot1 = Item.Random;
-				pickupSlot2 = Item.Random;
-				pickupSlot3 = Item.Random;
-				pickupSlot4 = Item.Random;
-				pickupSlot5 = Item.Random;
+				spawnGunA = Gun.Random;
+				spawnGunB = Gun.Random;
+				pickupSlot1 = Gun.Random;
+				pickupSlot2 = Gun.Random;
+				pickupSlot3 = Gun.Random;
+				pickupSlot4 = Gun.Random;
+				pickupSlot5 = Gun.Random;
 				break;
 			case Match.LowGravity:
 				Name = "Low Gravity";
@@ -131,25 +131,25 @@ public class MatchData {
 				Name = "Slow Motion";
 				Descript = "Who used the time machine?!";
 				MoveSpeedMult = 0.2f;
-				spawnGunA = Item.RocketLauncher;
-				spawnGunB = Item.GrenadeLauncher;
-				pickupSlot1 = Item.Gravulator;
-				pickupSlot2 = Item.Health;
-				pickupSlot3 = Item.Spatula;
-				pickupSlot4 = Item.Swapper;
-				pickupSlot5 = Item.Bomb;
+				spawnGunA = Gun.RocketLauncher;
+				spawnGunB = Gun.GrenadeLauncher;
+				pickupSlot1 = Gun.Gravulator;
+				pickupSlot2 = Gun.Health;
+				pickupSlot3 = Gun.Spatula;
+				pickupSlot4 = Gun.Swapper;
+				pickupSlot5 = Gun.Bomb;
 				break;
 			case Match.HighSpeed:
 				Name = "High Speed";
 				Descript = "Who used the time machine... again?!";
 				MoveSpeedMult = 1.8f;
-				spawnGunA = Item.RocketLauncher;
-				spawnGunB = Item.GrenadeLauncher;
-				pickupSlot1 = Item.Gravulator;
-				pickupSlot2 = Item.Health;
-				pickupSlot3 = Item.MachineGun;
-				pickupSlot4 = Item.Pistol;
-				pickupSlot5 = Item.RailGun;
+				spawnGunA = Gun.RocketLauncher;
+				spawnGunB = Gun.GrenadeLauncher;
+				pickupSlot1 = Gun.Gravulator;
+				pickupSlot2 = Gun.Health;
+				pickupSlot3 = Gun.MachineGun;
+				pickupSlot4 = Gun.Pistol;
+				pickupSlot5 = Gun.RailGun;
 				break;
 		}
 

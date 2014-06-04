@@ -35,7 +35,7 @@ public class Hud : MonoBehaviour {
 			
 			mode = value;
 			
-			// tasks to do when ENTERING this mode
+			// tasks to do when ENTERING this mode 
 			switch (mode) {
 				case HudMode.MainMenu:
 					lookForServer();
@@ -108,7 +108,7 @@ public class Hud : MonoBehaviour {
 		net.JumpAuto = PlayerPrefs.GetInt("JumpAuto", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
 		tFOV = PlayerPrefs.GetFloat("FOV", 90f);
-		//print ("Loaded FOV, value = " + tFOV.ToString());
+		S.Hud = this;
 	}
 
 	float serverSearch;
@@ -1008,6 +1008,15 @@ public class Hud : MonoBehaviour {
 		GUILayout.Label("CarnagePolicy          - Sounds");
 		GUILayout.Label("Nobiax/yughues        - Textures");
 		GUILayout.Label("Wayne Brown         - A few icons");
+
+
+		CategoryHeader("Rogue code fragments", false);
+		GUILayout.Label("Translated from Jason Diamond's RogueSharp (https://github.com/jdiamond)");
+		GUILayout.Label("...which is a port of: ");
+		GUILayout.Label("");
+		GUILayout.Label("Rogue: Exploring the Dungeons of Doom");
+		GUILayout.Label("Copyright (C) 1980-1983, 1985, 1999 Michael Toy, Ken Arnold and Glenn Wichman");
+		GUILayout.Label("All rights reserved.");
 		//if (Application.isWebPlayer) 
 //			GUILayout.Label("some nebulous message to you Mr. Webplayer Guy");
 

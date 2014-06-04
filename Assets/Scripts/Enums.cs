@@ -95,7 +95,7 @@ public enum HudMode {
 	Count
 }
 
-public enum Item {
+public enum Gun { // FIXME: this used to be "Item", but they need their own enum or system 
 	RocketProjectile = -6, // this was "rocket" when stringized, NOT "rocketlauncher"
 	Lava = -5, // not really an item, should be moved?
 	Suicide = -4, // not really an item, should be moved?

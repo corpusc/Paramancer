@@ -160,7 +160,7 @@ public class CcNet : MonoBehaviour {
 			if (viewID == players[i].viewID && players[i].Entity != null) {
 				players[i].lastPong = Time.time;
 				players[i].Entity.UpdatePlayer(pos, ang, crouch, moveVec, yMove, 
-					info.timestamp, (Item)gunA, (Item)gunB, playerUp, playerForward);
+					info.timestamp, (Gun)gunA, (Gun)gunB, playerUp, playerForward);
 			}
 		}
 	}
@@ -188,21 +188,21 @@ public class CcNet : MonoBehaviour {
 		arse.DetonateRocket(detPos, hitNorm, bulletID);
 	}
 	
-	public void Detonate(Item weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
+	public void Detonate(Gun weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		// we are server and something detonated, tell everyone
 		networkView.RPC("DetonateRPC", RPCMode.All, (int)weapon, position, shooterID, bulletID);
 	}
 	[RPC]
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		latestPacket = Time.time;
-		if ((Item)weapon != Item.RocketProjectile) // rocket explosions are partially simulated client-side
-			arse.Detonate((Item)weapon, position, bulletID);
+		if ((Gun)weapon != Gun.RocketProjectile) // rocket explosions are partially simulated client-side
+			arse.Detonate((Gun)weapon, position, bulletID);
 		
 		if (isServer) {
 			// see if anyone gets hurt
 			for (int i=0; i<players.Count; i++){
 				if (Vector3.Distance(position, players[i].Entity.transform.position) 
-					< arse.GetDetonationRadius((Item)weapon) + 0.5f
+					< arse.GetDetonationRadius((Gun)weapon) + 0.5f
 				) {
 					// player in range
 					bool skip = false;
@@ -216,7 +216,7 @@ public class CcNet : MonoBehaviour {
 						
 						if (shooterIndex != -1 && players[i].team == players[shooterIndex].team) 
 							skip = true;
-						if (shooterIndex != -1 && i == shooterIndex && (Item)weapon == Item.Bomb) 
+						if (shooterIndex != -1 && i == shooterIndex && (Gun)weapon == Gun.Bomb) 
 							skip = false;
 					}
 					
@@ -229,7 +229,7 @@ public class CcNet : MonoBehaviour {
 		}
 	}
 	
-	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit, bool alt, Vector3 hitNorm, bool sprint = false) {
+	public void Shoot(Gun weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, bool hit, bool alt, Vector3 hitNorm, bool sprint = false) {
 		// we have fired a shot, let's tell everyone about it so they can see it 
 		//print ("Shot info received by net.Shoot(), alt = " + (alt ? "1" : "0"));
 		NetworkViewID bulletID = Network.AllocateViewID();
@@ -239,10 +239,10 @@ public class CcNet : MonoBehaviour {
 	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, bool sprint, bool alt, Vector3 hitNorm, NetworkMessageInfo info) {
 		// somebody fired a shot, let's show it
 		latestPacket = Time.time;
-		arse.Shoot((Item)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit, alt, hitNorm, sprint);
+		arse.Shoot((Gun)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit, alt, hitNorm, sprint);
 	}
 	
-	public void RegisterHit(Item weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
+	public void RegisterHit(Gun weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
 		if (gameOver) 
 			return;
 		if (Time.time < gameStartTime)
@@ -279,23 +279,23 @@ public class CcNet : MonoBehaviour {
 		if (si == -1 || vi == -1 || players[vi].health <= 0f) 
 			return;
 		
-		if ((Item)weapon == Item.Swapper){
+		if ((Gun)weapon == Gun.Swapper){
 			networkView.RPC("SwapPlayers",RPCMode.All, shooterID, players[si].Entity.transform.position, victimID, players[vi].Entity.transform.position);
 			return;
 		}
 		
 		
 		// subtract health
-		if (si == vi && (Item)weapon == Item.RocketProjectile) {
+		if (si == vi && (Gun)weapon == Gun.RocketProjectile) {
 			// rocket jumping
 			players[vi].health -= 30f;
 		}else{
 			// normal damage
-			if ((Item)weapon == Item.GrenadeLauncher || (Item)weapon == Item.RocketProjectile) { //less damage when farther from the explosion
+			if ((Gun)weapon == Gun.GrenadeLauncher || (Gun)weapon == Gun.RocketProjectile) { //less damage when farther from the explosion
 				float d = Vector3.Distance(hitPos, players[vi].Entity.transform.position) + 1f;
-				players[vi].health -= arse.GetWeaponDamage((Item)weapon) / d;
+				players[vi].health -= arse.GetWeaponDamage((Gun)weapon) / d;
 
-			} else players[vi].health -= arse.GetWeaponDamage((Item)weapon);
+			} else players[vi].health -= arse.GetWeaponDamage((Gun)weapon);
 		}
 		
 		if (players[vi].health <= 0f) {
@@ -373,14 +373,14 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void DoHitEffects(int weapon, Vector3 hitPos, NetworkViewID viewID) {
 		int numGibs = 4;
-		switch ((Item)weapon) {
-			case Item.GrenadeLauncher:        numGibs = 15; break;
-			case Item.MachineGun:             numGibs = 2; break;
-			case Item.RailGun:                numGibs = 30; break;
-			case Item.RocketProjectile:       numGibs = 20; break;
-			case Item.Bomb:                   numGibs = 20; break;
+		switch ((Gun)weapon) {
+			case Gun.GrenadeLauncher:        numGibs = 15; break;
+			case Gun.MachineGun:             numGibs = 2; break;
+			case Gun.RailGun:                numGibs = 30; break;
+			case Gun.RocketProjectile:       numGibs = 20; break;
+			case Gun.Bomb:                   numGibs = 20; break;
 			
-			case Item.Suicide:                numGibs = 30; break;
+			case Gun.Suicide:                numGibs = 30; break;
 		}
 		numGibs *= 4; // increase giblets across the board 
 		
@@ -525,7 +525,7 @@ public class CcNet : MonoBehaviour {
 		var le = new LogEntry();
 		le.Maker = "";
 		le.Color = Color.red;
-		le.Text = getObituary(fraggerName, fraggerIdx, victimName, victimIdx, (Item)weapon);
+		le.Text = getObituary(fraggerName, fraggerIdx, victimName, victimIdx, (Gun)weapon);
 		log.Entries.Add(le);
 		log.TimeToHideEntireLog = Time.time+log.FadeTime;
 		
@@ -554,7 +554,7 @@ public class CcNet : MonoBehaviour {
 		}
 	}
 
-	private string getObituary(string f, int fId, string v, int vId, Item weapon) { // fragger, victim 
+	private string getObituary(string f, int fId, string v, int vId, Gun weapon) { // fragger, victim 
 		// suicides 
 		if (fId == vId) {
 			switch (Random.Range(0, 5)) {
@@ -568,7 +568,7 @@ public class CcNet : MonoBehaviour {
 		}
 
 		// special per-weapon 
-		if (weapon == Item.Spatula) {
+		if (weapon == Gun.Spatula) {
 			switch (Random.Range(0, 8)) {
 				case 0:	return f + " showed Spatula City to " + v + "!";
 				case 1:	return f + " spatulated " + v + "!";
@@ -765,19 +765,19 @@ public class CcNet : MonoBehaviour {
 				if (!pickupPoints[i].stocked) {
 					pickupPoints[i].RestockTime -= Time.deltaTime;
 					if (pickupPoints[i].RestockTime <= 0f) {
-						Item item = Item.None;
+						Gun item = Gun.None;
 						if (pickupPoints[i].pickupType == 1) item = CurrMatch.pickupSlot1;
 						if (pickupPoints[i].pickupType == 2) item = CurrMatch.pickupSlot2;
 						if (pickupPoints[i].pickupType == 3) item = CurrMatch.pickupSlot3;
 						if (pickupPoints[i].pickupType == 4) item = CurrMatch.pickupSlot4;
 						if (pickupPoints[i].pickupType == 5) item = CurrMatch.pickupSlot5;
-						if (item == Item.Random) {
-							item = (Item)Random.Range(-1, arse.Guns.Length);
-							if (item == Item.None) 
+						if (item == Gun.Random) {
+							item = (Gun)Random.Range(-1, arse.Guns.Length);
+							if (item == Gun.None) 
 								item--;
 						}
 						
-						if (item != Item.None) {
+						if (item != Gun.None) {
 							networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
 						}
 					}
@@ -799,7 +799,7 @@ public class CcNet : MonoBehaviour {
 
 				// health will be a box with its 'Health' pic on it
 				var o = pickupBoxPrefab;
-				if (item >= (int)Item.Pistol) 
+				if (item >= (int)Gun.Pistol) 
 					o = arse.Guns[item].Prefab;
 
 				var n = (GameObject)GameObject.Instantiate(o);
@@ -808,7 +808,7 @@ public class CcNet : MonoBehaviour {
 				n.transform.localScale = Vector3.one * 0.5f;
 
 				PickupBoxScript box;
-				if (item >= (int)Item.Pistol) {
+				if (item >= (int)Gun.Pistol) {
 					box = n.AddComponent<PickupBoxScript>();
 					box.boxObj = n;
 				}else{
@@ -816,7 +816,7 @@ public class CcNet : MonoBehaviour {
 				}
 				box.pickupPoint = pickupPoints[i];
 
-				if (item < (int)Item.Pistol) {
+				if (item < (int)Gun.Pistol) {
 					// health
 					box.pickupName = "Health";
 					box.iconObj.renderer.material.SetTexture("_MainTex", Pics.Health);
@@ -862,21 +862,21 @@ public class CcNet : MonoBehaviour {
 		// a client has requested the current pickup stock info
 		for (int i=0; i<pickupPoints.Count; i++) {
 			if (pickupPoints[i].stocked) {
-				Item item = Item.None;
+				Gun item = Gun.None;
 				if (pickupPoints[i].pickupType == 1) item = CurrMatch.pickupSlot1;
 				if (pickupPoints[i].pickupType == 2) item = CurrMatch.pickupSlot2;
 				if (pickupPoints[i].pickupType == 3) item = CurrMatch.pickupSlot3;
 				if (pickupPoints[i].pickupType == 4) item = CurrMatch.pickupSlot4;
 				if (pickupPoints[i].pickupType == 5) item = CurrMatch.pickupSlot5;
 				
-				if (item == Item.Random) {
-					item = (Item)Random.Range(-1, arse.Guns.Length);
+				if (item == Gun.Random) {
+					item = (Gun)Random.Range(-1, arse.Guns.Length);
 					
-					if (item == Item.None) 
+					if (item == Gun.None) 
 						item--;
 				}
 				
-				if (item != Item.None) {
+				if (item != Gun.None) {
 					networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
 				}
 				
@@ -1191,13 +1191,13 @@ public class CcNet : MonoBehaviour {
 			CurrMatch.pitchBlack = pitchBlack;
 			CurrMatch.playerLives = playerLives;
 			CurrMatch.basketball = basketball;
-			CurrMatch.spawnGunA = (Item)spawnGunA;
-			CurrMatch.spawnGunB = (Item)spawnGunB;
-			CurrMatch.pickupSlot1 = (Item)pickupSlot1;
-			CurrMatch.pickupSlot2 = (Item)pickupSlot2;
-			CurrMatch.pickupSlot3 = (Item)pickupSlot3;
-			CurrMatch.pickupSlot4 = (Item)pickupSlot4;
-			CurrMatch.pickupSlot5 = (Item)pickupSlot5;
+			CurrMatch.spawnGunA = (Gun)spawnGunA;
+			CurrMatch.spawnGunB = (Gun)spawnGunB;
+			CurrMatch.pickupSlot1 = (Gun)pickupSlot1;
+			CurrMatch.pickupSlot2 = (Gun)pickupSlot2;
+			CurrMatch.pickupSlot3 = (Gun)pickupSlot3;
+			CurrMatch.pickupSlot4 = (Gun)pickupSlot4;
+			CurrMatch.pickupSlot5 = (Gun)pickupSlot5;
 			CurrMatch.NeedsGenerating = needsGen;
 			CurrMatch.Seed = seed;
 			CurrMatch.MoveSpeedMult = speedUp;
@@ -1295,7 +1295,7 @@ public class CcNet : MonoBehaviour {
 			if (p != null) {
 				string s = "items: ";
 				foreach (Transform child in p.transform) {
-					Item item = Item.None;
+					Gun item = Gun.None;
 					PickupPoint pp = child.GetComponent<PickupPoint>();
 					if (pp.pickupType == 1) item = CurrMatch.pickupSlot1;
 					if (pp.pickupType == 2) item = CurrMatch.pickupSlot2;
@@ -1305,7 +1305,7 @@ public class CcNet : MonoBehaviour {
 					
 					s += item + ", ";
 					
-					if (item != Item.None) {
+					if (item != Gun.None) {
 						pickupPoints.Add(pp);
 					}else{
 						Destroy(child.gameObject);

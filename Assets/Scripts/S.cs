@@ -9,7 +9,8 @@ using System.Globalization;
 static public class S {
 	public const float GoldenRatio = 1.6180339887498948482f;
 	public const int K = 1000; // K = 1000. Like the thing you see on statistics pages.
-	
+	public static Hud Hud = null;
+
 	// colors 
 	// shouty/shimmery colors that cycle back & forth tween 2 colors 
 	static float point; // ...between them 
@@ -46,6 +47,17 @@ static public class S {
 	
 	static public double GetDouble(string v) {
 		return Convert.ToDouble(v.Trim(), new CultureInfo("en-US"));
+	}
+
+	static public void Log(string s) {
+		Log(s, Color.grey);
+	}
+	static public void Log(string s, Color c) {
+			if (Hud == null) {
+			Debug.Log(s);
+		}else{
+			Hud.Log.AddToLog("R14:", s, S.ColToVec(c));
+		}
 	}
 
 	static void moveTween0and1() {

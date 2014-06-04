@@ -28,17 +28,17 @@ public class Arsenal : MonoBehaviour {
 		net = GetComponent<CcNet>();
 
 		// setup guns 
-		Guns = new GunData[(int)Item.Count];
+		Guns = new GunData[(int)Gun.Count];
 
 		string s = "";
 		for (int i = 0; i < Guns.Length; i++) {
 			Guns[i] = new GunData();
 
-			var n = S.GetSpacedOut("" + (Item)i);
+			var n = S.GetSpacedOut("" + (Gun)i);
 			Guns[i].Name = n;
 
-			switch ((Item)i) {
-				case Item.GrenadeLauncher:
+			switch ((Gun)i) {
+				case Gun.GrenadeLauncher:
 					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Gun/Low Poly " + n + " 1.1 - Daniel Mendes/Prefabs/" + n);
 					Guns[i].Mat =    (Material)  Resources.Load("Item/Weap/Gun/Low Poly " + n + " 1.1 - Daniel Mendes/Materials/" + n); 
 					Guns[i].Pic =      Resources.Load<Texture> ("Item/Weap/Gun/" + n + "/" + n); 
@@ -65,34 +65,34 @@ public class Arsenal : MonoBehaviour {
 
 		// pics   (FOR NOW, cycle by id/index into an alphabetized LoadAll() array 
 		for (int i = 0; i < Guns.Length; i++) {
-			switch ((Item)i) {
-				case Item.Pistol:   Guns[i].Color = Color.white; 
+			switch ((Gun)i) {
+				case Gun.Pistol:   Guns[i].Color = Color.white; 
 					Guns[i].Delay = 0.3f; 
 					Guns[i].DelayAlt = 0.3f; break; 
-				case Item.GrenadeLauncher:   Guns[i].Color = Color.green; 
+				case Gun.GrenadeLauncher:   Guns[i].Color = Color.green; 
 					Guns[i].Delay = 0.25f; 
 					Guns[i].DelayAlt = 0.25f; break; 
-				case Item.MachineGun:   Guns[i].Color = Color.cyan; 
+				case Gun.MachineGun:   Guns[i].Color = Color.cyan; 
 					Guns[i].Delay = 0.1f; 
 					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; break; // only 1 with AutoFire 
-				case Item.RailGun:   Guns[i].Color = Color.cyan; 
+				case Gun.RailGun:   Guns[i].Color = Color.cyan; 
 					Guns[i].Delay = 2f;
 					Guns[i].MarkScale = 2f;
 					Guns[i].DelayAlt = 2f; break; 
-				case Item.RocketLauncher:   Guns[i].Color = Color.red; 
+				case Gun.RocketLauncher:   Guns[i].Color = Color.red; 
 					Guns[i].Delay = 1.5f; 
 					Guns[i].DelayAlt = 0.7f;
 					Guns[i].MarkScale = 5f; break; // set for the launcher because the projectile has a negative value in the gun system 
-				case Item.Swapper:   Guns[i].Color = Color.magenta; 
+				case Gun.Swapper:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 2f; 
 					Guns[i].DelayAlt = 2f; break; 
-				case Item.Gravulator:   Guns[i].Color = Color.green; 
+				case Gun.Gravulator:   Guns[i].Color = Color.green; 
 					Guns[i].Delay = 1f; 
 					Guns[i].DelayAlt = 1f; break; 
-				case Item.Bomb:   Guns[i].Color = Color.yellow; 
+				case Gun.Bomb:   Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 1f; 
 					Guns[i].DelayAlt = 1f; break; 
-				case Item.Spatula:   Guns[i].Color = Color.magenta; 
+				case Gun.Spatula:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 1f;  
 					Guns[i].DelayAlt = 1f;
 					Guns[i].Range = 3f; break; // only 1 with Range 
@@ -132,7 +132,7 @@ public class Arsenal : MonoBehaviour {
 		lb.hit = hit;
 	}
 
-	void shootHitscan(Vector3 origin, Vector3 end, NetworkViewID shooterID, Item weapon, Vector3 hitNorm) {
+	void shootHitscan(Vector3 origin, Vector3 end, NetworkViewID shooterID, Gun weapon, Vector3 hitNorm) {
 		bool localFire = false;
 		Vector3 localStart = origin;
 
@@ -143,7 +143,7 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 
-		if (weapon == Item.Spatula) // no trail or effects
+		if (weapon == Gun.Spatula) // no trail or effects
 			return;
 
 		if (hitNorm != Vector3.zero) {
@@ -168,7 +168,7 @@ public class Arsenal : MonoBehaviour {
 		b.end = end - Vector3.Normalize(b.end - b.start) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending
 		b.col = Guns[(int)weapon].Color;
 
-		if (weapon == Item.Pistol)
+		if (weapon == Gun.Pistol)
 			b.renderer.material.color = Color.white;
 		
 		// muzzle flash 
@@ -180,7 +180,7 @@ public class Arsenal : MonoBehaviour {
 		}
 		
 		// rail trail 
-		if (weapon == Item.RailGun) {
+		if (weapon == Gun.RailGun) {
 			Vector3 beamStart = origin;
 			if (localFire) 
 				beamStart = localStart;
@@ -210,22 +210,22 @@ public class Arsenal : MonoBehaviour {
 		}
 	}
 
-	public void Shoot(Item weapon, Vector3 origin, Vector3 direction, Vector3 end, 
+	public void Shoot(Gun weapon, Vector3 origin, Vector3 direction, Vector3 end, 
 		NetworkViewID shooterID, NetworkViewID bulletID, double time, bool hit, bool alt, Vector3 hitNorm, bool sprint = false
 	) {
 		switch (weapon) {
-			case Item.Pistol:
-			case Item.MachineGun:
-			case Item.RailGun:
-			case Item.Spatula:
+			case Gun.Pistol:
+			case Gun.MachineGun:
+			case Gun.RailGun:
+			case Gun.Spatula:
 				shootHitscan(origin, end, shooterID, weapon, hitNorm);
 				break;
 		
-			case Item.Swapper:
+			case Gun.Swapper:
 				shootSwapper(origin, end, shooterID, hit);
 				break;
 			
-			case Item.GrenadeLauncher:
+			case Gun.GrenadeLauncher:
 				var ng = (GameObject)GameObject.Instantiate(grenadeBulletPrefab);
 				var gs = ng.GetComponent<GrenadeScript>();
 				gs.start = origin + direction; // start a bit outwards 
@@ -239,7 +239,7 @@ public class Arsenal : MonoBehaviour {
 				activeGrenades.Add(gs);
 				break;
 			
-			case Item.RocketLauncher:
+			case Gun.RocketLauncher:
 				var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
 				nr.transform.position = origin; // + direction; // start a bit outwards 
 				nr.transform.LookAt(origin + direction);
@@ -263,8 +263,8 @@ public class Arsenal : MonoBehaviour {
 					// it's not sending the shot sound trigger over the net. 
 					// so a pursuer has to look around for a flee'er (since you can't hear them) 
 					// when they enter into a large space/room.  this may be a good thing? 
-					case Item.GrenadeLauncher:  playPitchedSfx(i, Sfx.Get("boosh")); break;
-					case Item.RocketLauncher:   playPitchedSfx(i, Sfx.Get("shot_bazooka")); break;
+					case Gun.GrenadeLauncher:  playPitchedSfx(i, Sfx.Get("boosh")); break;
+					case Gun.RocketLauncher:   playPitchedSfx(i, Sfx.Get("shot_bazooka")); break;
 					default: playPitchedSfx(i, Sfx.Get(weapon.ToString())); break;
 				}
 			}
@@ -282,26 +282,26 @@ public class Arsenal : MonoBehaviour {
 		net.players[i].Entity.weaponSoundObj.audio.Play();
 	}
 	
-	public float GetWeaponDamage(Item weapon) {
+	public float GetWeaponDamage(Gun weapon) {
 		switch (weapon) {
-			case Item.Pistol:         
+			case Gun.Pistol:         
 			return 40f;
-			case Item.GrenadeLauncher:        
+			case Gun.GrenadeLauncher:        
 			return 60f;
-			case Item.MachineGun:     
+			case Gun.MachineGun:     
 			return 15f;
-			case Item.Spatula:          
+			case Gun.Spatula:          
 			return 105f;
-			case Item.RailGun:          
+			case Gun.RailGun:          
 			return 105f;
-			case Item.RocketProjectile: 
+			case Gun.RocketProjectile: 
 			return 70f;
 			
-			case Item.Lava:           
+			case Gun.Lava:           
 			return 9999f;
-			case Item.Bomb:           
+			case Gun.Bomb:           
 			return 9999f;
-			case Item.Suicide:        
+			case Gun.Suicide:        
 			return 9999f;
 		}
 
@@ -315,8 +315,8 @@ public class Arsenal : MonoBehaviour {
 		o.audio.volume = 1f;
 	}
 	
-	public void Detonate(Item weapon, Vector3 detPos, NetworkViewID viewID) {
-		if (weapon == Item.Bomb) {
+	public void Detonate(Gun weapon, Vector3 detPos, NetworkViewID viewID) {
+		if (weapon == Gun.Bomb) {
 			var o = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
 			o.transform.position = detPos;
 				
@@ -324,7 +324,7 @@ public class Arsenal : MonoBehaviour {
 			bomb.transform.position = detPos;
 			bomb.audio.clip = Sfx.Get("ExplodeBomb");
 			bomb.audio.volume = 4f;
-		} else if (weapon == Item.RocketProjectile) {
+		} else if (weapon == Gun.RocketProjectile) {
 			print ("WARNING: Detonate() was called for a rocket!");
 		}
 		
@@ -356,7 +356,7 @@ public class Arsenal : MonoBehaviour {
 						if (Vector3.Distance(
 							net.players[k].Entity.transform.position, 
 							activeRockets[i].transform.position) 
-						    < GetDetonationRadius(Item.RocketProjectile)
+						    < GetDetonationRadius(Gun.RocketProjectile)
 					    ) {
 							if (net.players[k].Entity.transform.position.y > activeRockets[i].transform.position.y) {
 								if (activeRockets[i].shooterID == net.players[k].viewID){
@@ -385,7 +385,7 @@ public class Arsenal : MonoBehaviour {
 					GameObject nh = (GameObject)GameObject.Instantiate(BulletMark);
 					nh.transform.position = detPos + hitNorm * 0.03f;
 					nh.transform.forward = -hitNorm;
-					nh.transform.localScale *= Guns[(int)Item.RocketLauncher].MarkScale;
+					nh.transform.localScale *= Guns[(int)Gun.RocketLauncher].MarkScale;
 					nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
 					nh.GetComponent<BulletMark>().MaxLife = 30f;
 				}
@@ -393,11 +393,11 @@ public class Arsenal : MonoBehaviour {
 		}
 	}
 	
-	public float GetDetonationRadius(Item weapon) {
+	public float GetDetonationRadius(Gun weapon) {
 		switch (weapon) {
-			case Item.GrenadeLauncher:        return 4;
-			case Item.RocketProjectile: return 4;
-			case Item.Bomb:           return 10;
+			case Gun.GrenadeLauncher:        return 4;
+			case Gun.RocketProjectile: return 4;
+			case Gun.Bomb:           return 10;
 		}
 		
 		return 0;	}

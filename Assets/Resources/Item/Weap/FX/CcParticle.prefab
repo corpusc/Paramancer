@@ -12,7 +12,7 @@ GameObject:
   - 23: {fileID: 2300000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: BeamParticle
+  m_Name: CcParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36fc7cb9551dba3439d6c5c185b0750f, type: 3}
+  m_Script: {fileID: 11500000, guid: 4aba9287eb38c24448c4ea8895fc9d83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MaxSpeed: .200000003
@@ -78,8 +78,9 @@ MonoBehaviour:
   f: .0500000007
   MinSize: 1
   MaxSize: 3
-  type: 1
+  ParticType: 1
   acceleration: 1
+  MaxRotationSpeed: 360
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

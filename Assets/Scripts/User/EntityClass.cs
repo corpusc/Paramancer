@@ -51,8 +51,8 @@ public class EntityClass : MonoBehaviour {
 	public Color colC;
 
 	// inventory 
-	public Item GunInHand = Item.Pistol;
-	public Item GunOnBack = Item.GrenadeLauncher;
+	public Gun GunInHand = Gun.Pistol;
+	public Gun GunOnBack = Gun.GrenadeLauncher;
 	public GameObject HudGun;
 	public GameObject gunMesh1;
 	public GameObject gunMesh2;
@@ -95,8 +95,8 @@ public class EntityClass : MonoBehaviour {
 
 	// 		inventory 
 	Arsenal arse;
-	Item prevGunInHand = Item.None;
-	Item prevGunOnBack = Item.None;
+	Gun prevGunInHand = Gun.None;
+	Gun prevGunOnBack = Gun.None;
 	Vector3 hudGunOffs = new Vector3(0.47f, -0.48f, 0.84f); // offset of gun from camera (self, 1st person)
 	Vector3 remoteGunOffs = new Vector3(0.074f, 0.46f, 0.84f); // offset of gun from aimBone (other players)
 
@@ -338,7 +338,7 @@ public class EntityClass : MonoBehaviour {
 						transform.position = lavaHit.point+ (Vector3.up*0.35f);
 						sendRPCUpdate = true;
 						inputVector = Vector3.zero;
-						net.RegisterHit(Item.Lava, User.viewID, User.viewID, lavaHit.point);
+						net.RegisterHit(Gun.Lava, User.viewID, User.viewID, lavaHit.point);
 					}
 					
 					
@@ -372,7 +372,7 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					var gun = arse.Guns[(int)GunInHand];
-					if (GunInHand >= Item.Pistol && 
+					if (GunInHand >= Gun.Pistol && 
 					    gun.Cooldown > 0f && 
 					    gun.Cooldown - Time.deltaTime <= 0f && 
 						gun.Delay >= 1f
@@ -386,7 +386,7 @@ public class EntityClass : MonoBehaviour {
 					
 					swapperLocked = false;
 					swapperLockTarget = -1;
-					if (GunInHand == Item.Swapper) {
+					if (GunInHand == Gun.Swapper) {
 						// swapper aiming
 						List<int> validSwapTargets = new List<int>();
 						
@@ -452,7 +452,7 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					// gravulator arrow 
-					if (GunInHand == Item.Gravulator) {
+					if (GunInHand == Gun.Gravulator) {
 						if (gravArrowObj == null) {
 							gravArrowObj = (GameObject)GameObject.Instantiate(gravArrowPrefab);
 							//gravArrowObj.layer = 
@@ -480,7 +480,7 @@ public class EntityClass : MonoBehaviour {
 						gun.Cooldown <= 0f &&
 						Screen.lockCursor && previouslyLockedCursor &&
 						!User.hasBall && 
-						GunInHand >= Item.Pistol
+						GunInHand >= Gun.Pistol
 					) {
 						// if gun repeats while pressed 
 						if (arse.Guns[(int)GunInHand].AutoFire) {
@@ -498,11 +498,11 @@ public class EntityClass : MonoBehaviour {
 					for (int i = (int)UserAction.Pistol; i <= (int)UserAction.Spatula; i++) {
 						if (CcInput.Started((UserAction)i)) {
 							if (/* not already equipped, but carrying */ 
-							    (Item)i != GunInHand && 
+							    (Gun)i != GunInHand && 
 							    arse.Guns[i].Carrying) 
 							{
 								GunOnBack = GunInHand;
-								GunInHand = (Item)i;
+								GunInHand = (Gun)i;
 								weaponSwitchingSoundAndVisual();
 							}
 						}
@@ -514,7 +514,7 @@ public class EntityClass : MonoBehaviour {
 						bool next = CcInput.Started(UserAction.Next);
 						bool prev = CcInput.Started(UserAction.Previous);
 						if (next || prev || nex || pre) {
-							Item juggledItem = GunInHand;
+							Gun juggledItem = GunInHand;
 
 							// switch weapon 
 							while (GunInHand == juggledItem || 
@@ -523,11 +523,11 @@ public class EntityClass : MonoBehaviour {
 								if (next || nex) {
 									GunInHand++;
 									if ((int)GunInHand >= arse.Guns.Length)
-										GunInHand = Item.Pistol;
+										GunInHand = Gun.Pistol;
 								}else{
 									GunInHand--;
-									if (GunInHand < Item.Pistol)
-									    GunInHand = (Item)arse.Guns.Length-1;
+									if (GunInHand < Gun.Pistol)
+									    GunInHand = (Gun)arse.Guns.Length-1;
 								}
 							}
 
@@ -545,7 +545,7 @@ public class EntityClass : MonoBehaviour {
 					}
 					
 					if (CcInput.Started(UserAction.Suicide)) {
-						net.RegisterHitRPC((int)Item.Suicide, User.viewID, User.viewID, transform.position);
+						net.RegisterHitRPC((int)Gun.Suicide, User.viewID, User.viewID, transform.position);
 					}
 					
 					moveFPGun();
@@ -664,7 +664,7 @@ public class EntityClass : MonoBehaviour {
 			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
 
-			if (GunInHand >= Item.Pistol) {
+			if (GunInHand >= Gun.Pistol) {
 				gunMesh1 = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
 			}else{
 				gunMesh1 = new GameObject();
@@ -681,7 +681,7 @@ public class EntityClass : MonoBehaviour {
 				if (HudGun != null) 
 					Destroy(HudGun);
 				
-				if (GunInHand >= Item.Pistol) {
+				if (GunInHand >= Gun.Pistol) {
 					HudGun = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
 				}else{
 					HudGun = new GameObject();
@@ -708,7 +708,7 @@ public class EntityClass : MonoBehaviour {
 			Transform gunParentB = gunMesh2.transform.parent;
 			Destroy(gunMesh2);
 			
-			if (GunOnBack >= Item.Pistol) {
+			if (GunOnBack >= Gun.Pistol) {
 				gunMesh2 = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunOnBack].Prefab);
 			}else{
 				gunMesh2 = new GameObject();
@@ -750,18 +750,18 @@ public class EntityClass : MonoBehaviour {
 		HudGun.transform.localPosition += gunInertia * 0.1f;
 		
 		float recoilRest = 5f;
-		switch ((Item)GunInHand) {
-			case Item.Pistol:
+		switch ((Gun)GunInHand) {
+			case Gun.Pistol:
 				recoilRest = 5f; break;
-			case Item.GrenadeLauncher:
+			case Gun.GrenadeLauncher:
 				recoilRest = 8f; break;
-			case Item.MachineGun:
+			case Gun.MachineGun:
 				recoilRest = 8f; break;
-			case Item.RailGun:
+			case Gun.RailGun:
 				recoilRest = 2f; break;
-			case Item.RocketLauncher:
+			case Gun.RocketLauncher:
 				recoilRest = 1f; break;
-			case Item.Spatula:
+			case Gun.Spatula:
 				recoilRest = 2f; break;
 		}
 		
@@ -783,9 +783,9 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void Fire(GunData gunData, bool alt = false) {
-		Item gun = (Item)GunInHand;
+		Gun gun = (Gun)GunInHand;
 		if (alt) {
-			if (gun != Item.RocketLauncher && gun != Item.Spatula)
+			if (gun != Gun.RocketLauncher && gun != Gun.Spatula)
 				return;
 		}
 
@@ -798,15 +798,15 @@ public class EntityClass : MonoBehaviour {
 		var ct = Camera.main.transform;
 
 		switch (gun) {
-			case Item.Pistol:
+			case Gun.Pistol:
 				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
-			case Item.GrenadeLauncher:
+			case Gun.GrenadeLauncher:
 				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, Vector3.zero, bod.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
-			case Item.MachineGun:
+			case Gun.MachineGun:
 				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 2f;
 				gunRecoil += new Vector3(
@@ -814,16 +814,16 @@ public class EntityClass : MonoBehaviour {
 					Random.Range(-1f, 1f),
 					Random.Range(-1f, 1f)).normalized * 0.2f;
 				break; 
-			case Item.RailGun:
+			case Gun.RailGun:
 				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Item.RocketLauncher:
+			case Gun.RocketLauncher:
 				//print ("Rocket launcher shot, alt = " + (alt ? "1" : "0"));
 				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, Vector3.zero);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Item.Swapper:
+			case Gun.Swapper:
 				if (swapperLockTarget == -1) {
 					// not locked on, we miss
 					FireBullet(gun);
@@ -834,7 +834,7 @@ public class EntityClass : MonoBehaviour {
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Item.Gravulator:
+			case Gun.Gravulator:
 				Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 				RaycastHit gravHit = new RaycastHit();
 				int gravLayer = 1<<0;
@@ -852,10 +852,10 @@ public class EntityClass : MonoBehaviour {
 				sendRPCUpdate = true;
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Item.Bomb:
+			case Gun.Bomb:
 				net.Detonate(gun, transform.position, User.viewID, User.viewID);
 				break; 
-			case Item.Spatula:
+			case Gun.Spatula:
 				gunRecoil += Vector3.forward * 3 + Vector3.up * 2f;
 				//gunRecoil -= Vector3.right * 4f;
 				FireBullet(gun, alt);
@@ -894,7 +894,7 @@ public class EntityClass : MonoBehaviour {
 			if (gunMesh2.renderer) 
 				gunMesh2.renderer.material = inv;
 			
-			if (GunInHand == Item.Bomb) {
+			if (GunInHand == Gun.Bomb) {
 				if (gunMesh1 != null && 
 				    gunMesh1.transform.Find("Flash Light") != null) {
 					gunMesh1.transform.Find("Flash Light").GetComponent<FlashingLight>().Visible = false;
@@ -939,7 +939,7 @@ public class EntityClass : MonoBehaviour {
 		if (User.local && 
 		    HudGun != null && 
 			HudGun.renderer && 
-			GunInHand >= Item.Pistol
+			GunInHand >= Gun.Pistol
 		) {
 			if (visible) {
 				HudGun.renderer.enabled = false;
@@ -980,7 +980,7 @@ public class EntityClass : MonoBehaviour {
 		//Debug.Log("Force look: " + targetLookPos.ToString() + " ??? " + lookObj.transform.position.ToString() + " ??? " + camAngle.ToString());
 	}
 	
-	void FireBullet(Item weapon, bool alt = false) {
+	void FireBullet(Gun weapon, bool alt = false) {
 		// fire hitscan type gun 
 		// b ==  bullet/bolt 
 		Vector3 bStart = Camera.main.transform.position;
@@ -992,7 +992,7 @@ public class EntityClass : MonoBehaviour {
 		int hitPlayer = -1;
 		bEnd = bStart + (bOri * arse.Guns[(int)weapon].Range);
 	
-		if (weapon == Item.MachineGun) {
+		if (weapon == Gun.MachineGun) {
 			float ex = 0.01f; // extent from center 
 			bOri += new Vector3(
 				Random.Range(-ex, ex),
@@ -1106,14 +1106,14 @@ public class EntityClass : MonoBehaviour {
 		GunInHand = net.CurrMatch.spawnGunA;
 		GunOnBack = net.CurrMatch.spawnGunB;
 
-		if (GunInHand == Item.Random)
-			GunInHand = (Item)Random.Range(0, arse.Guns.Length);
-		if (GunOnBack == Item.Random) do { // make sure we don't have 2 of the same weapon 
-			GunOnBack = (Item)Random.Range(0, arse.Guns.Length);
+		if (GunInHand == Gun.Random)
+			GunInHand = (Gun)Random.Range(0, arse.Guns.Length);
+		if (GunOnBack == Gun.Random) do { // make sure we don't have 2 of the same weapon 
+			GunOnBack = (Gun)Random.Range(0, arse.Guns.Length);
 		} while (GunOnBack == GunInHand);
 
-		prevGunInHand = Item.None;
-		prevGunOnBack = Item.None;
+		prevGunInHand = Gun.None;
+		prevGunOnBack = Gun.None;
 
 		// clear & setup inventory
 		for (int i = 0; i < arse.Guns.Length; i++) {
@@ -1179,7 +1179,7 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	public void UpdatePlayer(Vector3 pos, Vector3 ang, bool crouch, Vector3 move, float yMovement, double time, 
-		Item gunA, Item gunB, Vector3 playerUp, Vector3 playerForward
+		Gun gunA, Gun gunB, Vector3 playerUp, Vector3 playerForward
 	) {
 		transform.position = pos;
 		camHolder.transform.eulerAngles = ang;
@@ -1249,7 +1249,7 @@ public class EntityClass : MonoBehaviour {
 								arse.Guns[(int)GunInHand].Cooldown;
 							GunOnBack = GunInHand;
 							
-							GunInHand = (Item)i;
+							GunInHand = (Gun)i;
 							arse.Guns[(int)GunInHand].Cooldown = 0f;
 							weaponSwitchingSoundAndVisual();
 							currentOfferedPickup.Pickup();
