@@ -35,9 +35,9 @@ public class PlayingHud {
 		// bars/meters 
 		// the larger bars centered along bottom of screen 
 		int barW = Screen.width/3; // width of entire possible meter space 
-		int barHW = barW/2; // half width
-		int bm = 2; // black border margin
-		int hY = Screen.height-32; // health y pos
+		int barHW = barW/2; // half width 
+		int bm = 2; // black border margin 
+		int hY = Screen.height-32; // health y pos 
 		GUI.DrawTexture(new Rect(midX-barHW-bm, hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line 
 		GUI.DrawTexture(new Rect(midX+barHW,    hY-bm*4, bm, 48), Pics.Black); // edge/extent indicator line 
 
@@ -56,7 +56,7 @@ public class PlayingHud {
 		energy.SetBarColor(locEnt.SprintEnergy, false);
 		GUI.DrawTexture(new Rect(midX-energyW/2-bm, eY-bm, energyW+bm*2, eH+bm*2), Pics.Black); // background/outline 
 		GUI.DrawTexture(new Rect(midX-energyW/2, eY, energyW, eH), Pics.White);
-		S.GUIDrawOutlinedTexture(new Rect(midX-8, eY-4, 16, 16), sprint);
+		S.DrawOutlinedTexture(new Rect(midX-8, eY-4, 16, 16), sprint);
 
 		GUI.color = Color.white;
 		

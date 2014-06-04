@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Init.unity
   - enabled: 1
-    path: Assets/MenuMain.unity
+    path: Assets/Map/Init/InitMenuBackdrop.unity
   - enabled: 1
     path: Assets/Map/Overpass.unity
   - enabled: 1
@@ -19,10 +19,6 @@ EditorBuildSettings:
     path: Assets/Map/Tower.unity
   - enabled: 1
     path: Assets/Map/The OctaDrome.unity
-  - enabled: 0
-    path: Assets/Map/ProcGen/InitMapGen.unity
-  - enabled: 0
-    path: Assets/Map/ProcGen/RoguelikeMap.unity
   - enabled: 1
     path: Assets/Map/ProcGen/DebugRoguelikeMaze.unity
   - enabled: 1

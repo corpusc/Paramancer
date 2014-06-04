@@ -299,7 +299,7 @@ public class Controls : MonoBehaviour {
 					GUI.color = S.Purple;
 				
 				//GUI.DrawTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
-				S.GUIDrawOutlinedTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
+				S.DrawOutlinedTexture(keyData[bd[i].Id].Rect, bd[i].Pic, ScaleMode.ScaleToFit);
 			}
 		}
 		
@@ -363,7 +363,7 @@ public class Controls : MonoBehaviour {
 		// draw action icon near pointer if it's being moved 
 		if (draggee != null) {
 			GUI.color = S.ShoutyPurple;
-			S.GUIDrawOutlinedTexture(new Rect(mouPos.x-span/2, mouPos.y/*+span/2*/, span, span), draggee.Pic, ScaleMode.ScaleToFit);
+			S.DrawOutlinedTexture(new Rect(mouPos.x-span/2, mouPos.y/*+span/2*/, span, span), draggee.Pic, ScaleMode.ScaleToFit);
 		}
 
 		GUI.color = Color.white;

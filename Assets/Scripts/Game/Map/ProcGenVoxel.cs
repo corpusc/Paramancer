@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
 public struct Vec3i {
 	public int x;
 	public int y;
@@ -10,67 +12,69 @@ public struct Vec3i {
 
 public class ProcGenVoxel : ScriptableObject {
 	public int Seed = 0;
-	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc)
+	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc) 
 	public Material[,,] Mat;
-	public Vec3i MapSize; // this is the resolution(the actual size depends on this and the map scale)
-	public int Forms = 40; // the amount of rooms/halls to create on the ground floor
-	public int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor
+	public Vec3i MapSize; // this is the resolution(the actual size depends on this and the map scale) 
+	public int Forms = 40; // the amount of rooms/halls to create on the ground floor 
+	public int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor 
 	public float MaxOverride = 0.3f; // only create a form if there aren't too many things already in there 
-	public int MinFormWidth = 2; // the minimal span of a form(this will end up being the width ussually)
-	public int MaxFormWidth = 16; // the maximal span of a form(this will end up being the length ussually)
-	public int MinArea = 20; // don't create tiny rooms that will not be noticed
-	public int MaxArea = 100; // limits the creation of extremely large rooms, favorizes corridors
-	public int MaxCorridorArea = 60; // for corridors/bridges above the ground floor
-	public Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map
-	public Vector3 Scale = Vector3.one; // the scale of all elements on the map
-	public float SizeToHeight = 0.85f; // this is used to give a larger height to rooms with a square-like shape. Setting it to a lower value will cause rooms to appear flatter.
-	public int MinHeight = 2; // the minimal height a room can have
-	public int MaxFloorHeight = 1; // the maximal height of the floor of the rooms on the ground floor. Use 0 for no randomness.
-	public int HeightRand = 4; // the maximal additional room height(minimal is 0)(last-exclusive, so set to 1 for no randomness)
-	public int CorridorHeightRand = 2; // same as above, but for corridors
-	public int MinFloorLevelStep = 8; // the minimal height distance between two corridor levels on top of each other
-	public int MaxFloorLevelStep = 10; // the maximal height distance between two corridor levels on top of each other
-	public int MinCorridorStartHeight = 3; // the minimal height at which corridors & bridges are created
-	public int MaxCorridorStartHeight = 5; // the maximal height at which corridors & bridges are created
-	public bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed
+	public int MinFormWidth = 2; // the minimal span of a form(this will end up being the width ussually) 
+	public int MaxFormWidth = 16; // the maximal span of a form(this will end up being the length ussually) 
+	public int MinArea = 20; // don't create tiny rooms that will not be noticed 
+	public int MaxArea = 100; // limits the creation of extremely large rooms, favorizes corridors 
+	public int MaxCorridorArea = 60; // for corridors/bridges above the ground floor 
+	public Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map 
+	public Vector3 Scale = Vector3.one; // the scale of all elements on the map 
+	public float SizeToHeight = 0.85f; // this is used to give a larger height to rooms with a square-like shape.  Setting it to a lower value will cause rooms to appear flatter. 
+	public int MinHeight = 2; // the minimal height a room can have 
+	public int MaxFloorHeight = 1; // the maximal height of the floor of the rooms on the ground floor. Use 0 for no randomness. 
+	public int HeightRand = 4; // the maximal additional room height(minimal is 0)(last-exclusive, so set to 1 for no randomness) 
+	public int CorridorHeightRand = 2; // same as above, but for corridors 
+	public int MinFloorLevelStep = 8; // the minimal height distance between two corridor levels on top of each other 
+	public int MaxFloorLevelStep = 10; // the maximal height distance between two corridor levels on top of each other 
+	public int MinCorridorStartHeight = 3; // the minimal height at which corridors & bridges are created 
+	public int MaxCorridorStartHeight = 5; // the maximal height at which corridors & bridges are created 
+	public bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed 
 
 	public Theme Theme = Theme.SciFi; // used to control the placing of art assets & the texture images 
 
-	// assets to be placed on the map
-	public int Torches = 40; // the amount of torches placed on the map
+	// assets to be placed on the map 
+	public int Torches = 40; // the amount of torches placed on the map 
 	public GameObject Torch;
 	public float TorchScale = 0.3f;
-	public float TorchOffset = 0.1f; // the distance from the center of the torch to the wall/floor it is attached to
+	public float TorchOffset = 0.1f; // the distance from the center of the torch to the wall/floor it is attached to 
 
-	public int JumpPads = 10; // the amount of jump pads to be placed
+	public int JumpPads = 10; // the amount of jump pads to be placed 
 	public GameObject JumpPad;
 	public Vector3 JumpPadScale = new Vector3(1f, 0.3f, 1f);
-	public int JumpHeight = 2; // the height that cannot be jumped over normally(needs a jump pad)(must be lesser than MapSize.y)
-	public float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on
+	public int JumpHeight = 2; // the height that cannot be jumped over normally(needs a jump pad)(must be lesser than MapSize.y) 
+	public float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on 
 
-	public int SpawnPoints = 4; // the amount of spawn points to be placed(of each type[FFA/red/blue])
+	public int SpawnPoints = 4; // the amount of spawn points to be placed(of each type[FFA/red/blue]) 
 	public int MonsterSpawns = 6;
 	public GameObject SpawnPoint;
 	public Vector3 SpawnPointScale = Vector3.one;
 
-	public int WeaponSpawns = 10; // the amount of weapon spawns to be placed
 	public GameObject WeaponSpawn;
 	public Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
-	public float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on
+	public float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on 
 
-	// powerups
+	// powerups 
 	public int SpeedBoosts = 4;
 	public int RegenBoosts = 4;
 	public GameObject SpeedBoost;
 	public GameObject RegenBoost;
 
-	// the maximal height of a room is determined by the map height & the room size
-	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth
-	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y
-	// To create a map, set all the values you need, and call Init(), Build() and Build3d()
+	// the maximal height of a room is determined by the map height & the room size 
+	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth 
+	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y 
+	// To create a map, set all the values you need, and call Init(), Build() and Build3d() 
 
-	// private
-	int numTries = 200000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop)
+
+
+	// private 
+	int numGunSpawns = 10;
+	int numTries = 200000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop) 
 	List<Material> MatPool = new List<Material>();
 
 	GameObject mapObject;
@@ -82,8 +86,10 @@ public class ProcGenVoxel : ScriptableObject {
 	GameObject monsterSpawnBag;
 	GameObject powerUpBag;
 
-	// only sets everything up, doesn't build the level - call Build () and Build3d () manually
-	// call Build() and Build3D() right after calling this for the random seed to work
+
+
+	// only sets everything up, doesn't build the level 
+	// call Build() and Build3D() right after calling this for the random seed to work 
 	public void Init () {
 		Random.seed = Seed;
 
@@ -117,7 +123,7 @@ public class ProcGenVoxel : ScriptableObject {
 		emptyMap();
 		preBuild();
 
-		// start off by creating the ground floor(the main map)
+		// start off by creating the ground floor(the main map) 
 		int formsMade = 0;
 		for (int i = 0; i < numTries && formsMade < Forms; i++) {
 			Vec2i t;
@@ -249,7 +255,7 @@ public class ProcGenVoxel : ScriptableObject {
 			t.z = Random.Range(0, MapSize.z);
 			if (Block[t.x, t.y, t.z]) {
 				if (!getBlock(t.x - 1, t.y, t.z)) {
-					var nt = (GameObject)GameObject.Instantiate(Torch); // new torch
+					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x * 0.5f + TorchOffset, Scale.y * t.y, Scale.z * t.z);
 					nt.transform.localScale = Scale * TorchScale;
 					nt.transform.parent = mapObject.transform;
@@ -276,21 +282,21 @@ public class ProcGenVoxel : ScriptableObject {
 					nt.transform.parent = mapObject.transform;
 					formsMade++;
 				}
-				// no torches on ceilings and floors!
-			} // end of scanning an individual block to see if a torch can be placed
-		} // end of placing torches
+				// no torches on ceilings and floors! 
+			} // end of scanning an individual block to see if a torch can be placed 
+		} // end of placing torches 
 		
-		// place jump pads
-		formsMade = 0; // counting jump pads as forms, no need for a separate variable
+		// place jump pads 
+		formsMade = 0; // counting jump pads as forms, no need for a separate variable 
 		for (int i = 0; i < numTries && formsMade < JumpPads; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(JumpHeight, MapSize.y);
 			t.z = Random.Range(0, MapSize.z);
-			if (Block[t.x, t.y, t.z] && !Block[t.x, t.y - 1, t.z]) { // if this is the floor of any form above jump height
-				int d = floorScan(t.x - 1, t.y, t.z); // distance
+			if (Block[t.x, t.y, t.z] && !Block[t.x, t.y - 1, t.z]) { // if this is the floor of any form above jump height 
+				int d = floorScan(t.x - 1, t.y, t.z); // distance 
 				if (d >= JumpHeight && columnOpen(t.x - 1, t.y, t.z, MinHeight)) {
-					var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+					var nj = (GameObject)GameObject.Instantiate(JumpPad);
 					nj.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 					nj.transform.localScale = JumpPadScale;
 					nj.transform.parent = mapObject.transform;
@@ -298,7 +304,7 @@ public class ProcGenVoxel : ScriptableObject {
 				} else {
 					d = floorScan(t.x + 1, t.y, t.z);
 					if (d >= JumpHeight && columnOpen(t.x + 1, t.y, t.z, MinHeight)) {
-						var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+						var nj = (GameObject)GameObject.Instantiate(JumpPad);
 						nj.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 						nj.transform.localScale = JumpPadScale;
 						nj.transform.parent = mapObject.transform;
@@ -306,7 +312,7 @@ public class ProcGenVoxel : ScriptableObject {
 					} else {
 						d = floorScan(t.x, t.y, t.z - 1);
 						if (d >= JumpHeight && columnOpen(t.x, t.y, t.z - 1, MinHeight)) {
-							var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+							var nj = (GameObject)GameObject.Instantiate(JumpPad);
 							nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z - Scale.z);
 							nj.transform.localScale = JumpPadScale;
 							nj.transform.parent = mapObject.transform;
@@ -314,7 +320,7 @@ public class ProcGenVoxel : ScriptableObject {
 						} else {
 							d = floorScan(t.x, t.y, t.z + 1);
 							if (d >= JumpHeight && columnOpen(t.x, t.y, t.z + 1, MinHeight)) {
-								var nj = (GameObject)GameObject.Instantiate(JumpPad); // new jump pad
+								var nj = (GameObject)GameObject.Instantiate(JumpPad);
 								nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z + Scale.z);
 								nj.transform.localScale = JumpPadScale;
 								nj.transform.parent = mapObject.transform;
@@ -341,7 +347,7 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.parent = ffaSpawnBag.transform;
 				formsMade++;
 			}
-		} // end of placing spawn points 
+		}
 
 		// place blue spawn points 
 		formsMade = 0; // count spawn points as forms, no need for a separate var 
@@ -358,7 +364,7 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.parent = blueSpawnBag.transform;
 				formsMade++;
 			}
-		} // end of placing spawn points 
+		}
 
 		// place red spawn points 
 		formsMade = 0; // count spawn points as forms, no need for a separate var 
@@ -375,7 +381,7 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.parent = redSpawnBag.transform;
 				formsMade++;
 			}
-		} // end of placing spawn points 
+		}
 
 		// place monster spawn points 
 		formsMade = 0; // count spawn points as forms, no need for a separate var 
@@ -392,7 +398,7 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.parent = monsterSpawnBag.transform;
 				formsMade++;
 			}
-		} // end of placing spawn points 
+		}
 
 		// place powerups
 		// speed boosts
@@ -410,7 +416,7 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.name = "SpeedBoost"; // must set this so that EntityClass recognizes it correctly
 				formsMade++;
 			}
-		} // end of placing speed boosts
+		}
 
 		// regen boosts
 		formsMade = 0; // count regen boosts as forms, no need for a separate var 
@@ -421,35 +427,37 @@ public class ProcGenVoxel : ScriptableObject {
 			t.z = Random.Range(0, MapSize.z);
 			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!getBlock(t.x, t.y - 1, t.z)) {
-				var nb = (GameObject)GameObject.Instantiate(RegenBoost); // new regen boost
+				var nb = (GameObject)GameObject.Instantiate(RegenBoost); // new regen boost 
 				nb.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				nb.transform.parent = powerUpBag.transform;
-				nb.name = "EnergyRegenBoost"; // must set this so that EntityClass recognizes it correctly
+				nb.name = "EnergyRegenBoost"; // must set this so that EntityClass recognizes it correctly 
 				formsMade++;
 			}
-		} // end of placing speed boosts
+		}
 
-		// place weapon spawns
+		// place weapon spawns 
 		formsMade = 0; // count weapon spawns as forms, no need for a separate var 
-		for (int i = 0; i < numTries && formsMade < WeaponSpawns; i++) {
+		for (int i = 0; i < numTries && formsMade < numGunSpawns; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
 			t.z = Random.Range(0, MapSize.z);
-			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
-			if (!getBlock(t.x, t.y - 1, t.z)) {
-				var ns = (GameObject)GameObject.Instantiate(WeaponSpawn); // new weapon spawn
-				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y + WeaponSpawnOffset - Scale.y * 0.5f, Scale.z * t.z);
-				ns.transform.localScale = WeaponSpawnScale;
-				ns.transform.parent = weaponSpawnBag.transform;
-				ns.GetComponent<PickupPoint>().pickupPointID = formsMade;
-				ns.GetComponent<PickupPoint>().pickupType = Random.Range(1, 6);
-				formsMade++;
+
+			// if the place is accessible (ceiling height) 
+			if (columnOpen(t, MinHeight)) {
+				if (!getBlock(t.x, t.y - 1, t.z)) {
+					var ns = (GameObject)GameObject.Instantiate(WeaponSpawn); // new weapon spawn 
+					ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y + WeaponSpawnOffset - Scale.y * 0.5f, Scale.z * t.z);
+					ns.transform.localScale = WeaponSpawnScale;
+					ns.transform.parent = weaponSpawnBag.transform;
+					ns.GetComponent<PickupPoint>().pickupPointID = formsMade;
+					formsMade++;
+				}
 			}
-		} // end of placing weapon spawns
+		}
 	} // end of Build3d() 
 	
-	// remove the originals so that they don't cause any trouble like spawning players outside the map
+	// remove the originals so that they don't cause any trouble like spawning players outside the map 
 	public void RemoveOriginals () {
 		GameObject.Destroy(Torch);
 		GameObject.Destroy(JumpPad);
@@ -458,9 +466,11 @@ public class ProcGenVoxel : ScriptableObject {
 		GameObject.Destroy(SpeedBoost);
 	}
 
-	// private methods
 
-	void emptyMap () {
+
+	// private methods 
+
+	void emptyMap() {
 		for (int i = 0; i < MapSize.x; i++)
 		for (int j = 0; j < MapSize.y; j++)
 		for (int k = 0; k < MapSize.z; k++) {
@@ -468,8 +478,8 @@ public class ProcGenVoxel : ScriptableObject {
 		}
 	}
 
-	// used so that there is a single room in the level
-	void preBuild () {
+	// used so that there is a single room in the level 
+	void preBuild() {
 		Vec3i a;
 		a.x = Random.Range(0, MapSize.x - MaxFormWidth);
 		a.y = 0;
@@ -481,10 +491,10 @@ public class ProcGenVoxel : ScriptableObject {
 		fillRect(a, b);
 	}
 
-	// sets blocks to true(opens them to create rooms) and sets their material
-	void fillRect (Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders)
-		Material cMat = MatPool[Random.Range(0, MatPool.Count)]; // current mat
-		for (int i = s.x; i <= e.x; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block
+	// sets blocks to true(opens them to create rooms) and sets their material 
+	void fillRect(Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders) 
+		Material cMat = MatPool[Random.Range(0, MatPool.Count)]; // current mat 
+		for (int i = s.x; i <= e.x; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int j = s.y; j <= e.y; j++)
 		for (int k = s.z; k <= e.z; k++) {
 			Block[i, j, k] = true;
@@ -492,7 +502,7 @@ public class ProcGenVoxel : ScriptableObject {
 		}
 	}
 
-	// at ground floor
+	// at ground floor 
 	void fillRect (Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
 		int h = (int)((float)Mathf.Min(e.x - s.x, e.z - s.z) * SizeToHeight); // height(of the room)
 		if (h < MinHeight) h = MinHeight;

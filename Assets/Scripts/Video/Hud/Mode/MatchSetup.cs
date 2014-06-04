@@ -258,27 +258,16 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
-			// spawn gun A
+			// spawn gun A 
 			GUILayout.BeginHorizontal();
 
-			if (GUILayout.Button("<")) {
-				matches[matchId].spawnGunA--;
-				if (matches[matchId].spawnGunA == Gun.None) //FIXME: added due to a problem with GunInHand being < 0
-					matches[matchId].spawnGunA--;
-			}
-			if (matches[matchId].spawnGunA < Gun.Random) 
-				matches[matchId].spawnGunA = Gun.Count-1;
-			
-			if (GUILayout.Button(">")) {
-				matches[matchId].spawnGunA++;
-				if (matches[matchId].spawnGunA == Gun.None)
-					matches[matchId].spawnGunA++;
-			}
-			if (matches[matchId].spawnGunA >= Gun.Count) 
-				matches[matchId].spawnGunA = Gun.Random;
+			if (GUILayout.Button("<"))
+				wrapALeft();
+			if (GUILayout.Button(">"))
+				wrapARight();
 
-			if (matches[matchId].spawnGunA == matches[matchId].spawnGunB && matches[matchId].spawnGunA != Gun.Random)
-				matches[matchId].spawnGunB++;
+			if (gunsAreTheSame())
+				wrapBRight();
 
 			GUILayout.Label("Inventory A: ");
 			GUILayout.FlexibleSpace();
@@ -287,24 +276,29 @@ public class MatchSetup {
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			
-			// spawn gun B
+			// spawn gun B 
 			GUILayout.BeginHorizontal();
 
 			if (GUILayout.Button("<")) {
-				matches[matchId].spawnGunB--;
-				if (matches[matchId].spawnGunA == matches[matchId].spawnGunB && matches[matchId].spawnGunA != Gun.Random || matches[matchId].spawnGunB == Gun.None)
-					matches[matchId].spawnGunB--;
+				wrapBLeft();
+
+				if (gunsAreTheSame())
+					wrapBLeft();
 			}
-			if (matches[matchId].spawnGunB < Gun.Random) 
-				matches[matchId].spawnGunB = Gun.Count-1;
-			
+
 			if (GUILayout.Button(">")) {
-				matches[matchId].spawnGunB++;
-				if (matches[matchId].spawnGunA == matches[matchId].spawnGunB && matches[matchId].spawnGunA != Gun.Random || matches[matchId].spawnGunB == Gun.None)
-					matches[matchId].spawnGunB++;
+				wrapBRight();
+
+				if (gunsAreTheSame())
+					wrapBRight();
 			}
-			if (matches[matchId].spawnGunB >= Gun.Count || matches[matchId].spawnGunB == Gun.None) 
-				matches[matchId].spawnGunB = Gun.Random;
+
+
+			// ****************************************************************
+
+
+
+
 
 			GUILayout.Label("Inventory B: ");
 			GUILayout.FlexibleSpace();
@@ -529,7 +523,41 @@ public class MatchSetup {
 
 		if (Debug.isDebugBuild) {
 			mapId = 2;
-			matchId = (int)Match.WeaponLottery;
+			matchId = (int)Match.BringYourOwnGravity;
 		}
+	}
+	
+	bool gunsAreTheSame() {
+		if (matches[matchId].spawnGunA == 
+			matches[matchId].spawnGunB
+	    )
+			return true;
+
+		return false;
+	}
+
+	void wrapALeft() {
+		matches[matchId].spawnGunA--;
+		
+		if (matches[matchId].spawnGunA < Gun.Pistol) 
+			matches[matchId].spawnGunA = Gun.Count-1;
+	}
+	void wrapARight() {
+		matches[matchId].spawnGunA++;
+		
+		if (matches[matchId].spawnGunA >= Gun.Count) 
+			matches[matchId].spawnGunA = Gun.Pistol;
+	}
+	void wrapBLeft() {
+		matches[matchId].spawnGunB--;
+		
+		if (matches[matchId].spawnGunB < Gun.Pistol) 
+			matches[matchId].spawnGunB = Gun.Count-1;
+	}
+	void wrapBRight() {
+		matches[matchId].spawnGunB++;
+
+		if (matches[matchId].spawnGunB >= Gun.Count) 
+			matches[matchId].spawnGunB = Gun.Pistol;
 	}
 }

@@ -108,9 +108,9 @@ static public class S {
 		GUI.Label(new Rect(r.x, r.y, r.width, r.height), s);
 	}
 	
-	static public void GUIDrawOutlinedTexture(Rect r, Texture pic, ScaleMode scaleMode = ScaleMode.StretchToFill) {
+	static public void DrawOutlinedTexture(Rect r, Texture pic, ScaleMode scaleMode = ScaleMode.StretchToFill) {
 		if (pic == null) {
-			Debug.LogError("Trying to draw with null Texture: " + pic.name);
+			Debug.LogError("******** Trying to draw with null Texture: \"" + pic.name + "\"! ********");
 			return;
 		}
 

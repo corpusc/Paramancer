@@ -1105,13 +1105,6 @@ public class EntityClass : MonoBehaviour {
 		// assign spawn guns
 		GunInHand = net.CurrMatch.spawnGunA;
 		GunOnBack = net.CurrMatch.spawnGunB;
-
-		if (GunInHand == Gun.Random)
-			GunInHand = (Gun)Random.Range(0, arse.Guns.Length);
-		if (GunOnBack == Gun.Random) do { // make sure we don't have 2 of the same weapon 
-			GunOnBack = (Gun)Random.Range(0, arse.Guns.Length);
-		} while (GunOnBack == GunInHand);
-
 		prevGunInHand = Gun.None;
 		prevGunOnBack = Gun.None;
 

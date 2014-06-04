@@ -285,24 +285,24 @@ public class Arsenal : MonoBehaviour {
 	public float GetWeaponDamage(Gun weapon) {
 		switch (weapon) {
 			case Gun.Pistol:         
-			return 40f;
+				return 40f;
 			case Gun.GrenadeLauncher:        
-			return 60f;
+				return 60f;
 			case Gun.MachineGun:     
-			return 15f;
+				return 15f;
 			case Gun.Spatula:          
-			return 105f;
+				return 105f;
 			case Gun.RailGun:          
-			return 105f;
-			case Gun.RocketProjectile: 
-			return 70f;
+				return 105f;
+			case Gun.RocketLauncher: 
+				return 70f;
 			
 			case Gun.Lava:           
-			return 9999f;
+				return 9999f;
 			case Gun.Bomb:           
-			return 9999f;
+				return 9999f;
 			case Gun.Suicide:        
-			return 9999f;
+				return 9999f;
 		}
 
 		return 0f;
@@ -324,8 +324,8 @@ public class Arsenal : MonoBehaviour {
 			bomb.transform.position = detPos;
 			bomb.audio.clip = Sfx.Get("ExplodeBomb");
 			bomb.audio.volume = 4f;
-		} else if (weapon == Gun.RocketProjectile) {
-			print ("WARNING: Detonate() was called for a rocket!");
+		} else if (weapon == Gun.RocketLauncher) {
+			print ("WARNING: Detonate() was called for a " + Gun.RocketLauncher + "!");
 		}
 		
 		for (int i=0; i<activeGrenades.Count; i++) {
@@ -356,7 +356,7 @@ public class Arsenal : MonoBehaviour {
 						if (Vector3.Distance(
 							net.players[k].Entity.transform.position, 
 							activeRockets[i].transform.position) 
-						    < GetDetonationRadius(Gun.RocketProjectile)
+						    < GetDetonationRadius(Gun.RocketLauncher)
 					    ) {
 							if (net.players[k].Entity.transform.position.y > activeRockets[i].transform.position.y) {
 								if (activeRockets[i].shooterID == net.players[k].viewID){
@@ -377,7 +377,7 @@ public class Arsenal : MonoBehaviour {
 				GameObject rocketSoundObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
 				rocketSoundObj.transform.position = activeRockets[i].transform.position;
 				rocketSoundObj.audio.clip = Sfx.Get("explosion_bazooka");
-				rocketSoundObj.audio.volume = 10f;
+				rocketSoundObj.audio.volume = 0.99f;
 				Destroy(activeRockets[i].gameObject);
 				activeRockets.RemoveAt(i);
 
@@ -395,9 +395,9 @@ public class Arsenal : MonoBehaviour {
 	
 	public float GetDetonationRadius(Gun weapon) {
 		switch (weapon) {
-			case Gun.GrenadeLauncher:        return 4;
-			case Gun.RocketProjectile: return 4;
-			case Gun.Bomb:           return 10;
+			case Gun.GrenadeLauncher: return 4;
+			case Gun.RocketLauncher:  return 4;
+			case Gun.Bomb:            return 10;
 		}
 		
 		return 0;	}

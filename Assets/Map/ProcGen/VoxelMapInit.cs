@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+
+
 public class VoxelMapInit : MonoBehaviour {
 	ProcGenVoxel vox;
 	static ProcGenVoxel s_vox;

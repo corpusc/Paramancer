@@ -119,7 +119,7 @@ public class CcNet : MonoBehaviour {
 			
 		}
 		
-		Application.LoadLevel("MenuMain");
+		Application.LoadLevel("InitMenuBackdrop");
 		players = new List<NetUser>();
 	}
 
@@ -188,6 +188,7 @@ public class CcNet : MonoBehaviour {
 		arse.DetonateRocket(detPos, hitNorm, bulletID);
 	}
 	
+	// this can be called by RL, GL, & Bomb 
 	public void Detonate(Gun weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		// we are server and something detonated, tell everyone
 		networkView.RPC("DetonateRPC", RPCMode.All, (int)weapon, position, shooterID, bulletID);
@@ -195,18 +196,18 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		latestPacket = Time.time;
-		if ((Gun)weapon != Gun.RocketProjectile) // rocket explosions are partially simulated client-side
+		if ((Gun)weapon != Gun.RocketLauncher) // rocket explosions are partially simulated client-side
 			arse.Detonate((Gun)weapon, position, bulletID);
 		
 		if (isServer) {
-			// see if anyone gets hurt
+			// see if anyone gets hurt 
 			for (int i=0; i<players.Count; i++){
 				if (Vector3.Distance(position, players[i].Entity.transform.position) 
 					< arse.GetDetonationRadius((Gun)weapon) + 0.5f
 				) {
-					// player in range
+					// player in range 
 					bool skip = false;
-					// ignore if on the same team as the person who fired (unless bomb)
+					// ignore if on the same team as the person who fired (unless bomb) 
 					if (CurrMatch.teamBased && !CurrMatch.FriendlyFire) {
 						int shooterIndex = -1;
 						for (int k=0; k<players.Count; k++){
@@ -285,13 +286,13 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		
-		// subtract health
-		if (si == vi && (Gun)weapon == Gun.RocketProjectile) {
-			// rocket jumping
+		// subtract health 
+		if (si == vi && (Gun)weapon == Gun.RocketLauncher) {
+			// rocket jumping 
 			players[vi].health -= 30f;
 		}else{
-			// normal damage
-			if ((Gun)weapon == Gun.GrenadeLauncher || (Gun)weapon == Gun.RocketProjectile) { //less damage when farther from the explosion
+			// normal damage 
+			if ((Gun)weapon == Gun.GrenadeLauncher || (Gun)weapon == Gun.RocketLauncher) { // less damage when farther from the explosion 
 				float d = Vector3.Distance(hitPos, players[vi].Entity.transform.position) + 1f;
 				players[vi].health -= arse.GetWeaponDamage((Gun)weapon) / d;
 
@@ -377,7 +378,7 @@ public class CcNet : MonoBehaviour {
 			case Gun.GrenadeLauncher:        numGibs = 15; break;
 			case Gun.MachineGun:             numGibs = 2; break;
 			case Gun.RailGun:                numGibs = 30; break;
-			case Gun.RocketProjectile:       numGibs = 20; break;
+			case Gun.RocketLauncher:         numGibs = 20; break;
 			case Gun.Bomb:                   numGibs = 20; break;
 			
 			case Gun.Suicide:                numGibs = 30; break;
@@ -755,27 +756,19 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		// pickups
+		// pickups 
 		if (Connected && isServer && !gameOver) {
 			for (int i=0; i<pickupPoints.Count; i++) {
 				if (!pickupPoints[i].stocked) {
 					pickupPoints[i].RestockTime -= Time.deltaTime;
 					if (pickupPoints[i].RestockTime <= 0f) {
-						Gun item = Gun.None;
-						if (pickupPoints[i].pickupType == 1) item = CurrMatch.pickupSlot1;
-						if (pickupPoints[i].pickupType == 2) item = CurrMatch.pickupSlot2;
-						if (pickupPoints[i].pickupType == 3) item = CurrMatch.pickupSlot3;
-						if (pickupPoints[i].pickupType == 4) item = CurrMatch.pickupSlot4;
-						if (pickupPoints[i].pickupType == 5) item = CurrMatch.pickupSlot5;
-						if (item == Gun.Random) {
-							item = (Gun)Random.Range(-1, arse.Guns.Length);
-							if (item == Gun.None) 
-								item--;
+						Gun item =  (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
+
+						if (item == Gun.None) {
+							item = Gun.Health;
 						}
-						
-						if (item != Gun.None) {
-							networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
-						}
+
+						networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
 					}
 				}
 			}
@@ -858,24 +851,12 @@ public class CcNet : MonoBehaviour {
 		// a client has requested the current pickup stock info
 		for (int i=0; i<pickupPoints.Count; i++) {
 			if (pickupPoints[i].stocked) {
-				Gun item = Gun.None;
-				if (pickupPoints[i].pickupType == 1) item = CurrMatch.pickupSlot1;
-				if (pickupPoints[i].pickupType == 2) item = CurrMatch.pickupSlot2;
-				if (pickupPoints[i].pickupType == 3) item = CurrMatch.pickupSlot3;
-				if (pickupPoints[i].pickupType == 4) item = CurrMatch.pickupSlot4;
-				if (pickupPoints[i].pickupType == 5) item = CurrMatch.pickupSlot5;
-				
-				if (item == Gun.Random) {
-					item = (Gun)Random.Range(-1, arse.Guns.Length);
-					
-					if (item == Gun.None) 
-						item--;
-				}
-				
-				if (item != Gun.None) {
-					networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
-				}
-				
+				Gun item = (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
+
+				if (item == Gun.None)
+					item = Gun.Health;
+
+				networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
 			}
 		}
 	}
@@ -1257,12 +1238,13 @@ public class CcNet : MonoBehaviour {
 		if (CurrMatch.NeedsGenerating) {
 			VoxelMapInit.CreateMap(CurrMatch.Seed, CurrMatch.Theme);
 		}
+
 		if (preppingLevel) {
-			// level set up, let's play!
+			// level set up, let's play! 
 			preppingLevel = false;
 			levelLoaded = true;
 			
-			// drop the basket ball in
+			// drop the basket ball in 
 			if (CurrMatch.basketball) {
 				basketball = (GameObject)GameObject.Instantiate(basketballPrefab);
 				
@@ -1280,31 +1262,30 @@ public class CcNet : MonoBehaviour {
 				players[i].InstantiateEntity(entityPrefab);
 			}
 			
-			// tell everyone we're here
+			// tell everyone we're here 
 			networkView.RPC("NewPlayer", RPCMode.AllBuffered, localPlayer.viewID, localPlayer.name, 
                 S.ColToVec(localPlayer.colA), S.ColToVec(localPlayer.colB), S.ColToVec(localPlayer.colC), 
 				localPlayer.headType, Network.player, localPlayer.team, CurrMatch.playerLives);
 			
-			// make sure we know about pickup spawn points
+			// make sure we know about gun spawn points 
 			pickupPoints = new List<PickupPoint>();
-			GameObject p = GameObject.Find("_PickupSpots");
+			var p = GameObject.Find("_PickupSpots");
 			if (p != null) {
 				string s = "items: ";
 				foreach (Transform child in p.transform) {
-					Gun item = Gun.None;
+					Gun item = (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
+					if (item == Gun.None)
+						item = Gun.Health;
+
 					PickupPoint pp = child.GetComponent<PickupPoint>();
-					if (pp.pickupType == 1) item = CurrMatch.pickupSlot1;
-					if (pp.pickupType == 2) item = CurrMatch.pickupSlot2;
-					if (pp.pickupType == 3) item = CurrMatch.pickupSlot3;
-					if (pp.pickupType == 4) item = CurrMatch.pickupSlot4;
-					if (pp.pickupType == 5) item = CurrMatch.pickupSlot5;
-					
+					pp.pickupPointID = (int)item;
+
 					s += item + ", ";
 					
-					if (item != Gun.None) {
-						pickupPoints.Add(pp);
-					}else{
+					if (item == Gun.None) { // don't think this can ever happen anymore 
 						Destroy(child.gameObject);
+					}else{
+						pickupPoints.Add(pp);
 					}
 				}
 				Debug.Log(s);

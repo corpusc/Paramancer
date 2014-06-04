@@ -109,25 +109,12 @@ public class MatchData {
 				pickupSlot4 = Gun.None;
 				pickupSlot5 = Gun.None;
 				break;
-			case Match.WeaponLottery:
-				Name = "Weapon Lottery";
-				Descript = "Assigned weaponry is a crapshoot.  CRAP! SHOOT!";
-				winScore = 20;
-				restockTime = 2f;
-				spawnGunA = Gun.Random;
-				spawnGunB = Gun.Random;
-				pickupSlot1 = Gun.Random;
-				pickupSlot2 = Gun.Random;
-				pickupSlot3 = Gun.Random;
-				pickupSlot4 = Gun.Random;
-				pickupSlot5 = Gun.Random;
-				break;
 			case Match.LowGravity:
 				Name = "Low Gravity";
-				Descript = "I believe I can fly!";
+				Descript = "...";
 				Gravity = 2f;
 				break;
-			case Match.SlowMo:
+			case Match.SlowMotion:
 				Name = "Slow Motion";
 				Descript = "Who used the time machine?!";
 				MoveSpeedMult = 0.2f;

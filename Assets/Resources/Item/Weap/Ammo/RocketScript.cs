@@ -137,7 +137,7 @@ public class RocketScript : MonoBehaviour {
 
 		enabled = false;
 		if (net.isServer)
-			net.Detonate(Gun.RocketProjectile, preciseLocation, shooterID, viewID);
+			net.Detonate(Gun.RocketLauncher, preciseLocation, shooterID, viewID);
 
 		net.DetonateRocket(preciseLocation, hitNorm, viewID);
 	}
