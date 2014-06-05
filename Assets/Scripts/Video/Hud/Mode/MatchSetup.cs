@@ -9,7 +9,6 @@ public class MatchSetup {
 	int matchId = 1;
 	int mapId = 0;
 	MatchData[] matches;
-	List<MapData> maps = new List<MapData>();
 
 	// sizes, spans 
 	Rect screen;
@@ -19,20 +18,6 @@ public class MatchSetup {
 
 
 	public void Init() {
-		// load map preview pics 
-		Object[] pics = Resources.LoadAll("Pic/MapPreview");
-		
-		// setup map configs 
-		for (int i = 0; i < pics.Length; i++)
-			maps.Add(new MapData(pics[i].name, (Texture)pics[i]) );
-
-		for (int i = 0; i < maps.Count; i++) {
-			if (maps[i].Name == MatchData.ProcGenName){
-				//MonoBehaviour.print("A map called " + maps[i].Name + " has been found, supposed to be roguelike");
-				maps[i].ProcGen = true;
-			}
-		}
-		
 		setupMatchTypes();
 	}
 
@@ -43,12 +28,8 @@ public class MatchSetup {
 		thirdOfWidth = screen.width / 3;
 
 		// show map picture background 
-		for (int i=0; i<maps.Count; i++) {
-			if (maps[i].Name == matches[matchId].Maps[mapId]) {
-				GUI.DrawTexture(screen, maps[i].Pic);
-			}
-			//if (maps[i].ProcGen) MonoBehaviour.print("There exists a procedural map in the map list!");
-		}
+		var map = matches[matchId].Maps[mapId];
+		GUI.DrawTexture(screen, Pics.Get(map));
 
 		// -------------------- gui -------------------- 
 		GUI.BeginGroup(screen);

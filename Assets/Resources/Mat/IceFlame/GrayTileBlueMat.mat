@@ -9,6 +9,7 @@ Material:
   m_Name: GrayTileBlueMat
   m_Shader: {fileID: 7, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: []
+  m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -16,7 +17,7 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: fddacd0f3151e5a4a8c7152ef6fa5f3e, type: 3}
+          m_Texture: {fileID: 77162307, guid: 3b1d094d8729eaa4284735068bc6effd, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
