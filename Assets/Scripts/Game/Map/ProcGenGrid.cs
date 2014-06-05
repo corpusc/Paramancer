@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 
 
-public class ProcGenMaze {
+public class ProcGenGrid {
 	public Cell[,] Cells;
 	public Vec2i Max; // maximum dimensions of the map 
 	public int numRooms = 40; // rooms/hallways to create 
@@ -44,7 +44,7 @@ public class ProcGenMaze {
 
 
 
-	public ProcGenMaze() {
+	public ProcGenGrid() {
 		Debug.Log("const of Maze()");
 
 		Max.x = 64;

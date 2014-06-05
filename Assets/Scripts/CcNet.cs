@@ -1232,7 +1232,7 @@ public class CcNet : MonoBehaviour {
 	
 	void OnLevelWasLoaded() {
 		if (CurrMatch.NeedsGenerating) {
-			VoxelMapInit.CreateMap(CurrMatch.Seed, CurrMatch.Theme);
+			DebugVoxel.CreateMap(CurrMatch.Seed, CurrMatch.Theme);
 		}
 
 		if (preppingLevel) {

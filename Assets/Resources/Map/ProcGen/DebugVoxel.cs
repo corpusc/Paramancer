@@ -3,7 +3,7 @@ using System.Collections;
 
 
 
-public class VoxelMapInit : MonoBehaviour {
+public class DebugVoxel : MonoBehaviour {
 	ProcGenVoxel vox;
 	static ProcGenVoxel s_vox;
 

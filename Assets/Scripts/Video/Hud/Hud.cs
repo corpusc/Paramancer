@@ -55,7 +55,7 @@ public class Hud : MonoBehaviour {
 	// private
 	string defaultName = "Lazy Noob";
 	MessageOfTheMoment motm = new MessageOfTheMoment();
-	PlayingHud playHud = new PlayingHud();
+	UserPlaying playMode = new UserPlaying();
 	MatchSetup matchSetup = new MatchSetup();
 	AboutMenu aboutMenu = new AboutMenu();
 	float tFOV = 90f;
@@ -135,7 +135,7 @@ public class Hud : MonoBehaviour {
 			}
 			
 		if (CcInput.Started(UserAction.Scores))
-			playHud.viewingScores = !playHud.viewingScores;
+			playMode.viewingScores = !playMode.viewingScores;
 	}
 
 	bool firstTime = true;
@@ -187,7 +187,7 @@ public class Hud : MonoBehaviour {
 		switch (Mode) {
 			case HudMode.Playing:
 				net.localPlayer.Entity.FOV = tFOV;
-				TopOfMaxedLog = playHud.Draw(net, arse, midX, midY, VSpanLabel, this);
+				TopOfMaxedLog = playMode.Draw(net, arse, midX, midY, VSpanLabel, this);
 				maybePromptClickIn();
 				break;
 				

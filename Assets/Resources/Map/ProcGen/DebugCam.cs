@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RlikeCam : MonoBehaviour {
 
+
+public class DebugCam : MonoBehaviour {
 	GameObject nl;
 	TrailRenderer tr;
 
-	// Use this for initialization
-	void Start () {
+
+
+	void Start() {
 		Screen.lockCursor = true;
 		nl = new GameObject("CoolThing");
 		nl.AddComponent<TrailRenderer>();
@@ -16,12 +18,11 @@ public class RlikeCam : MonoBehaviour {
 		tr.time = 50f;
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	void Update() {
 		transform.localEulerAngles += new Vector3(-Input.GetAxis("Mouse Y") * 2f, Input.GetAxis("Mouse X") * 2f, 0f);
 		float speed = 10f;
 
-		if (Input.GetKey ("left shift")) 
+		if /**/ (Input.GetKey ("left shift")) 
 			speed *= 2f;
 		if /**/ (Input.GetKey("w")) 
 			transform.position += transform.forward * Time.deltaTime * speed;

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayingHud {
+public class UserPlaying {
 	public bool viewingScores = true;
 
 	Scoreboard scores = new Scoreboard();
@@ -64,18 +64,29 @@ public class PlayingHud {
 		if (!net.gameOver) {
 			if (net.CurrMatch.Duration > 0f) {
 				// show time left 
-				string s = TimeStringFromSecs(net.gameTimeLeft);
+				string s = timeFromSecs(net.gameTimeLeft);
+				var w = hud.GetWidthLabel(s);
 				GUI.color = Color.white;
-				S.OutlinedLabel(new Rect(midX-10, 5, 200, 30), s);
+				S.OutlinedLabel(new Rect(
+					midX-w/2, 0, 
+					w, hud.VSpanLabel), s);
 			}
 		}
 
-		// Frames per second 
+		// show frames per second 
 		int currFPS = (int)(1f / Time.deltaTime * Time.timeScale); // current 
 		int avgFPS = (int)(Time.frameCount / Time.time); // average 
-		string FPStext =  "Current FPS: " + currFPS.ToString() + ", average FPS: " + avgFPS.ToString();
+		var w1 = hud.GetWidthLabel("FPS: 888");
+		var w2 = hud.GetWidthLabel("(average: 888)");
+		var fps = "FPS: " + currFPS.ToString();
+		var avg = "(average: " + avgFPS.ToString() + ")";
 		GUI.color = Color.white;
-		S.OutlinedLabel(new Rect(midX-100, 35, 280, 30), FPStext);
+		S.OutlinedLabel(new Rect(
+			midX-w1/2, hud.VSpanLabel, 
+			w1, hud.VSpanLabel), fps);
+		S.OutlinedLabel(new Rect(
+			midX-w2/2, hud.VSpanLabel*2, 
+			w2, hud.VSpanLabel), avg);
 
 		// lives 
 		if (net.CurrMatch.playerLives > 0) {
@@ -213,7 +224,7 @@ public class PlayingHud {
 	
 
 
-	string TimeStringFromSecs(float totalSecs) {
+	string timeFromSecs(float totalSecs) {
 		string timeString = "";
 		int seconds = Mathf.FloorToInt(totalSecs);
 		

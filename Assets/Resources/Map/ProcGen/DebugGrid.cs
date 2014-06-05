@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 
 
-public class RlikePlane : MonoBehaviour {
-	ProcGenMaze grid;
+public class DebugGrid : MonoBehaviour {
+	ProcGenGrid grid;
 
 
 
 	void Start() {
-		Debug.Log("Start() of plane");
-		grid = new ProcGenMaze();
+		Debug.Log("Let's generate a grid");
+		grid = new ProcGenGrid();
 		Texture2D texture = new Texture2D(grid.Max.x, grid.Max.z);
 		texture.filterMode = FilterMode.Point;
 		renderer.material.mainTexture = texture;

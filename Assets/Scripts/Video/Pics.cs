@@ -19,9 +19,9 @@ public static class Pics {
 
 	
 	static Pics() {
-		handleFolder("Hud");
+		handleFolder("Hud", false);
 		handleFolder("Item/Weap/Gun", false);
-		//handleFolder("Hud/Control/GamePad");
+		handleFolder("Map/Preview");
 	}
 	
 	

@@ -46,16 +46,16 @@
 //			melodicians depressed onscreen "keys"?   like a spinning starlike particle pattern.
 //			maybe several stacked on top of each other rotating at diff speeds.  so the actions twinkle/sparkle
 
-// ------------------"hotbar" release
-// changeable size of icon, so it doesn't get close to the edges of keys
-// (V) Adjustable visibility rectangle, with horizontal split to shove the top and bottom rows to the top and bottom of the screen
-// (^) changeable visibility panels for left and right hand, with horizontal splitter when more than 2 rows
-// 			should it be invisible by default?  and have like a "Start" button to access all kindsa config configuration?  8)
-// gameplay hotbar
+// ------------------"hotbar" release 
+// changeable size of icon, so it doesn't get close to the edges of keys 
+// (V) Adjustable visibility rectangle, with horizontal split to shove the top and bottom rows to the top and bottom of the screen 
+// (^) changeable visibility panels for left and right hand, with horizontal splitter when more than 2 rows 
+// 			should it be invisible by default?  and have like a "Start" button to access all kindsa config configuration?  8) 
+// gameplay hotbar 
 
-// ------------------final release
-// tabs for other categories (music playing, vehicular controls)
-// lol!  levelling up in "Reconfig Mastery" the more keys you remap?  8)
+// ------------------final release 
+// tabs for other categories (music playing, vehicular controls) 
+// lol!  levelling up in "Reconfig Mastery" the more keys you remap?  8) 
 
 
 
@@ -64,23 +64,25 @@ using System.Collections;
 
 public class Controls : MonoBehaviour {
 	public int HeightOfKeyboard;
-	public Texture currDevPic;
 
 	// private 
 	Hud hud;
 	Texture keyCap;
 	Rect mouseRect;
+	GamePad gamePad = new GamePad();
+	Hydra hydra = new Hydra();
 	ControlDevice currDev;
+	Texture currDevPic; // current device pic/texture 
 	const int numMouseButtonColumns = 4;
 	const int numMouseButtonRows = 5;
 	const int numKeyRows = 6;
 	int maxX = 21;
 	int maxY = numMouseButtonRows + numKeyRows;
 	int span;
-	Vector3 mouPos; // converted Input.mousePosition to sensible coordinates
-	// VVVVV matching indices VVVVVVV
-	KeyCode[] codes; // first build this for cleaner looking initialization of values
-	KeyData[] keyData; // this is the real structure built from "codes", that is mostly used elsewhere
+	Vector3 mouPos; // converted Input.mousePosition to sensible coordinates 
+	// VVVVV matching indices VVVVVVV 
+	KeyCode[] codes; // first build this for cleaner looking initialization of values 
+	KeyData[] keyData; // this is the real structure built from "codes", that is mostly used elsewhere 
 	// ^^^^^ matching indices ^^^^^^^
 	BindData draggee = null; // user action that is attached to pointer 
 	
@@ -260,34 +262,38 @@ public class Controls : MonoBehaviour {
 
 		r.y = Screen.height - HeightOfKeyboard;
 		r.height = HeightOfKeyboard;
-		//GUI.DrawTexture(r, Pics.White);
-		GUI.DrawTexture(mouseRect, currDevPic);
 
-		// draw keys          (perhaps clean this up by using mouseOver()) 
-		for (int i = 0; i < keyData.Length; i++) {
-			// get the right color 
-			if (Input.GetKey(keyData[i].KeyCode) || keyData[i].Rect.Contains(mouPos) ) {
-				GUI.color = S.PurpleLight;
-			}else
-				GUI.color = Color.white;
-				
-			Rect or = keyData[i].Rect; // original rect 
-			
-			// if slicing not needed, just draw in single call and move on to next key
-			if (or.width <= or.height) {
-				if (i < numMouseButtonRows*maxX) {
-					var c = GUI.color;
-					c.a = 0.5f;
-					GUI.color = c;
-				}
-
-				GUI.DrawTexture(or, keyCap);
-				continue;
-			}
-			
-			S.DrawHoriStretchedAndCappedRect(or, keyCap);
+		// draw photo/s of physical controllers 
+		switch (currDev) {
+			case ControlDevice.GamePad:
+				GUI.DrawTexture(r, currDevPic);
+				gamePad.DrawButtons();
+				break;
+			case ControlDevice.Hydra:
+				GUI.DrawTexture(r, currDevPic);
+				hydra.DrawButtons();
+				break;
+			default: // assume mouse & keyboard 
+				GUI.DrawTexture(mouseRect, currDevPic);
+				drawKeys(); //          (perhaps clean this up by using mouseOver()) 
+				break;
 		}
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		// draw action icons 
 		var bd = CcInput.BindData;
 		for (int i = 0; i < bd.Length; i++) {
@@ -530,5 +536,29 @@ public class Controls : MonoBehaviour {
 		mouseRect = new Rect(
 			Screen.width-3*span, topOfMouseButtons, 
 			3*span, numMouseButtonRows*span);
+	}
+
+	void drawKeys() {
+		for (int i = 0; i < keyData.Length; i++) {
+			// get the right color 
+			if (Input.GetKey (keyData [i].KeyCode) || keyData [i].Rect.Contains (mouPos)) {
+				GUI.color = S.PurpleLight;
+			}
+			else
+				GUI.color = Color.white;
+			Rect or = keyData [i].Rect;
+			// original rect 
+			// if slicing not needed, just draw in single call and move on to next key
+			if (or.width <= or.height) {
+				if (i < numMouseButtonRows * maxX) {
+					var c = GUI.color;
+					c.a = 0.5f;
+					GUI.color = c;
+				}
+				GUI.DrawTexture (or, keyCap);
+				continue;
+			}
+			S.DrawHoriStretchedAndCappedRect (or, keyCap);
+		}
 	}
 }
