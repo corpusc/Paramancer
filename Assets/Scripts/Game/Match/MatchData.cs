@@ -15,7 +15,7 @@ public class MatchData {
 	public string Descript; // description 
 	public List<string> Maps; // valid maps 
 	// specific match/game settings 
-	public string levelName; // ...to load/play in 
+	public string MapName; // ...to load/play in 
 	public int winScore = 30;
 	public float Duration = 13f; // (negative for infinite) 
 	public float respawnWait = 2f;

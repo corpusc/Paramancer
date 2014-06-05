@@ -19,9 +19,9 @@ public class UserPlaying {
 	int picId = 0;
 	public float Draw(CcNet net, Arsenal arse, int midX, int midY, float lvs, Hud hud) {
 		if (CcInput.Started(UserAction.TakePicture)) {
-			var ps = "Paramancer " + picId; // pic string 
+			var ps = "Paramancer " + picId + ".png"; // pic string 
 		    Application.CaptureScreenshot(ps);
-			hud.Log.AddToLog("+", "Taking a picture named: " + ps + ".png", S.ColToVec(Color.grey));
+			hud.Log.AddToLog("+", "Took picture [ " + ps + " ]", S.ColToVec(Color.grey));
 			picId++;
 			return 0f;
 		}

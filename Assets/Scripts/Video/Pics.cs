@@ -21,7 +21,7 @@ public static class Pics {
 	static Pics() {
 		handleFolder("Hud", false);
 		handleFolder("Item/Weap/Gun", false);
-		handleFolder("Map/Preview");
+		handleFolder("Map/Preview", false);
 	}
 	
 	

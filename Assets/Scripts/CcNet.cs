@@ -120,7 +120,7 @@ public class CcNet : MonoBehaviour {
 			
 		}
 		
-		Application.LoadLevel("InitMenuBackdrop");
+		Application.LoadLevel("OfflineBackdrop");
 		players = new List<NetUser>();
 	}
 
@@ -1015,7 +1015,7 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	public void AssignGameModeConfig(MatchData md, string levelName) {
-		CurrMatch.levelName = levelName;
+		CurrMatch.MapName = levelName;
 		
 		// FIXME?: no need for all these lines?   we could just do 'CurrMatch = md;'?
 		// allowedLevels is the only thing missing from here?
@@ -1096,7 +1096,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, 
-			CurrMatch.Name, CurrMatch.levelName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, 
+			CurrMatch.Name, CurrMatch.MapName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, 
 			CurrMatch.respawnWait, CurrMatch.deathsSubtractScore, CurrMatch.killsIncreaseScore, CurrMatch.teamBased, 
 			targetTeam, CurrMatch.FriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
 			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
@@ -1108,14 +1108,14 @@ public class CcNet : MonoBehaviour {
 	public float NextMatchTime = 0f;
 	
 	[RPC]
-	void BroadcastNewGame(NetworkViewID viewID, string matchName, string levelName, string matchDescript, int winScore, 
+	void BroadcastNewGame(NetworkViewID viewID, string matchName, string mapName, string matchDescript, int winScore, 
 		float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, 
 		int targetTeam, bool allowFriendlyFire, bool pitchBlack, bool gameIsOver, float serverGameTime, int spawnGunA, 
 		int spawnGunB, int pickupSlot1, int pickupSlot2, int pickupSlot3, int pickupSlot4, int pickupSlot5, 
 		int playerLives, bool newGame, bool basketball, float speedUp, float GForce, bool needsGen, int seed, int style,
 	    NetworkMessageInfo info
 	) {
-		// we've received game info from the server
+		// we've received game info from the server 
 		latestPacket = Time.time;
 		
 		Time.timeScale = speedUp;
@@ -1151,7 +1151,7 @@ public class CcNet : MonoBehaviour {
 		
 		if (!isServer) {
 			// lets update the local game settings 
-			CurrMatch.levelName = levelName;
+			CurrMatch.MapName = mapName;
 			CurrMatch.Name = matchName;
 			CurrMatch.Descript = matchDescript;
 			CurrMatch.winScore = winScore;
@@ -1206,7 +1206,7 @@ public class CcNet : MonoBehaviour {
 		team1Score = 0;
 		team2Score = 0;
 		
-		// let's clear stuff out if we are already playing
+		// let's clear stuff out if we are already playing 
 		preppingLevel = false;
 		levelLoaded = false;
 		for (int i=0; i<players.Count; i++) {
@@ -1225,9 +1225,9 @@ public class CcNet : MonoBehaviour {
 		localPlayer.currentScore = 0;
 		arse.Clear();
 		
-		// now let's load the level
+		// now let's load the level 
 		preppingLevel = true;
-		Application.LoadLevel(levelName);
+		Application.LoadLevel(mapName);
 	}
 	
 	void OnLevelWasLoaded() {

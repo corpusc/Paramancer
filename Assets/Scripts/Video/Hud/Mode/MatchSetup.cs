@@ -342,7 +342,7 @@ public class MatchSetup {
 				Network.incomingPassword = net.password;
 				net.lastGameWasTeamBased = false;
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].Maps[mapId]);
-				net.MatchTypeAndMap = net.CurrMatch.Name + "\n" + net.CurrMatch.levelName;
+				net.MatchTypeAndMap = net.CurrMatch.Name + "\n" + net.CurrMatch.MapName;
 				bool useNat = !Network.HavePublicAddress();
 				Debug.Log("Initializing server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections, net.listenPort, useNat);

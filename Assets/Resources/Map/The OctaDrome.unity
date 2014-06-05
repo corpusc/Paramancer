@@ -734,7 +734,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 5
   pickupPointID: 4
   RestockTime: 0
   stocked: 0
@@ -859,7 +858,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 1
   pickupPointID: 0
   RestockTime: 0
   stocked: 0
@@ -2409,7 +2407,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 4
   pickupPointID: 3
   RestockTime: 0
   stocked: 0
@@ -3777,7 +3774,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 2
   pickupPointID: 1
   RestockTime: 0
   stocked: 0
@@ -3919,7 +3915,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 2
   pickupPointID: 1
   RestockTime: 0
   stocked: 0
@@ -5188,7 +5183,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 1bfba9646362c824ea4693bf7f48e09a, type: 2}
+  - {fileID: 588882535, guid: c9aecbced71bf9647a5598c07af40aaf, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -5409,7 +5404,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 3
   pickupPointID: 2
   RestockTime: 0
   stocked: 0
@@ -5487,7 +5481,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 6feb7352204974c17b2b8ff5be1dbdbe, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -.707106829
+      value: -.707106888
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 6feb7352204974c17b2b8ff5be1dbdbe, type: 3}
       propertyPath: m_LocalRotation.y
@@ -5499,7 +5493,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 6feb7352204974c17b2b8ff5be1dbdbe, type: 3}
       propertyPath: m_LocalRotation.w
-      value: .707106709
+      value: .707106769
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 6feb7352204974c17b2b8ff5be1dbdbe, type: 3}
       propertyPath: m_LocalScale.x
@@ -5513,6 +5507,11 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 6feb7352204974c17b2b8ff5be1dbdbe, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 588882535, guid: c9aecbced71bf9647a5598c07af40aaf,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6feb7352204974c17b2b8ff5be1dbdbe, type: 3}
   m_RootGameObject: {fileID: 1066177126}
@@ -5733,7 +5732,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 1
   pickupPointID: 0
   RestockTime: 0
   stocked: 0
@@ -6006,7 +6004,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 3
   pickupPointID: 2
   RestockTime: 0
   stocked: 0
@@ -6434,7 +6431,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 4
   pickupPointID: 3
   RestockTime: 0
   stocked: 0

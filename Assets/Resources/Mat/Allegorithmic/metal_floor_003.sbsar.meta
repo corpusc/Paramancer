@@ -45,21 +45,21 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Drips_Angle
       value:
-        scalar[0]: .75
+        scalar[0]: .456
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
     - name: Light_Angle
       value:
-        scalar[0]: .125
+        scalar[0]: .856000006
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
     - name: Patterns_Scale
       value:
-        scalar[0]: 6
+        scalar[0]: 8.71000004
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -101,7 +101,7 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Emboss
       value:
-        scalar[0]: .5
+        scalar[0]: .0920000002
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -137,7 +137,7 @@ SubstanceImporter:
     materialInformation:
       serializedVersion: 5
       offset: {x: 0, y: 0}
-      scale: {x: 1, y: 1}
+      scale: {x: 4, y: 4}
       generateAllOutputs: 1
       animationUpdateRate: 42
     materialProperties:
@@ -148,14 +148,14 @@ SubstanceImporter:
             name: _MainTex
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
+            scale: {x: 4, y: 4}
             offset: {x: 0, y: 0}
         data:
           first:
             name: _BumpMap
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
+            scale: {x: 4, y: 1}
             offset: {x: 0, y: 0}
       floats:
         data:
