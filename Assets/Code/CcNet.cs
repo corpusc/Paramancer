@@ -109,7 +109,7 @@ public class CcNet : MonoBehaviour {
 		CurrMatch = new MatchData(Match.FFAFragMatch);
 		
 		// load prefabs
-		Object[] prefabs = Resources.LoadAll("Prefab/CcNet");
+		Object[] prefabs = Resources.LoadAll("MEDIA/Prefab/CcNet");
 		foreach (var p in prefabs) {
 			switch (p.name) {
 				case "Basketball": basketballPrefab = (GameObject)p; break;	
@@ -638,7 +638,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		// are we still connected to the server?
+		// are we still connected to the server? 
 		if (Connected && !isServer) {
 			if (Time.time > latestPacket + 30f) {
 				DisconnectNow();
@@ -647,7 +647,7 @@ public class CcNet : MonoBehaviour {
 					"Probably because someone's connection sucks.";
 			}
 			
-			// remind the server we here
+			// remind the server we here 
 			for (int i=0; i<players.Count; i++) {
 				if (players[i].local && Time.time > players[i].lastPong + 5f) {
 					networkView.RPC("PONG", RPCMode.Server,players[i].viewID);
@@ -660,14 +660,14 @@ public class CcNet : MonoBehaviour {
 			for (int i=0; i<players.Count; i++) {
 				if (!players[i].local) {
 					if (Time.time>players[i].lastPong + 20f) {
-						//gone 20 secs without hearing from client, auto-kick
+						//gone 20 secs without hearing from client, auto-kick 
 						Kick(i,true);
 					}
 				}
 			}
 		}
 		
-		// respawn dead players
+		// respawn dead players 
 		if (isServer) {
 			for (int i=0; i<players.Count; i++) {
 				if (players[i].health <= 0f){
@@ -782,7 +782,7 @@ public class CcNet : MonoBehaviour {
 				
 				pickupPoints[i].stocked = true;
 
-				// health will be a box with its 'Health' pic on it
+				// health will be a box with its 'Health' pic on it 
 				var o = pickupBoxPrefab;
 				if (item >= (int)Gun.Pistol) 
 					o = arse.Guns[item].Prefab;
@@ -802,14 +802,14 @@ public class CcNet : MonoBehaviour {
 				box.pickupPoint = pickupPoints[i];
 
 				if (item < (int)Gun.Pistol) {
-					// health
+					// health 
 					box.pickupName = "Health";
 					box.iconObj.renderer.material.SetTexture("_MainTex", Pics.Health);
 					Material[] mats = box.boxObj.renderer.materials;
 					mats[0].color = Color.green;
 					box.boxObj.renderer.materials = mats;
 				}else{
-					// gun of some type
+					// gun of some type 
 					box.pickupName = arse.Guns[item].Name;
 					//box.iconObj.renderer.material.SetTexture("_MainTex", arse.Guns[item].Pic);
 					//Material[] mats = box.boxObj.renderer.materials;
@@ -956,7 +956,7 @@ public class CcNet : MonoBehaviour {
 		if (weExist) 
 			return;
 		
-		// another player has joined, lets add them to our view of the game
+		// another player has joined, lets add them to our view of the game 
 		bool localShopforLocalPeople = false;
 		if (viewID == localPlayer.viewID) 
 			localShopforLocalPeople = true;
@@ -1253,7 +1253,7 @@ public class CcNet : MonoBehaviour {
 					Destroy(GameObject.Find("_BasketBlue"));
 			}
 			
-			// add fps entities for all known players
+			// add fps entities for all known players 
 			for (int i=0; i<players.Count; i++) {
 				players[i].InstantiateEntity(entityPrefab);
 			}

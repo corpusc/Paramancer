@@ -10,7 +10,6 @@ public static class Mats {
 	
 	static Mats() {
 		handleFolder("Av");
-		handleFolder("AvHead");
 	}
 
 	public static Material Get(string s) { // hash lookups in a Dictionary are fast right? 
@@ -34,7 +33,7 @@ public static class Mats {
 	static void handleFolder(string s) {
 		string feedback = "";
 		
-		var tMats = Resources.LoadAll<Material>("Mat/" + s);
+		var tMats = Resources.LoadAll<Material>(s);
 
 		// add to the master collection that includes files from all folders 
 		foreach (var cl in tMats) {
