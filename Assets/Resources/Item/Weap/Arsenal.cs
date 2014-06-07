@@ -3,10 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Arsenal : MonoBehaviour {
-	public GameObject grenadeFlashPrefab;
-	public GameObject soundObjectPrefab;
-	public GameObject BulletMark;
-
 	public int WidestIcon;
 	public int TallestIcon;
 	public GunData[] Guns;
@@ -136,7 +132,7 @@ public class Arsenal : MonoBehaviour {
 			return;
 
 		if (hitNorm != Vector3.zero) {
-			GameObject nh = (GameObject)GameObject.Instantiate(BulletMark);
+			GameObject nh = (GameObject)GameObject.Instantiate(GOs.Get("BulletMark"));
 			nh.transform.position = end + hitNorm * 0.01f;
 			nh.transform.forward = -hitNorm;
 			nh.transform.localScale *= Guns[(int)weapon].MarkScale;
@@ -297,8 +293,9 @@ public class Arsenal : MonoBehaviour {
 		return 0f;
 	}
 	
+	// FIXME: pull BombBeep(), and the bomb related part of Detonate(), into a script in the bomb's folder 
 	public void BombBeep(Vector3 pos) {
-		var o = (GameObject)GameObject.Instantiate(soundObjectPrefab); // bomb beep object 
+		var o = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound")); // bomb beep/sound object 
 		o.transform.position = pos;
 		o.audio.clip = Sfx.Get("BombBeep");
 		o.audio.volume = 1f;
@@ -306,10 +303,10 @@ public class Arsenal : MonoBehaviour {
 	
 	public void Detonate(Gun weapon, Vector3 detPos, NetworkViewID viewID) {
 		if (weapon == Gun.Bomb) {
-			var o = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
+			var o = (GameObject)GameObject.Instantiate(GOs.Get("GrenadeExplosion"));
 			o.transform.position = detPos;
 				
-			var bomb = (GameObject)GameObject.Instantiate(soundObjectPrefab);
+			var bomb = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
 			bomb.transform.position = detPos;
 			bomb.audio.clip = Sfx.Get("ExplodeBomb");
 			bomb.audio.volume = 4f;
@@ -320,10 +317,10 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<activeGrenades.Count; i++) {
 			if (viewID == activeGrenades[i].viewID) {
 				
-				var o = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
+				var o = (GameObject)GameObject.Instantiate(GOs.Get("GrenadeExplosion"));
 				o.transform.position = activeGrenades[i].transform.position;
 				
-				var nade = (GameObject)GameObject.Instantiate(soundObjectPrefab);
+				var nade = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
 				nade.transform.position = activeGrenades[i].transform.position;
 				nade.audio.clip = Sfx.Get("ExplodeGrenade");
 				nade.audio.volume = 2f;
@@ -361,22 +358,22 @@ public class Arsenal : MonoBehaviour {
 				}
 				
 				// detonate rocket 
-				GameObject grenadeFlash = (GameObject)GameObject.Instantiate(grenadeFlashPrefab);
-				grenadeFlash.transform.position = activeRockets[i].transform.position;
-				GameObject rocketSoundObj = (GameObject)GameObject.Instantiate(soundObjectPrefab);
-				rocketSoundObj.transform.position = activeRockets[i].transform.position;
-				rocketSoundObj.audio.clip = Sfx.Get("explosion_bazooka");
-				rocketSoundObj.audio.volume = 0.99f;
+				var splo = (GameObject)GameObject.Instantiate(GOs.Get("GrenadeExplosion"));
+				splo.transform.position = activeRockets[i].transform.position;
+				var ws = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
+				ws.transform.position = activeRockets[i].transform.position;
+				ws.audio.clip = Sfx.Get("explosion_bazooka");
+				ws.audio.volume = 0.99f;
 				Destroy(activeRockets[i].gameObject);
 				activeRockets.RemoveAt(i);
 
 				if (hitNorm != Vector3.zero) {
-					GameObject nh = (GameObject)GameObject.Instantiate(BulletMark);
-					nh.transform.position = detPos + hitNorm * 0.03f;
-					nh.transform.forward = -hitNorm;
-					nh.transform.localScale *= Guns[(int)Gun.RocketLauncher].MarkScale;
-					nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
-					nh.GetComponent<BulletMark>().MaxLife = 30f;
+					var o = (GameObject)GameObject.Instantiate(GOs.Get("BulletMark"));
+					o.transform.position = detPos + hitNorm * 0.03f;
+					o.transform.forward = -hitNorm;
+					o.transform.localScale *= Guns[(int)Gun.RocketLauncher].MarkScale;
+					o.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
+					o.GetComponent<BulletMark>().MaxLife = 30f;
 				}
 			}
 		}
