@@ -96,11 +96,11 @@ public class ProcGenVoxel : ScriptableObject {
 		Block = new bool[MapSize.x, MapSize.y, MapSize.z];
 		Mat = new Material[MapSize.x, MapSize.y, MapSize.z];
 
-		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/metal_floor_003", typeof(Material)));
-		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/metal_plate_005", typeof(Material)));
-		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/metal_plate_008", typeof(Material)));
-		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/sci_fi_003", typeof(Material)));
-		MatPool.Add ((Material)Resources.Load("Mat/Allegorithmic/Stones_01", typeof(Material)));
+		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/metal_floor_003", typeof(Material)));
+		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/metal_plate_005", typeof(Material)));
+		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/metal_plate_008", typeof(Material)));
+		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/sci_fi_003", typeof(Material)));
+		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/Stones_01", typeof(Material)));
 
 		Torch = GameObject.Find("Torch"); // a GameObject called Torch must already be in the scene for this to work, it will be removed after everything is done by the script
 		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work, it will be removed after everything is done by the script
