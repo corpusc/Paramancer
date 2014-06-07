@@ -408,15 +408,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f436f3e0a790494c9c67a5cd463e7cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Beam: {fileID: 100000, guid: aa2bec16957c74136b0b6a9729a28fb6, type: 2}
-  LightningBeamPrefab: {fileID: 100000, guid: 512eb2b9b0e4e420d80680b8e33d2e22, type: 2}
-  grenadeBulletPrefab: {fileID: 100000, guid: 60eec104b207e4413a8d16b866a1bbb6, type: 2}
-  BeamParticle: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9, type: 2}
-  grenadeFlashPrefab: {fileID: 100000, guid: 881ce601f15ac4e9b9084babb5779a14, type: 2}
-  muzzleFlashPrefab: {fileID: 100000, guid: b13d09b761f4349a1902bbab9892b332, type: 2}
-  rocketPrefab: {fileID: 100008, guid: 25e20a6aa62c1484a885c7c782a77d9f, type: 2}
-  soundObjectPrefab: {fileID: 100000, guid: e86b6e853a30b4e2a9ef054ac49d6367, type: 2}
-  BulletMark: {fileID: 100000, guid: e59b379acf30d804da93c18bad9a4da4, type: 2}
   WidestIcon: 0
   TallestIcon: 0
 --- !u!114 &1973207299

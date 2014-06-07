@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
+
+
 public class RocketScript : MonoBehaviour {
 	public GameObject particle;
 	public float FlightSpeed = 120f; // accelerates to this 
 	public float BaseFlightSpeed = 40f; // starts at this speed 
-	public int MinPtsPerSecond = 300; // pts == particles 
-	public int MaxPtsPerSecond = 500;
+	public int MinPtsPerSecond = 150; // pts == particles 
+	public int MaxPtsPerSecond = 250;
 	public int ExplosionParticles = 200;
 	public float ExplosionSize = 0.4f;
 	public float ForwardOffset = 1f; // prevents running into your own rocket when you have lags (FIXME: doesn't work....might need to filter out rocket owner's body ) 
@@ -41,7 +43,7 @@ public class RocketScript : MonoBehaviour {
 	void Update() {
 		if (enabled) {
 			if (Turning) {
-				Vector3 turnVec = Vector3.Normalize(Vector3.Lerp(origFwd, origUp, Mathf.Lerp(0.3f, 0.8f, (maxLife - life) / maxLife)));
+				var turnVec = Vector3.Normalize(Vector3.Lerp(origFwd, origUp, Mathf.Lerp(0.3f, 0.8f, (maxLife - life) / maxLife)));
 				transform.forward = Quaternion.AngleAxis(life * Turn, origFwd) * turnVec;
 			}
 

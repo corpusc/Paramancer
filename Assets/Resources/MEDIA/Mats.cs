@@ -11,6 +11,7 @@ public static class Mats {
 	static Mats() {
 		handleFolder("Av/Color");
 		handleFolder("Av/Head");
+		handleFolder("Item/Weap/FX/Particle");
 	}
 
 	public static Material Get(string s) { // hash lookups in a Dictionary are fast right? 

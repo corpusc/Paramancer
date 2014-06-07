@@ -40,13 +40,13 @@ public class CcParticle : MonoBehaviour {
 
 		switch (ParticType) {
 			case ParticleType.Circle:
-				renderer.material = (Material)Resources.Load("Mat/Weap/RifleParticle", typeof(Material));
+				renderer.material = Mats.Get("Linearish");
 				break;
 			case ParticleType.Multiple:
 				if (Random.value < 0.5f)
-					renderer.material = (Material)Resources.Load("Mat/Weap/MultipleParticle", typeof(Material));
+				renderer.material = Mats.Get("MultipleParticle");
 				else
-					renderer.material = (Material)Resources.Load("Mat/Weap/MultipleParticle2", typeof(Material));
+					renderer.material = Mats.Get("MultipleParticle2");
 				break;
 			default:
 				break; // puff is loaded by default, from the inspector 
