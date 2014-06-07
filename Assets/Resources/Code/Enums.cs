@@ -69,20 +69,20 @@ public enum Match {
 }
 
 public enum HudMode {
-	// Offline
+	// offline 
 	SplashLogos,
 	MainMenu,
-	NewGame,         // see comment below VVVVVVVVVV 
+	NewGame,    // (don't need both MatchSetup AND NewGame anymore?) 
 	Connecting,
 	ConnectionError,
 	InitializingServer,
 	Wait,
 	
-	// Online
+	// online 
+	MatchSetup, // (don't need both MatchSetup AND NewGame anymore?) 
 	KickAPlayer,
-	MatchSetup, // MatchSetup   (don't need both MatchSetup AND NewGame anymore?) 
-	
-	// Both
+
+	// both 
 	About,
 	Controls,
 	Settings,
@@ -94,10 +94,9 @@ public enum HudMode {
 }
 
 public enum Gun { // FIXME: this used to be "Item", but they need their own enum or system 
-	Lava = -5, // not really an item, should be moved?
-	Suicide = -4, // not really an item, should be moved?
+	Lava = -5, // not really an item, should be moved? 
+	Suicide = -4, // not really an item, should be moved? 
 	Health = -3,
-	//Random = -2,
 	None = -1,
 
 	// when changing weapon names, also change in "UserAction" enum 

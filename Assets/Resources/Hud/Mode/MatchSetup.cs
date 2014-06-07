@@ -325,7 +325,7 @@ public class MatchSetup {
 				net.AssignGameModeConfig(matches[matchId], matches[matchId].Maps[mapId]);
 				net.MatchTypeAndMap = net.CurrMatch.Name + "\n" + net.CurrMatch.MapName;
 				bool useNat = !Network.HavePublicAddress();
-				Debug.Log("Initializing server, has public address: " + Network.HavePublicAddress().ToString());
+				//Debug.Log("Initializing server, has public address: " + Network.HavePublicAddress().ToString());
 				Network.InitializeServer(net.connections, net.listenPort, useNat);
 				hud.Mode = HudMode.InitializingServer;
 			}

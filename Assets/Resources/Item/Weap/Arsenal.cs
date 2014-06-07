@@ -3,13 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Arsenal : MonoBehaviour {
-	public GameObject Beam;
-	public GameObject LightningBeamPrefab;
-	public GameObject grenadeBulletPrefab;
-	public GameObject BeamParticle;
 	public GameObject grenadeFlashPrefab;
-	public GameObject muzzleFlashPrefab;
-	public GameObject rocketPrefab;
 	public GameObject soundObjectPrefab;
 	public GameObject BulletMark;
 
@@ -38,11 +32,6 @@ public class Arsenal : MonoBehaviour {
 			Guns[i].Name = n;
 
 			switch ((Gun)i) {
-				case Gun.GrenadeLauncher:
-					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Gun/Low Poly " + n + " 1.1 - Daniel Mendes/Prefabs/" + n);
-					Guns[i].Mat =    (Material)  Resources.Load("Item/Weap/Gun/Low Poly " + n + " 1.1 - Daniel Mendes/Materials/" + n); 
-					Guns[i].Pic =      Resources.Load<Texture> ("Item/Weap/Gun/" + n + "/" + n); 
-					break;
 				default:
 					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Gun/" + n + "/" + n + " PREFAB");
 					Guns[i].Mat =      Resources.Load<Material>("Item/Weap/Gun/" + n + "/" + n); 
@@ -120,8 +109,8 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 		
-		var lbp = (GameObject)GameObject.Instantiate(LightningBeamPrefab);
-		var lb = lbp.GetComponent<LightningBeam>();
+		var lbp = (GameObject)GameObject.Instantiate(GOs.Get("Lightning"));
+		var lb = lbp.GetComponent<Lightning>();
 
 		if (localFire && !hit) 
 			lb.start = localstart;
@@ -157,8 +146,8 @@ public class Arsenal : MonoBehaviour {
 		
 		// beam 
 		//beam.GetComponent<BeamEffect>().start = origin;
-		var beam = (GameObject)GameObject.Instantiate(Beam);
-		var b = beam.GetComponent<BeamEffect>();
+		var beam = (GameObject)GameObject.Instantiate(GOs.Get("Laser"));
+		var b = beam.GetComponent<Laser>();
 
 		if (localFire) 
 			b.start = localStart;
@@ -172,7 +161,7 @@ public class Arsenal : MonoBehaviour {
 			b.renderer.material.color = Color.white;
 		
 		// muzzle flash 
-		var mf = (GameObject)GameObject.Instantiate(muzzleFlashPrefab);
+		var mf = (GameObject)GameObject.Instantiate(GOs.Get("MuzzleFlash"));
 		mf.light.color = Guns[(int)weapon].Color;
 		mf.transform.position = origin;
 		if (localFire) { // Sophie didn't allow remote player flashes? 
@@ -193,7 +182,7 @@ public class Arsenal : MonoBehaviour {
 			float angle = 0f;
 			float progress = 0f;
 			while (progress < maxLen) {
-				var np = (GameObject)GameObject.Instantiate(BeamParticle);
+				var np = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
 				var v = Camera.main.transform.up/4;
 				v = Quaternion.AngleAxis(angle, Camera.main.transform.forward) * v;
 				var center = beamStart + (beamDir * progress);
@@ -226,7 +215,7 @@ public class Arsenal : MonoBehaviour {
 				break;
 			
 			case Gun.GrenadeLauncher:
-				var ng = (GameObject)GameObject.Instantiate(grenadeBulletPrefab);
+				var ng = (GameObject)GameObject.Instantiate(GOs.Get("Grenade"));
 				var gs = ng.GetComponent<GrenadeScript>();
 				gs.start = origin + direction; // start a bit outwards 
 				gs.direction = direction;
@@ -240,7 +229,7 @@ public class Arsenal : MonoBehaviour {
 				break;
 			
 			case Gun.RocketLauncher:
-				var nr = (GameObject)GameObject.Instantiate(rocketPrefab);
+				var nr = (GameObject)GameObject.Instantiate(GOs.Get("Rocket"));
 				nr.transform.position = origin; // + direction; // start a bit outwards 
 				nr.transform.LookAt(origin + direction);
 				

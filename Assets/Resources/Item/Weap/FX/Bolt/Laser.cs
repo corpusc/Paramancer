@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 
-public class BeamEffect : MonoBehaviour {
+public class Laser : MonoBehaviour {
 	public Vector3 start;
 	public Vector3 end;
 	public Color col = new Color(1, 1, 1, 1f);

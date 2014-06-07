@@ -4,27 +4,28 @@ using System.Collections.Generic;
 
 
 
-public static class Models {
+public static class GOs {
 	// private 
-	static Dictionary<string, GameObject> models = new Dictionary<string, GameObject>();
+	static Dictionary<string, GameObject> gos = new Dictionary<string, GameObject>();
 
 
 	
-	static Models() {
-		Debug.Log("----------------- Models constructor -----------------");
+	static GOs() {
+		Debug.Log("----------------- GOs constructor -----------------");
 		handleFolder("Av");
+		handleFolder("Item");
 	}
 
 	public static GameObject Get(string s) { // hash lookups in a Dictionary are fast right? 
-		if (models.ContainsKey(s))
-			return models[s];
+		if (gos.ContainsKey(s))
+			return gos[s];
 		
 		Debug.LogError("______ COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
 		return null;
 	}
 	
 	public static GameObject GetFirstWith(string s) { // this is slow i think.  iterating thru key/value pairs 
-		foreach (var pair in models) {
+		foreach (var pair in gos) {
 			if (pair.Value.name.Contains(s))
 				return pair.Value;
 		}
@@ -33,33 +34,23 @@ public static class Models {
 		return null;
 	}
 	
-	//	public static GameObject GetFirstWith(string s) {
-	//		for (int i = 0; i < models.Length; i++) {
-	//			if (s == models[i].name)
-	//				return (GameObject)models[i]; 
-	//		}
-	//
-	//		Debug.LogError("Can't find any picture with that name!");
-	//		return null;
-	//	}
-	
 	static void handleFolder(string s) {
 		string feedback = "";
-		var tmodels = Resources.LoadAll<GameObject>(s);
+		var tGOs = Resources.LoadAll<GameObject>(s);
 		
-		// add to the master collection that includes files from all folders 
-		foreach (var cl in tmodels) {
-			models.Add(cl.name, cl);
+		// add to the master collection that includes files from all subfolders 
+		foreach (var cl in tGOs) {
+			gos.Add(cl.name, cl);
 			feedback += cl.name + ",  ";
 		}
 		
-		Debug.Log("______ MODEL/" + s + " ______ " + feedback.TrimEnd(',', ' '));
+		Debug.Log("______ GAMEOBJECTS -o- " + s + " ______ " + feedback.TrimEnd(',', ' '));
 		
 		
 		
 		// CLEANME:     use this temp list to setup permanent vars 
-		for (int i = 0; i < tmodels.Length; i++) {
-			switch (tmodels[i].name) {
+		for (int i = 0; i < tGOs.Length; i++) {
+			switch (tGOs[i].name) {
 			case "Some string":
 				// do some specific hardwired setup for that particular model 
 				break;

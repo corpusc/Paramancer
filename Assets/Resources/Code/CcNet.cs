@@ -102,13 +102,13 @@ public class CcNet : MonoBehaviour {
 		// and web player games to render at 50-60 frames/second depending on the platform.
 		// If vsync is set in quality setting, the target framerate is ignored
 		
-		// scripts
+		// scripts 
 		hud = GetComponent<Hud>();
 		log = GetComponent<CcLog>();
 		arse = GetComponent<Arsenal>();
 		CurrMatch = new MatchData(Match.FFAFragMatch);
 		
-		// load prefabs
+		// load prefabs 
 		Object[] prefabs = Resources.LoadAll("MEDIA/Prefab/CcNet");
 		foreach (var p in prefabs) {
 			switch (p.name) {
@@ -128,7 +128,7 @@ public class CcNet : MonoBehaviour {
 		return basketball.GetComponent<BasketballScript>();
 	}
 
-	//-------- Network gameplay stuff ----------
+	//-------- network gameplay ---------- 
 	public void SendTINYUserUpdate(NetworkViewID viewID, UserAction action) {
 		networkView.RPC("SendTINYUserUpdateRPC", RPCMode.Others, viewID, (int)action);
 	}
@@ -1323,19 +1323,19 @@ public class CcNet : MonoBehaviour {
 		}
 	}
 	
-	//------------- Connecting/Server setup --------------
+	// ------------- Connecting/Server setup -------------- 
 	void OnServerInitialized() {
-        Debug.Log("Server initialized, now registering...");
+        //Debug.Log("Server initialized, now registering...");
 		MasterServer.RegisterHost(uniqueGameName, gameName, MatchTypeAndMap);
     }
 	
     void OnMasterServerEvent(MasterServerEvent msEvent) {
         if (msEvent == MasterServerEvent.RegistrationSucceeded) {
-            Debug.Log("Server registered");
+            //Debug.Log("Server registered");
 			isServer = true;
 			
 			if (!Connected) {
-				// we've just joined a game as host, lets create the local player & add it to the RPC buffer
+				// we've just joined a game as host, lets create the local player & add it to the RPC buffer 
 				localPlayer.viewID = Network.AllocateViewID();
 				hud.Mode = HudMode.Wait;
 				NetVI = Network.AllocateViewID();
@@ -1347,7 +1347,7 @@ public class CcNet : MonoBehaviour {
 		          msEvent == MasterServerEvent.RegistrationFailedGameType || 
 		          msEvent == MasterServerEvent.RegistrationFailedGameName)
 		{
-			Debug.Log("server registration failed, disconnecting");
+			Debug.LogError("server registration failed, disconnecting");
 			Error = "server registration failed";
 			hud.Mode = HudMode.ConnectionError;
 			localPlayer.viewID = new NetworkViewID();
@@ -1357,7 +1357,7 @@ public class CcNet : MonoBehaviour {
     }
 	
 	void OnConnectedToServer() {
-		Debug.Log("Connected to a server");
+		//Debug.Log("Connected to a server");
 		Connected = true;
 		// we just connected to a host, let's RPC the host and ask for the game info
 		networkView.RPC("RequestGameData", RPCMode.Server);

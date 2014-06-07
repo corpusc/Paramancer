@@ -3,7 +3,7 @@ using System.Collections;
 
 
 
-public class LightningBeam : MonoBehaviour {
+public class Lightning : MonoBehaviour {
 	public Vector3 start;
 	public Vector3 end;
 	public bool hit = false;

@@ -22,8 +22,8 @@ public class DebugCam : MonoBehaviour {
 		transform.localEulerAngles += new Vector3(-Input.GetAxis("Mouse Y") * 2f, Input.GetAxis("Mouse X") * 2f, 0f);
 		float speed = 10f;
 
-		if /**/ (Input.GetKey ("left shift")) 
-			speed *= 2f;
+		//if /**/ (CcInput.Holding(UserAction.Sprint)) 
+			//speed *= 2f;
 		if /**/ (Input.GetKey("w")) 
 			transform.position += transform.forward * Time.deltaTime * speed;
 		else if (Input.GetKey("s")) 

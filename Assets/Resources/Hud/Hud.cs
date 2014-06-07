@@ -196,10 +196,6 @@ public class Hud : MonoBehaviour {
 				matchSetup.Draw(net.isServer, net, this, vSpan);
 				break;
 				
-//			case HudMode.JoinGame:
-//				joinMatchInProgress();
-//				break;
-
 			case HudMode.SplashLogos:
 				showSplashLogos();
 				break;
@@ -215,8 +211,11 @@ public class Hud : MonoBehaviour {
 			case HudMode.About:
 				// maybe this should be titled "ABOUT"?  would be more accurate?... and more standard 
 				menuBegin();
-				if /* future goals scope changed */ (aboutMenu.Draw(this))
+
+				// if future goals scope changed 
+				if (aboutMenu.Draw(this))
 					scrollPos = Vector2.zero;
+
 				menuEnd();
 				break;
 			case HudMode.Controls:
@@ -238,11 +237,15 @@ public class Hud : MonoBehaviour {
 				break;
 
 			case HudMode.Connecting:
-				drawSimpleWindow("", Color.yellow);
+				drawSimpleWindow("", S.Orange);
 				break;
 
 			case HudMode.InitializingServer:
-				drawSimpleWindow("", S.WhiteTRANS);
+				drawSimpleWindow("", Color.yellow);
+				break;
+
+			case HudMode.Wait:
+				drawSimpleWindow("", Color.green);
 				break;
 
 			// server

@@ -1277,7 +1277,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 784806879}
 --- !u!1 &389838524
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,9 +2429,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 286317958}
   - {fileID: 1916402018}
   - {fileID: 119443296}
   - {fileID: 27050188}
+  - {fileID: 1837028854}
   - {fileID: 1793347241}
   m_Father: {fileID: 0}
 --- !u!1 &889847622
@@ -2766,7 +2768,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupType: 1
   pickupPointID: 0
   RestockTime: 0
   stocked: 0
@@ -2890,7 +2891,7 @@ Transform:
   m_Children:
   - {fileID: 159325559}
   - {fileID: 389838525}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 784806879}
 --- !u!1 &1916402017
 GameObject:
   m_ObjectHideFlags: 0
