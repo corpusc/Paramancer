@@ -57,7 +57,7 @@ public class Arsenal : MonoBehaviour {
 				case Gun.GrenadeLauncher:   Guns[i].Color = Color.green; 
 					Guns[i].Delay = 0.25f; 
 					Guns[i].DelayAlt = 0.25f; break; 
-				case Gun.MachineGun:   Guns[i].Color = Color.cyan; 
+				case Gun.MachineGun:   Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 0.1f; 
 					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; break; // only 1 with AutoFire 
 				case Gun.RailGun:   Guns[i].Color = Color.cyan; 
@@ -141,7 +141,6 @@ public class Arsenal : MonoBehaviour {
 		}
 		
 		// beam 
-		//beam.GetComponent<BeamEffect>().start = origin;
 		var beam = (GameObject)GameObject.Instantiate(GOs.Get("Laser"));
 		var b = beam.GetComponent<Laser>();
 
@@ -153,9 +152,6 @@ public class Arsenal : MonoBehaviour {
 		b.end = end - Vector3.Normalize(b.end - b.start) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending
 		b.col = Guns[(int)weapon].Color;
 
-		if (weapon == Gun.Pistol)
-			b.renderer.material.color = Color.white;
-		
 		// muzzle flash 
 		var mf = (GameObject)GameObject.Instantiate(GOs.Get("MuzzleFlash"));
 		mf.light.color = Guns[(int)weapon].Color;

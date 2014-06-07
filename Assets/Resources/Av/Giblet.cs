@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-public class SplatScript : MonoBehaviour {
+public class Giblet : MonoBehaviour {
 	public float Gravity = 10f;
 
-	private Vector3 moveVec = Vector3.zero;
-	private float life = 2f;
+	// private 
+	Vector3 moveVec = Vector3.zero;
+	float life = 2f;
 	
 
 	

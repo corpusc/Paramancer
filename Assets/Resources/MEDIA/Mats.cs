@@ -9,7 +9,7 @@ public static class Mats {
 	
 	
 	static Mats() {
-		handleFolder("Av");
+		handleFolder("Av/Color");
 	}
 
 	public static Material Get(string s) { // hash lookups in a Dictionary are fast right? 
@@ -37,6 +37,7 @@ public static class Mats {
 
 		// add to the master collection that includes files from all folders 
 		foreach (var cl in tMats) {
+			Debug.Log("MATS - " + s + " --------------- cl.name: " + cl.name);
 			mats.Add(cl.name, cl);
 			feedback += cl.name + ",  ";
 		}

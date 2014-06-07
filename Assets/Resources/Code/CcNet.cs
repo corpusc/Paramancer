@@ -373,7 +373,7 @@ public class CcNet : MonoBehaviour {
 		for (int i=0; i<numGibs; i++) {
 			GameObject g = (GameObject)GameObject.Instantiate(GOs.Get("Giblet"));
 			g.transform.position = hitPos;
-			g.GetComponent<SplatScript>().Gravity = CurrMatch.Gravity;
+			g.GetComponent<Giblet>().Gravity = CurrMatch.Gravity;
 		}
 		
 		for (int i=0; i<players.Count; i++) {
@@ -1255,32 +1255,28 @@ public class CcNet : MonoBehaviour {
 				// consumable list so guns only appear once (intially), and the rest are healthpacks 
 				var guns = new List<Gun>();
 				for (int i = 0; i < (int)Gun.Count; i++)
-					guns.Add((Gun)i);						
+					guns.Add((Gun)i);
+				while (guns.Count < p.transform.childCount) // fill up the rest of spawns with health pickups 
+					guns.Add(Gun.Health);
 
 				foreach (Transform child in p.transform) {
 					//Gun item = (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
-					Gun item;
+					int i = (int)Random.Range(0, guns.Count);
+					Gun gun = guns[i];
+					guns.RemoveAt(i);
 
-					if (guns.Count > 0) {
-						int i = (int)Random.Range(0, guns.Count);
-						item = guns[i];
-						guns.RemoveAt(i);
-					}else{
-						item = Gun.Health;
-					}
+					var pp = child.GetComponent<PickupPoint>();
+					pp.pickupPointID = (int)gun;
 
-					PickupPoint pp = child.GetComponent<PickupPoint>();
-					pp.pickupPointID = (int)item;
-
-					s += item + ", ";
+					s += gun + ", ";
 					
-					if (item == Gun.None) { // don't think this can ever happen anymore 
+					if (gun == Gun.None) { // don't think this can ever happen anymore 
 						Destroy(child.gameObject);
 					}else{
 						pickupPoints.Add(pp);
 					}
 				}
-				Debug.Log(s);
+				//Debug.Log(s);
 			}
 			
 			networkView.RPC("RequestPickupStocks", RPCMode.Server);
