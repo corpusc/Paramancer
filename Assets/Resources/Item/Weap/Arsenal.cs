@@ -367,6 +367,7 @@ public class Arsenal : MonoBehaviour {
 				Destroy(activeRockets[i].gameObject);
 				activeRockets.RemoveAt(i);
 
+				// bullet marks 
 				if (hitNorm != Vector3.zero) {
 					var o = (GameObject)GameObject.Instantiate(GOs.Get("BulletMark"));
 					o.transform.position = detPos + hitNorm * 0.03f;

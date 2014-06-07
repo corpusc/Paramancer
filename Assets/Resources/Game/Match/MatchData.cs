@@ -9,7 +9,7 @@ public class MatchData {
 	// proc gen 
 	public bool NeedsGenerating = false;
 	public int Seed = 0;
-	public static string ProcGenName = "Generated with seed"; // user-facing name of procedurally generated voxel-style maps 
+	public static string VoxelName = "Generated with seed"; // user-facing name of procedurally generated voxel-style maps 
 	// 'mode select' 
 	public string Name = "";
 	public string Descript; // description 
@@ -40,8 +40,8 @@ public class MatchData {
 	
 	
 	public MatchData(Match match) {
-		var all = new List<string>() { ProcGenName, "Furnace", "Overpass", "Conflict Room", "The OctaDrome", "Tower" };
-		var hasGoalsAndCeilings = new List<string>() { "Furnace", "Overpass", "Conflict Room", "The OctaDrome" };
+		var all = new List<string>() { VoxelName, "Furnace", "Conflict Room", "The OctaDrome", "Overpass", "Tower" };
+		var hasGoalsAndCeilings = new List<string>() { "Furnace", "Conflict Room", "The OctaDrome" }; // voxel maps & Overpass have no red/blue goals.  if you add some,
 		Maps = all;
 
 		switch (match) {
@@ -53,7 +53,8 @@ public class MatchData {
 				Name = "Bring Your Own Gravity"; //  A Gravity Of Your Own?  Gravity Is/Gets Personal? 
 				Descript = "Each player has their own, independent, changeable gravity";
 				Maps = hasGoalsAndCeilings;
-				Maps.Insert(0, ProcGenName);
+				Maps.Insert(0, VoxelName);  // has ceiling (no goals needed)
+				Maps.Insert(0, "Overpass"); // has ceiling (no goals needed)
 				spawnGunA = Gun.Gravulator;
 				spawnGunB = Gun.Pistol;
 				break;
@@ -83,7 +84,7 @@ public class MatchData {
 				break;
 			case Match.YouOnlyLiveThrice:
 				Name = "YOLT! (You Only Live Thrice)";
-				Descript = "Last Person Standing, but you have 3 lives... like Pac-Man";
+				Descript = "Last Person Standing...but you have 3 lives";
 				Duration = 0f;
 				killsIncreaseScore = false;
 				pickupSlot5 = Gun.RocketLauncher;

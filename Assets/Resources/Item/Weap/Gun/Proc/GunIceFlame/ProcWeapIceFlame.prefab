@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: ProcWeap
+  m_Name: ProcWeapIceFlame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,13 +29,13 @@ Transform:
   m_Father: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59bed032cde25f04ebdc0156f536b8ca, type: 3}
+  m_Script: {fileID: 11500000, guid: aeb0c693ce6d57a48a67b14641a5c9a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bps: 4
@@ -45,8 +45,8 @@ MonoBehaviour:
   proj: 2
   vamp: 0
   name: Non-generated procweap
-  MinPower: 700
-  MaxPower: 800
+  MinPower: 200
+  MaxPower: 250
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

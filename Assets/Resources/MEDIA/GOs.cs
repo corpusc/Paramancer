@@ -13,6 +13,7 @@ public static class GOs {
 	static GOs() {
 		Debug.Log("----------------- GOs constructor -----------------");
 		handleFolder("Av");
+		handleFolder("Game");
 		handleFolder("Item");
 	}
 
@@ -44,7 +45,7 @@ public static class GOs {
 			feedback += cl.name + ",  ";
 		}
 		
-		Debug.Log("______ GAMEOBJECTS -o- " + s + " ______ " + feedback.TrimEnd(',', ' '));
+		Debug.Log("______ GAMEOBJECTS --- " + s + " ______ " + feedback.TrimEnd(',', ' '));
 		
 		
 		

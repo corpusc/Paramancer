@@ -301,7 +301,7 @@ public class MatchSetup {
 		
 		//print("Current map name: " + maps[mapId].Name);
 
-		if (matches[matchId].Maps[mapId] == MatchData.ProcGenName) {
+		if (matches[matchId].Maps[mapId] == MatchData.VoxelName) {
 			matches[matchId].NeedsGenerating = true;
 		} else {
 			matches[matchId].NeedsGenerating = false;
@@ -481,7 +481,7 @@ public class MatchSetup {
 		// set friendly map text for player 
 		var n = matches [matchId].Maps [mapId];
 		// name of map/scene 
-		var pgName = MatchData.ProcGenName;
+		var pgName = MatchData.VoxelName;
 		if (n == pgName) {
 			GUILayout.Label ("(" + pgName + ": ");
 			matches [matchId].Seed = int.Parse (GUILayout.TextArea (matches [matchId].Seed.ToString ()));
@@ -503,7 +503,7 @@ public class MatchSetup {
 			matches[i] = new MatchData((Match)i);
 
 		if (Debug.isDebugBuild) {
-			mapId = 2;
+			//mapId = 4;
 			matchId = (int)Match.BringYourOwnGravity;
 		}
 	}

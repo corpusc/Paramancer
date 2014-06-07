@@ -85,11 +85,7 @@ public class CcNet : MonoBehaviour {
 	float gameStartTime = 0f;
 
 	// private 
-	GameObject entityPrefab;
-	GameObject pickupBoxPrefab;
-	GameObject splatPrefab;
-	GameObject basketballPrefab;
-	// scripts 
+	// 		scripts 
 	CcLog log;
 	Hud hud;
 	Arsenal arse;
@@ -107,18 +103,6 @@ public class CcNet : MonoBehaviour {
 		log = GetComponent<CcLog>();
 		arse = GetComponent<Arsenal>();
 		CurrMatch = new MatchData(Match.FFAFragMatch);
-		
-		// load prefabs 
-		Object[] prefabs = Resources.LoadAll("MEDIA/Prefab/CcNet");
-		foreach (var p in prefabs) {
-			switch (p.name) {
-				case "Basketball": basketballPrefab = (GameObject)p; break;	
-				case "FPSEntity": entityPrefab = (GameObject)p; break;				
-				case "PickupBox": pickupBoxPrefab = (GameObject)p; break;	
-				case "Giblet": splatPrefab = (GameObject)p; break;	
-			}
-			
-		}
 		
 		Application.LoadLevel("OfflineBackdrop");
 		players = new List<NetUser>();
@@ -387,7 +371,7 @@ public class CcNet : MonoBehaviour {
 		numGibs *= 4; // increase giblets across the board 
 		
 		for (int i=0; i<numGibs; i++) {
-			GameObject g = (GameObject)GameObject.Instantiate(splatPrefab);
+			GameObject g = (GameObject)GameObject.Instantiate(GOs.Get("Giblet"));
 			g.transform.position = hitPos;
 			g.GetComponent<SplatScript>().Gravity = CurrMatch.Gravity;
 		}
@@ -783,7 +767,7 @@ public class CcNet : MonoBehaviour {
 				pickupPoints[i].stocked = true;
 
 				// health will be a box with its 'Health' pic on it 
-				var o = pickupBoxPrefab;
+				var o = GOs.Get("PickupBox");
 				if (item >= (int)Gun.Pistol) 
 					o = arse.Guns[item].Prefab;
 
@@ -966,7 +950,7 @@ public class CcNet : MonoBehaviour {
 		if (levelLoaded) {
 			// only instantiate the actual object of the player if we are in the right level
 			// uninstantiated players are added when the level finished loading
-			players[players.Count-1].InstantiateEntity(entityPrefab);
+			players[players.Count-1].InstantiateEntity(GOs.Get("FPSEntity"));
 		}
 		
 		
@@ -1242,7 +1226,7 @@ public class CcNet : MonoBehaviour {
 			
 			// drop the basket ball in 
 			if (CurrMatch.basketball) {
-				basketball = (GameObject)GameObject.Instantiate(basketballPrefab);
+				basketball = (GameObject)GameObject.Instantiate(GOs.Get("BasketBall"));
 				
 				if (!isServer) 
 					networkView.RPC("RequestBallStatus", RPCMode.Server);
@@ -1255,7 +1239,7 @@ public class CcNet : MonoBehaviour {
 			
 			// add fps entities for all known players 
 			for (int i=0; i<players.Count; i++) {
-				players[i].InstantiateEntity(entityPrefab);
+				players[i].InstantiateEntity(GOs.Get("FPSEntity"));
 			}
 			
 			// tell everyone we're here 

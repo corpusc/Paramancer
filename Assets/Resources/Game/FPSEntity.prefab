@@ -2933,7 +2933,6 @@ MonoBehaviour:
   colA: {r: 0, g: 0, b: 0, a: 0}
   colB: {r: .996078432, g: .996078432, b: .996078432, a: 0}
   colC: {r: .741176486, g: .741176486, b: .741176486, a: 0}
-  meshObj: {fileID: 100064}
   GunInHand: 0
   GunOnBack: 1
   HudGun: {fileID: 0}
@@ -2942,6 +2941,7 @@ MonoBehaviour:
   isLocal: 1
   Spectating: 0
   Spectatee: 0
+  meshObj: {fileID: 100064}
   animObj: {fileID: 100080}
   Model: {fileID: 100134, guid: b943155b96d8b2a4fbf1faf20adc46b0, type: 3}
   headType: 0
