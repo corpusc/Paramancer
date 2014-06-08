@@ -145,13 +145,14 @@ public class Arsenal : MonoBehaviour {
 				Vector3 diagonalVec = Quaternion.Euler(Random.Range(-30f, 30f), Random.Range(-30f, 30f), Random.Range(-30f, 30f)) * hitNorm;
 				GameObject np = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
 				np.transform.position = end + diagonalVec * Random.Range(0.1f, 0.3f);
-				np.GetComponent<CcParticle>().MoveVec = diagonalVec * Random.Range(2f, 3f);
-				np.GetComponent<CcParticle>().MinSize = 0.3f;
-				np.GetComponent<CcParticle>().MaxSize = 0.4f;
-				np.GetComponent<CcParticle>().StartColor = Guns[(int)weapon].Color;
-				np.GetComponent<CcParticle>().EndColor = Color.clear;
-				np.GetComponent<CcParticle>().ParticType = ParticleType.Puff;
-				np.GetComponent<CcParticle>().life = Random.Range(0.45f, 0.55f);
+				var p = np.GetComponent<CcParticle>();
+				p.MoveVec = diagonalVec * Random.Range(2f, 3f);
+				p.MinSize = 0.3f;
+				p.MaxSize = 0.4f;
+				p.StartColor = Guns[(int)weapon].Color;
+				p.EndColor = Color.clear;
+				p.ParticType = ParticleType.Puff;
+				p.life = Random.Range(0.45f, 0.55f);
 			}
 		}
 		
@@ -194,12 +195,13 @@ public class Arsenal : MonoBehaviour {
 				v = Quaternion.AngleAxis(angle, Camera.main.transform.forward) * v;
 				var center = beamStart + (beamDir * progress);
 				np.transform.position = center + v;
-				np.GetComponent<CcParticle>().MoveVec = v;
-				np.GetComponent<CcParticle>().MinSize = 0.4f;
-				np.GetComponent<CcParticle>().MaxSize = 0.4f;
-				np.GetComponent<CcParticle>().StartColor = Color.blue;
-				np.GetComponent<CcParticle>().EndColor = Color.clear;
-				np.GetComponent<CcParticle>().ParticType = ParticleType.Circle;
+				var p = np.GetComponent<CcParticle>();
+				p.MoveVec = v;
+				p.MinSize = 0.4f;
+				p.MaxSize = 0.4f;
+				p.StartColor = Color.blue;
+				p.EndColor = Color.clear;
+				p.ParticType = ParticleType.Circle;
 				progress += 0.20f;
 				angle += 24f;
 			}
