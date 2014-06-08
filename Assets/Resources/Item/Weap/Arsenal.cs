@@ -190,11 +190,11 @@ public class Arsenal : MonoBehaviour {
 			float progress = 0f;
 			while (progress < maxLen) {
 				var np = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
-				var v = Camera.main.transform.up/4;
+				var v = Camera.main.transform.up * 0.25f;
 				v = Quaternion.AngleAxis(angle, Camera.main.transform.forward) * v;
 				var center = beamStart + (beamDir * progress);
 				np.transform.position = center + v;
-				np.GetComponent<CcParticle>().MoveVec = v;
+				np.GetComponent<CcParticle>().MoveVec = Quaternion.AngleAxis(90f, Camera.main.transform.forward) * v * 2f;
 				np.GetComponent<CcParticle>().MinSize = 0.4f;
 				np.GetComponent<CcParticle>().MaxSize = 0.4f;
 				np.GetComponent<CcParticle>().StartColor = Color.blue;
