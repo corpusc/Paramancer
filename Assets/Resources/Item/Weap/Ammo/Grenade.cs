@@ -1,34 +1,34 @@
 using UnityEngine;
 using System.Collections;
 
-public class GrenadeScript : MonoBehaviour {
-	public Vector3 start;
+public class Grenade : MonoBehaviour {
+	public Vector3 AvPos; // can't be 'Start' cuz of Start()
 	public Vector3 direction;
 	public double startTime;
 	public float detonationTime;
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;
 	public AudioClip sfx_bounce;
-	public bool ThrowFaster = false;
-	public float ForwardOffset = 1f; //prevents running into your own nade when you have lags
+	public float ForwardOffset = 2f; // prevents running into your own nade when you have lags 
 	
 	// private
 	bool alive = true;
 	CcNet net;
+	float speed = 25f;
 	Vector3 lastPos;
 	Vector3 moveVector = Vector3.zero;
 	
 	
 	
-	void Start () {
+	void Start() {
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
-		transform.position = start + direction * ForwardOffset;
-		lastPos = start;
+		transform.position = AvPos + direction * ForwardOffset;
+		lastPos = AvPos;
 		detonationTime += Time.time;
-		moveVector = direction * (ThrowFaster ? 45f : 35f);
+		moveVector = direction * speed;
 	}
 	
-	void Update () {
+	void Update() {
 		if (alive) {
 			transform.position += moveVector * Time.deltaTime;
 			moveVector.y -= Time.deltaTime * net.CurrMatch.Gravity;

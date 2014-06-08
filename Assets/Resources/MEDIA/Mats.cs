@@ -39,7 +39,7 @@ public static class Mats {
 
 		// add to the master collection that includes files from all folders 
 		foreach (var cl in tMats) {
-			Debug.Log("MATS - " + s + " --------------- cl.name: " + cl.name);
+			//Debug.Log("MATS - " + s + " --------------- cl.name: " + cl.name);
 			mats.Add(cl.name, cl);
 			feedback += cl.name + ",  ";
 		}

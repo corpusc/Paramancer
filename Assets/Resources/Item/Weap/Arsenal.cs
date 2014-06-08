@@ -9,7 +9,7 @@ public class Arsenal : MonoBehaviour {
 	
 	// private 
 	CcNet net;
-	List<GrenadeScript> activeGrenades = new List<GrenadeScript>();
+	List<Grenade> activeGrenades = new List<Grenade>();
 	List<RocketScript> activeRockets = new List<RocketScript>();
 	
 	
@@ -92,7 +92,7 @@ public class Arsenal : MonoBehaviour {
 				Destroy(activeGrenades[i].gameObject);
 		}
 		
-		activeGrenades = new List<GrenadeScript>();
+		activeGrenades = new List<Grenade>();
 	}
 
 	void shootSwapper (Vector3 origin, Vector3 end, NetworkViewID shooterID, bool hit) {
@@ -208,22 +208,21 @@ public class Arsenal : MonoBehaviour {
 			
 			case Gun.GrenadeLauncher:
 				var ng = (GameObject)GameObject.Instantiate(GOs.Get("Grenade"));
-				var gs = ng.GetComponent<GrenadeScript>();
-				gs.start = origin + direction; // start a bit outwards 
-				gs.direction = direction;
-				gs.startTime = time;
-				gs.viewID = bulletID;
-				gs.shooterID = shooterID;
-				gs.detonationTime = Random.Range(2.5f, 3.5f); // so that there's no effect of an explosion "hanging" in one place when you shoot a few nades w/out moving
-				gs.ThrowFaster = sprint;
+				var g = ng.GetComponent<Grenade>();
+				g.AvPos = origin;
+				g.direction = direction;
+				g.startTime = time;
+				g.viewID = bulletID;
+				g.shooterID = shooterID;
+				g.detonationTime = Random.Range(2.5f, 3.5f); // so that there's no effect of an explosion "hanging" in one place when you shoot a few nades w/out moving 
 				
-				activeGrenades.Add(gs);
+				activeGrenades.Add(g);
 				break;
 			
 			case Gun.RocketLauncher:
 				var nr = (GameObject)GameObject.Instantiate(GOs.Get("Rocket"));
-				nr.transform.position = origin; // + direction; // start a bit outwards 
-				nr.transform.LookAt(origin + direction);
+				nr.transform.position = origin + direction; // start a bit outwards 
+				nr.transform.LookAt(origin + direction * 2f);
 				
 				var	rs = nr.GetComponent<RocketScript>();
 				rs.viewID = bulletID;
