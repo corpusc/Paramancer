@@ -110,8 +110,7 @@ public class EntityClass : MonoBehaviour {
 
 		// get 
 		cc = GetComponent<CharacterController>();
-		GameObject o;
-		o = GameObject.Find("Main Program");
+		var o = GameObject.Find("Main Program");
 		net = o.GetComponent<CcNet>();
 		hud = o.GetComponent<Hud>();
 		arse = o.GetComponent<Arsenal>();
@@ -1069,8 +1068,7 @@ public class EntityClass : MonoBehaviour {
 	}
 
 	private Transform getRandomSpawn(string s) {
-		GameObject go;
-		go = GameObject.Find(s); // container for entity spawn positions 
+		var go = GameObject.Find(s); // container for entity spawn positions 
 		
 		if (go == null) {
 			Debug.LogError("*** Could not find a GameObject named: " + s + "!!! ***");
