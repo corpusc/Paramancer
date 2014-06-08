@@ -251,7 +251,7 @@ public class EntityClass : MonoBehaviour {
 							camAngle.x = -max;
 					}
 
-					if (CcInput.Started(UserAction.Sprint)) {
+					if (CcInput.Started(UserAction.Sprint) && SprintEnergy > 0.2f) {
 						bod.sprinting = !bod.sprinting;
 						sprintRelease = 0f;
 					}
