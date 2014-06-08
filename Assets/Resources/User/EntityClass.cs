@@ -785,7 +785,7 @@ public class EntityClass : MonoBehaviour {
 	void Fire(GunData gunData, bool alt = false) {
 		Gun gun = (Gun)GunInHand;
 		if (alt) {
-			if (gun != Gun.RocketLauncher && gun != Gun.Spatula)
+			if (gun != Gun.RocketLauncher)
 				return;
 		}
 
