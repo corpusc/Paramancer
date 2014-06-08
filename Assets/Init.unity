@@ -294,6 +294,7 @@ MonoBehaviour:
   lastGameWasTeamBased: 0
   gunBobbing: 1
   JumpAuto: 1
+  nameOfOfflineBackdrop: OfflineBackdrop
   gameTimeLeft: 0
   NextMatchTime: 0
 --- !u!114 &1973207296
