@@ -510,7 +510,7 @@ public class Hud : MonoBehaviour {
 		var s = "FOV (field of view): ";
 		float wid = GetWidthLabel(s + "188.8");
 		GUILayout.Label(s + tFOV.ToString("#.#"), GUILayout.MinWidth(wid));
-		tFOV = GUILayout.HorizontalSlider(tFOV, 50f, 290f, GUILayout.MinWidth(192));
+		tFOV = GUILayout.HorizontalSlider(tFOV, 50f, 180f, GUILayout.MinWidth(128));
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
