@@ -35,8 +35,6 @@ using System.Collections.Generic;
 
 
 public class CcNet : MonoBehaviour {
-	// avatar
-	
 	// networky stuff
 	public string Error = "'Error' string init value...NO ERRORS YET!";
 	public NetworkViewID NetVI;
@@ -85,7 +83,8 @@ public class CcNet : MonoBehaviour {
 	float gameStartTime = 0f;
 
 	// private 
-	// 		scripts 
+	public string nameOfOfflineBackdrop = "OfflineBackdrop";
+	// scripts 
 	CcLog log;
 	Hud hud;
 	Arsenal arse;
@@ -104,7 +103,7 @@ public class CcNet : MonoBehaviour {
 		arse = GetComponent<Arsenal>();
 		CurrMatch = new MatchData(Match.FFAFragMatch);
 		
-		Application.LoadLevel("OfflineBackdrop");
+		Application.LoadLevel(nameOfOfflineBackdrop);
 		players = new List<NetUser>();
 	}
 
@@ -1420,7 +1419,7 @@ public class CcNet : MonoBehaviour {
 			players = new List<NetUser>();
 			
 			hud.Mode = HudMode.MainMenu;
-			Application.LoadLevel("OfflineBackdrop");
+			Application.LoadLevel(nameOfOfflineBackdrop);
 			levelLoaded = false;
 		}
 	}
@@ -1525,7 +1524,7 @@ public class CcNet : MonoBehaviour {
 		players = new List<NetUser>();
 		
 		hud.Mode = HudMode.MainMenu;
-		Application.LoadLevel("MenuMain");
+		Application.LoadLevel(nameOfOfflineBackdrop);
 		levelLoaded = false;
 	}
 	
@@ -1551,7 +1550,7 @@ public class CcNet : MonoBehaviour {
 		
 		players = new List<NetUser>();
 		hud.Mode = HudMode.MainMenu;
-		Application.LoadLevel("MenuMain");
+		Application.LoadLevel(nameOfOfflineBackdrop);
 		levelLoaded = false;
 		var newMsg = new LogEntry();
 		newMsg.Maker = "";
