@@ -132,12 +132,27 @@ public class Arsenal : MonoBehaviour {
 			return;
 
 		if (hitNorm != Vector3.zero) {
+			// bullet mark
 			GameObject nh = (GameObject)GameObject.Instantiate(GOs.Get("BulletMark"));
 			nh.transform.position = end + hitNorm * 0.01f;
 			nh.transform.forward = -hitNorm;
 			nh.transform.localScale *= Guns[(int)weapon].MarkScale;
 			nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
 			nh.GetComponent<BulletMark>().MaxLife = 10f;
+
+			// particles
+			for (int i = 0; i < 100; i++) {
+				Vector3 diagonalVec = Quaternion.Euler(Random.Range(-30f, 30f), Random.Range(-30f, 30f), Random.Range(-30f, 30f)) * hitNorm;
+				GameObject np = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
+				np.transform.position = end + diagonalVec * Random.Range(0.1f, 0.3f);
+				np.GetComponent<CcParticle>().MoveVec = diagonalVec * Random.Range(2f, 3f);
+				np.GetComponent<CcParticle>().MinSize = 0.3f;
+				np.GetComponent<CcParticle>().MaxSize = 0.4f;
+				np.GetComponent<CcParticle>().StartColor = Guns[(int)weapon].Color;
+				np.GetComponent<CcParticle>().EndColor = Color.clear;
+				np.GetComponent<CcParticle>().ParticType = ParticleType.Puff;
+				np.GetComponent<CcParticle>().life = Random.Range(0.45f, 0.55f);
+			}
 		}
 		
 		// beam 
