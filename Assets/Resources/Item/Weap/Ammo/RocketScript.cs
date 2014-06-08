@@ -7,8 +7,8 @@ public class RocketScript : MonoBehaviour {
 	public GameObject particle;
 	public float FlightSpeed = 120f; // accelerates to this 
 	public float BaseFlightSpeed = 40f; // starts at this speed 
-	public int MinPtsPerSecond = 150; // pts == particles 
-	public int MaxPtsPerSecond = 250;
+	public int MinPtsPerSecond = 75; // pts == particles 
+	public int MaxPtsPerSecond = 125;
 	public int ExplosionParticles = 200;
 	public float ExplosionSize = 0.4f;
 	public float ForwardOffset = 1f; // prevents running into your own rocket when you have lags (FIXME: doesn't work....might need to filter out rocket owner's body ) 
@@ -57,13 +57,14 @@ public class RocketScript : MonoBehaviour {
 					float offMagn = moveForward.magnitude / 2f;
 					Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
 					np.transform.position = transform.position + offset;
-					np.GetComponent<CcParticle>().MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
-					np.GetComponent<CcParticle>().life = 1.5f;
-					np.GetComponent<CcParticle>().StartColor = Color.Lerp(Color.green, Color.blue, Random.value);
-					np.GetComponent<CcParticle>().UseMidColor = true;
-					np.GetComponent<CcParticle>().MidColor = Color.Lerp(Color.green, Color.blue, Random.value);
-					np.GetComponent<CcParticle>().MidColorPos = Random.Range(0.4f, 0.5f);
-					np.GetComponent<CcParticle>().EndColor = Color.clear;
+					var p = np.GetComponent<CcParticle>();
+					p.MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
+					p.life = 1.5f;
+					p.StartColor = Color.Lerp(Color.green, Color.blue, Random.value);
+					p.UseMidColor = true;
+					p.MidColor = Color.Lerp(Color.green, Color.blue, Random.value);
+					p.MidColorPos = Random.Range(0.4f, 0.5f);
+					p.EndColor = Color.clear;
 				}
 			}else{
 				for (int i = 0; i < num; i++) {
@@ -71,13 +72,14 @@ public class RocketScript : MonoBehaviour {
 					float offMagn = moveForward.magnitude / 2f;
 					Vector3 offset = new Vector3(Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn), Random.Range(-offMagn, offMagn));
 					np.transform.position = transform.position + offset;
-					np.GetComponent<CcParticle>().MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
-					np.GetComponent<CcParticle>().life = 2.5f;
-					np.GetComponent<CcParticle>().StartColor = Color.Lerp(Color.white, Color.yellow, Random.value);
-					np.GetComponent<CcParticle>().UseMidColor = true;
-					np.GetComponent<CcParticle>().MidColor = Color.Lerp(Color.red, Color.black, Random.Range(0f, 0.5f));
-					np.GetComponent<CcParticle>().MidColorPos = Random.Range(0.4f, 0.6f);
-					np.GetComponent<CcParticle>().EndColor = Color.clear;
+					var p = np.GetComponent<CcParticle>();
+					p.MoveVec = -transform.forward * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
+					p.life = 2.5f;
+					p.StartColor = Color.Lerp(S.Orange, Color.yellow, Random.value);
+					p.UseMidColor = true;
+					p.MidColor = Color.Lerp(S.Orange, Color.black, Random.Range(0f, 0.5f));
+					p.MidColorPos = Random.Range(0.4f, 0.6f);
+					p.EndColor = Color.clear;
 				}
 			}
 
@@ -108,32 +110,34 @@ public class RocketScript : MonoBehaviour {
 			for (int i = 0; i < ExplosionParticles; i++) {
 				var np = (GameObject)GameObject.Instantiate(particle);
 				np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos;
-				np.GetComponent<CcParticle>().MaxSpeed = ExplosionSpeed;
-				np.GetComponent<CcParticle>().StartColor = Color.Lerp (Color.green, Color.yellow, Random.value);
-				np.GetComponent<CcParticle>().UseMidColor = true;
-				np.GetComponent<CcParticle>().MidColor = Color.Lerp (Color.green, Color.blue, Random.value);
-				np.GetComponent<CcParticle>().MidColorPos = 0.7f;
-				np.GetComponent<CcParticle>().EndColor = Color.clear;
-				np.GetComponent<CcParticle>().life = 2.5f;
-				np.GetComponent<CcParticle>().f = -2f;
-				np.GetComponent<CcParticle>().MinSize = 6f;
-				np.GetComponent<CcParticle>().MaxSize = 8f;
-				np.GetComponent<CcParticle>().acceleration = 0.1f;
-				np.GetComponent<CcParticle>().ParticType = ParticleType.Multiple;
+				var p = np.GetComponent<CcParticle>();
+				p.MaxSpeed = ExplosionSpeed;
+				p.StartColor = Color.Lerp (Color.green, Color.yellow, Random.value);
+				p.UseMidColor = true;
+				p.MidColor = Color.Lerp (Color.green, Color.blue, Random.value);
+				p.MidColorPos = 0.7f;
+				p.EndColor = Color.clear;
+				p.life = 2.5f;
+				p.f = -2f;
+				p.MinSize = 6f;
+				p.MaxSize = 8f;
+				p.acceleration = 0.1f;
+				p.ParticType = ParticleType.Multiple;
 			}
 		}else{
 			for (int i = 0; i < ExplosionParticles; i++) {
 				var np = (GameObject)GameObject.Instantiate(particle);
 				np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos; // do NOT use preciseLocation because particles shouldn't spawn inside a wall (bouncing will mess up) 
-				np.GetComponent<CcParticle>().MaxSpeed = ExplosionSpeed;
-				np.GetComponent<CcParticle>().StartColor = Color.Lerp(Color.red, Color.yellow, Random.value);
-				np.GetComponent<CcParticle>().EndColor = Color.Lerp(Color.Lerp(Color.red, Color.clear, 1f), Color.Lerp(Color.black, Color.clear, 1f), Random.Range(0f, 1f));
-				np.GetComponent<CcParticle>().life = 2.5f;
-				np.GetComponent<CcParticle>().f = -2f;
-				np.GetComponent<CcParticle>().MinSize = 6f;
-				np.GetComponent<CcParticle>().MaxSize = 8f;
-				np.GetComponent<CcParticle>().acceleration = 0.1f;
-				np.GetComponent<CcParticle>().ParticType = ParticleType.Multiple;
+				var p = np.GetComponent<CcParticle>();
+				p.MaxSpeed = ExplosionSpeed;
+				p.StartColor = Color.Lerp(Color.red, Color.yellow, Random.value);
+				p.EndColor = Color.Lerp(Color.Lerp(Color.red, Color.clear, 1f), Color.Lerp(Color.black, Color.clear, 1f), Random.Range(0f, 1f));
+				p.life = 2.5f;
+				p.f = -2f;
+				p.MinSize = 6f;
+				p.MaxSize = 8f;
+				p.acceleration = 0.1f;
+				p.ParticType = ParticleType.Multiple;
 			}
 		}
 

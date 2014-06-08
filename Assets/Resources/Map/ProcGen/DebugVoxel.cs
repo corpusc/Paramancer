@@ -37,10 +37,10 @@ public class DebugVoxel : MonoBehaviour {
 		Random.seed = (int)(Time.time * 100f);
 	}
 
-	public static void CreateMap(int seed, Theme theme) {
+	public static void CreateMap(int seed, Theme theme/**/) {
 		s_vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
 		s_vox.Seed = seed;
-		s_vox.Theme = theme;
+		s_vox.Theme = theme; //
 		s_vox.MapSize.x = 64;
 		s_vox.MapSize.y = 32;
 		s_vox.MapSize.z = 64;

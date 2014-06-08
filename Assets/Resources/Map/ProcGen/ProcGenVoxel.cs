@@ -74,7 +74,7 @@ public class ProcGenVoxel : ScriptableObject {
 
 	// private 
 	int numGunSpawns = 10;
-	int numTries = 200000; // the amount of attempts to place a room to be done before giving up (used for safety to avoid an infinite loop) 
+	int numTries = 200000; // the amount of attempts to place a room,before giving up 
 	List<Material> MatPool = new List<Material>();
 
 	GameObject mapObject;
@@ -90,17 +90,17 @@ public class ProcGenVoxel : ScriptableObject {
 
 	// only sets everything up, doesn't build the level 
 	// call Build() and Build3D() right after calling this for the random seed to work 
-	public void Init () {
+	public void Init() {
 		Random.seed = Seed;
 
 		Block = new bool[MapSize.x, MapSize.y, MapSize.z];
 		Mat = new Material[MapSize.x, MapSize.y, MapSize.z];
 
-		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/metal_floor_003", typeof(Material)));
-		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/metal_plate_005", typeof(Material)));
-		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/metal_plate_008", typeof(Material)));
-		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/sci_fi_003", typeof(Material)));
-		MatPool.Add ((Material)Resources.Load("MEDIA/Mat/Allegorithmic/Stones_01", typeof(Material)));
+		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_floor_003", typeof(Material)));
+		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_plate_005", typeof(Material)));
+		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_plate_008", typeof(Material)));
+		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/sci_fi_003", typeof(Material)));
+		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/Shutter_01", typeof(Material)));
 
 		Torch = GameObject.Find("Torch"); // a GameObject called Torch must already be in the scene for this to work, it will be removed after everything is done by the script
 		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work, it will be removed after everything is done by the script
@@ -123,7 +123,7 @@ public class ProcGenVoxel : ScriptableObject {
 		emptyMap();
 		preBuild();
 
-		// start off by creating the ground floor(the main map) 
+		// start off by creating the ground floor (the main map) 
 		int formsMade = 0;
 		for (int i = 0; i < numTries && formsMade < Forms; i++) {
 			Vec2i t;
