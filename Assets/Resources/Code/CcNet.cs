@@ -1420,7 +1420,7 @@ public class CcNet : MonoBehaviour {
 			players = new List<NetUser>();
 			
 			hud.Mode = HudMode.MainMenu;
-			Application.LoadLevel("MenuMain");
+			Application.LoadLevel("OfflineBackdrop");
 			levelLoaded = false;
 		}
 	}
