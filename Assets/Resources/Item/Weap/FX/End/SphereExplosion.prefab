@@ -10,10 +10,10 @@ GameObject:
   - 4: {fileID: 400000}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  - 114: {fileID: 11400000}
   - 108: {fileID: 10800000}
+  - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: GrenadeExplosion
+  m_Name: SphereExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

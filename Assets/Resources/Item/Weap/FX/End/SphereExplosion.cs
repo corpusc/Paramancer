@@ -4,33 +4,43 @@ using System.Collections;
 
 
 // an explosion sphere graphic 
-public class GrenadeExplosion : MonoBehaviour {
-	public Color Color = new Color(,,);
+public class SphereExplosion : MonoBehaviour {
+	private Color color;
+	public Color Color {
+		set {
+			Debug.Log("i am in the Color property of SphereExplosion");
+			color = value;
+			light.color = value;
+			renderer.material.color = value;
+		}
+	}
 	public float MaxSize = 5f;
 	public bool IsRootSphere = true; // only the root/primary sphere should have a light, all other layers/stacks will be lit from it 
 
 	// private 
 	bool expanding = true;
 	float startSize = 0.2f;
-	Vector3 oriSpeed;
+	Vector3 rotateSpeed;
 	float expandSpeed = 35f;
 	float shrinkSpeed = 20f;
 
 
 	void Start() {
+		Color = new Color(0.705f, 1f, 0f); // chartreuse for green grenades 
+
 		transform.localScale = new Vector3(startSize, startSize, startSize);
 
 		// random orientation/rotation speeds 
 		int rnd = Random.Range(0, 3);
 		switch (rnd) {
 			case 0:
-				oriSpeed = new Vector3(0f, rand(), rand());
+				rotateSpeed = new Vector3(0f, rand(), rand());
 				break;
 			case 1:
-				oriSpeed = new Vector3(rand(), 0f, rand());
+				rotateSpeed = new Vector3(rand(), 0f, rand());
 				break;
 			case 2:
-				oriSpeed = new Vector3(rand(), rand(), 0f);
+				rotateSpeed = new Vector3(rand(), rand(), 0f);
 				break;
 		}
 
@@ -39,8 +49,16 @@ public class GrenadeExplosion : MonoBehaviour {
 	}
 
 	void Update() {
+		light.color = color;
+		renderer.material.color = color;
+
+
+
+
+
+
+
 		// scaling 
-			
 		var ls = transform.localScale;
 		
 		if (expanding) {
@@ -68,7 +86,7 @@ public class GrenadeExplosion : MonoBehaviour {
 		}
 
 		// spinning/rotation 
-		transform.eulerAngles += oriSpeed;
+		transform.eulerAngles += rotateSpeed;
 
 		// cleanup 
 		if (transform.localScale.x < 0.1f) 

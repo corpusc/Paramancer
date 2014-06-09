@@ -7,6 +7,7 @@ public class GunData {
 	public Material Mat;
 	public GameObject Prefab;
 	public bool AutoFire = false;
+	public float BlastRadius = 0f;
 	public Color Color = Color.white;
 	public float Delay = 0f;
 	public float DelayAlt = 0f;

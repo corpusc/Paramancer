@@ -187,7 +187,8 @@ public class CcNet : MonoBehaviour {
 			// see if anyone gets hurt 
 			for (int i=0; i<players.Count; i++){
 				if (Vector3.Distance(position, players[i].Entity.transform.position) 
-					< arse.GetDetonationRadius((Gun)weapon) + 0.5f
+					< 
+				    arse.Guns[weapon].BlastRadius + 0.5f
 				) {
 					// player in range 
 					bool skip = false;
@@ -204,7 +205,6 @@ public class CcNet : MonoBehaviour {
 						if (shooterIndex != -1 && i == shooterIndex && (Gun)weapon == Gun.Bomb) 
 							skip = false;
 					}
-					
 					
 					if (players[i].health > 0f && !skip) {
 						RegisterHitRPC(weapon, shooterID, players[i].viewID, players[i].Entity.transform.position);
