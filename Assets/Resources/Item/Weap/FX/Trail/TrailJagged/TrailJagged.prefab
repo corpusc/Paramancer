@@ -11,7 +11,7 @@ GameObject:
   - 120: {fileID: 12000000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: Laser
+  m_Name: TrailJagged
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,12 +36,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f463b8be5c2602e4c8fb2708c7e4db7d, type: 3}
+  m_Script: {fileID: 11500000, guid: f290028cb4938074aa17f14cd78b03af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  start: {x: 0, y: 0, z: 0}
-  end: {x: 0, y: 0, z: 0}
-  col: {r: 1, g: 1, b: 1, a: 1}
+  Begin: {x: 0, y: 0, z: 0}
+  End: {x: 0, y: 0, z: 0}
+  Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!120 &12000000
 LineRenderer:
   m_ObjectHideFlags: 1

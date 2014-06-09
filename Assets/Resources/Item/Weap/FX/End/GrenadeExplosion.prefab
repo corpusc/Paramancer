@@ -124,7 +124,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 3
   m_Type: 2
-  m_Color: {r: .705075562, g: 1, b: 0, a: 1}
+  m_Color: {r: .749019623, g: .749019623, b: .749019623, a: 1}
   m_Intensity: 4.38999987
   m_Range: 15.46
   m_SpotAngle: 30
@@ -161,6 +161,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d1e67bb31230b43b1311bce015efa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxSize: 5
+  IsRootSphere: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

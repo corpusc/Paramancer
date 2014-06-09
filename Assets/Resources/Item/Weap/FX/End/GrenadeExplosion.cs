@@ -5,6 +5,7 @@ using System.Collections;
 
 // an explosion sphere graphic 
 public class GrenadeExplosion : MonoBehaviour {
+	public Color Color = new Color(,,);
 	public float MaxSize = 5f;
 	public bool IsRootSphere = true; // only the root/primary sphere should have a light, all other layers/stacks will be lit from it 
 
