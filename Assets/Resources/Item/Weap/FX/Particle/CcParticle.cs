@@ -18,8 +18,8 @@ public class CcParticle : MonoBehaviour {
 	public Color EndColor = Color.red; // always use something transparent 
 	public float life = 4f;
 	public float f = 0.05f;
-	public float MinSize = 1f;
-	public float MaxSize = 3f;
+	public float MinSize = 0.4f;
+	public float MaxSize = 0.411f;
 	public ParticleType ParticType = ParticleType.Puff;
 	public float acceleration = 1f; // multiply the speed by this 
 	public float MaxRotationSpeed = 360f;

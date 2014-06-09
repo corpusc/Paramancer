@@ -231,7 +231,7 @@ public class Arsenal : MonoBehaviour {
 				g.startTime = time;
 				g.viewID = bulletID;
 				g.shooterID = shooterID;
-				g.detonationTime = Random.Range(2.5f, 3.5f); // so that there's no effect of an explosion "hanging" in one place when you shoot a few nades w/out moving 
+				g.detonationTime = 3f;
 				
 				activeGrenades.Add(g);
 				break;
