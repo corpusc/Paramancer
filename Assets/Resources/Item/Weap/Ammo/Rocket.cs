@@ -3,7 +3,7 @@ using System.Collections;
 
 
 
-public class RocketScript : MonoBehaviour {
+public class Rocket : MonoBehaviour {
 	public GameObject particle;
 	public float FlightSpeed = 120f; // accelerates to this 
 	public float BaseFlightSpeed = 40f; // starts at this speed 
@@ -20,7 +20,7 @@ public class RocketScript : MonoBehaviour {
 	public float ExplosionSpeed = 8f;
 	public NetworkViewID viewID;
 	public NetworkViewID shooterID;
-	
+
 	// private 
 	CcNet net;
 	Vector3 lastPos;
@@ -28,16 +28,16 @@ public class RocketScript : MonoBehaviour {
 	Vector3 origUp; // the original up direction 
 	float life = 10f;
 	float maxLife;
-	
+
 	
 	
 	void Start() {
+		maxLife = life;
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		lastPos = transform.position;
 		origFwd = transform.forward;
 		origUp = transform.up;
 		transform.position += transform.forward * ForwardOffset;
-		maxLife = life;
 	}
 	
 	void Update() {

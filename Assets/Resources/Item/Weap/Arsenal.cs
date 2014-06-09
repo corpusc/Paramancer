@@ -10,7 +10,7 @@ public class Arsenal : MonoBehaviour {
 	// private 
 	CcNet net;
 	List<Grenade> activeGrenades = new List<Grenade>();
-	List<RocketScript> activeRockets = new List<RocketScript>();
+	List<Rocket> activeRockets = new List<Rocket>();
 	
 	
 	
@@ -241,11 +241,11 @@ public class Arsenal : MonoBehaviour {
 				nr.transform.position = origin + direction; // start a bit outwards 
 				nr.transform.LookAt(origin + direction * 2f);
 				
-				var	rs = nr.GetComponent<RocketScript>();
+				var	rs = nr.GetComponent<Rocket>();
 				rs.viewID = bulletID;
 				rs.shooterID = shooterID;
 				
-				activeRockets.Add(nr.GetComponent<RocketScript>());
+				activeRockets.Add(nr.GetComponent<Rocket>());
 
 				if (alt)
 					rs.Turning = true;
