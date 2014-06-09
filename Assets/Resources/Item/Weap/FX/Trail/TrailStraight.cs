@@ -16,11 +16,10 @@ public class TrailStraight : MonoBehaviour {
 		lr = GetComponent<LineRenderer>();
 		lr.SetPosition(0, Begin);
 		lr.SetPosition(1, End);
-		lr.SetColors(Color, Color);
 	}
 	
 	void Update() {
-		//lr.SetColors(Color.clear, col);
+		lr.SetColors(Color, Color);
 		Color.a -= Time.deltaTime / 2;
 
 		if (Color.a <= 0f){
