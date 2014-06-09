@@ -5,7 +5,7 @@ using System.Collections;
 
 // an explosion sphere graphic 
 public class SphereExplosion : MonoBehaviour {
-	private Color color;
+	private Color color = new Color(0.705f, 1f, 0f); // chartreuse for green grenades 
 	public Color Color {
 		set {
 			Debug.Log("i am in the Color property of SphereExplosion");
@@ -26,8 +26,6 @@ public class SphereExplosion : MonoBehaviour {
 
 
 	void Start() {
-		Color = new Color(0.705f, 1f, 0f); // chartreuse for green grenades 
-
 		transform.localScale = new Vector3(startSize, startSize, startSize);
 
 		// random orientation/rotation speeds 
@@ -49,15 +47,6 @@ public class SphereExplosion : MonoBehaviour {
 	}
 
 	void Update() {
-		light.color = color;
-		renderer.material.color = color;
-
-
-
-
-
-
-
 		// scaling 
 		var ls = transform.localScale;
 		
@@ -82,6 +71,13 @@ public class SphereExplosion : MonoBehaviour {
 		if (IsRootSphere) {
 			if (light != null) {
 				light.range = transform.localScale.x * 4f;
+
+
+
+
+
+				light.color = color;
+				//renderer.material.color = color;
 			}
 		}
 
