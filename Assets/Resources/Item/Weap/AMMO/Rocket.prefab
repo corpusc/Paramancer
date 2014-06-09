@@ -75,8 +75,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400008}
-  - 114: {fileID: 11400000}
   - 82: {fileID: 8200000}
+  - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Untagged
@@ -328,23 +328,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 100008}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3848e8111af74de08be515e2babeb1c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cd66fc3ffa2d444b9bfe05186b89369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   particle: {fileID: 100000, guid: a0386f3c6234247c7b4dd5afd2250df9, type: 2}
   FlightSpeed: 120
   BaseFlightSpeed: 40
-  MinPtsPerSecond: 300
-  MaxPtsPerSecond: 500
+  MinPtsPerSecond: 75
+  MaxPtsPerSecond: 125
   ExplosionParticles: 200
   ExplosionSize: .400000006
-  ForwardOffset: 2
+  ForwardOffset: 1
   Turn: 300
   Turning: 0
-  MinParticleSpeed: 10
-  MaxParticleSpeed: 15
-  PMR: 2
-  ExplosionSpeed: 20
+  MinParticleSpeed: 5
+  MaxParticleSpeed: 8
+  PMR: 1
+  ExplosionSpeed: 8
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
