@@ -122,17 +122,15 @@ public class Arsenal : MonoBehaviour {
 		Vector3 localStart = origin;
 
 		for (int i=0; i<net.players.Count; i++) {
+			// if local player 
 			if (net.players[i].viewID == shooterID && net.players[i].local){
 				localFire = true;
 				localStart = net.players[i].Entity.HudGun.transform.position + (Camera.main.transform.forward * 0.5f);
 			}
 		}
 
-		if (weapon == Gun.Spatula) // no trail or effects
-			return;
-
 		if (hitNorm != Vector3.zero) {
-			// bullet mark
+			// bullet mark 
 			GameObject nh = (GameObject)GameObject.Instantiate(GOs.Get("BulletMark"));
 			nh.transform.position = end + hitNorm * 0.01f;
 			nh.transform.forward = -hitNorm;
@@ -140,10 +138,10 @@ public class Arsenal : MonoBehaviour {
 			nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
 			nh.GetComponent<BulletMark>().MaxLife = 10f;
 
-			// particles
+			// particles 
 			for (int i = 0; i < 100; i++) {
 				Vector3 diagonalVec = Quaternion.Euler(Random.Range(-30f, 30f), Random.Range(-30f, 30f), Random.Range(-30f, 30f)) * hitNorm;
-				GameObject np = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
+				var np = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
 				np.transform.position = end + diagonalVec * Random.Range(0.1f, 0.3f);
 				var p = np.GetComponent<CcParticle>();
 				p.MoveVec = diagonalVec * Random.Range(2f, 3f);
@@ -152,21 +150,24 @@ public class Arsenal : MonoBehaviour {
 				p.StartColor = Guns[(int)weapon].Color;
 				p.EndColor = Color.clear;
 				p.ParticType = ParticleType.Puff;
-				p.life = Random.Range(0.45f, 0.55f);
+				p.life = Random.Range(0.65f, 0.75f);
 			}
 		}
 		
+		if (weapon == Gun.Spatula) // no trail effects 
+			return;
+		
 		// beam 
-		var beam = (GameObject)GameObject.Instantiate(GOs.Get("Laser"));
-		var b = beam.GetComponent<Laser>();
+		var beam = (GameObject)GameObject.Instantiate(GOs.Get("TrailJagged"));
+		var b = beam.GetComponent<TrailStraight>();
 
 		if (localFire) 
-			b.start = localStart;
+			b.Begin = localStart;
 		else
-			b.start = origin;
+			b.Begin = origin;
 
-		b.end = end - Vector3.Normalize(b.end - b.start) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending
-		b.col = Guns[(int)weapon].Color;
+		b.End = end - Vector3.Normalize(b.End - b.Begin) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending
+		b.Color = Guns[(int)weapon].Color;
 
 		// muzzle flash 
 		var mf = (GameObject)GameObject.Instantiate(GOs.Get("MuzzleFlash"));
