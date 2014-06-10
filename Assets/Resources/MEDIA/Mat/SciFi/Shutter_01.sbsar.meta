@@ -45,7 +45,7 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: Light_Angle
       value:
-        scalar[0]: .125
+        scalar[0]: .163000003
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0

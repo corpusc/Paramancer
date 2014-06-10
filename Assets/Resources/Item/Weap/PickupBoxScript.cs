@@ -29,9 +29,15 @@ public class PickupBoxScript : MonoBehaviour {
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		sinny = Random.Range(0f, 4f);
 		//boxObj.transform.Rotate(0, 0, Random.Range(0f, 360f));        original setting for all BOX models 
-		boxObj.transform.Rotate(270, 0, zOff);
-		boxObj.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-		start = boxObj.transform.position + Vector3.up/3;
+		if (pickupName == "Grenade Launcher") {
+			boxObj.transform.Rotate(0, 0, zOff);
+			boxObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+			start = boxObj.transform.position + Vector3.up * 0.33f;
+		} else {
+			boxObj.transform.Rotate(270, 0, zOff);
+			start = boxObj.transform.position + Vector3.up * 0.33f;
+			boxObj.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+		}
 	}
 	
 	void Update() {
@@ -42,7 +48,7 @@ public class PickupBoxScript : MonoBehaviour {
 				}
 			}
 		}else{
-			if (Vector3.Distance(localPlayer.transform.position, transform.position) < 2f && 
+			if (Vector3.SqrMagnitude(localPlayer.transform.position - transform.position) < 4f && 
 				localPlayer.transform.position.y > transform.position.y - 0.5f
 			) {
 				localPlayer.GetComponent<EntityClass>().offeredPickup = pickupName;
