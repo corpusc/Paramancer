@@ -53,37 +53,46 @@ public class Arsenal : MonoBehaviour {
 			switch ((Gun)i) {
 				case Gun.Pistol:   Guns[i].Color = Color.white; 
 					Guns[i].Delay = 0.3f; 
-					Guns[i].DelayAlt = 0.3f; break; 
+					Guns[i].DelayAlt = 0.3f; 
+					break; 
 				case Gun.GrenadeLauncher:   Guns[i].Color = Color.green; 
 					Guns[i].Delay = 0.25f; 
-					Guns[i].DelayAlt = 0.25f; break; 
-					Guns[i].BlastRadius = 4f; break; // BR 
+					Guns[i].DelayAlt = 0.25f;
+					Guns[i].BlastRadius = 4f; // BR 
+					break; 
 				case Gun.MachineGun:   Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 0.1f; 
-					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; break; // only 1 with AutoFire 
+					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; // only 1 with AutoFire 
+					break; 
 				case Gun.RailGun:   Guns[i].Color = Color.cyan; 
 					Guns[i].Delay = 2f;
 					Guns[i].MarkScale = 2f; // 
-					Guns[i].DelayAlt = 2f; break; 
+					Guns[i].DelayAlt = 2f;
+					break;
 				case Gun.RocketLauncher:   Guns[i].Color = Color.red; 
 					Guns[i].Delay = 1.5f; 
 					Guns[i].DelayAlt = 0.7f;
-					Guns[i].MarkScale = 5f; break; // set for the launcher because the projectile has a negative value in the gun system 
-					Guns[i].BlastRadius = 4f; break; // BR 
+					Guns[i].MarkScale = 5f; // set for the launcher because the projectile has a negative value in the gun system 
+					Guns[i].BlastRadius = 4f; // BR 
+					break;
 				case Gun.Swapper:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 2f; 
-					Guns[i].DelayAlt = 2f; break; 
+					Guns[i].DelayAlt = 2f; 
+					break; 
 				case Gun.Gravulator:   Guns[i].Color = Color.green; 
 					Guns[i].Delay = 1f; 
-					Guns[i].DelayAlt = 1f; break; 
+					Guns[i].DelayAlt = 1f; 
+					break; 
 				case Gun.Bomb:   Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 1f; 
-					Guns[i].DelayAlt = 1f; break; 
-					Guns[i].BlastRadius = 10f; break; // BR 
+					Guns[i].DelayAlt = 1f; 
+					Guns[i].BlastRadius = 10f; // BR 
+					break; 
 			case Gun.Spatula:   Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 1f;  
 					Guns[i].DelayAlt = 1f;
-					Guns[i].Range = 3f; break; // only 1 with Range 
+					Guns[i].Range = 3f; // only 1 with Range 
+					break; 
 			}
 		}
 	}
@@ -324,30 +333,29 @@ public class Arsenal : MonoBehaviour {
 			o.GetComponent<SphereExplosion>().Color = Color.red;
 			o.GetComponent<SphereExplosion>().MaxSize = Guns[(int)weapon].BlastRadius;
 
-			var bomb = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
-			bomb.transform.position = detPos;
-			bomb.audio.clip = Sfx.Get("ExplodeBomb");
-			bomb.audio.volume = 4f;
-		} else if (weapon == Gun.RocketLauncher) {
-			print ("WARNING: Detonate() was called for a " + Gun.RocketLauncher + "!");
-		}
-		
-		for (int i=0; i<activeGrenades.Count; i++) {
-			if (viewID == activeGrenades[i].viewID) {
-				
-				var o = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
-				o.transform.position = activeGrenades[i].transform.position;
-				o.GetComponent<SphereExplosion>().MaxSize = Guns[(int)weapon].BlastRadius;
-
-				var nade = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
-				nade.transform.position = activeGrenades[i].transform.position;
-				nade.audio.clip = Sfx.Get("ExplodeGrenade");
-				nade.audio.volume = 2f;
-				
-				Destroy(activeGrenades[i].gameObject);
-				activeGrenades.RemoveAt(i);
-				
+			var ws = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
+			ws.transform.position = detPos;
+			ws.audio.clip = Sfx.Get("ExplodeBomb");
+			ws.audio.volume = 4f;
+		} else if (weapon == Gun.GrenadeLauncher) {
+			for (int i=0; i<activeGrenades.Count; i++) {
+				if (viewID == activeGrenades[i].viewID) {
+					
+					var o = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
+					o.transform.position = activeGrenades[i].transform.position;
+					o.GetComponent<SphereExplosion>().MaxSize = Guns[(int)weapon].BlastRadius;
+					
+					var nade = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
+					nade.transform.position = activeGrenades[i].transform.position;
+					nade.audio.clip = Sfx.Get("ExplodeGrenade");
+					nade.audio.volume = 2f;
+					
+					Destroy(activeGrenades[i].gameObject);
+					activeGrenades.RemoveAt(i);
+				}
 			}
+		}else{
+			print ("WARNING: Detonate() was called with gun: " + weapon + "!!!!");
 		}
 	}
 
@@ -384,7 +392,7 @@ public class Arsenal : MonoBehaviour {
 				var ws = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
 				ws.transform.position = activeRockets[i].transform.position;
 				ws.audio.clip = Sfx.Get("explosion_bazooka");
-				ws.audio.volume = 0.99f;
+				ws.audio.volume = 9f; // hmmm, the docs said range from 0f - 1f i believe 
 				// 		blast visual 
 				var splo = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
 				splo.transform.position = activeRockets[i].transform.position;

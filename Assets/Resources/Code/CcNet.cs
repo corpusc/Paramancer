@@ -188,7 +188,7 @@ public class CcNet : MonoBehaviour {
 			for (int i=0; i<players.Count; i++){
 				if (Vector3.Distance(position, players[i].Entity.transform.position) 
 					< 
-				    arse.Guns[weapon].BlastRadius + 0.5f
+				    arse.Guns[weapon].BlastRadius + 0.5f /* FIXME: it's the entity lateral radius, shouldn't be hardcoded */
 				) {
 					// player in range 
 					bool skip = false;

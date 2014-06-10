@@ -11,22 +11,21 @@ public class SphereExplosion : MonoBehaviour {
 			Debug.Log("i am in the Color property of SphereExplosion");
 			color = value;
 			light.color = value;
-			renderer.material.color = value;
 		}
 	}
-	public float MaxSize = 5f;
+	public float MaxSize;
 	public bool IsRootSphere = true; // only the root/primary sphere should have a light, all other layers/stacks will be lit from it 
 
 	// private 
 	bool expanding = true;
-	float startSize = 0.2f;
+	Vector3 startScale = new Vector3(0.2f, 0.2f, 0.2f);
 	Vector3 rotateSpeed;
-	float expandSpeed = 35f;
+	float expandSpeed = 40f;
 	float shrinkSpeed = 20f;
 
 
 	void Start() {
-		transform.localScale = new Vector3(startSize, startSize, startSize);
+		transform.localScale = startScale;
 
 		// random orientation/rotation speeds 
 		int rnd = Random.Range(0, 3);
@@ -42,8 +41,8 @@ public class SphereExplosion : MonoBehaviour {
 				break;
 		}
 
-		if (!IsRootSphere)
-			light.enabled = false;
+//		if (!IsRootSphere)
+//			light.enabled = false;
 	}
 
 	void Update() {
@@ -51,15 +50,16 @@ public class SphereExplosion : MonoBehaviour {
 		var ls = transform.localScale;
 		
 		if (expanding) {
-			var f = Time.deltaTime * expandSpeed;
+			Debug.Log("exPAND to MaxSize!!!!!!: " + MaxSize);
+			float f = Time.deltaTime * expandSpeed;
 			ls.x += f;
 			ls.y += f;
 			ls.z += f;
 
-			if (transform.localScale.x > MaxSize)
+			if (ls.x > MaxSize)
 				expanding = false;
 		}else{ // ...shrinking 
-			var f = Time.deltaTime * shrinkSpeed;
+			float f = Time.deltaTime * shrinkSpeed;
 			ls.x -= f;
 			ls.y -= f;
 			ls.z -= f;
@@ -70,14 +70,8 @@ public class SphereExplosion : MonoBehaviour {
 		// rotation & light 
 		if (IsRootSphere) {
 			if (light != null) {
-				light.range = transform.localScale.x * 4f;
-
-
-
-
-
 				light.color = color;
-				//renderer.material.color = color;
+				light.range = ls.x * 4f;
 			}
 		}
 
@@ -85,14 +79,14 @@ public class SphereExplosion : MonoBehaviour {
 		transform.eulerAngles += rotateSpeed;
 
 		// cleanup 
-		if (transform.localScale.x < 0.1f) 
+		if (ls.x < 0.1f) 
 			Destroy(gameObject);
 	}
 	
 	float rand() {
-		var min = 12f;
-		var max = 24f;
-		var f = Random.Range(min, max);
+		float min = 12f;
+		float max = 24f;
+		float f = Random.Range(min, max);
 
 		if (Random.Range(0, 2) == 1)
 			f = -f;
