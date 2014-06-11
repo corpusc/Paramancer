@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f53cb6edc27988a42bce030437d313d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AvPos: {x: 0, y: 0, z: 0}
+  ThrowerPos: {x: 0, y: 0, z: 0}
   direction: {x: 0, y: 0, z: 0}
   startTime: 0
   detonationTime: 0
