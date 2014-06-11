@@ -47,7 +47,7 @@ public class UserPlaying {
 		health.SetBarColor(net.localPlayer.health/100f);
 		GUI.DrawTexture(new Rect(midX-healthW/2-bm, hY-bm, healthW+bm*2, hH+bm*2), Pics.Black); // background/outline 
 		GUI.DrawTexture(new Rect(midX-healthW/2, hY, healthW, hH), Pics.White);
-		GUI.DrawTexture(new Rect(midX-8, hY-4, 16, 16), Pics.Health);
+		GUI.DrawTexture(new Rect(midX-8, hY-4, 16, 16), Pics.HudHealth);
 
 		// exhaustion bar 
 		int eH = 7; // energy height 
@@ -98,7 +98,7 @@ public class UserPlaying {
 			
 			//Debug.Log(lifeCount);
 			for (int i=0; i<lifeCount; i++) {
-				GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), Pics.Health);
+				GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), Pics.HudHealth);
 			}
 		}
 		

@@ -1273,6 +1273,7 @@ public class CcNet : MonoBehaviour {
 						Destroy(child.gameObject);
 					}else{
 						pickupPoints.Add(pp);
+						child.renderer.material.color = arse.Guns[i].Color;
 					}
 				}
 				//Debug.Log(s);

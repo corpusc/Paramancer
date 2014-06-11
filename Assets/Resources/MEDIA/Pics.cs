@@ -6,6 +6,7 @@ public static class Pics {
 	// hardcoded/variable-based textures 
 	static public Texture[] swapperCrosshair = new Texture[4];
 	static public Texture Health;
+	static public Texture HudHealth;
 	static public Texture White;
 	static public Texture Black;
 	static public Texture crossHair;
@@ -83,6 +84,9 @@ public static class Pics {
 				break;
 			case "Health": 
 				Health = tPics[i]; 
+				break;
+			case "HudHealth":
+				HudHealth = tPics[i];
 				break;
 			case "blackTex": 
 				Black = tPics[i]; 
