@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
+
+
 public class Grenade : MonoBehaviour {
-	public Vector3 AvPos; // can't be 'Start' cuz of Start()
+	public Vector3 ThrowerPos;
 	public Vector3 direction;
 	public double startTime;
 	public float detonationTime;
@@ -22,8 +24,8 @@ public class Grenade : MonoBehaviour {
 	
 	void Start() {
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
-		transform.position = AvPos + direction * ForwardOffset;
-		lastPos = AvPos;
+		transform.position = ThrowerPos + direction * ForwardOffset;
+		lastPos = ThrowerPos;
 		detonationTime += Time.time;
 		moveVector = direction * speed;
 	}

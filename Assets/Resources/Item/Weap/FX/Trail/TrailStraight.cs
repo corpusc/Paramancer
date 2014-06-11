@@ -16,6 +16,7 @@ public class TrailStraight : MonoBehaviour {
 		lr = GetComponent<LineRenderer>();
 		lr.SetPosition(0, Begin);
 		lr.SetPosition(1, End);
+		lr.SetWidth(0.4f, 0.4f);
 	}
 	
 	void Update() {

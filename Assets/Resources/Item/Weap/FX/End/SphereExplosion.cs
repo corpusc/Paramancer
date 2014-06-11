@@ -5,16 +5,9 @@ using System.Collections;
 
 // an explosion sphere graphic 
 public class SphereExplosion : MonoBehaviour {
-	private Color color = new Color(0.705f, 1f, 0f); // chartreuse for green grenades 
-	public Color Color {
-		set {
-			Debug.Log("i am in the Color property of SphereExplosion");
-			color = value;
-			light.color = value;
-		}
-	}
-	public float MaxSize;
+	public float MaxRadius;
 	public bool IsRootSphere = true; // only the root/primary sphere should have a light, all other layers/stacks will be lit from it 
+	public Color Color;
 
 	// private 
 	bool expanding = true;
@@ -22,6 +15,7 @@ public class SphereExplosion : MonoBehaviour {
 	Vector3 rotateSpeed;
 	float expandSpeed = 40f;
 	float shrinkSpeed = 20f;
+
 
 
 	void Start() {
@@ -41,8 +35,8 @@ public class SphereExplosion : MonoBehaviour {
 				break;
 		}
 
-//		if (!IsRootSphere)
-//			light.enabled = false;
+		if (!IsRootSphere)
+			light.enabled = false;
 	}
 
 	void Update() {
@@ -50,13 +44,12 @@ public class SphereExplosion : MonoBehaviour {
 		var ls = transform.localScale;
 		
 		if (expanding) {
-			Debug.Log("exPAND to MaxSize!!!!!!: " + MaxSize);
 			float f = Time.deltaTime * expandSpeed;
 			ls.x += f;
 			ls.y += f;
 			ls.z += f;
 
-			if (ls.x > MaxSize)
+			if (ls.x > MaxRadius*2f)
 				expanding = false;
 		}else{ // ...shrinking 
 			float f = Time.deltaTime * shrinkSpeed;
@@ -70,8 +63,8 @@ public class SphereExplosion : MonoBehaviour {
 		// rotation & light 
 		if (IsRootSphere) {
 			if (light != null) {
-				light.color = color;
-				light.range = ls.x * 4f;
+				light.range = ls.x * 2f;
+				light.color = Color;
 			}
 		}
 
@@ -84,8 +77,8 @@ public class SphereExplosion : MonoBehaviour {
 	}
 	
 	float rand() {
-		float min = 12f;
-		float max = 24f;
+		float min = 9f;
+		float max = 18f;
 		float f = Random.Range(min, max);
 
 		if (Random.Range(0, 2) == 1)

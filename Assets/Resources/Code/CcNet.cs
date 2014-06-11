@@ -180,7 +180,7 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		latestPacket = Time.time;
-		if ((Gun)weapon != Gun.RocketLauncher) // rocket explosions are partially simulated client-side
+		if ((Gun)weapon != Gun.RocketLauncher) // rocket explosions are partially simulated client-side 
 			arse.Detonate((Gun)weapon, position, bulletID);
 		
 		if (isServer) {

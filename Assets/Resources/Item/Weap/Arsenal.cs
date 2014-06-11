@@ -166,19 +166,19 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 		
-		if (weapon == Gun.Spatula) // no trail effects 
-			return;
+		if (weapon == Gun.Spatula)
+			return; // (no trail effects) 
 		
-		// beam 
-		var beam = (GameObject)GameObject.Instantiate(GOs.Get("TrailJagged"));
-		var b = beam.GetComponent<TrailStraight>();
+		// fx trail 
+		var tj = (GameObject)GameObject.Instantiate(GOs.Get("TrailJagged"));
+		var b = tj.GetComponent<TrailStraight>();
 
 		if (localFire) 
 			b.Begin = localStart;
 		else
 			b.Begin = origin;
 
-		b.End = end - Vector3.Normalize(b.End - b.Begin) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending
+		b.End = end; // - Vector3.Normalize(b.End - b.Begin) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending 
 		b.Color = Guns[(int)weapon].Color;
 
 		// muzzle flash 
@@ -189,7 +189,7 @@ public class Arsenal : MonoBehaviour {
 			mf.transform.position = localStart - (Camera.main.transform.right * 0.2f);
 		}
 		
-		// rail trail 
+		// rail spiral 
 		if (weapon == Gun.RailGun) {
 			Vector3 beamStart = origin;
 			if (localFire) 
@@ -239,7 +239,7 @@ public class Arsenal : MonoBehaviour {
 			case Gun.GrenadeLauncher:
 				var ng = (GameObject)GameObject.Instantiate(GOs.Get("Grenade"));
 				var g = ng.GetComponent<Grenade>();
-				g.AvPos = origin;
+				g.ThrowerPos = origin;
 				g.direction = direction;
 				g.startTime = time;
 				g.viewID = bulletID;
@@ -265,11 +265,12 @@ public class Arsenal : MonoBehaviour {
 				break;
 		}
 		
+		// play sound 
 		for (int i=0; i<net.players.Count; i++) {
 			if (net.players[i].viewID == shooterID) {
 				switch (weapon) {
 					// case Item.Gravulator: 
-					// *** the activation sound is currently located along with jump/land sfx. //FIXME? 
+					// *** the activation sound is currently located along with jump/land sfx. //FIXME??? 
 					// it's not sending the shot sound trigger over the net. 
 					// so a pursuer has to look around for a flee'er (since you can't hear them) 
 					// when they enter into a large space/room.  this may be a good thing? 
@@ -331,7 +332,7 @@ public class Arsenal : MonoBehaviour {
 			var o = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
 			o.transform.position = detPos;
 			o.GetComponent<SphereExplosion>().Color = Color.red;
-			o.GetComponent<SphereExplosion>().MaxSize = Guns[(int)weapon].BlastRadius;
+			o.GetComponent<SphereExplosion>().MaxRadius = Guns[(int)weapon].BlastRadius;
 
 			var ws = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
 			ws.transform.position = detPos;
@@ -343,7 +344,8 @@ public class Arsenal : MonoBehaviour {
 					
 					var o = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
 					o.transform.position = activeGrenades[i].transform.position;
-					o.GetComponent<SphereExplosion>().MaxSize = Guns[(int)weapon].BlastRadius;
+					o.GetComponent<SphereExplosion>().MaxRadius = Guns[(int)weapon].BlastRadius;
+					o.GetComponent<SphereExplosion>().Color = new Color(0.705f, 1f, 0f); // chartreuse for green grenades 
 					
 					var nade = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
 					nade.transform.position = activeGrenades[i].transform.position;
@@ -396,8 +398,8 @@ public class Arsenal : MonoBehaviour {
 				// 		blast visual 
 				var splo = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
 				splo.transform.position = activeRockets[i].transform.position;
-				splo.GetComponent<SphereExplosion>().Color = Color.red;
-				splo.GetComponent<SphereExplosion>().MaxSize = Guns[(int)Gun.RocketLauncher].BlastRadius;
+				splo.GetComponent<SphereExplosion>().Color = S.Orange;
+				splo.GetComponent<SphereExplosion>().MaxRadius = Guns[(int)Gun.RocketLauncher].BlastRadius;
 				//		cleanup 
 				Destroy(activeRockets[i].gameObject);
 				activeRockets.RemoveAt(i);

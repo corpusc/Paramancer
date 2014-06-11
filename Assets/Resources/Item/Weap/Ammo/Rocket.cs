@@ -9,7 +9,7 @@ public class Rocket : MonoBehaviour {
 	public float BaseFlightSpeed = 40f; // starts at this speed 
 	public int MinPtsPerSecond = 75; // pts == particles 
 	public int MaxPtsPerSecond = 125;
-	public int ExplosionParticles = 200;
+	public int numSploPts = 25; // splo == splosion == explosion 
 	public float ExplosionSize = 0.4f;
 	public float ForwardOffset = 1f; // prevents running into your own rocket when you have lags (FIXME: doesn't work....might need to filter out rocket owner's body ) 
 	public float Turn = 300f;
@@ -107,14 +107,14 @@ public class Rocket : MonoBehaviour {
 	
 	private void detonateMaybe(Vector3 preciseLocation, Vector3 hitNorm) {
 		if (Turning) {
-			for (int i = 0; i < ExplosionParticles; i++) {
+			for (int i = 0; i < numSploPts; i++) {
 				var np = (GameObject)GameObject.Instantiate(particle);
 				np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos;
 				var p = np.GetComponent<CcParticle>();
 				p.MaxSpeed = ExplosionSpeed;
-				p.StartColor = Color.Lerp (Color.green, Color.yellow, Random.value);
+				p.StartColor = Color.Lerp(Color.green, Color.yellow, Random.value);
 				p.UseMidColor = true;
-				p.MidColor = Color.Lerp (Color.green, Color.blue, Random.value);
+				p.MidColor = Color.Lerp(Color.green, Color.blue, Random.value);
 				p.MidColorPos = 0.7f;
 				p.EndColor = Color.clear;
 				p.life = 2.5f;
@@ -125,7 +125,7 @@ public class Rocket : MonoBehaviour {
 				p.ParticType = ParticleType.Multiple;
 			}
 		}else{
-			for (int i = 0; i < ExplosionParticles; i++) {
+			for (int i = 0; i < numSploPts; i++) {
 				var np = (GameObject)GameObject.Instantiate(particle);
 				np.transform.position = Random.insideUnitSphere * ExplosionSize + lastPos; // do NOT use preciseLocation because particles shouldn't spawn inside a wall (bouncing will mess up) 
 				var p = np.GetComponent<CcParticle>();
@@ -137,7 +137,7 @@ public class Rocket : MonoBehaviour {
 				p.MinSize = 6f;
 				p.MaxSize = 8f;
 				p.acceleration = 0.1f;
-				p.ParticType = ParticleType.Multiple;
+				p.ParticType = ParticleType.Circle;
 			}
 		}
 
