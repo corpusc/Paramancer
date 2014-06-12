@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 202806cc8bebd4507a95d9f5d6be2b91
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - _ramp: {fileID: 2800000, guid: de25a418e52274482b51702fff566bcd, type: 3}
+  - _noise: {fileID: 2800000, guid: 4648634f8231b4bf0860b6a2b4f6fadc, type: 3}
+  - ExplosionMaterial: {fileID: 2100000, guid: ba9ab8cadaaa4451b93b38012ec0b31b, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
