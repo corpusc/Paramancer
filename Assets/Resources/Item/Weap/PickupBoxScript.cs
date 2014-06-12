@@ -33,6 +33,10 @@ public class PickupBoxScript : MonoBehaviour {
 			boxObj.transform.Rotate(0, 0, zOff);
 			boxObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
 			start = boxObj.transform.position + Vector3.up * 0.33f;
+		}else if (pickupName == "Spatula"){
+			boxObj.transform.Rotate(0, 0, zOff);
+			start = boxObj.transform.position + Vector3.up * 0.33f;
+			boxObj.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
 		} else {
 			boxObj.transform.Rotate(270, 0, zOff);
 			start = boxObj.transform.position + Vector3.up * 0.33f;

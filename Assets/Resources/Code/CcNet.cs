@@ -801,6 +801,16 @@ public class CcNet : MonoBehaviour {
 				}
 			}
 		}
+
+		Color cCol = Color.green; // current color
+		if (item >= (int)Gun.Pistol)
+			cCol = arse.Guns[item].Color;
+
+		GameObject p = GameObject.Find("_PickupSpots");
+		foreach (Transform child in p.transform) {
+			if (child.gameObject.GetComponent<PickupPoint>().pickupPointID == pointID)
+				child.gameObject.renderer.material.color = cCol;
+		}
 	}
 	
 	public void UnstockPickupPoint(PickupPoint point){
@@ -1273,7 +1283,6 @@ public class CcNet : MonoBehaviour {
 						Destroy(child.gameObject);
 					}else{
 						pickupPoints.Add(pp);
-						child.renderer.material.color = arse.Guns[i].Color;
 					}
 				}
 				//Debug.Log(s);

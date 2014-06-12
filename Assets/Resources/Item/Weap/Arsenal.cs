@@ -79,16 +79,16 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].Delay = 2f; 
 					Guns[i].DelayAlt = 2f; 
 					break; 
-				case Gun.Gravulator:   Guns[i].Color = Color.green; 
+				case Gun.Gravulator:   Guns[i].Color = Color.Lerp(Color.red, Color.yellow, 0.5f); 
 					Guns[i].Delay = 1f; 
 					Guns[i].DelayAlt = 1f; 
 					break; 
-				case Gun.Bomb:   Guns[i].Color = Color.yellow; 
+				case Gun.Bomb:   Guns[i].Color = Color.red; 
 					Guns[i].Delay = 1f; 
 					Guns[i].DelayAlt = 1f; 
 					Guns[i].BlastRadius = 10f; // BR 
 					break; 
-			case Gun.Spatula:   Guns[i].Color = Color.magenta; 
+			case Gun.Spatula:   Guns[i].Color = Color.gray; 
 					Guns[i].Delay = 1f;  
 					Guns[i].DelayAlt = 1f;
 					Guns[i].Range = 3f; // only 1 with Range 
