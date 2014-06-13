@@ -75,21 +75,14 @@ public class EntityClass : MonoBehaviour {
 	public PickupBoxScript currentOfferedPickup;
 
 	// AI stuff
-	public bool AI = false;
-	public Vector3 TargetPos;
-	public Vector3 DesiredPos;
-	bool prevVisible = true;
-	public float MovementSpeed = 5f; // AI only ATM
-	public float Health = 1f; // AI only ATM
-
-
+	public bool isMob = false;
 
 	// private 
 	// misc 
 	GameObject powerUpBag;
 	// 		scripts 
 	Hud hud; // FIXME?  won't need this anymore once playingHud gets drawn correctly? *****************
-	CcNet net;
+	public CcNet net;
 	LocalUser locUser;
 	int swapperLockTarget = -1;
 
@@ -160,18 +153,15 @@ public class EntityClass : MonoBehaviour {
 	bool previouslyLockedCursor = true; // this is just so that clicking back into the screen won't fire explosive or gravgun immediately 
 	float rpcCamTime = 0f;
 	void Update() {
-		if (AI) {
-			// we are AI
-			UpdateAI();
+		if (isMob)
 			return;
-		}
 
 		if (User.local)
 			net.localPlayer.Entity = this;
 		
 		// if dead... 
 		if (User.health <= 0f) {
-			makeBombInvisible();
+			MakeBombInvisible();
 		}
 
 		// if its been long enough since last frag, reset MultiFrag count 
@@ -229,7 +219,7 @@ public class EntityClass : MonoBehaviour {
 
 				// item pick up, powerups
 				if (User.health > 0f) {
-					handlePickingUpItem();
+					HandlePickingUpItem();
 					ApplyPowerUps();
 				}
 				offeredPickup = ""; // must do after the above check 
@@ -664,48 +654,6 @@ public class EntityClass : MonoBehaviour {
 
 		previouslyLockedCursor = Screen.lockCursor;
 	} // end of Update() 
-
-
-
-
-	// Can't use User.health becuase that is our health, and not the AIs
-	public void UpdateAI() {
-		if (Health <= 0f) {
-			makeBombInvisible();
-		}
-		
-		// item pick up, powerups
-		if (Health > 0f) {
-			handlePickingUpItem();
-			ApplyPowerUps();
-		}
-
-		if (Vector3.SqrMagnitude(TargetPos - transform.position) < 10000f) {
-			if (Physics.Raycast(transform.position, 
-								(TargetPos - transform.position).normalized, 
-								Vector3.Distance(
-									transform.position, 
-									TargetPos), 
-								1<<0)) {
-				if (prevVisible) {
-					DesiredPos += (DesiredPos - TargetPos).normalized * 2f;
-					prevVisible = false;
-				}
-			} else {
-				DesiredPos = TargetPos;
-				prevVisible = true;
-			}
-		} else {
-			DesiredPos = new Vector3(0f, 0f, 0f);
-			prevVisible = true;
-		}
-		
-		if (Health > 0f) {
-			rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, (DesiredPos - transform.position).normalized * MovementSpeed, Time.deltaTime);
-			transform.forward = Camera.main.transform.forward;
-		}
-	}
-
 
 
 
@@ -1264,8 +1212,7 @@ public class EntityClass : MonoBehaviour {
 		audio.Play();
 	}
 
-	// private 
-	void makeBombInvisible() {
+	public void MakeBombInvisible() {
 		Transform fl = null;
 		
 		fl = gunMesh1.transform.Find("Flash Light");
@@ -1277,7 +1224,7 @@ public class EntityClass : MonoBehaviour {
 			fl.GetComponent<FlashingLight>().Visible = false;
 	}
 
-	void handlePickingUpItem() {
+	public void HandlePickingUpItem() {
 		if (offeredPickup != "") {
 			if (offeredPickup == "Health") {
 				if (User.health < 100f) {
