@@ -368,7 +368,7 @@ public class Arsenal : MonoBehaviour {
 				var rPos = activeRockets[i].transform.position;
 
 				// rocket jumping 
-				// look for self in user list 
+				// 		look for self in user list 
 				for (int k=0; k<net.players.Count; k++) {
 					var user = net.players[k];
 
@@ -383,7 +383,7 @@ public class Arsenal : MonoBehaviour {
 							if (entPos.y > rPos.y) {
 								// if we were the shooter of this rocket 
 								if (activeRockets[i].shooterID == user.viewID){
-									user.Entity.yMove = 4f;
+									user.Entity.yMove = 5.2f;
 								}else{ // for now, we never actually bounce remote players 
 									user.Entity.yMove = 2f;
 								}
