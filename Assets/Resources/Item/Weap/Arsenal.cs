@@ -379,7 +379,7 @@ public class Arsenal : MonoBehaviour {
 						    <
 						    Guns[(int)Gun.RocketLauncher].BlastRadius
 					    ) {
-							// if user higher than the rocket 
+					    	// if user higher than the rocket 
 							if (entPos.y > rPos.y) {
 								// if we were the shooter of this rocket 
 								if (activeRockets[i].shooterID == user.viewID){
