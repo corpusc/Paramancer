@@ -88,7 +88,7 @@ using System.Collections.Generic;
             "brass",
             "bronze",
             "copper",
-			// coconut wood is awz said Justin 
+			// coconut wood would be a nice addition/substitution? 
             "electrum",
             "gold",
             "iron",
