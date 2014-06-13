@@ -59,12 +59,6 @@ public class ProcGenVoxel : ScriptableObject {
 	public Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
 	public float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on 
 
-	// powerups 
-	public int SpeedBoosts = 4;
-	public int RegenBoosts = 4;
-	public GameObject SpeedBoost;
-	public GameObject RegenBoost;
-
 	// the maximal height of a room is determined by the map height & the room size 
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth 
 	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y 
@@ -84,7 +78,6 @@ public class ProcGenVoxel : ScriptableObject {
 	GameObject redSpawnBag;
 	GameObject weaponSpawnBag;
 	GameObject monsterSpawnBag;
-	GameObject powerUpBag;
 
 
 
@@ -106,8 +99,6 @@ public class ProcGenVoxel : ScriptableObject {
 		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work, it will be removed after everything is done by the script
 		SpawnPoint = GameObject.Find("SpawnPoint"); // a GameObject called SpawnPoint must already be in the scene for this to work, it will be removed after everything is done by the script
 		WeaponSpawn = GameObject.Find("WeaponSpawn"); // a GameObject called WeaponSpawn must already be in the scene, it will be removed afterwards by calling RemoveOriginals()
-		SpeedBoost = GameObject.Find("SpeedBoost"); // an empty GameObject, must already be in the scene, will be removed by RemoveOriginals()
-		RegenBoost = GameObject.Find("EnergyRegenBoost"); // an empty GameObject, must already be in the scene, will be removed by RemoveOriginals()
 		mapObject = GameObject.Find("Map"); // an empty GameObject container, already in the scene 
 		primObject = GameObject.Find("Prims"); // an empty GameObject container, already in the scene 
 		ffaSpawnBag = GameObject.Find("FFA Spawns"); // an empty GameObject container, already in the scene 
@@ -115,7 +106,6 @@ public class ProcGenVoxel : ScriptableObject {
 		redSpawnBag = GameObject.Find("Red Team Spawns"); // an empty GameObject container, already in the scene 
 		weaponSpawnBag = GameObject.Find("_PickupSpots"); // an empty GameObject container, must already be in the scene
 		monsterSpawnBag = GameObject.Find("Monster Spawns"); // an empty GameObject container, must already be in the scene
-		powerUpBag = GameObject.Find("PowerUps"); // an empty GameObject container, must already be in the scene
 	}
 
 	// this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d() 
@@ -400,41 +390,6 @@ public class ProcGenVoxel : ScriptableObject {
 			}
 		}
 
-		// place powerups
-		// speed boosts
-		formsMade = 0; // count speed boosts as forms, no need for a separate var 
-		for (int i = 0; i < numTries && formsMade < SpeedBoosts; i++) {
-			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
-			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
-			if (!getBlock(t.x, t.y - 1, t.z)) {
-				var ns = (GameObject)GameObject.Instantiate(SpeedBoost); // new speed boost
-				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
-				ns.transform.parent = powerUpBag.transform;
-				ns.name = "SpeedBoost"; // must set this so that EntityClass recognizes it correctly
-				formsMade++;
-			}
-		}
-
-		// regen boosts
-		formsMade = 0; // count regen boosts as forms, no need for a separate var 
-		for (int i = 0; i < numTries && formsMade < RegenBoosts; i++) {
-			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
-			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
-			if (!getBlock(t.x, t.y - 1, t.z)) {
-				var nb = (GameObject)GameObject.Instantiate(RegenBoost); // new regen boost 
-				nb.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
-				nb.transform.parent = powerUpBag.transform;
-				nb.name = "EnergyRegenBoost"; // must set this so that EntityClass recognizes it correctly 
-				formsMade++;
-			}
-		}
-
 		// place weapon spawns 
 		formsMade = 0; // count weapon spawns as forms, no need for a separate var 
 		for (int i = 0; i < numTries && formsMade < numGunSpawns; i++) {
@@ -457,13 +412,11 @@ public class ProcGenVoxel : ScriptableObject {
 		}
 	} // end of Build3d() 
 	
-	// remove the originals so that they don't cause any trouble like spawning players outside the map 
-	public void RemoveOriginals () {
+	public void RemoveOriginals () { // ....so they don't cause any trouble like spawning players outside the map 
 		GameObject.Destroy(Torch);
 		GameObject.Destroy(JumpPad);
 		GameObject.Destroy(SpawnPoint);
 		GameObject.Destroy(WeaponSpawn);
-		GameObject.Destroy(SpeedBoost);
 	}
 
 

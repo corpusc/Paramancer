@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+
 public class AI : MonoBehaviour {
 
 	[HideInInspector]
@@ -12,27 +14,26 @@ public class AI : MonoBehaviour {
 	[HideInInspector]
 	public GameObject FraggedBy;
 	public float MovementSpeed = 5f;
-	public float Health = 1f;
 	public NetworkViewID viewID;
 	
+	// private 
 	bool prevVisible = true; // if the target was visible in the previous frame
 
 
-	void Start () {
+
+	void Start() {
 		// if an AI component is attached, it means that we are a mob
 		EC.isMob = true;
 	}
 	
-	// Can't use User.health becuase that is our health, and not the AIs
-	void Update () {
-		if (Health <= 0f) {
+	void Update() {
+		if (EC.health <= 0f) {
 			EC.MakeBombInvisible();
 		}
 		
-		// item pick up, powerups
-		if (Health > 0f) {
+		// item pick up 
+		if (EC.health > 0f) {
 			EC.HandlePickingUpItem();
-			EC.ApplyPowerUps();
 		}
 		
 		if (Vector3.SqrMagnitude(TargetPos - transform.position) < 10000f) {

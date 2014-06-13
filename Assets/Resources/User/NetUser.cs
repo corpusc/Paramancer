@@ -4,12 +4,12 @@ using System.Collections;
 
 
 public class NetUser {
-	// dunno 
-	public NetworkViewID viewID;
-	
+	// misc 
+
 	// networking
 	public EntityClass Entity = null;
 	public NetworkPlayer netPlayer;
+	public NetworkViewID viewID;
 	public bool local;
 	
 	// game/match
@@ -27,7 +27,6 @@ public class NetUser {
 	// 		status
 	public int currentScore;
 	public int lives = 0;
-	public float health = 100f;
 	public Ping ping;
 	public float lastPong = 0f;
 	public int team = 0;

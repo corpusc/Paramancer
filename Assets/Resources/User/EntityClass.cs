@@ -6,9 +6,8 @@ using System.Collections.Generic;
 
 public class EntityClass : MonoBehaviour {
 	// misc 
-	public Light firstPersonLight;
-	public GameObject weaponSoundObj;
-	
+	public Light firstPersonLight; // should be in CAM section maybe 
+
 	// frag 
 	public int MultiFragCount = 0;
 	public float PrevFrag = 0f;
@@ -19,10 +18,6 @@ public class EntityClass : MonoBehaviour {
 	public bool Spectating = false;
 	public int Spectatee = 0; // the id of user being spectated 
 	
-	// body 
-	public bool grounded;
-	public float yMove = 0f;
-
 	// swapper 
 	public int swapperCrossX = 0;
 	public int swapperCrossY = 0;
@@ -37,8 +32,6 @@ public class EntityClass : MonoBehaviour {
 	public GameObject bballArrowPrefab;
 	private GameObject bballArrowObj;
 	
-	// FIXME: resources that should be loaded elsewhere 
-	public GameObject[] heads;
 
 	public Color colA; 
 	public Color colB;
@@ -50,29 +43,30 @@ public class EntityClass : MonoBehaviour {
 	public GameObject HudGun;
 	public GameObject gunMesh1;
 	public GameObject gunMesh2;
+	public GameObject weaponSoundObj;
 
 	// network
 	public NetUser User;
 	public bool isLocal = true;
 
 	// body 
+	public CcBody bod;
 	public GameObject meshObj; // the stick figure body (no head), with a scarf.  only used to change its .renderer.materials (colors) 
 	public GameObject animObj; // skeletally animated model (full stick figure i think) 
 	public GameObject Model; // new kind, intended for mecanim 
+	public GameObject[] heads; // FIXME: resources that should be loaded elsewhere 
 	public int headType = 0;
 	public float SprintEnergy = 1f; // 0-1 
 	// 		nearby pickup 
 	public string offeredPickup = "";
 	public PickupBoxScript currentOfferedPickup;
 
-	// AI stuff
+	// AI 
 	public bool isMob = false;
 
 
 
 	// private 
-	// misc 
-	GameObject powerUpBag;
 	// 		scripts 
 	Hud hud; // FIXME?  won't need this anymore once playingHud gets drawn correctly? *****************
 	public CcNet net;
@@ -80,7 +74,6 @@ public class EntityClass : MonoBehaviour {
 	int swapperLockTarget = -1;
 
 	// body 
-	CcBody bod;
 	CharacterController cc;
 	float sprintRelease = 0f;
 	float maxSprintRelease = 0.7f;
@@ -118,7 +111,6 @@ public class EntityClass : MonoBehaviour {
 		hud = o.GetComponent<Hud>();
 		arse = o.GetComponent<Arsenal>();
 		locUser = o.GetComponent<LocalUser>();
-		powerUpBag = GameObject.Find("PowerUps");
 
 		// new female model 
 		//Model = (GameObject)GameObject.Instantiate(Models.Get("Mia"));
@@ -219,10 +211,9 @@ public class EntityClass : MonoBehaviour {
 			if (!Spectating) {
 				Vector3 lastPos = transform.position;
 
-				// item pick up, powerups
-				if (User.health > 0f) {
+				// item pick up 
+				if (bod.health > 0f) {
 					HandlePickingUpItem();
-					ApplyPowerUps();
 				}
 				offeredPickup = ""; // must do after the above check 
 				
@@ -266,7 +257,7 @@ public class EntityClass : MonoBehaviour {
 					sprintRelease += Time.deltaTime;
 					
 					camHolder.transform.localEulerAngles = camAngle;
-					Vector3 inputVector = Vector3.zero; 
+					var inputVector = Vector3.zero; 
 
 					if (CcInput.Holding(UserAction.MoveForward)) 
 						inputVector += animObj.transform.forward;
@@ -291,41 +282,38 @@ public class EntityClass : MonoBehaviour {
 
 					bod.UpVector = animObj.transform.up;
 					
-					if (!crouching) {
-						bod.Move(inputVector * Time.deltaTime * 10f);
+
+
+					var speedUpright = 10f;
+					var speedCrouching = 5f;
+					if (crouching) {
+						bod.Move(inputVector * Time.deltaTime * speedCrouching);
 					}else{
-						bod.Move(inputVector * Time.deltaTime * 5f);
+						bod.Move(inputVector * Time.deltaTime * speedUpright);
 					}
-					
+
+
+
 					SprintEnergy = bod.GetEnergy();
-					
 					
 					if (yMove <= 0f) {
 						bod.Move(transform.up * -0.2f);
-						bool landed = grounded;
-						grounded = bod.isGrounded;
+						bool previouslyGrounded = bod.grounded;
+						bod.grounded = bod.isGrounded;
 						
-						if (!grounded) 
+						if (bod.grounded) {
+							if (!previouslyGrounded) {
+								PlaySound("Land");
+								sendRPCUpdate = true;
+							}
+						}else{
 							bod.Move(transform.up * 0.2f);
-						
-						if (!landed && grounded) {
-							PlaySound("Land");
-							sendRPCUpdate = true;
 						}
 					}else{
-						grounded = false;
+						bod.grounded = false;
 					}
-					
-					if (grounded) {
-						yMove = 0f;
-						if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && bod.JumpBoosted)) {
-							yMove = bod.JumpBoosted ? 7f : 4f;
-							PlaySound("Jump");
-							net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
-						}
-					}else{
-						yMove -= Time.deltaTime * net.CurrMatch.Gravity;
-					}
+
+					bod.MaybeJumpOrFall(this);
 
 					bod.Move(transform.up * yMove * Time.deltaTime * 5f);
 					
@@ -775,7 +763,7 @@ public class EntityClass : MonoBehaviour {
 		gunRecoil -= gunRecoil * Time.deltaTime * recoilRest;
 		HudGun.transform.localPosition += gunRecoil * 0.1f;
 		
-		if (grounded) {
+		if (bod.grounded) {
 			if (moveVec.magnitude > 0.1f && net.gunBobbing){
 				if (crouching){
 					gunBounce += Time.deltaTime * 6f;
@@ -1042,39 +1030,6 @@ public class EntityClass : MonoBehaviour {
 			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bHit.point);
 	}
 
-	public void ApplyPowerUps() {
-		// scan for closest powerup 
-		GameObject co = powerUpBag; // current best match 
-		float bestDist = 99999f; // the best distance, squared 
-		for (int i = 0; i < powerUpBag.transform.childCount; i++) {
-			float tDist = Vector3.SqrMagnitude(powerUpBag.transform.GetChild(i).position - transform.position); // temporary 
-			if (tDist < bestDist) {
-				bestDist = tDist;
-				co = powerUpBag.transform.GetChild(i).gameObject;
-			}
-		}
-
-		if (bestDist > 3f) 
-			return;
-
-		// apply effects 
-		switch (co.name) {
-			case "SpeedBoost":
-				bod.SpeedBoostEnd = Time.time + 2f * Time.timeScale;
-				// speed boosts aren't consumed 
-				break;
-			case "EnergyRegenBoost":
-				if (co.GetComponent<PowerUpPoint>().RespawnTime <= Time.time) {
-					bod.SprintRegenEnd = Time.time + 8f * Time.timeScale;
-					co.GetComponent<PowerUpPoint>().RespawnTime = Time.time + 16f * Time.timeScale;
-				}
-				break;
-			default:
-				print("WARNING: Unknown powerup type called " + co.name);
-				break;
-		}
-	}
-
 	private Transform getRandomSpawn(string s) {
 		var go = GameObject.Find(s); // container for entity spawn positions 
 		
@@ -1101,7 +1056,7 @@ public class EntityClass : MonoBehaviour {
 		transform.position = t.position + Vector3.up;
 		transform.LookAt(transform.position + Vector3.forward, Vector3.up);
 		camAngle = t.eulerAngles;
-		yMove = 0f;
+		bod.yMove = 0f;
 		moveVec = Vector3.zero;
 		bod.sprinting = false;
 
@@ -1160,15 +1115,15 @@ public class EntityClass : MonoBehaviour {
 		
 		if (yMove <= 0f) {
 			bod.Move(transform.up * -0.2f);
-			grounded = bod.isGrounded;
+			bod.grounded = bod.isGrounded;
 
-			if (!grounded) 
+			if (!bod.grounded) 
 				bod.Move(transform.up * 0.2f);
 		}else{
-			grounded = false;
+			bod.grounded = false;
 		}
 		
-		if (grounded) {
+		if (bod.grounded) {
 			yMove = 0f;
 		}else{
 			yMove -= timeDelta * 10f;

@@ -383,12 +383,12 @@ public class Arsenal : MonoBehaviour {
 							if (entPos.y > rPos.y) {
 								// if we were the shooter of this rocket 
 								if (activeRockets[i].shooterID == user.viewID){
-									user.Entity.yMove = 5.2f;
+									user.Entity.bod.yMove = 5.2f;
 								}else{ // for now, we never actually bounce remote players 
-									user.Entity.yMove = 2f;
+									user.Entity.bod.yMove = 2f;
 								}
 
-								user.Entity.grounded = false;
+								user.Entity.bod.grounded = false;
 								user.Entity.sendRPCUpdate = true;
 							}
 						}

@@ -4,6 +4,9 @@ using System.Collections;
 
 
 public class CcBody : MonoBehaviour {
+	public float health = 100f;
+	public float yMove = 0f;
+	public bool grounded;
 	public bool isGrounded = false;
 	public bool JumpBoosted = false;
 	public float radius = 0.5f;
@@ -12,18 +15,26 @@ public class CcBody : MonoBehaviour {
 	public Vector3 UpVector = new Vector3(0.0f, 1.0f, 0.0f);
 	public bool sprinting = false;
 	
-	// powerups
-	public float SpeedBoost = 2f;
-	public float SpeedBoostEnd = 0f; // the time at which the speed boost ends
-	public float SprintRegenSpeed = 0.3f; // set when you pick up a regen buff
-	public float SprintRegenEnd = 0f;
-	
 	// private 
 	float sprintActivatedTime = 0f;
 	const float sprintDuration = 5f;
+
+
+
+	public void MaybeJumpOrFall(EntityClass ne) {
+		if (bod.grounded) {
+			yMove = 0f;
+			if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && bod.JumpBoosted)) {
+				yMove = bod.JumpBoosted ? 7f : 4f;
+				ne.PlaySound("Jump");
+				net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
+			}
+		}else{
+			yMove -= Time.deltaTime * net.CurrMatch.Gravity;
+		}
+	}
 	
-	public void TickEnergy () {
-		
+	public void TickEnergy() {
 		if (sprintActivatedTime > sprintDuration) 
 			sprinting = false;
 		
@@ -32,7 +43,7 @@ public class CcBody : MonoBehaviour {
 		else
 			SprintRegenSpeed = 1f;
 		
-		// regenerate energy
+		// regenerate energy 
 		if (!sprinting)
 			sprintActivatedTime = Mathf.Max(sprintActivatedTime - Time.deltaTime * SprintRegenSpeed, 0f);
 	}
@@ -45,10 +56,6 @@ public class CcBody : MonoBehaviour {
 		if (sprinting) {
 			moveVector *= SprintMultiplier;
 			sprintActivatedTime += Time.deltaTime;
-		}
-		
-		if (Time.time <= SpeedBoostEnd) {
-			moveVector *= SpeedBoost;
 		}
 		
 		isGrounded = false;

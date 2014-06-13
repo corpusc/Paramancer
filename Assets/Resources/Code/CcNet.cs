@@ -112,17 +112,21 @@ public class CcNet : MonoBehaviour {
 	}
 
 	//-------- network gameplay ---------- 
-	public void SendTINYUserUpdate(NetworkViewID viewID, UserAction action) {
-		networkView.RPC("SendTINYUserUpdateRPC", RPCMode.Others, viewID, (int)action);
+	public void SendTINYUserUpdate(NetworkViewID nvi, UserAction action) {
+		networkView.RPC("SendTINYUserUpdateRPC", RPCMode.Others, nvi, (int)action);
 	}
 	[RPC]
-	void SendTINYUserUpdateRPC(NetworkViewID viewID, int action) {
+	void SendTINYUserUpdateRPC(NetworkViewID nvi, int action) {
 		latestPacket = Time.time;
 		
 		for (int i=0; i<players.Count; i++) {
-			if (viewID == players[i].viewID && players[i].Entity != null) {
-				players[i].lastPong = Time.time;
-				players[i].Entity.PlaySound((UserAction)action);
+			var u = players[i]; // user 
+
+			if (u.viewID == nvi && 
+			    u.Entity != null
+		    ) {
+				u.lastPong = Time.time;
+				u.Entity.PlaySound((UserAction)action);
 			}
 		}
 	}
