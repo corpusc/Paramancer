@@ -5,8 +5,10 @@ using System.Collections.Generic;
 
 
 public class EntityClass : MonoBehaviour {
-	public NetUser User;
-
+	// misc 
+	public Light firstPersonLight;
+	public GameObject weaponSoundObj;
+	
 	// frag 
 	public int MultiFragCount = 0;
 	public float PrevFrag = 0f;
@@ -14,20 +16,12 @@ public class EntityClass : MonoBehaviour {
 	// cam 
 	public GameObject camHolder;
 	public float FOV = 90f;
-	private Vector3 camAngle;
-	private Vector3 lastCamAngle = Vector3.zero;
-
-	// misc 
-	public bool grounded;
-	private Vector3 moveVec = Vector3.zero;
-	public float yMove = 0f;
-	private float lastYmove = 0f;
-	private Vector3 lastMoveVector = Vector3.zero;
-	private double lastUpdateTime = -1f;
-	private float lastHealth = 0f;
+	public bool Spectating = false;
+	public int Spectatee = 0; // the id of user being spectated 
 	
-	public Light firstPersonLight;
-	public GameObject weaponSoundObj;
+	// body 
+	public bool grounded;
+	public float yMove = 0f;
 
 	// swapper 
 	public int swapperCrossX = 0;
@@ -58,15 +52,12 @@ public class EntityClass : MonoBehaviour {
 	public GameObject gunMesh2;
 
 	// network
+	public NetUser User;
 	public bool isLocal = true;
 
-	// misc 
-	public bool Spectating = false;
-	public int Spectatee = 0;
-
 	// body 
-	public GameObject meshObj; // the stick figure body (no head), with a scarf.  only used too change its .renderer.materials (colors) 
-	public GameObject animObj; // skeletally animated model 
+	public GameObject meshObj; // the stick figure body (no head), with a scarf.  only used to change its .renderer.materials (colors) 
+	public GameObject animObj; // skeletally animated model (full stick figure i think) 
 	public GameObject Model; // new kind, intended for mecanim 
 	public int headType = 0;
 	public float SprintEnergy = 1f; // 0-1 
@@ -76,6 +67,8 @@ public class EntityClass : MonoBehaviour {
 
 	// AI stuff
 	public bool isMob = false;
+
+
 
 	// private 
 	// misc 
@@ -93,6 +86,15 @@ public class EntityClass : MonoBehaviour {
 	float maxSprintRelease = 0.7f;
 	bool crouchingPrev = false; // crouching in previous frame? 
 	bool crouching = false;
+	Vector3 moveVec = Vector3.zero;
+	float lastYmove = 0f;
+	Vector3 lastMoveVector = Vector3.zero;
+	double lastUpdateTime = -1f;
+	float lastHealth = 0f;
+
+	// cam 
+	Vector3 camAngle;
+	Vector3 lastCamAngle = Vector3.zero;
 
 	// 		inventory 
 	Arsenal arse;
