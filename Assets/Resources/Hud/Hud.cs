@@ -840,7 +840,9 @@ public class Hud : MonoBehaviour {
 
 	Ping[] hostPings;
 	void lookForServer() {
-		MasterServer.RequestHostList(net.uniqueGameName);
+		MasterServer.RequestHostList(
+			net.MasterServerFacingName);
+
 		hostPings = new Ping[0];
 	}
 
@@ -886,7 +888,7 @@ public class Hud : MonoBehaviour {
 			s += "\"" /*'''*/ + hostData[i].gameName + "\" \n";
 
 			if (net.Connected && 
-			    net.gameName == hostData[i].gameName) { // don't show this button if it has the same game name 
+			    net.MatchName == hostData[i].gameName) { // don't show this button if it has the same game name 
 				continue;
 			}else{
 				// play sound if number of servers goes up 
@@ -1041,13 +1043,41 @@ public class Hud : MonoBehaviour {
 	
 	
 	
-	
+	float logoDura = 7f; // time duration for showing startup logos 
+	float frameDura = 1f/30f; // time duration between flipping animation frames 
+	float nextFrame = 0f;
+	int currFrame = 0;
+	const int numFrames = 17;
+	bool expanding = true;
 	void showSplashLogos() {
 		Rect r = new Rect(0, 0, Screen.width, Screen.height);
 		GUI.DrawTexture(r, Pics.Get("blackTex"));
-		GUI.DrawTexture(r, Pics.Get("Logo - CazCore"));
+		//GUI.DrawTexture(r, Pics.Get("Logo - CazCore")); // static logo 
 
-		if (Time.time > 7f || Debug.isDebugBuild)
+		while (Time.time > nextFrame) {
+			// advance frame 
+			nextFrame += frameDura;
+
+			if (expanding) {
+				currFrame++;
+				if (currFrame >= numFrames) {
+					currFrame = numFrames-1;
+					expanding = false;
+				}
+			}else{
+				currFrame--;
+				if (currFrame < 0) {
+					currFrame = 0;
+					expanding = true;
+				}
+			}
+		}
+
+		GUI.DrawTexture(r, Pics.Get(currFrame + ""));
+
+		if (Time.time > logoDura //|| 
+		    //Debug.isDebugBuild
+	    )
 			Mode = HudMode.MainMenu;
 	}
 	
@@ -1140,7 +1170,7 @@ public class Hud : MonoBehaviour {
 				Mode = HudMode.Playing;
 		}else{				
 			if (buttonStarts(HudMode.NewGame, r)) {
-				net.gameName = net.localPlayer.name + "'s match...of the Damned";
+				net.MatchName = net.localPlayer.name + "'s match...of the Damned";
 			}
 		}
 

@@ -41,9 +41,9 @@ public class CcNet : MonoBehaviour {
 	public bool Connected = false;
 	public bool isServer = false;
 	// if you change the client, change this.
-	// should be unique or different types of clients will clash
-	public string uniqueGameName = "Y U REFLECT ME!!!!";
-	public string gameName = "TestSession";
+	// should be unique or different types of clients will clash 
+	public string MasterServerFacingName = "Rogue-Lite FPS";
+	public string MatchName = "Init";
 	public int connections = 32;
 	public int listenPort = 25000;
 	public string MatchTypeAndMap = ""; // match type & map name (for server browser)
@@ -1303,7 +1303,7 @@ public class CcNet : MonoBehaviour {
 	// ------------- Connecting/Server setup -------------- 
 	void OnServerInitialized() {
         //Debug.Log("Server initialized, now registering...");
-		MasterServer.RegisterHost(uniqueGameName, gameName, MatchTypeAndMap);
+		MasterServer.RegisterHost(MasterServerFacingName, MatchName, MatchTypeAndMap);
     }
 	
     void OnMasterServerEvent(MasterServerEvent msEvent) {

@@ -1034,7 +1034,7 @@ public class EntityClass : MonoBehaviour {
 			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bHit.point);
 	}
 
-	public void ApplyPowerUps () {
+	public void ApplyPowerUps() {
 		// scan for closest powerup 
 		GameObject co = powerUpBag; // current best match 
 		float bestDist = 99999f; // the best distance, squared 
@@ -1111,7 +1111,7 @@ public class EntityClass : MonoBehaviour {
 			arse.Guns[i].Cooldown = 0f;
 
 			if (Debug.isDebugBuild)
-				arse.Guns[i].Carrying = true; // carry full arsenal if in IDE 
+				;//arse.Guns[i].Carrying = true; // carry full arsenal if in IDE 
 			else
 				arse.Guns[i].Carrying = false;
 		}

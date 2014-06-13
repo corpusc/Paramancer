@@ -347,7 +347,7 @@ public class MatchSetup {
 		GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("Name: ");
-			net.gameName = GUILayout.TextField(net.gameName);
+			net.MatchName = GUILayout.TextField(net.MatchName);
 			GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
@@ -503,7 +503,6 @@ public class MatchSetup {
 			matches[i] = new MatchData((Match)i);
 
 		if (Debug.isDebugBuild) {
-			//mapId = 4;
 			matchId = (int)Match.BringYourOwnGravity;
 		}
 	}

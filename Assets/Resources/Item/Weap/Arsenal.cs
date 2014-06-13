@@ -363,27 +363,33 @@ public class Arsenal : MonoBehaviour {
 
 	public void DetonateRocket(Vector3 detPos, Vector3 hitNorm, NetworkViewID viewID) {
 		for (int i=0; i<activeRockets.Count; i++) {
+			// if this is the right rocket 
 			if (viewID == activeRockets[i].viewID) {
-				// rocket jumping
+				var rPos = activeRockets[i].transform.position;
+
+				// rocket jumping 
+				// look for self in user list 
 				for (int k=0; k<net.players.Count; k++) {
-					if (net.players[k].local) {
-						if (Vector3.Distance(
-								net.players[k].Entity.transform.position, 
-								activeRockets[i].transform.position
-							)
+					var user = net.players[k];
 
+					if (user.local) {
+						var entPos = user.Entity.transform.position;
+
+						if (Vector3.Distance(entPos, rPos)
 						    <
-
 						    Guns[(int)Gun.RocketLauncher].BlastRadius
 					    ) {
-							if (net.players[k].Entity.transform.position.y > activeRockets[i].transform.position.y) {
-								if (activeRockets[i].shooterID == net.players[k].viewID){
-									net.players[k].Entity.yMove = 9;
-								}else{
-									net.players[k].Entity.yMove = 5;
+							// if user higher than the rocket 
+							if (entPos.y > rPos.y) {
+								// if we were the shooter of this rocket 
+								if (activeRockets[i].shooterID == user.viewID){
+									user.Entity.yMove = 4f;
+								}else{ // for now, we never actually bounce remote players 
+									user.Entity.yMove = 2f;
 								}
-								net.players[k].Entity.grounded = false;
-								net.players[k].Entity.sendRPCUpdate = true;
+
+								user.Entity.grounded = false;
+								user.Entity.sendRPCUpdate = true;
 							}
 						}
 					}
@@ -392,12 +398,12 @@ public class Arsenal : MonoBehaviour {
 				// detonate rocket 
 				// 		sound 
 				var ws = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
-				ws.transform.position = activeRockets[i].transform.position;
+				ws.transform.position = rPos;
 				ws.audio.clip = Sfx.Get("explosion_bazooka");
 				ws.audio.volume = 9f; // hmmm, the docs said range from 0f - 1f i believe 
 				// 		blast visual 
 				var splo = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
-				splo.transform.position = activeRockets[i].transform.position;
+				splo.transform.position = rPos;
 				splo.GetComponent<SphereExplosion>().Color = S.Orange;
 				splo.GetComponent<SphereExplosion>().MaxRadius = Guns[(int)Gun.RocketLauncher].BlastRadius;
 				//		cleanup 
