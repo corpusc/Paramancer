@@ -135,7 +135,7 @@ public class Hud : MonoBehaviour {
 			}
 			
 		if (CcInput.Started(UserAction.Scores))
-			playMode.viewingScores = !playMode.viewingScores;
+			playMode.ShowingScores = !playMode.ShowingScores;
 	}
 
 	bool firstTime = true;

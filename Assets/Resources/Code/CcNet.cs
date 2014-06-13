@@ -765,7 +765,7 @@ public class CcNet : MonoBehaviour {
 				
 				pickupPoints[i].stocked = true;
 
-				// health will be a box with its 'Health' pic on it 
+				// health will be a kit model with an icon 
 				var o = GOs.Get("PickupBox");
 				if (item >= (int)Gun.Pistol) 
 					o = arse.Guns[item].Prefab;
@@ -775,34 +775,22 @@ public class CcNet : MonoBehaviour {
 				n.transform.position = pickupPoints[i].transform.position;
 				n.transform.localScale = Vector3.one * 0.5f;
 
-				PickupBoxScript box;
+				PickupBoxScript gs;
+				// if gun of some type 
 				if (item >= (int)Gun.Pistol) {
-					box = n.AddComponent<PickupBoxScript>();
-					box.boxObj = n;
+					gs = n.AddComponent<PickupBoxScript>();
+					gs.boxObj = n;
+					gs.pickupName = arse.Guns[item].Name;
 				}else{
-					box = n.GetComponent<PickupBoxScript>();
+					gs = n.GetComponent<PickupBoxScript>();
+					gs.pickupName = "Health";
 				}
-				box.pickupPoint = pickupPoints[i];
 
-				if (item < (int)Gun.Pistol) {
-					// health 
-					box.pickupName = "Health";
-					box.iconObj.renderer.material.SetTexture("_MainTex", Pics.Health);
-					Material[] mats = box.boxObj.renderer.materials;
-					mats[0].color = Color.green;
-					box.boxObj.renderer.materials = mats;
-				}else{
-					// gun of some type 
-					box.pickupName = arse.Guns[item].Name;
-					//box.iconObj.renderer.material.SetTexture("_MainTex", arse.Guns[item].Pic);
-					//Material[] mats = box.boxObj.renderer.materials;
-					//mats[0] = arse.Guns[item].Mat;
-					//box.boxObj.renderer.materials = mats;
-				}
+				gs.pickupPoint = pickupPoints[i];
 			}
 		}
 
-		Color cCol = Color.green; // current color
+		Color cCol = Color.green; // current color 
 		if (item >= (int)Gun.Pistol)
 			cCol = arse.Guns[item].Color;
 

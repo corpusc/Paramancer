@@ -2,28 +2,40 @@ using UnityEngine;
 using System.Collections;
 
 public class UserPlaying {
-	public bool viewingScores = true;
+	public bool ShowingScores = true;
 
+	// private 
 	Scoreboard scores = new Scoreboard();
+	// screenshot 
+	bool weShouldHideHUD = false;
+	float whenScreenshotShouldBeFinished;
+	// meter bars 
 	BarMeter health = new BarMeter();
 	BarMeter energy = new BarMeter();
 	BarMeter coolDown = new BarMeter();
-	Texture sprint = Pics.Sprint;
-	//Texture sprint = Pics.GetFirstWith("Sprint");
-
-
-	Crosshair status = Crosshair.Normal;
-	int crosshairRadius = 16;
-	Color prevCrossHair;
+	// crosshair 
 	float prevTick;
-	int picId = 0;
+	Color prevCrossHair;
+	int crosshairRadius = 16;
+	Crosshair status = Crosshair.Normal;
+
+
+
 	public float Draw(CcNet net, Arsenal arse, int midX, int midY, float lvs, Hud hud) {
-		if (CcInput.Started(UserAction.TakePicture)) {
-			var ps = "Paramancer " + picId + ".png"; // pic string 
-		    Application.CaptureScreenshot(ps);
-			hud.Log.AddToLog("+", "Took picture [ " + ps + " ]", S.ColToVec(Color.grey));
-			picId++;
+		// screenshot (might prevent Draw()ing) 
+		if (weShouldHideHUD) {
+			if (Time.time > whenScreenshotShouldBeFinished)
+				weShouldHideHUD = false;
 			return 0f;
+		}else{
+			if (CcInput.Started(UserAction.TakePicture)) {
+				var fn = "Paramancer " + (int)Random.Range(0, 99999) + ".png"; // file name 
+			    Application.CaptureScreenshot(fn);
+				hud.Log.AddToLog("+", "Took picture [ " + fn + " ]", S.ColToVec(Color.grey));
+				weShouldHideHUD = true;
+				whenScreenshotShouldBeFinished = Time.time + 1f;
+				return 0f;
+			}
 		}
 
 		var locEnt = net.localPlayer.Entity;
@@ -47,7 +59,7 @@ public class UserPlaying {
 		health.SetBarColor(net.localPlayer.health/100f);
 		GUI.DrawTexture(new Rect(midX-healthW/2-bm, hY-bm, healthW+bm*2, hH+bm*2), Pics.Black); // background/outline 
 		GUI.DrawTexture(new Rect(midX-healthW/2, hY, healthW, hH), Pics.White);
-		GUI.DrawTexture(new Rect(midX-8, hY-4, 16, 16), Pics.HudHealth);
+		S.DrawOutlinedTexture(new Rect(midX-8, hY-4, 16, 16), Pics.Health);
 
 		// exhaustion bar 
 		int eH = 7; // energy height 
@@ -56,7 +68,7 @@ public class UserPlaying {
 		energy.SetBarColor(locEnt.SprintEnergy, false);
 		GUI.DrawTexture(new Rect(midX-energyW/2-bm, eY-bm, energyW+bm*2, eH+bm*2), Pics.Black); // background/outline 
 		GUI.DrawTexture(new Rect(midX-energyW/2, eY, energyW, eH), Pics.White);
-		S.DrawOutlinedTexture(new Rect(midX-8, eY-4, 16, 16), sprint);
+		S.DrawOutlinedTexture(new Rect(midX-8, eY-4, 16, 16), Pics.Sprint);
 
 		GUI.color = Color.white;
 		
@@ -98,7 +110,7 @@ public class UserPlaying {
 			
 			//Debug.Log(lifeCount);
 			for (int i=0; i<lifeCount; i++) {
-				GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), Pics.HudHealth);
+				GUI.DrawTexture(new Rect(Screen.width-60, i*30, 64, 64), Pics.Health);
 			}
 		}
 		
@@ -130,18 +142,18 @@ public class UserPlaying {
 			midX-crosshairRadius, 
 			midY-crosshairRadius, 
 			crosshairRadius*2, 
-			crosshairRadius*2), Pics.crossHair);
+			crosshairRadius*2), Pics.CrossHair);
 		}
 
 		if (gunA == Gun.Swapper) {
-			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.swapperCrosshair.Length);
+			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.CrosshairSwapper.Length);
 			if (!locEnt.swapperLocked) 
 				swapperFrame = 0;
 			
 			GUI.DrawTexture(new Rect(
 				locEnt.swapperCrossX-32, 
 				(Screen.height-locEnt.swapperCrossY)-32, 64, 64), 
-				Pics.swapperCrosshair[swapperFrame]);
+				Pics.CrosshairSwapper[swapperFrame]);
 		}
 
 		// setup for end of cooldown crosshair animation effect
@@ -157,7 +169,7 @@ public class UserPlaying {
 			switch (status) {
 				case Crosshair.Shrinking:
 					crosshairRadius--;
-					if (crosshairRadius < 8)
+					if (crosshairRadius < 4)
 						status = Crosshair.Growing;
 					break;
 
@@ -215,7 +227,7 @@ public class UserPlaying {
 		}
 		
 		// scoreboard
-		if (viewingScores || net.gameOver) {
+		if (ShowingScores || net.gameOver) {
 			return scores.Draw(net, hud, lvs);
 		}else{
 			return 0f;

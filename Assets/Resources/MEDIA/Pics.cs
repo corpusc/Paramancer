@@ -2,27 +2,28 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
 public static class Pics {
 	// hardcoded/variable-based textures 
-	static public Texture[] swapperCrosshair = new Texture[4];
 	static public Texture Health;
-	static public Texture HudHealth;
 	static public Texture White;
 	static public Texture Black;
-	static public Texture crossHair;
 	static public Texture TeamRedFlag;
 	static public Texture TeamBlueFlag;
 	static public Texture Sprint;
+	static public Texture CrossHair;
+	static public Texture[] CrosshairSwapper = new Texture[4];
 
-	// private
+	// private 
 	static Dictionary<string, Texture> pics = new Dictionary<string, Texture>();
 
 
 	
 	static Pics() {
-		handleFolder("Hud", false);
-		handleFolder("Item/Weap/Gun", false);
-		handleFolder("Map/Preview", false);
+		doFolder("Hud", false);
+		doFolder("Item/Weap/Gun", false);
+		doFolder("Map/Preview", false);
 	}
 	
 	
@@ -44,17 +45,7 @@ public static class Pics {
 		return null;
 	}
 
-//	public static Texture GetFirstWith(string s) {
-//		for (int i = 0; i < pics.Length; i++) {
-//			if (s == pics[i].name)
-//				return (Texture)pics[i]; 
-//		}
-//
-//		Debug.LogError("Can't find any picture with that name!");
-//		return null;
-//	}
-	
-	static void handleFolder(string s, bool inPicFolder = true) {
+	static void doFolder(string s, bool inPicFolder = true) {
 		string feedback = "";
 		string path = s;
 
@@ -82,17 +73,17 @@ public static class Pics {
 			case "Sprint": 
 				Sprint = tPics[i]; 
 				break;
-			case "Health": 
+			case "GunIcon_health": 
 				Health = tPics[i]; 
 				break;
-			case "HudHealth":
-				HudHealth = tPics[i];
+			case "Health": 
+				Health = tPics[i]; 
 				break;
 			case "blackTex": 
 				Black = tPics[i]; 
 				break;
 			case "Crosshair": 
-				crossHair = tPics[i]; 
+				CrossHair = tPics[i]; 
 				break;
 			case "FlagRed": 
 				TeamRedFlag = tPics[i]; 
@@ -101,16 +92,16 @@ public static class Pics {
 				TeamBlueFlag = tPics[i]; 
 				break;
 			case "swapper_crosshair":
-				swapperCrosshair[0] = tPics[i];
+				CrosshairSwapper[0] = tPics[i];
 				break;
 			case "swapper_crosshair2":
-				swapperCrosshair[1] = tPics[i];
+				CrosshairSwapper[1] = tPics[i];
 				break;				
 			case "swapper_crosshair3":
-				swapperCrosshair[2] = tPics[i];
+				CrosshairSwapper[2] = tPics[i];
 				break;				
 			case "swapper_crosshair4":
-				swapperCrosshair[3] = tPics[i];
+				CrosshairSwapper[3] = tPics[i];
 				break;			
 			}
 		}

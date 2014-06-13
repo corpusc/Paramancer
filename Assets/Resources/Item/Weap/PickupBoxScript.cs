@@ -1,13 +1,15 @@
 using UnityEngine;
 using System.Collections;
 
+
+
 public class PickupBoxScript : MonoBehaviour {
 	public string pickupName;
 	public GameObject iconObj;
 	public GameObject boxObj;
 	public PickupPoint pickupPoint;
 	
-	// private
+	// private 
 	CcNet net;
 	GameObject localPlayer;
 	float sinny = 0f;
@@ -19,6 +21,9 @@ public class PickupBoxScript : MonoBehaviour {
 	
 	void Start() {
 		if (pickupName == "Health") {
+			iconObj.renderer.material.SetTexture("_MainTex", Pics.Health);
+			iconObj.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
+
 			isHealth = true;
 			zOff = 90f;
 		}else{

@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 
 
-
-    static class Stick
-    {
+// sticks == staves or wands
+    static class Stick {
         public const int BOLT_LENGTH = 6;
-        public static string[] ws_made = new string[MAX];		/* What sticks are made of */
-        public static string[] ws_type = new string[MAX];		/* Is it a wand or a staff */
+        public static string[] ws_made = new string[MAX]; /* What sticks are made of */
+        public static string[] ws_type = new string[MAX]; /* Is it a wand or a staff */
 
         // Rod/Wand/Staff types
         public const int WS_LIGHT = 0;
@@ -26,9 +25,7 @@ using System.Collections.Generic;
         public const int WS_CANCEL = 13;
         public const int MAX = 14;
 
-        //sticks == staves or wands
-        public static ObjectData[] Data = new[]
-        {
+        public static ObjectData[] Data = new[] {
             new ObjectData("light", 12, 250, null, false),
             new ObjectData("invisibility", 6, 5, null, false),
             new ObjectData("lightning", 3, 330, null, false),
@@ -91,6 +88,7 @@ using System.Collections.Generic;
             "brass",
             "bronze",
             "copper",
+			// coconut wood is awz said Justin 
             "electrum",
             "gold",
             "iron",
@@ -114,12 +112,11 @@ using System.Collections.Generic;
 
         static Stick()
         {
-            init_materials();			/* Set up materials of wands */
+            init_materials(); /* Set up materials of wands */
         }
 
         static bool[] used = new bool[NWOOD];
-        static public void init_materials()
-        { //materials for wands and staffs
+        static public void init_materials() { // materials for wands/staves 
             int i, j;
             string str;
             bool[] metused = new bool[NMETAL];
