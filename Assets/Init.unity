@@ -279,8 +279,8 @@ MonoBehaviour:
   Error: 
   Connected: 0
   isServer: 0
-  uniqueGameName: Splat Death Salad
-  gameName: TestSession
+  MasterServerFacingName: Rogue-Lite FPS
+  MatchName: Init
   connections: 32
   listenPort: 25000
   MatchTypeAndMap: 

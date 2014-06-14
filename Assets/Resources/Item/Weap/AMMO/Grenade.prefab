@@ -237,7 +237,7 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 0}
   startTime: 0
   detonationTime: 0
-  sfx_bounce: {fileID: 0}
+  sfx_bounce: {fileID: 8300000, guid: 7aef0efa98e8f4ecea4d41a8cbbe5cb9, type: 3}
   ForwardOffset: 2
 --- !u!1001 &100100000
 Prefab:
