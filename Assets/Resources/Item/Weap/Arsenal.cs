@@ -26,14 +26,9 @@ public class Arsenal : MonoBehaviour {
 
 			var n = S.GetSpacedOut("" + (Gun)i);
 			Guns[i].Name = n;
-
-			switch ((Gun)i) {
-				default:
-					Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Gun/" + n + "/" + n + " PREFAB");
-					Guns[i].Mat =      Resources.Load<Material>("Item/Weap/Gun/" + n + "/" + n); 
-					Guns[i].Pic =      Resources.Load<Texture> ("Item/Weap/Gun/" + n + "/" + n); 
-					break;
-			}
+			Guns[i].Prefab = (GameObject)Resources.Load("Item/Weap/Gun/" + n + "/" + n + " PREFAB");
+			Guns[i].Mat =      Resources.Load<Material>("Item/Weap/Gun/" + n + "/" + n); 
+			Guns[i].Pic =      Resources.Load<Texture> ("Item/Weap/Gun/" + n + "/" + n); 
 
 			s += n + ",  ";
 			
@@ -48,50 +43,76 @@ public class Arsenal : MonoBehaviour {
 				TallestIcon = h;
 		}
 
-		// pics   (FOR NOW, cycle by id/index into an alphabetized LoadAll() array 
 		for (int i = 0; i < Guns.Length; i++) {
+			// unique settings that diverge from defaults 
 			switch ((Gun)i) {
-				case Gun.Pistol:   Guns[i].Color = Color.white; 
+				case Gun.MachineGun:   
+					Guns[i].AutoFire = true;
+					break; 
+				case Gun.GrenadeLauncher:   
+					Guns[i].BlastRadius = 4f;
+					break; 
+				case Gun.RailGun:   
+					Guns[i].MarkScale = 2f;
+					break;
+				case Gun.RocketLauncher:   
+					Guns[i].BlastRadius = 4f;
+					Guns[i].MarkScale = 5f; // set for the launcher because the projectile has a negative value in the gun system 
+					break;
+				case Gun.Bomb:   
+					Guns[i].BlastRadius = 10f;
+					break; 
+				case Gun.Spatula:   
+					Guns[i].Range = 3f;
+					break; 
+			}
+
+			// they all have these 
+			switch ((Gun)i) {
+				case Gun.Pistol:   
+					Guns[i].Color = Color.white; 
 					Guns[i].Delay = 0.3f; 
 					Guns[i].DelayAlt = 0.3f; 
 					break; 
-				case Gun.GrenadeLauncher:   Guns[i].Color = Color.green; 
+				case Gun.GrenadeLauncher:   
+					Guns[i].Color = Color.green; 
 					Guns[i].Delay = 0.25f; 
 					Guns[i].DelayAlt = 0.25f;
-					Guns[i].BlastRadius = 4f; // BR 
 					break; 
-				case Gun.MachineGun:   Guns[i].Color = Color.yellow; 
+				case Gun.MachineGun:   
+					Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 0.1f; 
-					Guns[i].DelayAlt = 0.1f; Guns[i].AutoFire = true; // only 1 with AutoFire 
+					Guns[i].DelayAlt = 0.1f;
 					break; 
-				case Gun.RailGun:   Guns[i].Color = Color.cyan; 
+				case Gun.RailGun:   
+					Guns[i].Color = Color.cyan; 
 					Guns[i].Delay = 2f;
-					Guns[i].MarkScale = 2f; // 
 					Guns[i].DelayAlt = 2f;
 					break;
-				case Gun.RocketLauncher:   Guns[i].Color = Color.red; 
+				case Gun.RocketLauncher:   
+					Guns[i].Color = S.Orange; 
 					Guns[i].Delay = 1.5f; 
 					Guns[i].DelayAlt = 0.7f;
-					Guns[i].MarkScale = 5f; // set for the launcher because the projectile has a negative value in the gun system 
-					Guns[i].BlastRadius = 4f; // BR 
 					break;
-				case Gun.Swapper:   Guns[i].Color = Color.magenta; 
+				case Gun.Swapper:   
+					Guns[i].Color = Color.magenta; 
 					Guns[i].Delay = 2f; 
 					Guns[i].DelayAlt = 2f; 
 					break; 
-				case Gun.Gravulator:   Guns[i].Color = Color.Lerp(Color.red, Color.yellow, 0.5f); 
+				case Gun.Gravulator:   
+					Guns[i].Color = S.Orange; 
 					Guns[i].Delay = 1f; 
 					Guns[i].DelayAlt = 1f; 
 					break; 
-				case Gun.Bomb:   Guns[i].Color = Color.red; 
+				case Gun.Bomb:   
+					Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 1f; 
 					Guns[i].DelayAlt = 1f; 
-					Guns[i].BlastRadius = 10f; // BR 
 					break; 
-			case Gun.Spatula:   Guns[i].Color = Color.gray; 
+				case Gun.Spatula:   
+					Guns[i].Color = Color.gray; 
 					Guns[i].Delay = 1f;  
 					Guns[i].DelayAlt = 1f;
-					Guns[i].Range = 3f; // only 1 with Range 
 					break; 
 			}
 		}
