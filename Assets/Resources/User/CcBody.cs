@@ -18,16 +18,40 @@ public class CcBody : MonoBehaviour {
 	// private 
 	float sprintActivatedTime = 0f;
 	const float sprintDuration = 5f;
+	const float sprintRegenSpeed = 1f;
 
 
 
-	public void MaybeJumpOrFall(EntityClass ne) {
-		if (bod.grounded) {
+	public void VerticalMove(EntityClass ne) {
+		var riseSpeed = 0.2f;
+		var fallSpeed = -0.2f;
+		// if not rising 
+		if (yMove <= 0f) {
+			Move(transform.up * fallSpeed);
+			bool previouslyGrounded = grounded;
+			grounded = isGrounded;
+			
+			if (grounded) {
+				if (!previouslyGrounded) {
+					ne.PlaySound("Land");
+					ne.sendRPCUpdate = true;
+				}
+			}else{
+				Move(transform.up * riseSpeed);
+			}
+		}else{ // falling or on ground 
+			grounded = false;
+		}
+	}
+		
+	public void MaybeJumpOrFall(EntityClass ne, CcNet net) {
+		if (grounded) {
 			yMove = 0f;
-			if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && bod.JumpBoosted)) {
-				yMove = bod.JumpBoosted ? 7f : 4f;
+
+			if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && JumpBoosted)) {
+				yMove = JumpBoosted ? 7f : 4f;
 				ne.PlaySound("Jump");
-				net.SendTINYUserUpdate(User.viewID, UserAction.MoveUp);
+				net.SendTINYUserUpdate(ne.User.viewID, UserAction.MoveUp);
 			}
 		}else{
 			yMove -= Time.deltaTime * net.CurrMatch.Gravity;
@@ -38,14 +62,9 @@ public class CcBody : MonoBehaviour {
 		if (sprintActivatedTime > sprintDuration) 
 			sprinting = false;
 		
-		if (Time.time > SprintRegenEnd)
-			SprintRegenSpeed = 0.3f;
-		else
-			SprintRegenSpeed = 1f;
-		
 		// regenerate energy 
 		if (!sprinting)
-			sprintActivatedTime = Mathf.Max(sprintActivatedTime - Time.deltaTime * SprintRegenSpeed, 0f);
+			sprintActivatedTime = Mathf.Max(sprintActivatedTime - Time.deltaTime * sprintRegenSpeed, 0f);
 	}
 	
 	public void Move(Vector3 moveVector) {

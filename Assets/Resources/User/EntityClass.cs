@@ -295,27 +295,10 @@ public class EntityClass : MonoBehaviour {
 
 
 					SprintEnergy = bod.GetEnergy();
-					
-					if (yMove <= 0f) {
-						bod.Move(transform.up * -0.2f);
-						bool previouslyGrounded = bod.grounded;
-						bod.grounded = bod.isGrounded;
-						
-						if (bod.grounded) {
-							if (!previouslyGrounded) {
-								PlaySound("Land");
-								sendRPCUpdate = true;
-							}
-						}else{
-							bod.Move(transform.up * 0.2f);
-						}
-					}else{
-						bod.grounded = false;
-					}
+					bod.VerticalMove(this);
+					bod.MaybeJumpOrFall(this, net);
 
-					bod.MaybeJumpOrFall(this);
-
-					bod.Move(transform.up * yMove * Time.deltaTime * 5f);
+					bod.Move(transform.up * bod.yMove * Time.deltaTime * 5f);
 					
 					crouching = false;
 					if (CcInput.Holding(UserAction.MoveDown)) 
@@ -342,7 +325,8 @@ public class EntityClass : MonoBehaviour {
 						sendRPCUpdate = true;
 					if (crouching != crouchingPrev) 
 						sendRPCUpdate = true;
-					//if (yMove != lastYmove) sendRPCUpdate = true;
+					if (bod.yMove != lastYmove) 
+						sendRPCUpdate = true;
 					if (User.health != lastHealth) 
 						sendRPCUpdate = true;
 					if (net.broadcastPos) {
@@ -353,11 +337,11 @@ public class EntityClass : MonoBehaviour {
 					lastCamAngle = camAngle;
 					lastMoveVector = moveVec;
 					crouchingPrev = crouching;
-					lastYmove = yMove;
+					lastYmove = bod.yMove;
 					lastHealth = User.health;
 					
 					if (sendRPCUpdate) {
-						net.SendUserUpdate(User.viewID, transform.position, camAngle, crouching, moveVec, yMove, 
+						net.SendUserUpdate(User.viewID, transform.position, camAngle, crouching, moveVec, bod.yMove, 
 							(int)GunInHand, (int)GunOnBack, transform.up, transform.forward);
 						sendRPCUpdate = false;
 						
@@ -739,7 +723,7 @@ public class EntityClass : MonoBehaviour {
 
 		HudGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
 		
-		gunInertia -= (gunInertia-new Vector3(0f, yMove, 0f)) * Time.deltaTime * 5f;
+		gunInertia -= (gunInertia-new Vector3(0f, bod.yMove, 0f)) * Time.deltaTime * 5f;
 		if (gunInertia.y < -3f) 
 			gunInertia.y = -3f;
 		HudGun.transform.localPosition += gunInertia * 0.1f;
@@ -1113,7 +1097,7 @@ public class EntityClass : MonoBehaviour {
 			bod.Move(moveVec * timeDelta * 10f);
 		}
 		
-		if (yMove <= 0f) {
+		if (bod.yMove <= 0f) {
 			bod.Move(transform.up * -0.2f);
 			bod.grounded = bod.isGrounded;
 
@@ -1124,12 +1108,12 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		if (bod.grounded) {
-			yMove = 0f;
+			bod.yMove = 0f;
 		}else{
-			yMove -= timeDelta * 10f;
+			bod.yMove -= timeDelta * 10f;
 		}
 		
-		bod.Move(transform.up * yMove * timeDelta * 5f);
+		bod.Move(transform.up * bod.yMove * timeDelta * 5f);
 	}
 	
 	public void UpdatePlayer(Vector3 pos, Vector3 ang, bool crouch, Vector3 move, float yMovement, double time, 
@@ -1140,7 +1124,7 @@ public class EntityClass : MonoBehaviour {
 		camAngle = ang;
 		crouching = crouch;
 		moveVec = move;
-		yMove = yMovement;
+		bod.yMove = yMovement;
 		lastUpdateTime = time;
 		GunInHand = gunA;
 		GunOnBack = gunB;
