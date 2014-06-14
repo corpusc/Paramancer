@@ -617,7 +617,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		// let players know they are still connected
+		// let players know they are still connected 
 		if (Connected && isServer) {
 			if (Time.time > latestServerHeartbeat + 9f) {
 				latestServerHeartbeat = Time.time + 9f;
@@ -647,25 +647,30 @@ public class CcNet : MonoBehaviour {
 			for (int i=0; i<players.Count; i++) {
 				if (!players[i].local) {
 					if (Time.time>players[i].lastPong + 20f) {
-						//gone 20 secs without hearing from client, auto-kick 
+						// gone 20 secs without hearing from client, auto-kick 
 						Kick(i,true);
 					}
 				}
 			}
 		}
 		
-		// respawn dead players 
 		if (isServer) {
+			// respawn dead players 
 			for (int i=0; i<players.Count; i++) {
-				if (players[i].health <= 0f){
+				if (players[i].Entity != null && players[i].health <= 0f) {
 					if (Time.time > players[i].respawnTime) {
 						if (CurrMatch.playerLives == 0 || players[i].lives > 0)
 							players[i].health = 100f;
 						
-						networkView.RPC("AssignPlayerStats", RPCMode.All, players[i].viewID, players[i].health, players[i].kills, players[i].deaths, players[i].currentScore);
+						networkView.RPC("AssignPlayerStats", RPCMode.All, 
+						                players[i].viewID, 
+						                players[i].health, 
+						                players[i].kills, 
+						                players[i].deaths, 
+						                players[i].currentScore);
 						networkView.RPC("RespawnPlayer", RPCMode.All, players[i].viewID);
 					}
-				}else{
+				}else{ // set spawn countdown 
 					players[i].respawnTime = Time.time + CurrMatch.respawnWait;
 				}
 			}
@@ -927,14 +932,13 @@ public class CcNet : MonoBehaviour {
 			}	
 		}
 		
-		// this could just be a team change update at the start of the level
+		// this could just be a team change update at the start of the level 
 		bool weExist = false;
 		for (int i=0; i<players.Count; i++) {
 			if (players[i].viewID == viewID) {
 				weExist = true;
 				players[i].team = targetTeam;
 				players[i].lives = lives;
-				players[i].health = 100f;
 			}
 		}
 		
@@ -1191,20 +1195,19 @@ public class CcNet : MonoBehaviour {
 		team1Score = 0;
 		team2Score = 0;
 		
-		// let's clear stuff out if we are already playing 
+		// clear stuff out if we are already playing 
 		preppingLevel = false;
 		levelLoaded = false;
 		for (int i=0; i<players.Count; i++) {
-			if (players[i].Entity != null) Destroy(players[i].Entity.gameObject);
+			if (players[i].Entity != null) 
+				Destroy(players[i].Entity.gameObject);
 			players[i].Entity = null;
 			
-			players[i].health = 100;
 			players[i].kills = 0;
 			players[i].deaths = 0;
 			players[i].currentScore = 0;
 		}
 		
-		localPlayer.health = 100;
 		localPlayer.kills = 0;
 		localPlayer.deaths = 0;
 		localPlayer.currentScore = 0;
