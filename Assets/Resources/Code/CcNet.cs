@@ -924,7 +924,7 @@ public class CcNet : MonoBehaviour {
 		
 		if (players.Count == 1 && CurrMatch.playerLives > 0) {
 			if (isServer && Connected && !gameOver) {
-				// this is a lives match, and now we have enough players
+				// this is a lives match, and now we have enough players 
 				gameTimeLeft = 0f;
 				gameOver = true;
 				NextMatchTime = 5f; // CHANGE ME
@@ -946,32 +946,38 @@ public class CcNet : MonoBehaviour {
 			return;
 		
 		// another player has joined, lets add them to our view of the game 
-		bool localShopforLocalPeople = false;
+		bool localShopForLocalPeople = false;
 		if (viewID == localPlayer.viewID) 
-			localShopforLocalPeople = true;
+			localShopForLocalPeople = true;
 		
-		AddPlayer(localShopforLocalPeople, viewID, S.VecToCol(cA), S.VecToCol(cB), S.VecToCol(cC), head, name, np, targetTeam, lives);
+		AddPlayer(localShopForLocalPeople, viewID, 
+		          S.VecToCol(cA), 
+		          S.VecToCol(cB), 
+		          S.VecToCol(cC), head, name, np, targetTeam, lives);
 		
 		if (levelLoaded) {
-			// only instantiate the actual object of the player if we are in the right level
-			// uninstantiated players are added when the level finished loading
+			// only instantiate the actual object of the player if we are in the right level 
+			// uninstantiated players are added when the level finished loading 
 			players[players.Count-1].InstantiateEntity(GOs.Get("FPSEntity"));
 		}
 		
-		
-		// tell local Entity to broadcast position so new players know
+		// tell local Entity to broadcast position so new players know 
 		broadcastPos = true;
-		// also let new players know the scores
-		if (isServer){
+
+		if (isServer) {
+			// let new players know the scores 
 			for (int i=0; i<players.Count; i++) {
-				networkView.RPC("SharePlayerScores", RPCMode.Others, players[i].viewID, players[i].kills, players[i].deaths, 
+				networkView.RPC("SharePlayerScores", RPCMode.Others, 
+	                players[i].viewID, 
+	                players[i].kills, 
+	                players[i].deaths, 
 					players[i].currentScore);
 			}
 			
 			networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
 		
-		if (levelLoaded){
+		if (levelLoaded) {
 			LogEntry newMsg = new LogEntry();
 			newMsg.Maker = "";
 			newMsg.Color = Color.grey;
@@ -1224,7 +1230,6 @@ public class CcNet : MonoBehaviour {
 		}
 
 		if (preppingLevel) {
-			// level set up, let's play! 
 			preppingLevel = false;
 			levelLoaded = true;
 			
