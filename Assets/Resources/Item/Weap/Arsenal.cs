@@ -170,7 +170,13 @@ public class Arsenal : MonoBehaviour {
 			return; // (no trail effects) 
 		
 		// fx trail 
-		var tj = (GameObject)GameObject.Instantiate(GOs.Get("TrailJagged"));
+		string trailName;
+		if (weapon == Gun.Pistol)
+			trailName = "TrailCloud";
+		else
+			trailName = "TrailJagged";
+
+		var tj = (GameObject)GameObject.Instantiate(GOs.Get(trailName));
 		var b = tj.GetComponent<TrailStraight>();
 
 		if (localFire) 
