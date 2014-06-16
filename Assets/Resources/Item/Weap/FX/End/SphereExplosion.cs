@@ -5,6 +5,7 @@ using System.Collections;
 
 // an explosion sphere graphic 
 public class SphereExplosion : MonoBehaviour {
+
 	public float MaxRadius;
 	public bool IsRootSphere = true; // only the root/primary sphere should have a light, all other layers/stacks will be lit from it 
 	public Color Color;
@@ -16,9 +17,15 @@ public class SphereExplosion : MonoBehaviour {
 	float expandSpeed = 40f;
 	float shrinkSpeed = 20f;
 
+	MeshFilter mf;
+	Mesh startMesh;
+
 
 
 	void Start() {
+		mf = GetComponent<MeshFilter>();
+		startMesh = mf.mesh;
+
 		transform.localScale = startScale;
 
 		// random orientation/rotation speeds 
@@ -71,6 +78,20 @@ public class SphereExplosion : MonoBehaviour {
 		// spinning/rotation 
 		transform.eulerAngles += rotateSpeed;
 
+		// noise
+		Mesh aMesh = GetComponent<MeshFilter>().mesh;
+		Vector3[] vertices = aMesh.vertices;
+		int i = 0;
+		while( i < vertices.Length ) {
+			Vector3 v = new Vector3(vertices[i].x * 0.1f, vertices[i].z * 0.1f, Time.time * 1f);
+			vertices[i] += new Vector3(vertices[i].x, Random.Range(0f, 1f), vertices[i].z);
+			i++;
+		}
+		
+		aMesh.vertices = vertices;
+		aMesh.RecalculateBounds();
+		
+		
 		// cleanup 
 		if (ls.x < 0.1f) 
 			Destroy(gameObject);

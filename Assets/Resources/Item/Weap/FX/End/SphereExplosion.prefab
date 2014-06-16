@@ -12,6 +12,7 @@ GameObject:
   - 23: {fileID: 2300000}
   - 108: {fileID: 10800000}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: SphereExplosion
   m_TagString: Untagged
@@ -164,6 +165,27 @@ MonoBehaviour:
   MaxRadius: 0
   IsRootSphere: 1
   Color: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 202806cc8bebd4507a95d9f5d6be2b91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ramp: {fileID: 2800000, guid: de25a418e52274482b51702fff566bcd, type: 3}
+  _noise: {fileID: 2800000, guid: 4648634f8231b4bf0860b6a2b4f6fadc, type: 3}
+  ExplosionMaterial: {fileID: 2100000, guid: ba9ab8cadaaa4451b93b38012ec0b31b, type: 2}
+  _heat: 1
+  _alpha: 1
+  _scrollSpeed: 1
+  _frequency: 1
+  _scattering: 1
+  _octaves: 2
+  _quality: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
