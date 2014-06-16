@@ -50,7 +50,11 @@ public class CcBody : MonoBehaviour {
 
 			if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && JumpBoosted)) {
 				yMove = JumpBoosted ? 7f : 4f;
-				ne.PlaySound("Jump");
+				if (JumpBoosted && Random.Range(0, 100) == 0) {
+					ne.PlaySound("Yay");
+				} else {
+					ne.PlaySound("Jump");
+				}
 				net.SendTINYUserUpdate(ne.User.viewID, UserAction.MoveUp);
 			}
 		}else{
@@ -58,9 +62,11 @@ public class CcBody : MonoBehaviour {
 		}
 	}
 	
-	public void TickEnergy() {
-		if (sprintActivatedTime > sprintDuration) 
+	public void TickEnergy(EntityClass ne) {
+		if (sprintActivatedTime > sprintDuration) {
 			sprinting = false;
+			ne.PlaySound("Exhausted");
+		}
 		
 		// regenerate energy 
 		if (!sprinting)

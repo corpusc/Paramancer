@@ -247,12 +247,18 @@ public class EntityClass : MonoBehaviour {
 							camAngle.x = -max;
 					}
 
-					if (CcInput.Started(UserAction.Sprint) && SprintEnergy > 0.2f) {
-						bod.sprinting = !bod.sprinting;
-						sprintRelease = 0f;
+					if (CcInput.Started(UserAction.Sprint)) {
+						if (bod.sprinting) {
+							bod.sprinting = false;
+						} else if (SprintEnergy > 0.2f) {
+							bod.sprinting = true;
+							sprintRelease = 0f;
+						} else {
+							PlaySound("Exhausted");
+						}
 					}
 
-					bod.TickEnergy();
+					bod.TickEnergy(this);
 
 					sprintRelease += Time.deltaTime;
 					
