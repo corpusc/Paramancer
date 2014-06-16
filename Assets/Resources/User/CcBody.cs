@@ -4,7 +4,7 @@ using System.Collections;
 
 
 public class CcBody : MonoBehaviour {
-	public float health = 100f;
+	public float Health = 100f;
 	public float yMove = 0f;
 	public bool grounded;
 	public bool isGrounded = false;

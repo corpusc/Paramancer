@@ -154,7 +154,7 @@ public class EntityClass : MonoBehaviour {
 			net.localPlayer.Entity = this;
 		
 		// if dead... 
-		if (User.health <= 0f) {
+		if (User.Health <= 0f) {
 			MakeBombInvisible();
 		}
 
@@ -212,12 +212,12 @@ public class EntityClass : MonoBehaviour {
 				Vector3 lastPos = transform.position;
 
 				// item pick up 
-				if (bod.health > 0f) {
+				if (bod.Health > 0f) {
 					HandlePickingUpItem();
 				}
 				offeredPickup = ""; // must do after the above check 
 				
-				if (User.health > 0f) {
+				if (User.Health > 0f) {
 					if (Camera.main.transform.parent == null) 
 						SetModelVisibility(false);
 					
@@ -327,7 +327,7 @@ public class EntityClass : MonoBehaviour {
 						sendRPCUpdate = true;
 					if (bod.yMove != lastYmove) 
 						sendRPCUpdate = true;
-					if (User.health != lastHealth) 
+					if (User.Health != lastHealth) 
 						sendRPCUpdate = true;
 					if (net.broadcastPos) {
 						net.broadcastPos = false;
@@ -338,7 +338,7 @@ public class EntityClass : MonoBehaviour {
 					lastMoveVector = moveVec;
 					crouchingPrev = crouching;
 					lastYmove = bod.yMove;
-					lastHealth = User.health;
+					lastHealth = User.Health;
 					
 					if (sendRPCUpdate) {
 						net.SendUserUpdate(User.viewID, transform.position, camAngle, crouching, moveVec, bod.yMove, 
@@ -368,7 +368,7 @@ public class EntityClass : MonoBehaviour {
 						List<int> validSwapTargets = new List<int>();
 						
 						for (int i=0; i<net.players.Count; i++){
-							if (!net.players[i].local && Vector3.Dot(Camera.main.transform.forward, (net.players[i].Entity.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.players[i].health>0f){
+							if (!net.players[i].local && Vector3.Dot(Camera.main.transform.forward, (net.players[i].Entity.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.players[i].Health>0f){
 								
 								Ray swapCheckRay = new Ray(Camera.main.transform.position, net.players[i].Entity.transform.position - Camera.main.transform.position);
 								RaycastHit swapCheckHit = new RaycastHit();
@@ -598,7 +598,7 @@ public class EntityClass : MonoBehaviour {
 //		}
 		
 		// if dead, make unshootable
-		if (User.health > 0f) {
+		if (User.Health > 0f) {
 			gameObject.layer = 8;
 		}else{
 			gameObject.layer = 2;
@@ -615,7 +615,7 @@ public class EntityClass : MonoBehaviour {
 			if (User.local && HudGun && HudGun.renderer) 
 				HudGun.renderer.enabled = false;
 		}else{
-			if (User.local && HudGun && HudGun.renderer && User.health > 0f) 
+			if (User.local && HudGun && HudGun.renderer && User.Health > 0f) 
 				HudGun.renderer.enabled = true;
 		}
 
@@ -676,7 +676,7 @@ public class EntityClass : MonoBehaviour {
 			
 			sendRPCUpdate = true;
 			
-			if (User.health <= 0f || !User.local) {
+			if (User.Health <= 0f || !User.local) {
 				SetModelVisibility(true);
 			}else{
 				SetModelVisibility(false);
@@ -699,7 +699,7 @@ public class EntityClass : MonoBehaviour {
 			prevGunOnBack = GunOnBack;
 			sendRPCUpdate = true;
 			
-			if (User.health <= 0f || !User.local) {
+			if (User.Health <= 0f || !User.local) {
 				SetModelVisibility(true);
 			}else{
 				SetModelVisibility(false);
@@ -1069,7 +1069,7 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void LateUpdate() {
-		if (User.health > 0f) {
+		if (User.Health > 0f) {
 			aimBone.transform.localEulerAngles /*+=*/ = new Vector3(0, camAngle.x, 0);
 			//gunMesh1.transform.localPosition = gunOffs;
 			//gunMesh1.transform.position = aimBone.transform.position;
@@ -1078,7 +1078,7 @@ public class EntityClass : MonoBehaviour {
 	}
 	
 	void NonLocalUpdate() {
-		if (User.health <= 0f) 
+		if (User.Health <= 0f) 
 			moveVec = Vector3.zero;
 		
 		if (cc == null) 
@@ -1168,10 +1168,10 @@ public class EntityClass : MonoBehaviour {
 	public void HandlePickingUpItem() {
 		if (offeredPickup != "") {
 			if (offeredPickup == "Health") {
-				if (User.health < 100f) {
+				if (User.Health < 100f) {
 					net.ConsumeHealth(User.viewID);
-					net.localPlayer.health = 100f;
-					User.health = 100f;
+					net.localPlayer.Health = 100f;
+					User.Health = 100f;
 					PlaySound("guncocked");
 
 					currentOfferedPickup.Pickup();

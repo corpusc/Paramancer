@@ -5,9 +5,14 @@ using System.Collections;
 
 public class NetUser {
 	// misc 
-	public float health {
-		get {   return Entity.bod.health;   }
-		set {   Entity.bod.health = value;   }
+	public float Health {
+		get {   
+			if (Entity == null) 
+				return -1f;   
+			else
+				return Entity.bod.Health;   
+		}
+		set {   if (Entity != null) Entity.bod.Health = value;   }
 	}
 
 	// networking

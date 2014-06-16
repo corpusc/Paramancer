@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 
@@ -27,12 +27,12 @@ public class AI : MonoBehaviour {
 	}
 	
 	void Update() {
-		if (EC.bod.health <= 0f) {
+		if (EC.bod.Health <= 0f) {
 			EC.MakeBombInvisible();
 		}
 		
 		// item pick up 
-		if (EC.bod.health > 0f) {
+		if (EC.bod.Health > 0f) {
 			EC.HandlePickingUpItem();
 		}
 		
@@ -56,7 +56,7 @@ public class AI : MonoBehaviour {
 			prevVisible = true;
 		}
 		
-		if (EC.bod.health > 0f) {
+		if (EC.bod.Health > 0f) {
 			Vector3 lastPos = transform.position;
 
 			rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, (DesiredPos - transform.position).normalized * MovementSpeed, Time.deltaTime);
@@ -68,7 +68,7 @@ public class AI : MonoBehaviour {
 			int lavaLayer = (1<<10);
 			if (Physics.Raycast(lavaRay, out lavaHit, lavaRayLength, lavaLayer)) {
 				transform.position = lavaHit.point + Vector3.up * 0.35f;
-				EC.bod.health = 0f;
+				EC.bod.Health = 0f;
 				EC.net.RegisterHit(Gun.Lava, viewID, viewID, lavaHit.point);
 			}
 		} // end of movement and other stuff done if alive

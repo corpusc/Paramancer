@@ -114,7 +114,7 @@ public class BasketballScript : MonoBehaviour {
 				// let's check to see if any of the players can pick up the ball 
 				bool captured = false;
 				for (int i=0; i<net.players.Count; i++) {
-					if (!captured && net.players[i].health>0f && 
+					if (!captured && net.players[i].Health>0f && 
 					    Vector3.Distance(transform.position, net.players[i].Entity.transform.position)<1.5f
 				    ) {
 						if (throwerID == null || 

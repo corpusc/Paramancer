@@ -55,8 +55,8 @@ public class UserPlaying {
 
 		// damage bar 
 		int hH = 11; // health height 
-		int healthW = (int)((float)barW * (1f - net.localPlayer.health/100f));
-		health.SetBarColor(net.localPlayer.health/100f);
+		int healthW = (int)((float)barW * (1f - net.localPlayer.Health/100f));
+		health.SetBarColor(net.localPlayer.Health/100f);
 		GUI.DrawTexture(new Rect(midX-healthW/2-bm, hY-bm, healthW+bm*2, hH+bm*2), Pics.Black); // background/outline 
 		GUI.DrawTexture(new Rect(midX-healthW/2, hY, healthW, hH), Pics.White);
 		S.DrawOutlinedTexture(new Rect(midX-8, hY-4, 16, 16), Pics.Health);
