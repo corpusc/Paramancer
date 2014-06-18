@@ -276,7 +276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e7222aaa5a55b4c8adf1605a296927, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Error: 
+  Error: '''Error'' string init value...NO ERRORS YET!'
   Connected: 0
   InServerMode: 0
   MasterServerFacingName: Rogue-Lite FPS
@@ -308,7 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30e5412836c434d4eb17f13473fc00fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FadeTime: 10
+  FadeTime: 20
   TimeToHideEntireLog: -100
   Typing: 0
 --- !u!114 &1973207297
@@ -325,7 +325,7 @@ MonoBehaviour:
   GoToPrevMenu: << Back <<
   TopOfMaxedLog: 0
   Log: {fileID: 0}
-  Font: {fileID: 12800000, guid: 6dcecc57693b1d2419e4eb77f98caf4c, type: 3}
+  Font: {fileID: 0}
   GS:
     m_Name: 
     m_Normal:

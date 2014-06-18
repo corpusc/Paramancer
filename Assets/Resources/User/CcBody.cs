@@ -51,7 +51,7 @@ public class CcBody : MonoBehaviour {
 			if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && JumpBoosted)) {
 				yMove = JumpBoosted ? 7f : 4f;
 				if (JumpBoosted && Random.Range(0, 100) == 0) {
-					ne.PlaySound("Yay");
+					ne.PlaySound("spacey");
 				} else {
 					ne.PlaySound("Jump");
 				}
