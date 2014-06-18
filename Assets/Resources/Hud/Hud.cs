@@ -224,7 +224,10 @@ public class Hud : MonoBehaviour {
 			case HudMode.Settings:
 				avatarView();
 				drawSettings();
-				if (net != null && net.LocUs != null && net.LocUs.Entity != null)
+				if (//null != net && 
+			    	null != net.LocUs && 
+			    	null != net.LocUs.Entity
+			    )
 					net.LocUs.Entity.FOV = tFOV;
 				break;
 			
