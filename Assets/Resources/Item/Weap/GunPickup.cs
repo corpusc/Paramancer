@@ -3,15 +3,16 @@ using System.Collections;
 
 
 
-public class PickupBoxScript : MonoBehaviour {
+public class GunPickup : MonoBehaviour {
 	public string Name;
-	public GameObject Icon;
 	public GameObject Model; // this is a linked sub-object of the prefab 
 	public PickupPoint PickupPoint;
 	
 	// private 
 	CcNet net;
-	GameObject lu; // local user game object 
+	GameObject luO; // local user game object 
+	GameObject iconFront; // ...or top, since kit model defaults to "laying flat on the ground" 
+	GameObject iconBack; // ...or bottom ^^ 
 	float sinny = 0f;
 	float zOff; // rotation offset, so that they aren't all pointed in the same direction 
 	Vector3 start;
@@ -19,10 +20,25 @@ public class PickupBoxScript : MonoBehaviour {
 	
 	
 	
+	void makeQuad(GameObject go, float angle, float zOffs) {
+		go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+		setMat(go, Pics.Get("Grenade Launcher"));
+		go.transform.position = new Vector3(0, 0, zOffs);
+		//go.transform.parent = Model.transform;
+		go.transform.localRotation = Quaternion.AngleAxis(angle, Vector3.right);
+	}
+	void setMat(GameObject go, Texture pic) {
+		go.renderer.material.SetTexture("_MainTex", pic);
+		go.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
+	}
+
 	void Start() {
+		makeQuad(iconFront, 90f, 1f);
+		makeQuad(iconBack, -90f, -1f);
+
 		if (Name == "Health") {
-			Icon.renderer.material.SetTexture("_MainTex", Pics.Health);
-			Icon.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
+			//setMat(iconFront, Pics.Health);
+			//setMat(iconBack, Pics.Health);
 
 			isHealth = true;
 			zOff = 90f;
@@ -50,18 +66,19 @@ public class PickupBoxScript : MonoBehaviour {
 	}
 	
 	void Update() {
-		if (lu == null) {
-			if (null != lu.LocUs &&
-			    null != lu.LocUs.Entity
+		if (luO == null) {
+			if (null != net &&
+				null != net.LocUs &&
+			    null != net.LocUs.Entity
 		    )
-				lu = net.LocUs.Entity.gameObject;
+				luO = net.LocUs.Entity.gameObject;
 		}else{
 			if (Vector3.Distance(
-				lu.transform.position, transform.position) < 2f && 
-				lu.transform.position.y > transform.position.y - 0.5f
+				luO.transform.position, transform.position) < 2f && 
+				luO.transform.position.y > transform.position.y - 0.5f
 			) {
-				lu.GetComponent<EntityClass>().offeredPickup = Name;
-				lu.GetComponent<EntityClass>().currentOfferedPickup = this;
+				luO.GetComponent<EntityClass>().offeredPickup = Name;
+				luO.GetComponent<EntityClass>().currentOfferedPickup = this;
 			}
 		}
 		

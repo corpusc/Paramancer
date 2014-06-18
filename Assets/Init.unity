@@ -278,7 +278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Error: 
   Connected: 0
-  isServer: 0
+  InServerMode: 0
   MasterServerFacingName: Rogue-Lite FPS
   MatchName: Init
   connections: 32

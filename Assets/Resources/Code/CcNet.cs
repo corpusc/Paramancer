@@ -774,23 +774,23 @@ public class CcNet : MonoBehaviour {
 				pickupPoints[i].stocked = true;
 
 				// health will be a kit model with an icon 
-				var o = GOs.Get("PickupBox");
+				var o = GOs.Get("Kit");
 				if (item >= (int)Gun.Pistol) 
 					o = arse.Guns[item].Prefab;
 
-				var n = (GameObject)GameObject.Instantiate(o);
-				pickupPoints[i].currentAvailablePickup = n;
-				n.transform.position = pickupPoints[i].transform.position;
-				n.transform.localScale = Vector3.one * 0.5f;
+				var inst = (GameObject)GameObject.Instantiate(o);
+				pickupPoints[i].currentAvailablePickup = inst;
+				inst.transform.position = pickupPoints[i].transform.position;
+				inst.transform.localScale = Vector3.one * 0.5f;
 
-				PickupBoxScript gs;
+				GunPickup gs;
 				// if gun of some type 
 				if (item >= (int)Gun.Pistol) {
-					gs = n.AddComponent<PickupBoxScript>();
-					gs.Model = n;
+					gs = inst.AddComponent<GunPickup>();
+					gs.Model = inst;
 					gs.Name = arse.Guns[item].Name;
-				}else{
-					gs = n.GetComponent<PickupBoxScript>();
+				}else{ // it's health 
+					gs = inst.GetComponent<GunPickup>();
 					gs.Name = "Health";
 				}
 
@@ -802,7 +802,7 @@ public class CcNet : MonoBehaviour {
 		if (item >= (int)Gun.Pistol)
 			cCol = arse.Guns[item].Color;
 
-		GameObject p = GameObject.Find("_PickupSpots");
+		var p = GameObject.Find("_PickupSpots");
 		foreach (Transform child in p.transform) {
 			if (child.gameObject.GetComponent<PickupPoint>().pickupPointID == pointID)
 				child.gameObject.renderer.material.color = cCol;

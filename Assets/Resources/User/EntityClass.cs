@@ -59,7 +59,7 @@ public class EntityClass : MonoBehaviour {
 	public float SprintEnergy = 1f; // 0-1 
 	// 		nearby pickup 
 	public string offeredPickup = "";
-	public PickupBoxScript currentOfferedPickup;
+	public GunPickup currentOfferedPickup;
 
 	// AI 
 	public bool isMob = false;
