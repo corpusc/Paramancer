@@ -151,7 +151,7 @@ public class EntityClass : MonoBehaviour {
 			return;
 
 		if (User.local)
-			net.localPlayer.Entity = this;
+			net.LocUs.Entity = this;
 		
 		// if dead... 
 		if (User.Health <= 0f) {
@@ -221,7 +221,7 @@ public class EntityClass : MonoBehaviour {
 					if (Camera.main.transform.parent == null) 
 						SetModelVisibility(false);
 					
-					net.localPlayer.FraggedBy = null;
+					net.LocUs.FraggedBy = null;
 					Camera.main.transform.parent = camHolder.transform;
 					Camera.main.transform.localPosition = Vector3.zero;
 					// this makes sure we can walk along walls/ceilings with proper mouselook orientation 
@@ -536,10 +536,10 @@ public class EntityClass : MonoBehaviour {
 					if (Camera.main.transform.parent != null) 
 						SetModelVisibility(true);
 					
-					if (net.localPlayer.FraggedBy != null) {
+					if (net.LocUs.FraggedBy != null) {
 						Camera.main.transform.parent = null;
 						Camera.main.transform.position = transform.position - animObj.transform.forward;
-						Camera.main.transform.LookAt(net.localPlayer.FraggedBy.transform.position, transform.up);
+						Camera.main.transform.LookAt(net.LocUs.FraggedBy.transform.position, transform.up);
 						Camera.main.transform.Translate(0, 0, -2f);
 					}
 				}
@@ -612,7 +612,7 @@ public class EntityClass : MonoBehaviour {
 		
 		// if no friendly fire & on same team, make unshootable
 		if (net.CurrMatch.teamBased && !net.CurrMatch.FriendlyFire) {
-			if (User.team == net.localPlayer.team) {
+			if (User.team == net.LocUs.team) {
 				gameObject.layer = 2;
 			}
 		}
@@ -788,7 +788,7 @@ public class EntityClass : MonoBehaviour {
 				gunRecoil -= Vector3.forward * 2f;
 				break; 
 			case Gun.GrenadeLauncher:
-				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, Vector3.zero, bod.sprinting);
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.LocUs.viewID, false, alt, Vector3.zero, bod.sprinting);
 				gunRecoil += Vector3.forward * 6f;
 				break; 
 			case Gun.MachineGun:
@@ -805,7 +805,7 @@ public class EntityClass : MonoBehaviour {
 				break; 
 			case Gun.RocketLauncher:
 				//print ("Rocket launcher shot, alt = " + (alt ? "1" : "0"));
-				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.localPlayer.viewID, false, alt, Vector3.zero);
+				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.LocUs.viewID, false, alt, Vector3.zero);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
 			case Gun.Swapper:
@@ -814,8 +814,8 @@ public class EntityClass : MonoBehaviour {
 					FireBullet(gun);
 				}else{
 					// locked on, we hit
-				net.Shoot(gun, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.localPlayer.viewID, true, alt, Vector3.zero);
-					net.RegisterHit(gun, net.localPlayer.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
+				net.Shoot(gun, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.LocUs.viewID, true, alt, Vector3.zero);
+					net.RegisterHit(gun, net.LocUs.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
@@ -941,7 +941,7 @@ public class EntityClass : MonoBehaviour {
 		}
 		
 		if (!User.local && net.CurrMatch.pitchBlack) {
-			if (net.CurrMatch.teamBased && User.team == net.localPlayer.team) {
+			if (net.CurrMatch.teamBased && User.team == net.LocUs.team) {
 				firstPersonLight.enabled = true;
 				if (User.team == 1) {
 					firstPersonLight.color = Color.red;
@@ -1014,10 +1014,10 @@ public class EntityClass : MonoBehaviour {
 		bStart = transform.position;
 		bStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
 		// RPC the shot, regardless 
-		net.Shoot(weapon, bStart, bOri, bEnd, net.localPlayer.viewID, hit, alt, hitNorm);
+		net.Shoot(weapon, bStart, bOri, bEnd, net.LocUs.viewID, hit, alt, hitNorm);
 
 		if (registerhit) 
-			net.RegisterHit(weapon, net.localPlayer.viewID, net.players[hitPlayer].viewID, bHit.point);
+			net.RegisterHit(weapon, net.LocUs.viewID, net.players[hitPlayer].viewID, bHit.point);
 	}
 
 	private Transform getRandomSpawn(string s) {
@@ -1176,7 +1176,7 @@ public class EntityClass : MonoBehaviour {
 			if (offeredPickup == "Health") {
 				if (User.Health < 100f) {
 					net.ConsumeHealth(User.viewID);
-					net.localPlayer.Health = 100f;
+					net.LocUs.Health = 100f;
 					User.Health = 100f;
 					PlaySound("guncocked");
 

@@ -38,7 +38,7 @@ public class CcNet : MonoBehaviour {
 	public string Error = "'Error' string init value...NO ERRORS YET!";
 	public NetworkViewID NetVI;
 	public bool Connected = false;
-	public bool isServer = false;
+	public bool InServerMode = false;
 	// if you change the client, change this.
 	// should be unique or different types of clients will clash 
 	public string MasterServerFacingName = "Rogue-Lite FPS";
@@ -58,17 +58,14 @@ public class CcNet : MonoBehaviour {
 	public bool lastGameWasTeamBased = false;
 	private float latestPacket = 0f;
 	private float latestServerHeartbeat = 0f;
-	//		level
-	private bool preppingLevel = false;
-	private bool levelLoaded = false;
-	
+
 	// game modes/types 
 	public MatchData CurrMatch;
 	private GameObject basketball;
 
 
 	// personal stuff 
-	public NetUser localPlayer;
+	public NetUser LocUs;
 	public bool gunBobbing = true;
 	public bool JumpAuto = true;
 
@@ -83,6 +80,9 @@ public class CcNet : MonoBehaviour {
 
 	// private 
 	public string nameOfOfflineBackdrop = "OfflineBackdrop";
+	// map 
+	bool preppingLevel = false;
+	bool mapIsLoaded = false;
 	// scripts 
 	CcLog log;
 	Hud hud;
@@ -154,7 +154,7 @@ public class CcNet : MonoBehaviour {
 	
 	public void ConsumeHealth(NetworkViewID viewID) {
 		// we just used a health pack, tell the server our health is maxed out
-		if (!isServer) {
+		if (!InServerMode) {
 			networkView.RPC("ConsumeHealthRPC", RPCMode.Server, viewID);
 		}else{
 			ConsumeHealthRPC(viewID);
@@ -167,8 +167,8 @@ public class CcNet : MonoBehaviour {
 				players[i].Health = 100f;
 			}
 		}
-		if (localPlayer.viewID == viewID) 
-			localPlayer.Health = 100f;
+		if (LocUs.viewID == viewID) 
+			LocUs.Health = 100f;
 	}
 
 	public void DetonateRocket(Vector3 detPos, Vector3 hitNorm, NetworkViewID bulletID) {
@@ -186,7 +186,7 @@ public class CcNet : MonoBehaviour {
 		if ((Gun)weapon != Gun.RocketLauncher) // rocket explosions are partially simulated client-side 
 			arse.Detonate((Gun)weapon, position, bulletID);
 		
-		if (isServer) {
+		if (InServerMode) {
 			// see if anyone gets hurt 
 			for (int i=0; i<players.Count; i++){
 				if (Vector3.Distance(position, players[i].Entity.transform.position) 
@@ -237,7 +237,7 @@ public class CcNet : MonoBehaviour {
 			return;
 		
 		// we hit somebody, tell the server!
-		if (!isServer) {
+		if (!InServerMode) {
 			networkView.RPC("RegisterHitRPC", RPCMode.Server, (int)weapon, shooterID, victimID, hitPos);
 		}else{
 			RegisterHitRPC((int)weapon, shooterID, victimID, hitPos);
@@ -418,11 +418,11 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void AssignPlayerStats(NetworkViewID viewID, float health, int kills, int deaths, int score) {
 		latestPacket = Time.time;
-		if (localPlayer.viewID == viewID) {
-			localPlayer.Health = health;
-			localPlayer.kills = kills;
-			localPlayer.deaths = deaths;
-			localPlayer.currentScore = score;
+		if (LocUs.viewID == viewID) {
+			LocUs.Health = health;
+			LocUs.kills = kills;
+			LocUs.deaths = deaths;
+			LocUs.currentScore = score;
 		}
 		
 		for (int i=0; i<players.Count; i++) {
@@ -474,22 +474,22 @@ public class CcNet : MonoBehaviour {
 				if (CurrMatch.basketball && players[i].hasBall) {
 					players[i].hasBall = false;
 
-					if (isServer)
+					if (InServerMode)
 						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
 				}
 			}
 		}
 		
 		// set some unused?! totals 
-		if (localPlayer.viewID == fraggerID) 
-			localPlayer.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz? NOTE: they could be used for statistics
-		if (localPlayer.viewID == victimID) { // if local player was the victim 
-			localPlayer.totalDeaths++;
-			localPlayer.FraggedBy = players[fraggerIdx].Entity.gameObject;
+		if (LocUs.viewID == fraggerID) 
+			LocUs.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz? NOTE: they could be used for statistics
+		if (LocUs.viewID == victimID) { // if local player was the victim 
+			LocUs.totalDeaths++;
+			LocUs.FraggedBy = players[fraggerIdx].Entity.gameObject;
 		}
 		
 		// lives 
-		if (isServer && 
+		if (InServerMode && 
 			Connected && 
 			!gameOver && 
 			CurrMatch.playerLives > 0 && 
@@ -583,7 +583,7 @@ public class CcNet : MonoBehaviour {
 	void RespawnPlayer(NetworkViewID viewID) {
 		latestPacket = Time.time;
 		
-		if (viewID == localPlayer.viewID) {
+		if (viewID == LocUs.viewID) {
 			for (int i=0; i<players.Count; i++) {
 				if (players[i].viewID == viewID) {
 					if ((CurrMatch.playerLives > 0 && 
@@ -617,7 +617,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// let players know they are still connected 
-		if (Connected && isServer) {
+		if (Connected && InServerMode) {
 			if (Time.time > latestServerHeartbeat + 9f) {
 				latestServerHeartbeat = Time.time + 9f;
 				networkView.RPC("HeartbeatFromServer", RPCMode.All);
@@ -625,7 +625,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// are we still connected to the server? 
-		if (Connected && !isServer) {
+		if (Connected && !InServerMode) {
 			if (Time.time > latestPacket + 30f) {
 				DisconnectNow();
 				hud.Mode = HudMode.ConnectionError;
@@ -642,7 +642,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		if (Connected && isServer) {
+		if (Connected && InServerMode) {
 			for (int i=0; i<players.Count; i++) {
 				if (!players[i].local) {
 					if (Time.time>players[i].lastPong + 20f) {
@@ -653,7 +653,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		if (isServer) {
+		if (InServerMode) {
 			// respawn dead players 
 			for (int i=0; i<players.Count; i++) {
 				if (players[i].Entity != null && players[i].Health <= 0f) {
@@ -678,16 +678,16 @@ public class CcNet : MonoBehaviour {
 		// change team 
 		if (Connected && CurrMatch.teamBased) {
 			if (CcInput.Started(UserAction.SwapTeam)) {
-				if (localPlayer.team == 1) {
-					localPlayer.team = 2;
+				if (LocUs.team == 1) {
+					LocUs.team = 2;
 				}else{
-					localPlayer.team = 1;
+					LocUs.team = 1;
 				}
 				
-				networkView.RPC("PlayerChangedTeams",RPCMode.AllBuffered, localPlayer.viewID, localPlayer.team);
+				networkView.RPC("PlayerChangedTeams",RPCMode.AllBuffered, LocUs.viewID, LocUs.team);
 				
 				for (int i=0; i<players.Count; i++) {
-					if (players[i].viewID == localPlayer.viewID && players[i].Health > 0f) 
+					if (players[i].viewID == LocUs.viewID && players[i].Health > 0f) 
 						players[i].Entity.Respawn();
 				}
 			}
@@ -696,14 +696,14 @@ public class CcNet : MonoBehaviour {
 		if (!countdownAnnounced) {
 			gameStartTime = Time.time + 5f; //so that you can't deal damage before "FIGHT!"
 			countdownAnnounced = true;
-			if (isServer) {
+			if (InServerMode) {
 				Sfx.PlayOmni("321Fight");
 			}
 		}
 
 		// time announcements 
 		gameTimeLeft -= Time.deltaTime;
-		if (isServer) {
+		if (InServerMode) {
 			if (gameTimeLeft < 120f && !twoMinsAnnounced) {
 				Sfx.PlayOmni("RemainingMins2");
 				twoMinsAnnounced = true;
@@ -738,7 +738,7 @@ public class CcNet : MonoBehaviour {
 			if (NextMatchTime <= 0f){
 				NextMatchTime = 0f;
 				
-				if (isServer) {
+				if (InServerMode) {
 					//begin next match using current settings
 					serverGameChange = true;
 					lastGameWasTeamBased = CurrMatch.teamBased;
@@ -749,7 +749,7 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// pickups 
-		if (Connected && isServer && !gameOver) {
+		if (Connected && InServerMode && !gameOver) {
 			for (int i=0; i<pickupPoints.Count; i++) {
 				if (!pickupPoints[i].stocked) {
 					pickupPoints[i].RestockTime -= Time.deltaTime;
@@ -787,11 +787,11 @@ public class CcNet : MonoBehaviour {
 				// if gun of some type 
 				if (item >= (int)Gun.Pistol) {
 					gs = n.AddComponent<PickupBoxScript>();
-					gs.boxObj = n;
-					gs.pickupName = arse.Guns[item].Name;
+					gs.Model = n;
+					gs.Name = arse.Guns[item].Name;
 				}else{
 					gs = n.GetComponent<PickupBoxScript>();
-					gs.pickupName = "Health";
+					gs.Name = "Health";
 				}
 
 				gs.pickupPoint = pickupPoints[i];
@@ -825,7 +825,7 @@ public class CcNet : MonoBehaviour {
 				if (pickupPoints[i].currentAvailablePickup != null) 
 					Destroy(pickupPoints[i].currentAvailablePickup);
 				
-				if (isServer) 
+				if (InServerMode) 
 					pickupPoints[i].RestockTime = CurrMatch.restockTime;
 			}
 		}
@@ -885,10 +885,10 @@ public class CcNet : MonoBehaviour {
 				l.Text = "";
 				
 				if (team == 1) {
-					if (localPlayer.viewID == viewID){
+					if (LocUs.viewID == viewID){
 						l.Color = Color.red;
 						l.Text = "<< you defected! >>";
-					}else if (localPlayer.team == 1) {
+					}else if (LocUs.team == 1) {
 						l.Color = Color.red;
 						l.Text = "<< " + players[i].name + " defected to your team! >>";
 					}else{
@@ -896,10 +896,10 @@ public class CcNet : MonoBehaviour {
 						l.Text = "<< " + players[i].name + " turned their back on the team! >>";
 					}
 				}else{
-					if (localPlayer.viewID == viewID) {
+					if (LocUs.viewID == viewID) {
 						l.Color = Color.cyan;
 						l.Text = "<< you defected! >>";
-					}else if (localPlayer.team == 2) {
+					}else if (LocUs.team == 2) {
 						l.Color = Color.cyan;
 						l.Text = "<< " + players[i].name + " defected to your team! >>";
 					}else{
@@ -922,7 +922,7 @@ public class CcNet : MonoBehaviour {
 		latestPacket = Time.time;
 		
 		if (players.Count == 1 && CurrMatch.playerLives > 0) {
-			if (isServer && Connected && !gameOver) {
+			if (InServerMode && Connected && !gameOver) {
 				// this is a lives match, and now we have enough players 
 				gameTimeLeft = 0f;
 				gameOver = true;
@@ -946,7 +946,7 @@ public class CcNet : MonoBehaviour {
 		
 		// another player has joined, lets add them to our view of the game 
 		bool localShopForLocalPeople = false;
-		if (viewID == localPlayer.viewID) 
+		if (viewID == LocUs.viewID) 
 			localShopForLocalPeople = true;
 		
 		AddPlayer(localShopForLocalPeople, viewID, 
@@ -954,7 +954,7 @@ public class CcNet : MonoBehaviour {
 		          S.VecToCol(cB), 
 		          S.VecToCol(cC), head, name, np, targetTeam, lives);
 		
-		if (levelLoaded) {
+		if (mapIsLoaded) {
 			// only instantiate the actual object of the player if we are in the right level 
 			// uninstantiated players are added when the level finished loading 
 			players[players.Count-1].InstantiateEntity(GOs.Get("FPSEntity"));
@@ -963,7 +963,7 @@ public class CcNet : MonoBehaviour {
 		// tell local Entity to broadcast position so new players know 
 		broadcastPos = true;
 
-		if (isServer) {
+		if (InServerMode) {
 			// let new players know the scores 
 			for (int i=0; i<players.Count; i++) {
 				networkView.RPC("SharePlayerScores", RPCMode.Others, 
@@ -976,7 +976,7 @@ public class CcNet : MonoBehaviour {
 			networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
 		
-		if (levelLoaded) {
+		if (mapIsLoaded) {
 			LogEntry newMsg = new LogEntry();
 			newMsg.Maker = "";
 			newMsg.Color = Color.grey;
@@ -1120,7 +1120,7 @@ public class CcNet : MonoBehaviour {
 			!serverGameChange) 
 			return;
 		
-		if (!isServer) 
+		if (!InServerMode) 
 			gameTimeLeft = serverGameTime - (float)(Network.time - info.timestamp);
 		
 		// make sure all connected players have lives 
@@ -1128,7 +1128,7 @@ public class CcNet : MonoBehaviour {
 			for (int i=0; i<players.Count; i++)
 				players[i].lives = playerLives;
 		
-		if (!isServer)
+		if (!InServerMode)
 			gameOver = gameIsOver;
 		
 		NextMatchTime = 15f;
@@ -1143,7 +1143,7 @@ public class CcNet : MonoBehaviour {
 		almostOverAnnounced = false;
 		countdownAnnounced = false;
 		
-		if (!isServer) {
+		if (!InServerMode) {
 			// lets update the local game settings 
 			CurrMatch.MapName = mapName;
 			CurrMatch.Name = matchName;
@@ -1174,9 +1174,9 @@ public class CcNet : MonoBehaviour {
 		
 		if (targetTeam != -1) {
 			// don't keep current teams
-			localPlayer.team = targetTeam;
+			LocUs.team = targetTeam;
 			for (int i=0; i<players.Count; i++){
-				if (players[i].viewID == localPlayer.viewID){
+				if (players[i].viewID == LocUs.viewID){
 					players[i].team = targetTeam;
 				}
 			}
@@ -1186,13 +1186,13 @@ public class CcNet : MonoBehaviour {
 		}
 		if (targetTeam == -2) {
 			// last game wasn't team based, this is, set team.
-			localPlayer.team = 1;
+			LocUs.team = 1;
 			if (Random.Range(0,10) < 5) 
-				localPlayer.team = 2;
+				LocUs.team = 2;
 			
 			for (int i=0; i<players.Count; i++) {
-				if (players[i].viewID == localPlayer.viewID) {
-					players[i].team = localPlayer.team;
+				if (players[i].viewID == LocUs.viewID) {
+					players[i].team = LocUs.team;
 				}
 			}
 		}
@@ -1202,7 +1202,7 @@ public class CcNet : MonoBehaviour {
 		
 		// clear stuff out if we are already playing 
 		preppingLevel = false;
-		levelLoaded = false;
+		mapIsLoaded = false;
 		for (int i=0; i<players.Count; i++) {
 			if (players[i].Entity != null) 
 				Destroy(players[i].Entity.gameObject);
@@ -1213,9 +1213,9 @@ public class CcNet : MonoBehaviour {
 			players[i].currentScore = 0;
 		}
 		
-		localPlayer.kills = 0;
-		localPlayer.deaths = 0;
-		localPlayer.currentScore = 0;
+		LocUs.kills = 0;
+		LocUs.deaths = 0;
+		LocUs.currentScore = 0;
 		arse.Clear();
 		
 		// now let's load the level 
@@ -1230,13 +1230,13 @@ public class CcNet : MonoBehaviour {
 
 		if (preppingLevel) {
 			preppingLevel = false;
-			levelLoaded = true;
+			mapIsLoaded = true;
 			
 			// drop the basket ball in 
 			if (CurrMatch.basketball) {
 				basketball = (GameObject)GameObject.Instantiate(GOs.Get("BasketBall"));
 				
-				if (!isServer) 
+				if (!InServerMode) 
 					networkView.RPC("RequestBallStatus", RPCMode.Server);
 			}else{
 				if (GameObject.Find("_BasketRed") != null) 
@@ -1251,9 +1251,9 @@ public class CcNet : MonoBehaviour {
 			}
 			
 			// tell everyone we're here 
-			networkView.RPC("NewPlayer", RPCMode.AllBuffered, localPlayer.viewID, localPlayer.name, 
-                S.ColToVec(localPlayer.colA), S.ColToVec(localPlayer.colB), S.ColToVec(localPlayer.colC), 
-				localPlayer.headType, Network.player, localPlayer.team, CurrMatch.playerLives);
+			networkView.RPC("NewPlayer", RPCMode.AllBuffered, LocUs.viewID, LocUs.name, 
+                S.ColToVec(LocUs.colA), S.ColToVec(LocUs.colB), S.ColToVec(LocUs.colC), 
+				LocUs.headType, Network.player, LocUs.team, CurrMatch.playerLives);
 			
 			// make sure we know about gun spawn points 
 			pickupPoints = new List<PickupPoint>();
@@ -1320,11 +1320,11 @@ public class CcNet : MonoBehaviour {
     void OnMasterServerEvent(MasterServerEvent msEvent) {
         if (msEvent == MasterServerEvent.RegistrationSucceeded) {
             //Debug.Log("Server registered");
-			isServer = true;
+			InServerMode = true;
 			
 			if (!Connected) {
 				// we've just joined a game as host, lets create the local player & add it to the RPC buffer 
-				localPlayer.viewID = Network.AllocateViewID();
+				LocUs.viewID = Network.AllocateViewID();
 				hud.Mode = HudMode.Wait;
 				NetVI = Network.AllocateViewID();
 				RequestGameData();
@@ -1338,7 +1338,7 @@ public class CcNet : MonoBehaviour {
 			Debug.LogError("server registration failed, disconnecting");
 			Error = "server registration failed";
 			hud.Mode = HudMode.ConnectionError;
-			localPlayer.viewID = new NetworkViewID();
+			LocUs.viewID = new NetworkViewID();
 			NetVI = new NetworkViewID();
 			Network.Disconnect();
 		}
@@ -1351,7 +1351,7 @@ public class CcNet : MonoBehaviour {
 		networkView.RPC("RequestGameData", RPCMode.Server);
 		hud.Mode = HudMode.Wait;
 		latestPacket = Time.time;
-		localPlayer.viewID = Network.AllocateViewID();
+		LocUs.viewID = Network.AllocateViewID();
 	}
 	
 	void OnPlayerConnected(NetworkPlayer player) {
@@ -1393,7 +1393,7 @@ public class CcNet : MonoBehaviour {
 		
 		Debug.Log("Failed to Connect: " + Error);
 		Network.Disconnect();
-		localPlayer.viewID = new NetworkViewID();
+		LocUs.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
 		hud.Mode = HudMode.ConnectionError;
 	}
@@ -1405,20 +1405,20 @@ public class CcNet : MonoBehaviour {
 	
 	public void DisconnectNow() {
 		if (Connected) {
-			if (!isServer) {
-				networkView.RPC("PlayerLeave", RPCMode.OthersBuffered, localPlayer.viewID, localPlayer.name);
+			if (!InServerMode) {
+				networkView.RPC("PlayerLeave", RPCMode.OthersBuffered, LocUs.viewID, LocUs.name);
 			}else{
 				networkView.RPC("ServerLeave", RPCMode.OthersBuffered);
 			}
 			
-			localPlayer.viewID = new NetworkViewID();
+			LocUs.viewID = new NetworkViewID();
 			NetVI = new NetworkViewID();
 			
 			Network.Disconnect();
-			if (isServer) 
+			if (InServerMode) 
 				MasterServer.UnregisterHost();
 			Connected = false;
-			isServer = false;
+			InServerMode = false;
 			
 			Camera.main.transform.parent = null;
 			for (int i=0; i<players.Count; i++) {
@@ -1429,7 +1429,7 @@ public class CcNet : MonoBehaviour {
 			
 			hud.Mode = HudMode.MainMenu;
 			Application.LoadLevel(nameOfOfflineBackdrop);
-			levelLoaded = false;
+			mapIsLoaded = false;
 		}
 	}
 	
@@ -1443,7 +1443,7 @@ public class CcNet : MonoBehaviour {
 				
 				if (basketball && players[i].hasBall) {
 					basketball.transform.parent = null;
-					if (isServer) {
+					if (InServerMode) {
 						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
 					}
 				}
@@ -1480,7 +1480,7 @@ public class CcNet : MonoBehaviour {
 				if (basketball && players[i].hasBall) {
 					basketball.transform.parent = null;
 					
-					if (isServer) {
+					if (InServerMode) {
 						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
 					}
 				}
@@ -1507,7 +1507,7 @@ public class CcNet : MonoBehaviour {
 		Debug.Log("Disconnected from server");
 		Time.timeScale = 1f;
 		Physics.gravity = new Vector3(0f, -10f, 0f);
-		if (isServer) 
+		if (InServerMode) 
 			return;
 		
 		LogEntry newMsg = new LogEntry();
@@ -1520,9 +1520,9 @@ public class CcNet : MonoBehaviour {
 		//Network.Disconnect();
 		//if (isServer) MasterServer.UnregisterHost();
 		Connected = false;
-		isServer = false;
+		InServerMode = false;
 		
-		localPlayer.viewID = new NetworkViewID();
+		LocUs.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
 				
 		Camera.main.transform.parent = null;
@@ -1534,7 +1534,7 @@ public class CcNet : MonoBehaviour {
 		
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
-		levelLoaded = false;
+		mapIsLoaded = false;
 	}
 	
 	[RPC]
@@ -1543,12 +1543,12 @@ public class CcNet : MonoBehaviour {
 		Debug.Log("THE HOST LEFT!!!");
 		
 		Network.Disconnect();
-		if (isServer) 
+		if (InServerMode) 
 			MasterServer.UnregisterHost();
 		
 		Connected = false;
-		isServer = false;
-		localPlayer.viewID = new NetworkViewID();
+		InServerMode = false;
+		LocUs.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
 		Camera.main.transform.parent = null;
 		
@@ -1560,7 +1560,7 @@ public class CcNet : MonoBehaviour {
 		players = new List<NetUser>();
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
-		levelLoaded = false;
+		mapIsLoaded = false;
 		var newMsg = new LogEntry();
 		newMsg.Maker = "";
 		newMsg.Color = Color.grey;

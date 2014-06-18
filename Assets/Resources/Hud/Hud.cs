@@ -44,8 +44,8 @@ public class Hud : MonoBehaviour {
 					controls.enabled = true;
 					break;
 				case HudMode.Settings:
-					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
-					headSliderPos = (float)net.localPlayer.headType / ((float)Head.Count - 1f);
+					net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
+					headSliderPos = (float)net.LocUs.headType / ((float)Head.Count - 1f);
 					break;
 			}
 		}
@@ -85,22 +85,22 @@ public class Hud : MonoBehaviour {
 		locUser = GetComponent<LocalUser>();
 		
 		// make local player
-		net.localPlayer = new NetUser();
-		net.localPlayer.local = true;
-		net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
-		net.localPlayer.headType = PlayerPrefs.GetInt("PlayerHead", 0);
-		net.localPlayer.colA.r = PlayerPrefs.GetFloat("PlayerColA_R", Color.yellow.r);
-		net.localPlayer.colA.g = PlayerPrefs.GetFloat("PlayerColA_G", Color.yellow.g);
-		net.localPlayer.colA.b = PlayerPrefs.GetFloat("PlayerColA_B", Color.yellow.b);
-		net.localPlayer.colA.a = 1;
-		net.localPlayer.colB.r = PlayerPrefs.GetFloat("PlayerColB_R", Color.green.r);
-		net.localPlayer.colB.g = PlayerPrefs.GetFloat("PlayerColB_G", Color.green.g);
-		net.localPlayer.colB.b = PlayerPrefs.GetFloat("PlayerColB_B", Color.green.b);
-		net.localPlayer.colB.a = 1;
-		net.localPlayer.colC.r = PlayerPrefs.GetFloat("PlayerColC_R", Color.cyan.r);
-		net.localPlayer.colC.g = PlayerPrefs.GetFloat("PlayerColC_G", Color.cyan.g);
-		net.localPlayer.colC.b = PlayerPrefs.GetFloat("PlayerColC_B", Color.cyan.b);
-		net.localPlayer.colC.a = 1;
+		net.LocUs = new NetUser();
+		net.LocUs.local = true;
+		net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
+		net.LocUs.headType = PlayerPrefs.GetInt("PlayerHead", 0);
+		net.LocUs.colA.r = PlayerPrefs.GetFloat("PlayerColA_R", Color.yellow.r);
+		net.LocUs.colA.g = PlayerPrefs.GetFloat("PlayerColA_G", Color.yellow.g);
+		net.LocUs.colA.b = PlayerPrefs.GetFloat("PlayerColA_B", Color.yellow.b);
+		net.LocUs.colA.a = 1;
+		net.LocUs.colB.r = PlayerPrefs.GetFloat("PlayerColB_R", Color.green.r);
+		net.LocUs.colB.g = PlayerPrefs.GetFloat("PlayerColB_G", Color.green.g);
+		net.LocUs.colB.b = PlayerPrefs.GetFloat("PlayerColB_B", Color.green.b);
+		net.LocUs.colB.a = 1;
+		net.LocUs.colC.r = PlayerPrefs.GetFloat("PlayerColC_R", Color.cyan.r);
+		net.LocUs.colC.g = PlayerPrefs.GetFloat("PlayerColC_G", Color.cyan.g);
+		net.LocUs.colC.b = PlayerPrefs.GetFloat("PlayerColC_B", Color.cyan.b);
+		net.LocUs.colC.a = 1;
 		
 		// load settings 
 		Log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
@@ -186,14 +186,14 @@ public class Hud : MonoBehaviour {
 		// handle all the modes! 
 		switch (Mode) {
 			case HudMode.Playing:
-				net.localPlayer.Entity.FOV = tFOV;
+				net.LocUs.Entity.FOV = tFOV;
 				TopOfMaxedLog = playMode.Draw(net, arse, midX, midY, VSpanLabel, this);
 				maybePromptClickIn();
 				break;
 				
 			case HudMode.NewGame:
 			case HudMode.MatchSetup:
-				matchSetup.Draw(net.isServer, net, this, vSpan);
+				matchSetup.Draw(net.InServerMode, net, this, vSpan);
 				break;
 				
 			case HudMode.SplashLogos:
@@ -224,8 +224,8 @@ public class Hud : MonoBehaviour {
 			case HudMode.Settings:
 				avatarView();
 				drawSettings();
-				if (net != null && net.localPlayer != null && net.localPlayer.Entity != null)
-					net.localPlayer.Entity.FOV = tFOV;
+				if (net != null && net.LocUs != null && net.LocUs.Entity != null)
+					net.LocUs.Entity.FOV = tFOV;
 				break;
 			
 			case HudMode.Credits:
@@ -380,7 +380,7 @@ public class Hud : MonoBehaviour {
 					Network.Disconnect();
 					break;
 				case HudMode.Settings:
-					net.localPlayer.name = PlayerPrefs.GetString("PlayerName", defaultName);
+					net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
 					break;
 			}
 
@@ -533,10 +533,10 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
 		SizedLabel("Name:   ");
-		net.localPlayer.name = GUILayout.TextField(net.localPlayer.name);
-		if (net.localPlayer.name.Length > 20) 
-			net.localPlayer.name = net.localPlayer.name.Substring(0, 20);
-		net.localPlayer.name = FormatName(net.localPlayer.name);
+		net.LocUs.name = GUILayout.TextField(net.LocUs.name);
+		if (net.LocUs.name.Length > 20) 
+			net.LocUs.name = net.LocUs.name.Substring(0, 20);
+		net.LocUs.name = FormatName(net.LocUs.name);
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
@@ -544,29 +544,29 @@ public class Hud : MonoBehaviour {
 		
 		// head slider 
 		float hss = 1f / (int)Head.Count; // head slider span
-		net.localPlayer.headType = (int)(headSliderPos / hss);
+		net.LocUs.headType = (int)(headSliderPos / hss);
 		GUILayout.BeginHorizontal();
 		float w = GetWidthLabel(S.GetSpacedOut("" + Head.ElephantHeadMesh));
-		GUILayout.Label(S.GetSpacedOut("" + (Head)net.localPlayer.headType), GUILayout.MaxWidth(w));
+		GUILayout.Label(S.GetSpacedOut("" + (Head)net.LocUs.headType), GUILayout.MaxWidth(w));
 		headSliderPos = GUILayout.HorizontalSlider(headSliderPos, 0f, 1f);
 		GUILayout.EndHorizontal();
 
 		// colour sliders
 		GUILayout.BeginHorizontal();
-		GUI.color = net.localPlayer.colA;
+		GUI.color = net.LocUs.colA;
 		GUILayout.Box(Pics.White);
-		GUI.color = net.localPlayer.colB;
+		GUI.color = net.LocUs.colB;
 		GUILayout.Box(Pics.White);
-		GUI.color = net.localPlayer.colC; 
+		GUI.color = net.LocUs.colC; 
 		GUILayout.Box(Pics.White);
 		GUILayout.EndHorizontal();
 		
 		GUILayout.BeginHorizontal();
-		GUI.color = net.localPlayer.colA;
+		GUI.color = net.LocUs.colA;
 		GUILayout.Box("Colour A");
-		GUI.color = net.localPlayer.colB;
+		GUI.color = net.LocUs.colB;
 		GUILayout.Box("Colour B");
-		GUI.color = net.localPlayer.colC; 
+		GUI.color = net.LocUs.colC; 
 		GUILayout.Box("Colour C");
 		GUILayout.EndHorizontal();
 		
@@ -577,22 +577,22 @@ public class Hud : MonoBehaviour {
 		menuEnd();
 
 		// now just save player 
-		if (net.localPlayer.name != "" && net.localPlayer.name != " ") {
-			PlayerPrefs.SetString("PlayerName", net.localPlayer.name);
+		if (net.LocUs.name != "" && net.LocUs.name != " ") {
+			PlayerPrefs.SetString("PlayerName", net.LocUs.name);
 		}else{
 			PlayerPrefs.SetString("PlayerName", defaultName);
 		}
 		
-		PlayerPrefs.SetInt("PlayerHead", net.localPlayer.headType);
-		PlayerPrefs.SetFloat("PlayerColA_R", net.localPlayer.colA.r);
-		PlayerPrefs.SetFloat("PlayerColA_G", net.localPlayer.colA.g);
-		PlayerPrefs.SetFloat("PlayerColA_B", net.localPlayer.colA.b);
-		PlayerPrefs.SetFloat("PlayerColB_R", net.localPlayer.colB.r);
-		PlayerPrefs.SetFloat("PlayerColB_G", net.localPlayer.colB.g);
-		PlayerPrefs.SetFloat("PlayerColB_B", net.localPlayer.colB.b);
-		PlayerPrefs.SetFloat("PlayerColC_R", net.localPlayer.colC.r);
-		PlayerPrefs.SetFloat("PlayerColC_G", net.localPlayer.colC.g);
-		PlayerPrefs.SetFloat("PlayerColC_B", net.localPlayer.colC.b);
+		PlayerPrefs.SetInt("PlayerHead", net.LocUs.headType);
+		PlayerPrefs.SetFloat("PlayerColA_R", net.LocUs.colA.r);
+		PlayerPrefs.SetFloat("PlayerColA_G", net.LocUs.colA.g);
+		PlayerPrefs.SetFloat("PlayerColA_B", net.LocUs.colA.b);
+		PlayerPrefs.SetFloat("PlayerColB_R", net.LocUs.colB.r);
+		PlayerPrefs.SetFloat("PlayerColB_G", net.LocUs.colB.g);
+		PlayerPrefs.SetFloat("PlayerColB_B", net.LocUs.colB.b);
+		PlayerPrefs.SetFloat("PlayerColC_R", net.LocUs.colC.r);
+		PlayerPrefs.SetFloat("PlayerColC_G", net.LocUs.colC.g);
+		PlayerPrefs.SetFloat("PlayerColC_B", net.LocUs.colC.b);
 		PlayerPrefs.SetFloat("FOV", tFOV);
 	}
 
@@ -600,9 +600,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 
 		GUI.color = Color.red;
-		net.localPlayer.colA.r = GUILayout.HorizontalSlider(net.localPlayer.colA.r, 0f, 1f);
-		net.localPlayer.colB.r = GUILayout.HorizontalSlider(net.localPlayer.colB.r, 0f, 1f);
-		net.localPlayer.colC.r = GUILayout.HorizontalSlider(net.localPlayer.colC.r, 0f, 1f);
+		net.LocUs.colA.r = GUILayout.HorizontalSlider(net.LocUs.colA.r, 0f, 1f);
+		net.LocUs.colB.r = GUILayout.HorizontalSlider(net.LocUs.colB.r, 0f, 1f);
+		net.LocUs.colC.r = GUILayout.HorizontalSlider(net.LocUs.colC.r, 0f, 1f);
 		
 		GUILayout.EndHorizontal();
 
@@ -610,9 +610,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		
 		GUI.color = Color.green;
-		net.localPlayer.colA.g = GUILayout.HorizontalSlider(net.localPlayer.colA.g, 0f, 1f);
-		net.localPlayer.colB.g = GUILayout.HorizontalSlider(net.localPlayer.colB.g, 0f, 1f);
-		net.localPlayer.colC.g = GUILayout.HorizontalSlider(net.localPlayer.colC.g, 0f, 1f);
+		net.LocUs.colA.g = GUILayout.HorizontalSlider(net.LocUs.colA.g, 0f, 1f);
+		net.LocUs.colB.g = GUILayout.HorizontalSlider(net.LocUs.colB.g, 0f, 1f);
+		net.LocUs.colC.g = GUILayout.HorizontalSlider(net.LocUs.colC.g, 0f, 1f);
 		
 		GUILayout.EndHorizontal();
 
@@ -620,9 +620,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		
 		GUI.color = Color.blue;
-		net.localPlayer.colA.b = GUILayout.HorizontalSlider(net.localPlayer.colA.b, 0f, 1f);
-		net.localPlayer.colB.b = GUILayout.HorizontalSlider(net.localPlayer.colB.b, 0f, 1f);
-		net.localPlayer.colC.b = GUILayout.HorizontalSlider(net.localPlayer.colC.b, 0f, 1f);
+		net.LocUs.colA.b = GUILayout.HorizontalSlider(net.LocUs.colA.b, 0f, 1f);
+		net.LocUs.colB.b = GUILayout.HorizontalSlider(net.LocUs.colB.b, 0f, 1f);
+		net.LocUs.colC.b = GUILayout.HorizontalSlider(net.LocUs.colC.b, 0f, 1f);
 
 		GUILayout.EndHorizontal();
 	}	
@@ -635,11 +635,11 @@ public class Hud : MonoBehaviour {
 	
 	
 	void kickWindow() {
-		if (net.isServer) {
+		if (net.InServerMode) {
 			menuBegin(Color.red);
 
 			for (int i=0; i<net.players.Count; i++) {
-				if (net.players[i].viewID != net.localPlayer.viewID) {
+				if (net.players[i].viewID != net.LocUs.viewID) {
 					GUILayout.BeginHorizontal();
 					
 					if (GUILayout.Button(HudMode.KickAPlayer.ToString())) {
@@ -964,20 +964,20 @@ public class Hud : MonoBehaviour {
 		if (GameObject.Find("CharaMesh") != null) {
 			// colours
 			Material[] mats = GameObject.Find("CharaMesh").renderer.materials;
-			mats[0].color = net.localPlayer.colA;
-			mats[1].color = net.localPlayer.colB;
-			mats[2].color = net.localPlayer.colC;
-			GameObject.Find("NormalHead").renderer.material.color = net.localPlayer.colA;
+			mats[0].color = net.LocUs.colA;
+			mats[1].color = net.LocUs.colB;
+			mats[2].color = net.LocUs.colC;
+			GameObject.Find("NormalHead").renderer.material.color = net.LocUs.colA;
 			
 			// visibility of heads 
 			for (int i = 0; i < (int)Head.Count; i++) {
-				if (i == net.localPlayer.headType)
+				if (i == net.LocUs.headType)
 					GameObject.Find("" + (Head)i).renderer.enabled = true;
 				else
 					GameObject.Find("" + (Head)i).renderer.enabled = false;
 			}
 
-			GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.localPlayer.name;
+			GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.LocUs.name;
 		}
 	}
 
@@ -1156,7 +1156,7 @@ public class Hud : MonoBehaviour {
 //		}
 
 		// server mode buttons
-		if (net.isServer) {
+		if (net.InServerMode) {
 			buttonStarts(HudMode.KickAPlayer, r);
 			r.y -= mIH;
 
@@ -1170,7 +1170,7 @@ public class Hud : MonoBehaviour {
 				Mode = HudMode.Playing;
 		}else{				
 			if (buttonStarts(HudMode.NewGame, r)) {
-				net.MatchName = net.localPlayer.name + "'s match...of the Damned";
+				net.MatchName = net.LocUs.name + "'s match...of the Damned";
 			}
 		}
 

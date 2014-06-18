@@ -94,10 +94,10 @@ public class CcLog : MonoBehaviour {
 					if (newEntry != "") {
 						if (net.Connected) {
 							networkView.RPC("AddToLog", RPCMode.All, 
-			                	net.localPlayer.name + ":", newEntry, S.ColToVec(net.localPlayer.colA) );
+			                	net.LocUs.name + ":", newEntry, S.ColToVec(net.LocUs.colA) );
 						}else{
 							AddToLog(
-								net.localPlayer.name + ":", newEntry, S.ColToVec(net.localPlayer.colA) );
+								net.LocUs.name + ":", newEntry, S.ColToVec(net.LocUs.colA) );
 						}
 					}
 					

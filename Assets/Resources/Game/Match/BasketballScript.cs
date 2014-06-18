@@ -75,7 +75,7 @@ public class BasketballScript : MonoBehaviour {
 				
 				if (hitInfo.collider.gameObject.layer == 11) {
 					// blue scores 
-					if (net.isServer && !net.gameOver) {
+					if (net.InServerMode && !net.gameOver) {
 						ResetBall();
 						net.team2Score++;
 						net.networkView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
@@ -83,7 +83,7 @@ public class BasketballScript : MonoBehaviour {
 					}
 				}else if (hitInfo.collider.gameObject.layer == 12) {
 					// red scores 
-					if (net.isServer && !net.gameOver) {
+					if (net.InServerMode && !net.gameOver) {
 						ResetBall();
 						net.team1Score++;
 						net.networkView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
@@ -91,7 +91,7 @@ public class BasketballScript : MonoBehaviour {
 					}
 				}else if (hitInfo.collider.gameObject.layer == 10) {
 					// LAVA 
-					if (net.isServer) {
+					if (net.InServerMode) {
 						ResetBall();
 						net.networkView.RPC("AddToLog",RPCMode.All, "BASKETBALL: ", "OH NO, I FELL IN THE LAVA!", col);
 					}
@@ -110,7 +110,7 @@ public class BasketballScript : MonoBehaviour {
 
 			lastPos = transform.position;
 			
-			if (net.isServer) {
+			if (net.InServerMode) {
 				// let's check to see if any of the players can pick up the ball 
 				bool captured = false;
 				for (int i=0; i<net.players.Count; i++) {

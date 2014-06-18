@@ -4,14 +4,14 @@ using System.Collections;
 
 
 public class PickupBoxScript : MonoBehaviour {
-	public string pickupName;
-	public GameObject iconObj;
+	public string Name;
+	public GameObject Icon;
 	public GameObject boxObj;
 	public PickupPoint pickupPoint;
 	
 	// private 
 	CcNet net;
-	GameObject localPlayer;
+	GameObject lu; // local user game object 
 	float sinny = 0f;
 	float zOff; // rotation offset, so that they aren't all pointed in the same direction 
 	Vector3 start;
@@ -20,9 +20,9 @@ public class PickupBoxScript : MonoBehaviour {
 	
 	
 	void Start() {
-		if (pickupName == "Health") {
-			iconObj.renderer.material.SetTexture("_MainTex", Pics.Health);
-			iconObj.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
+		if (Name == "Health") {
+			Icon.renderer.material.SetTexture("_MainTex", Pics.Health);
+			Icon.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
 
 			isHealth = true;
 			zOff = 90f;
@@ -33,12 +33,12 @@ public class PickupBoxScript : MonoBehaviour {
 
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		sinny = Random.Range(0f, 4f);
-		//boxObj.transform.Rotate(0, 0, Random.Range(0f, 360f));        original setting for all BOX models 
-		if (pickupName == "Grenade Launcher") {
+
+		if (Name == "Grenade Launcher") {
 			boxObj.transform.Rotate(0, 0, zOff);
 			boxObj.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
 			start = boxObj.transform.position + Vector3.up * 0.33f;
-		}else if (pickupName == "Spatula"){
+		}else if (Name == "Spatula"){
 			boxObj.transform.Rotate(0, 0, zOff);
 			start = boxObj.transform.position + Vector3.up * 0.33f;
 			boxObj.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
@@ -50,18 +50,15 @@ public class PickupBoxScript : MonoBehaviour {
 	}
 	
 	void Update() {
-		if (localPlayer == null) {
-			for (int i=0; i<net.players.Count; i++) {
-				if (net.localPlayer.viewID == net.players[i].viewID) {
-					localPlayer = net.players[i].Entity.gameObject;
-				}
-			}
+		if (lu == null) {
+			lu = net.LocUs.Entity.gameObject;
 		}else{
-			if (Vector3.SqrMagnitude(localPlayer.transform.position - transform.position) < 4f && 
-				localPlayer.transform.position.y > transform.position.y - 0.5f
+			if (Vector3.Distance(
+				lu.transform.position, transform.position) < 2f && 
+				lu.transform.position.y > transform.position.y - 0.5f
 			) {
-				localPlayer.GetComponent<EntityClass>().offeredPickup = pickupName;
-				localPlayer.GetComponent<EntityClass>().currentOfferedPickup = this;
+				lu.GetComponent<EntityClass>().offeredPickup = Name;
+				lu.GetComponent<EntityClass>().currentOfferedPickup = this;
 			}
 		}
 		

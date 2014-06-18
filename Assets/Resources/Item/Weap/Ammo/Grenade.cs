@@ -74,7 +74,7 @@ public class Grenade : MonoBehaviour {
 	void maybeDetonate() {
 		alive = false;
 
-		if (net.isServer) {
+		if (net.InServerMode) {
 			net.Detonate(Gun.GrenadeLauncher, transform.position, shooterID, viewID);
 		}
 	}
