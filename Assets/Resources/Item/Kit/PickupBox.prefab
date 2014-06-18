@@ -153,10 +153,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07a2a7209c8d04842946dc79b3e9ccc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupName: rifle
-  iconObj: {fileID: 100000}
-  boxObj: {fileID: 100004}
-  pickupPoint: {fileID: 0}
+  Name: 
+  Icon: {fileID: 0}
+  Model: {fileID: 100004}
+  PickupPoint: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

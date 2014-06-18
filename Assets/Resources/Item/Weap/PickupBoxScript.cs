@@ -6,8 +6,8 @@ using System.Collections;
 public class PickupBoxScript : MonoBehaviour {
 	public string Name;
 	public GameObject Icon;
-	public GameObject Model;
-	public PickupPoint pickupPoint;
+	public GameObject Model; // this is a linked sub-object of the prefab 
+	public PickupPoint PickupPoint;
 	
 	// private 
 	CcNet net;
@@ -38,7 +38,7 @@ public class PickupBoxScript : MonoBehaviour {
 			Model.transform.Rotate(0, 0, zOff);
 			Model.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
 			start = Model.transform.position + Vector3.up * 0.33f;
-		}else if (Name == "Spatula"){
+		}else if (Name == "Spatula") {
 			Model.transform.Rotate(0, 0, zOff);
 			start = Model.transform.position + Vector3.up * 0.33f;
 			Model.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
@@ -51,7 +51,10 @@ public class PickupBoxScript : MonoBehaviour {
 	
 	void Update() {
 		if (lu == null) {
-			lu = net.LocUs.Entity.gameObject;
+			if (null != lu.LocUs &&
+			    null != lu.LocUs.Entity
+		    )
+				lu = net.LocUs.Entity.gameObject;
 		}else{
 			if (Vector3.Distance(
 				lu.transform.position, transform.position) < 2f && 
@@ -73,7 +76,7 @@ public class PickupBoxScript : MonoBehaviour {
 	}
 	
 	public void Pickup() {
-		net.UnstockPickupPoint(pickupPoint);
+		net.UnstockPickupPoint(PickupPoint);
 		Destroy(gameObject);
 	}
 }

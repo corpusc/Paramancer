@@ -794,7 +794,7 @@ public class CcNet : MonoBehaviour {
 					gs.Name = "Health";
 				}
 
-				gs.pickupPoint = pickupPoints[i];
+				gs.PickupPoint = pickupPoints[i];
 			}
 		}
 
