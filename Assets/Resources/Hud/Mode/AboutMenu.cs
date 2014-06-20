@@ -6,6 +6,8 @@ public class AboutMenu {
 
 	public bool Draw(Hud hud) {
 		string s = "";
+		
+		GUI.skin.label.wordWrap = true;
 
 		if (showingFarFuture) {
 			GUILayout.Label("");
