@@ -10,19 +10,19 @@ public class DebugGrid : MonoBehaviour {
 
 
 	void Start() {
-		Debug.Log("Let's generate a grid");
+		// generate a grid 
 		grid = new ProcGenGrid();
-		Texture2D texture = new Texture2D(grid.Max.x, grid.Max.z);
-		texture.filterMode = FilterMode.Point;
-		renderer.material.mainTexture = texture;
+		var pic = new Texture2D(grid.Max.x, grid.Max.z);
+		pic.filterMode = FilterMode.Point;
+		renderer.material.mainTexture = pic;
 
-		for (int x = 0; x < texture.width; x++)
-		for(int y = 0; y < texture.height; y++) {
+		for (int x = 0; x < pic.width; x++)
+		for(int y = 0; y < pic.height; y++) {
 				Color color = (grid.Cells[x, y].IsAir ? Color.white : Color.black);
-				texture.SetPixel(x, y, color);
+				pic.SetPixel(x, y, color);
 		}
 
-		texture.Apply();
+		pic.Apply();
 
 		grid.Scale = new Vector3(3f, 3f, 3f);
 		grid.Pos = new Vector3(

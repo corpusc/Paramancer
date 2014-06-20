@@ -10,15 +10,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Resources/Map/OfflineBackdrop/OfflineBackdrop.unity
   - enabled: 1
-    path: Assets/Resources/Map/Overpass.unity
+    path: Assets/Resources/Map/Scene/Overpass.unity
   - enabled: 1
-    path: Assets/Resources/Map/Furnace.unity
+    path: Assets/Resources/Map/Scene/Furnace.unity
   - enabled: 1
-    path: Assets/Resources/Map/Conflict Room.unity
+    path: Assets/Resources/Map/Scene/Conflict Room.unity
   - enabled: 1
-    path: Assets/Resources/Map/Tower.unity
+    path: Assets/Resources/Map/Scene/Tower.unity
   - enabled: 1
-    path: Assets/Resources/Map/The OctaDrome.unity
+    path: Assets/Resources/Map/Scene/The OctaDrome.unity
   - enabled: 1
     path: Assets/Resources/Map/ProcGen/DebugGrid.unity
   - enabled: 1

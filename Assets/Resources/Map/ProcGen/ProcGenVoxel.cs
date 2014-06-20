@@ -71,7 +71,6 @@ public class ProcGenVoxel : ScriptableObject {
 	int numTries = 200000; // the amount of attempts to place a room,before giving up 
 	List<Material> MatPool = new List<Material>();
 
-	GameObject mapObject;
 	GameObject primObject;
 	GameObject ffaSpawnBag;
 	GameObject blueSpawnBag;
@@ -177,6 +176,7 @@ public class ProcGenVoxel : ScriptableObject {
 	} // end of Build ()
 
 	// this generates the level in 3d(puts it in the scene) based what Build() created - call Build() before this
+	int numMade = 0;
 	public void Build3d () {
 		for (int i = 0; i < MapSize.x; i++)
 		for (int j = 0; j < MapSize.y; j++)
@@ -234,11 +234,11 @@ public class ProcGenVoxel : ScriptableObject {
 			} // end of wall creation for the current block
 		} // end of block scan
 		
-		// now place assets
-		// the placing of assets will probably be specific for every single one, that's why they're not treated together
+		// place assets 
+		// will probably be specific for every single one, that's why they're not treated together. 
 		// things like "don't place torches on ceilings" are checked here specifically for every single asset
-		int formsMade = 0; // counting torches as forms
-		for (int i = 0; i < numTries && formsMade < Torches; i++) {
+		numMade = 0;
+		for (int i = 0; i < numTries && numMade < Torches; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
@@ -249,36 +249,36 @@ public class ProcGenVoxel : ScriptableObject {
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x * 0.5f + TorchOffset, Scale.y * t.y, Scale.z * t.z);
 					nt.transform.localScale = Scale * TorchScale;
 					nt.transform.parent = mapObject.transform;
-					formsMade++;
-				}
-				else if (!getBlock(t.x + 1, t.y, t.z)) {
+					numMade++;
+				}else 
+				if (!getBlock(t.x + 1, t.y, t.z)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x * 0.5f - TorchOffset, Scale.y * t.y, Scale.z * t.z);
 					nt.transform.localScale = Scale * TorchScale;
 					nt.transform.parent = mapObject.transform;
-					formsMade++;
-				}
-				else if (!getBlock(t.x, t.y, t.z - 1)) {
+					numMade++;
+				}else 
+				if (!getBlock(t.x, t.y, t.z - 1)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z - Scale.z * 0.5f + TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
 					nt.transform.parent = mapObject.transform;
-					formsMade++;
-				}
-				else if (!getBlock(t.x, t.y, t.z + 1)) {
+					numMade++;
+				}else 
+				if (!getBlock(t.x, t.y, t.z + 1)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z + Scale.z * 0.5f - TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
 					nt.transform.parent = mapObject.transform;
-					formsMade++;
+					numMade++;
 				}
 				// no torches on ceilings and floors! 
 			} // end of scanning an individual block to see if a torch can be placed 
 		} // end of placing torches 
 		
 		// place jump pads 
-		formsMade = 0; // counting jump pads as forms, no need for a separate variable 
-		for (int i = 0; i < numTries && formsMade < JumpPads; i++) {
+		numMade = 0;
+		for (int i = 0; i < numTries && numMade < JumpPads; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(JumpHeight, MapSize.y);
@@ -290,7 +290,7 @@ public class ProcGenVoxel : ScriptableObject {
 					nj.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 					nj.transform.localScale = JumpPadScale;
 					nj.transform.parent = mapObject.transform;
-					formsMade++;
+					numMade++;
 				} else {
 					d = floorScan(t.x + 1, t.y, t.z);
 					if (d >= JumpHeight && columnOpen(t.x + 1, t.y, t.z, MinHeight)) {
@@ -298,7 +298,7 @@ public class ProcGenVoxel : ScriptableObject {
 						nj.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 						nj.transform.localScale = JumpPadScale;
 						nj.transform.parent = mapObject.transform;
-						formsMade++;
+						numMade++;
 					} else {
 						d = floorScan(t.x, t.y, t.z - 1);
 						if (d >= JumpHeight && columnOpen(t.x, t.y, t.z - 1, MinHeight)) {
@@ -306,7 +306,7 @@ public class ProcGenVoxel : ScriptableObject {
 							nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z - Scale.z);
 							nj.transform.localScale = JumpPadScale;
 							nj.transform.parent = mapObject.transform;
-							formsMade++;
+							numMade++;
 						} else {
 							d = floorScan(t.x, t.y, t.z + 1);
 							if (d >= JumpHeight && columnOpen(t.x, t.y, t.z + 1, MinHeight)) {
@@ -314,7 +314,7 @@ public class ProcGenVoxel : ScriptableObject {
 								nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z + Scale.z);
 								nj.transform.localScale = JumpPadScale;
 								nj.transform.parent = mapObject.transform;
-								formsMade++;
+								numMade++;
 							}
 						}
 					}
@@ -323,8 +323,8 @@ public class ProcGenVoxel : ScriptableObject {
 		} // end of placing jump pads 
 		
 		// place FFA spawn points 
-		formsMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
@@ -335,13 +335,13 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = ffaSpawnBag.transform;
-				formsMade++;
+				numMade++;
 			}
 		}
 
 		// place blue spawn points 
-		formsMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
@@ -352,13 +352,13 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = blueSpawnBag.transform;
-				formsMade++;
+				numMade++;
 			}
 		}
 
 		// place red spawn points 
-		formsMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && formsMade < SpawnPoints; i++) {
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
@@ -369,13 +369,13 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = redSpawnBag.transform;
-				formsMade++;
+				numMade++;
 			}
 		}
 
 		// place monster spawn points 
-		formsMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && formsMade < MonsterSpawns; i++) {
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < MonsterSpawns; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
@@ -386,13 +386,13 @@ public class ProcGenVoxel : ScriptableObject {
 				ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = monsterSpawnBag.transform;
-				formsMade++;
+				numMade++;
 			}
 		}
 
 		// place weapon spawns 
-		formsMade = 0; // count weapon spawns as forms, no need for a separate var 
-		for (int i = 0; i < numTries && formsMade < numGunSpawns; i++) {
+		numMade = 0; // count weapon spawns as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < numGunSpawns; i++) {
 			Vec3i t;
 			t.x = Random.Range(0, MapSize.x);
 			t.y = Random.Range(0, MapSize.y);
@@ -405,8 +405,8 @@ public class ProcGenVoxel : ScriptableObject {
 					ns.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y + WeaponSpawnOffset - Scale.y * 0.5f, Scale.z * t.z);
 					ns.transform.localScale = WeaponSpawnScale;
 					ns.transform.parent = weaponSpawnBag.transform;
-					ns.GetComponent<PickupPoint>().pickupPointID = formsMade;
-					formsMade++;
+					ns.GetComponent<PickupPoint>().pickupPointID = numMade;
+					numMade++;
 				}
 			}
 		}
