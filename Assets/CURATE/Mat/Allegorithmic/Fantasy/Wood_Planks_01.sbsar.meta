@@ -134,7 +134,7 @@ SubstanceImporter:
             name: _BumpMap
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 8}
+            scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
       floats:
         data:

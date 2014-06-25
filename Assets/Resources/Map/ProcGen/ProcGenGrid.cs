@@ -45,7 +45,7 @@ public class ProcGenGrid {
 
 
 	public ProcGenGrid() {
-		Debug.Log("const of Maze()");
+		Debug.Log("********************** const of Maze() **********************");
 
 		Max.x = 64;
 		Max.z = 64;
