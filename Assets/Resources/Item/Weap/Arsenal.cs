@@ -190,23 +190,23 @@ public class Arsenal : MonoBehaviour {
 		if (weapon == Gun.Spatula)
 			return; // (no trail effects) 
 		
-		// fx trail 
+		// trail fx 
 		string trailName;
-		if (weapon == Gun.Pistol)
-			trailName = "TrailCloud";
-		else
+//		if (weapon == Gun.Pistol)
+//			trailName = "TrailCloud";
+//		else
 			trailName = "TrailJagged";
 
-		var tj = (GameObject)GameObject.Instantiate(GOs.Get(trailName));
-		var b = tj.GetComponent<TrailStraight>();
+		var trail = (GameObject)GameObject.Instantiate(GOs.Get(trailName));
+		var ts = trail.GetComponent<TrailStraight>();
 
 		if (localFire) 
-			b.Begin = localStart;
+			ts.Begin = localStart;
 		else
-			b.Begin = origin;
+			ts.Begin = origin;
 
-		b.End = end; // - Vector3.Normalize(b.End - b.Begin) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending 
-		b.Color = Guns[(int)weapon].Color;
+		ts.End = end; // - Vector3.Normalize(b.End - b.Begin) * 0.3f; // so that the trail seems to enter the wall instead of having a rectangular ending 
+		ts.Color = Guns[(int)weapon].Color;
 
 		// muzzle flash 
 		var mf = (GameObject)GameObject.Instantiate(GOs.Get("MuzzleFlash"));

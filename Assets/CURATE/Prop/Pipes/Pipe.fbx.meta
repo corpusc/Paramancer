@@ -1,0 +1,140 @@
+fileFormatVersion: 2
+guid: f5ea5b17b73804b95acacd15279cdae4
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: MediumPipeConnector
+    100002: LargePipe_Straight
+    100004: LargePipe_Half
+    100006: MediumPipe_Half
+    100008: LargePipeConnector
+    100010: SmallPipe_Half
+    100012: Pipe_End
+    100014: SmallPipe_Corner
+    100016: SmallPipe_Straight
+    100018: //RootNode
+    100020: MediumPipe_Straight
+    100022: MediumPipe_Corner
+    100024: SmallPipeConnector
+    100026: LargePipe_Corner
+    400000: MediumPipeConnector
+    400002: LargePipe_Straight
+    400004: LargePipe_Half
+    400006: MediumPipe_Half
+    400008: LargePipeConnector
+    400010: SmallPipe_Half
+    400012: Pipe_End
+    400014: SmallPipe_Corner
+    400016: SmallPipe_Straight
+    400018: //RootNode
+    400020: MediumPipe_Straight
+    400022: MediumPipe_Corner
+    400024: SmallPipeConnector
+    400026: LargePipe_Corner
+    2300000: MediumPipeConnector
+    2300002: LargePipe_Straight
+    2300004: LargePipe_Half
+    2300006: MediumPipe_Half
+    2300008: LargePipeConnector
+    2300010: SmallPipe_Half
+    2300012: Pipe_End
+    2300014: SmallPipe_Corner
+    2300016: SmallPipe_Straight
+    2300018: MediumPipe_Straight
+    2300020: MediumPipe_Corner
+    2300022: SmallPipeConnector
+    2300024: LargePipe_Corner
+    3300000: MediumPipeConnector
+    3300002: LargePipe_Straight
+    3300004: LargePipe_Half
+    3300006: MediumPipe_Half
+    3300008: LargePipeConnector
+    3300010: SmallPipe_Half
+    3300012: Pipe_End
+    3300014: SmallPipe_Corner
+    3300016: SmallPipe_Straight
+    3300018: MediumPipe_Straight
+    3300020: MediumPipe_Corner
+    3300022: SmallPipeConnector
+    3300024: LargePipe_Corner
+    4300000: SmallPipeConnector
+    4300002: MediumPipeConnector
+    4300004: LargePipeConnector
+    4300006: LargePipe_Half
+    4300008: MediumPipe_Half
+    4300010: SmallPipe_Half
+    4300012: LargePipe_Corner
+    4300014: MediumPipe_Corner
+    4300016: SmallPipe_Corner
+    4300018: SmallPipe_Straight
+    4300020: MediumPipe_Straight
+    4300022: LargePipe_Straight
+    4300024: Pipe_End
+    6400000: LargePipeConnector
+    6400002: LargePipe_Straight
+    6400004: LargePipe_Corner
+    6400006: MediumPipe_Straight
+    6400008: MediumPipeConnector
+    6400010: LargePipe_Half
+    6400012: MediumPipe_Half
+    6400014: SmallPipe_Straight
+    6400016: SmallPipe_Corner
+    6400018: SmallPipe_Half
+    6400020: MediumPipe_Corner
+    6400022: SmallPipeConnector
+    6400024: Pipe_End
+    7400000: Default Take
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 1
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 
 
-public class Grid : MonoBehaviour {
+public class GridEntry : MonoBehaviour {
 	GridGen grid;
 
 

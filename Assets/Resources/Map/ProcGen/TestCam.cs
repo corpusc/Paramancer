@@ -38,6 +38,6 @@ public class TestCam : MonoBehaviour {
 		if (Input.GetKeyDown("space")) 
 			tr.enabled = !tr.enabled;
 
-		o.transform.position = transform.position;// + transform.up;
+		o.transform.position = transform.position - transform.up*2f;
 	}
 }

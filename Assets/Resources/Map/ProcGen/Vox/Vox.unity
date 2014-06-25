@@ -509,112 +509,6 @@ Transform:
   m_LocalScale: {x: .5, y: .100000001, z: .5}
   m_Children: []
   m_Father: {fileID: 0}
---- !u!1 &1645297181
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1645297186}
-  - 33: {fileID: 1645297185}
-  - 136: {fileID: 1645297184}
-  - 23: {fileID: 1645297183}
-  - 108: {fileID: 1645297182}
-  m_Layer: 0
-  m_Name: Torch
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!108 &1645297182
-Light:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1645297181}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Type: 2
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 1
-  m_Range: 14.5
-  m_SpotAngle: 30
-  m_CookieSize: 10
-  m_Shadows:
-    m_Type: 0
-    m_Resolution: -1
-    m_Strength: 1
-    m_Bias: .0500000007
-    m_Softness: 4
-    m_SoftnessFade: 1
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_ActuallyLightmapped: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_Lightmapping: 1
-  m_ShadowSamples: 1
-  m_ShadowRadius: 0
-  m_ShadowAngle: 0
-  m_IndirectIntensity: 1
-  m_AreaSize: {x: 1, y: 1}
---- !u!23 &1645297183
-Renderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1645297181}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 1912997366, guid: 34d2def1ca0db2e42a90172d23ede940, type: 3}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortingLayerID: 0
---- !u!136 &1645297184
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1645297181}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: .5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &1645297185
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1645297181}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1645297186
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1645297181}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
 --- !u!1 &1678105879
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +545,7 @@ GameObject:
   - 4: {fileID: 1731135895}
   - 114: {fileID: 1731135894}
   m_Layer: 0
-  m_Name: Generator
+  m_Name: Main Program
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -665,46 +559,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1731135893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71242aea16b173742bab7f057cf86f38, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b5f8b88991347148ac2f39d32d342ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Seed: 0
-  Forms: 40
-  FormsPerFloor: 10
-  MaxOverride: .300000012
-  MinFormWidth: 2
-  MaxFormWidth: 16
-  MinArea: 20
-  MaxArea: 100
-  MaxCorridorArea: 60
-  Pos: {x: 0, y: 0, z: 0}
-  Scale: {x: 1, y: 1, z: 1}
-  SizeToHeight: .850000024
-  MinHeight: 2
-  MaxFloorHeight: 1
-  HeightRand: 4
-  CorridorHeightRand: 2
-  MinFloorLevelStep: 8
-  MaxFloorLevelStep: 10
-  MinCorridorStartHeight: 3
-  MaxCorridorStartHeight: 5
-  MapIsOpen: 0
-  Theme: 0
-  Torch: {fileID: 0}
-  TorchScale: .300000012
-  TorchOffset: .100000001
-  numJumpPads: 10
-  JumpPad: {fileID: 0}
-  JumpPadScale: {x: 1, y: .300000012, z: 1}
-  JumpHeight: 2
-  JumpPadOffset: .0500000007
-  SpawnPointScale: {x: 1, y: 1, z: 1}
-  SpawnPoint: {fileID: 0}
-  SpawnPoints: 4
-  MonsterSpawns: 6
-  WeaponSpawn: {fileID: 0}
-  WeaponSpawnScale: {x: .5, y: .100000001, z: .5}
-  WeaponSpawnOffset: .0500000007
 --- !u!4 &1731135895
 Transform:
   m_ObjectHideFlags: 0

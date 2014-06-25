@@ -20,8 +20,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Resources/Map/Scene/The OctaDrome.unity
   - enabled: 1
-    path: Assets/Resources/Map/ProcGen/Grid.unity
+    path: Assets/Resources/Map/ProcGen/Grid/Grid.unity
   - enabled: 1
-    path: Assets/Resources/Map/ProcGen/Vox.unity
+    path: Assets/Resources/Map/ProcGen/Vox/Vox.unity
   - enabled: 1
     path: Assets/Resources/Map/ProcGen/Generated with seed.unity

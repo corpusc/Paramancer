@@ -1217,14 +1217,14 @@ public class CcNet : MonoBehaviour {
 		LocUs.currentScore = 0;
 		arse.Clear();
 		
-		// now let's load the level 
+		// load msp 
 		preppingMap = true;
 		Application.LoadLevel(mapName);
 	}
 	
 	void OnLevelWasLoaded() {
 		if (CurrMatch.NeedsGenerating) {
-			VoxINIT.CreateMap(CurrMatch.Seed, CurrMatch.Theme);
+			VoxGen.GenerateMap(CurrMatch.Seed, CurrMatch.Theme);
 		}
 
 		if (preppingMap) {
