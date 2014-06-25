@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 
 public class Grid : MonoBehaviour {
-	GenGrid grid;
+	GridGen grid;
 
 
 
 	void Start() {
 		// generate a grid 
 		Debug.LogError("let's count these");
-		grid = new GenGrid();
+		grid = new GridGen();
 		Debug.LogError("let's count these");
 		var pic = new Texture2D(grid.Max.x, grid.Max.z);
 		Debug.LogError("let's count these");

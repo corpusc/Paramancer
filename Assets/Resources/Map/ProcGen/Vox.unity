@@ -537,9 +537,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 3
   m_Type: 2
-  m_Color: {r: 1, g: .868965507, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 1
-  m_Range: 7.5
+  m_Range: 14.5
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -665,9 +665,46 @@ MonoBehaviour:
   m_GameObject: {fileID: 1731135893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b373046df5798a045a5136a93dd39e41, type: 3}
+  m_Script: {fileID: 11500000, guid: 71242aea16b173742bab7f057cf86f38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Seed: 0
+  Forms: 40
+  FormsPerFloor: 10
+  MaxOverride: .300000012
+  MinFormWidth: 2
+  MaxFormWidth: 16
+  MinArea: 20
+  MaxArea: 100
+  MaxCorridorArea: 60
+  Pos: {x: 0, y: 0, z: 0}
+  Scale: {x: 1, y: 1, z: 1}
+  SizeToHeight: .850000024
+  MinHeight: 2
+  MaxFloorHeight: 1
+  HeightRand: 4
+  CorridorHeightRand: 2
+  MinFloorLevelStep: 8
+  MaxFloorLevelStep: 10
+  MinCorridorStartHeight: 3
+  MaxCorridorStartHeight: 5
+  MapIsOpen: 0
+  Theme: 0
+  Torch: {fileID: 0}
+  TorchScale: .300000012
+  TorchOffset: .100000001
+  numJumpPads: 10
+  JumpPad: {fileID: 0}
+  JumpPadScale: {x: 1, y: .300000012, z: 1}
+  JumpHeight: 2
+  JumpPadOffset: .0500000007
+  SpawnPointScale: {x: 1, y: 1, z: 1}
+  SpawnPoint: {fileID: 0}
+  SpawnPoints: 4
+  MonsterSpawns: 6
+  WeaponSpawn: {fileID: 0}
+  WeaponSpawnScale: {x: .5, y: .100000001, z: .5}
+  WeaponSpawnOffset: .0500000007
 --- !u!4 &1731135895
 Transform:
   m_ObjectHideFlags: 0

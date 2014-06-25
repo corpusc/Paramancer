@@ -12,7 +12,7 @@ public struct Vec3i {
 
 
 
-public class GenVox : ScriptableObject {
+public class VoxGen : MonoBehaviour {
 	public int Seed = 0;
 	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc) 
 	public Material[,,] Mat;
@@ -40,7 +40,7 @@ public class GenVox : ScriptableObject {
 	public Theme Theme = Theme.SciFi; // used to control the placing of art assets & the texture images 
 
 	// assets to be placed on the map 
-	//		torch 
+	//		lights 
 	public GameObject Torch;
 	public float TorchScale = 0.3f;
 	public float TorchOffset = 0.1f; // the distance from the center of the torch to the wall/floor it is attached to 
@@ -48,14 +48,14 @@ public class GenVox : ScriptableObject {
 	public int numJumpPads = 10;
 	public GameObject JumpPad;
 	public Vector3 JumpPadScale = new Vector3(1f, 0.3f, 1f);
-	public int JumpHeight = 2; // the height that cannot be jumped over normally(needs a jump pad)(must be lesser than MapSize.y) 
+	public int JumpHeight = 2; // the height that cannot be jumped over normally (needs a jump pad & must be lesser than MapSize.y) 
 	public float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on 
-
+	// spawns 
+	public Vector3 SpawnPointScale = Vector3.one;
+	public GameObject SpawnPoint;
 	public int SpawnPoints = 4; // the amount of spawn points to be placed(of each type[FFA/red/blue]) 
 	public int MonsterSpawns = 6;
-	public GameObject SpawnPoint;
-	public Vector3 SpawnPointScale = Vector3.one;
-
+	// 		weapons 
 	public GameObject WeaponSpawn;
 	public Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
 	public float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on 
@@ -70,7 +70,7 @@ public class GenVox : ScriptableObject {
 	// private 
 	Vec3i numVoxAcross;
 	int numGunSpawns = 10;
-	int numTries = 200000; // the amount of attempts to place a room,before giving up 
+	int numTries = 20000; // the amount of attempts to place a room,before giving up 
 	List<Material> MatPool = new List<Material>();
 
 	GameObject primObject;
@@ -81,6 +81,19 @@ public class GenVox : ScriptableObject {
 	GameObject monsterSpawnBag;
 
 
+
+	static VoxGen s_vox;
+	public static void GenerateMap(int seed, Theme theme) {
+		s_vox = ScriptableObject.CreateInstance<VoxGen>();
+		s_vox.Seed = seed;
+		s_vox.Theme = theme;
+		s_vox.Scale = Vector3.one * 2f;
+		s_vox.Init();
+		s_vox.Build();
+		s_vox.Build3d();
+		s_vox.RemoveOriginals();
+		Random.seed = (int)(Time.time * 100f);
+	}
 
 	// setup (doesn't build) 
 	// call Build() and Build3D() right after this for the random seed to work 
@@ -240,7 +253,8 @@ public class GenVox : ScriptableObject {
 		
 		// place assets 
 		numMade = 0;
-		for (int i = 0; i < numTries && numMade < numTorches; i++) {
+		int numLights = 25;
+		for (int i = 0; i < numTries && numMade < numLights; i++) {
 			Vec3i t;
 			t.X = Random.Range(0, numVoxAcross.X);
 			t.y = Random.Range(0, numVoxAcross.y);

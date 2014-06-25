@@ -15,11 +15,15 @@ public class TestCam : MonoBehaviour {
 		o.AddComponent<TrailRenderer>();
 		tr = o.GetComponent<TrailRenderer>();
 		tr.renderer.material = Mats.Get("TrailJagged");
-		tr.time = 7f;
+		tr.renderer.material.color = Color.red;
+		tr.time = 4f;
 	}
 	
 	void Update() {
-		transform.localEulerAngles += new Vector3(-Input.GetAxis("Mouse Y") * 2f, Input.GetAxis("Mouse X") * 2f, 0f);
+		transform.localEulerAngles += new Vector3(
+			-Input.GetAxis("Mouse Y") * 2f, 
+			Input.GetAxis("Mouse X") * 2f, 
+			0f);
 		float speed = 10f;
 
 		if /**/ (CcInput.Holding(UserAction.Sprint))       speed *= 4f;
@@ -34,6 +38,6 @@ public class TestCam : MonoBehaviour {
 		if (Input.GetKeyDown("space")) 
 			tr.enabled = !tr.enabled;
 
-		o.transform.position = transform.position + transform.up;
+		o.transform.position = transform.position;// + transform.up;
 	}
 }
