@@ -82,15 +82,12 @@ public static class VoxGen {
 
 
 	public static void GenerateMap(int seed, Theme theme) {
-		Debug.Log(" -----  seed: " + seed + " ----- ");
 		Seed = seed;
 		Theme = theme;
 		Scale = Vector3.one * 2f;
 
 
-		Debug.Log("Init() -----  seed: " + seed + " ----- ");
 		Init();
-		Debug.Log("Build() -----  seed: " + seed + " ----- ");
 		Build();
 		Debug.Log("Build3d() -----  seed: " + seed + " ----- ");
 		Build3D();
@@ -155,6 +152,7 @@ public static class VoxGen {
 			start.z = Mathf.Min(t.z, u.z);
 			end.x = Mathf.Max(t.x, u.x);
 			end.z = Mathf.Max(t.z, u.z);
+
 			if (containsBlocks(start, end)) {
 				if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
 					if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
@@ -205,50 +203,44 @@ public static class VoxGen {
 	static int numMade = 0;
 	public static void Build3D () {
 		for (int i = 0; i < numVoxAcross.X; i++)
-		for (int j = 0; j < numVoxAcross.Y; j++)
-		for (int k = 0; k < numVoxAcross.Z; k++) {
-			if (IsAir[i, j, k]) {
-				Debug.Log("air voxel " + i);
+		for (int y = 0; y < numVoxAcross.Y; y++)
+		for (int z = 0; z < numVoxAcross.Z; z++) {
+			// if air... 
+			if (IsAir[i, y, z]) {
+				// ...need to make surface quads against neighboring void voxels 
+				var hx = Scale.x * 0.5f;
+				var hy = Scale.y * 0.5f;
+				var hz = Scale.z * 0.5f;
 
-				if (!getBlock(i - 1, j, k)) {
-					makeQuad(new Vector3(Scale.x * i - Scale.x * 0.5f, Scale.y * j, Scale.z * k),
-						Vector3.left);
-				}
-				if (!getBlock(i + 1, j, k)) {
-					makeQuad(new Vector3(Scale.x * i + Scale.x * 0.5f, Scale.y * j, Scale.z * k),
-						Vector3.right);
-				}
-				if (!getBlock(i, j, k - 1)) {
-					makeQuad(new Vector3(Scale.x * i, Scale.y * j, Scale.z * k - Scale.z * 0.5f),
-						Vector3.back);
-				}
-				if (!getBlock(i, j, k + 1)) {
-					makeQuad(new Vector3(Scale.x * i, Scale.y * j, Scale.z * k + Scale.z * 0.5f),
-						Vector3.forward);
-				}
-				if (!getBlock(i, j - 1, k)) {
-					makeQuad(new Vector3(Scale.x * i, Scale.y * j - Scale.y * 0.5f, Scale.z * k),
-						Vector3.down);
-				}
-				if (!getBlock(i, j + 1, k)) {
-					makeQuad(new Vector3(Scale.x * i, Scale.y * j + Scale.y * 0.5f, Scale.z * k),
-						Vector3.up);
-				}
+				maybeMakeQuad(Vector3.left, 
+					i-1, y, z,
+					new Vector3(Scale.x*i-hx, Scale.y*y, Scale.z*z));
+				maybeMakeQuad(Vector3.right, 
+					i+1, y, z,
+					new Vector3(Scale.x*i+hx, Scale.y*y, Scale.z*z));
+				
+				maybeMakeQuad(Vector3.forward, 
+					i, y, z+1,
+					new Vector3(Scale.x*i, Scale.y*y, Scale.z*z+hz));
+				maybeMakeQuad(Vector3.back,
+					i, y, z-1,
+					new Vector3(Scale.x*i, Scale.y*y, Scale.z*z-hz));
+				
+				maybeMakeQuad(Vector3.up, 
+					i, y+1, z,
+					new Vector3(Scale.x*i, Scale.y*y+hy, Scale.z*z));
+				maybeMakeQuad(Vector3.down, 
+					i, j-1, k,
+					new Vector3(Scale.x*i, Scale.y*j-hy, Scale.z*z));
+
+				Debug.Log("AIR " + i);
 			}else{ // NOT air 
-				Debug.Log("void voxel" + i);
+				Debug.Log("VOID " + i);
 			}
 		} // end of vox scan 
 
 
 
-		private static void makeQuad(Vector3 offset, Vector3 dir) {
-			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-			np.transform.position = Pos + offset;
-			np.transform.localScale = Scale;
-			np.transform.forward = dir;
-			np.renderer.material = Mat[i, j, k];
-			np.transform.parent = primObject.transform;
-		}
 
 
 
@@ -720,5 +712,18 @@ public static class VoxGen {
 		v.Y = y;
 		v.Z = z;
 		return columnOpen(v, h);
+	}
+
+
+
+	private static void maybeMakeQuad(Vector3 dir, int x, int y, int z, Vector3 offset) {
+		if (!getBlock(x, y, z)) {
+			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+			np.transform.position = Pos + offset;
+			np.transform.localScale = Scale;
+			np.transform.forward = dir;
+			np.renderer.material = Mat[x, y, z];
+			np.transform.parent = primObject.transform;
+		}
 	}
 }
