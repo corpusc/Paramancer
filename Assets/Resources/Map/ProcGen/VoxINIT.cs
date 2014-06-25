@@ -4,13 +4,13 @@ using System.Collections;
 
 
 public class VoxINIT : MonoBehaviour {
-	ProcGenVoxel vox;
-	static ProcGenVoxel s_vox;
+	GenVox vox;
+	static GenVox s_vox;
 
 
 
 	void Start() {
-		vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
+		vox = ScriptableObject.CreateInstance<GenVox>();
 		vox.Pos = Vector3.zero;
 		vox.Scale = Vector3.one * 2f;
 		vox.Init();
@@ -20,7 +20,7 @@ public class VoxINIT : MonoBehaviour {
 	}
 
 	public static void CreateMap(int seed, Theme theme) {
-		s_vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
+		s_vox = ScriptableObject.CreateInstance<GenVox>();
 		s_vox.Seed = seed;
 		s_vox.Theme = theme; //
 		s_vox.Pos = Vector3.zero;
