@@ -93,38 +93,40 @@ public enum HudMode {
 	Count
 }
 
-public enum Gun { // FIXME: this used to be "Item", but they need their own enum or system 
-	Lava = -5, // not really an item, should be moved? 
-	Suicide = -4, // not really an item, should be moved? 
+public enum Gun { 
+	// FIXME: this used to be "Item" 
+	// things that aren't guns need their own enum or system 
+	Lava = -5,
+	Suicide = -4,
 	Health = -3,
 	None = -1,
 
 	// when changing weapon names, also change in "UserAction" enum 
 	Pistol = 0,
 	GrenadeLauncher,
-	MachineGun, // 2
+	MachineGun,
 	RailGun,
-	RocketLauncher, // 4
+	RocketLauncher,
 	Swapper,
-	Gravulator, // 6
+	Gravulator,
 	Bomb,
-	Spatula, // 8
+	Spatula,
 
 	Count
 }
 
 public enum UserAction {
-	// when changing weapon names, also change in "Item" enum 
-	// these are for selecting/equipping with 1 touch 
+	// when changing weapon names, also change in "Gun" enum 
+	// these are for direct selecting/equipping with 1 button press 
 	Pistol, // if these ever change, then modify testing for this range (thru Spatula) in SetDefaultBinds() 
 	GrenadeLauncher,
-	MachineGun, // 2
+	MachineGun,
 	RailGun,
-	RocketLauncher, // 4
+	RocketLauncher,
 	Swapper,
-	Gravulator, // 6
+	Gravulator,
 	Bomb,
-	Spatula, // 8
+	Spatula,
 	
 	MoveForward,
 	MoveBackward,
