@@ -30,6 +30,9 @@ public class CcLog : MonoBehaviour {
 	}
 	
 	void OnGUI() {
+		if (hud.Invisible)
+			return;
+
 		vs = hud.VSpanLabel; // vertical span 
 
 		// display entries
@@ -96,7 +99,7 @@ public class CcLog : MonoBehaviour {
 							networkView.RPC("AddToLog", RPCMode.All, 
 			                	net.LocUs.name + ":", newEntry, S.ColToVec(net.LocUs.colA) );
 						}else{
-							AddToLog(
+							AddEntry(
 								net.LocUs.name + ":", newEntry, S.ColToVec(net.LocUs.colA) );
 						}
 					}
@@ -122,7 +125,7 @@ public class CcLog : MonoBehaviour {
 	}
 	
 	[RPC]
-	public void AddToLog(string name, string s, Vector3 col) {
+	public void AddEntry(string name, string s, Vector3 col) {
 		var en = new LogEntry(); // new entry
 		en.Maker = name;
 		en.Color = S.VecToCol(col);

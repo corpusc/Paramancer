@@ -11,9 +11,6 @@ public class DebugVoxel : MonoBehaviour {
 
 	void Start() {
 		vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
-		vox.MapSize.x = 64;
-		vox.MapSize.y = 32;
-		vox.MapSize.z = 64;
 		vox.Pos = Vector3.zero;
 		vox.Scale = Vector3.one * 2f;
 		vox.Init();
@@ -25,9 +22,6 @@ public class DebugVoxel : MonoBehaviour {
 	public static void CreateMap(int seed) {
 		s_vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
 		s_vox.Seed = seed;
-		s_vox.MapSize.x = 64;
-		s_vox.MapSize.y = 32;
-		s_vox.MapSize.z = 64;
 		s_vox.Pos = Vector3.zero;
 		s_vox.Scale = Vector3.one * 2f;
 		s_vox.Init();
@@ -37,13 +31,10 @@ public class DebugVoxel : MonoBehaviour {
 		Random.seed = (int)(Time.time * 100f);
 	}
 
-	public static void CreateMap(int seed, Theme theme/**/) {
+	public static void CreateMap(int seed, Theme theme) {
 		s_vox = ScriptableObject.CreateInstance<ProcGenVoxel>();
 		s_vox.Seed = seed;
 		s_vox.Theme = theme; //
-		s_vox.MapSize.x = 64;
-		s_vox.MapSize.y = 32;
-		s_vox.MapSize.z = 64;
 		s_vox.Pos = Vector3.zero;
 		s_vox.Scale = Vector3.one * 2f;
 		s_vox.Init();

@@ -14,7 +14,6 @@ public class ProcGenVoxel : ScriptableObject {
 	public int Seed = 0;
 	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc) 
 	public Material[,,] Mat;
-	public Vec3i MapSize; // this is the resolution(the actual size depends on this and the map scale) 
 	public int Forms = 40; // the amount of rooms/halls to create on the ground floor 
 	public int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor 
 	public float MaxOverride = 0.3f; // only create a form if there aren't too many things already in there 
@@ -67,6 +66,7 @@ public class ProcGenVoxel : ScriptableObject {
 
 
 	// private 
+	Vec3i numVoxAcross;
 	int numGunSpawns = 10;
 	int numTries = 200000; // the amount of attempts to place a room,before giving up 
 	List<Material> MatPool = new List<Material>();
@@ -80,13 +80,16 @@ public class ProcGenVoxel : ScriptableObject {
 
 
 
-	// only sets everything up, doesn't build the level 
+	// sets everything up, but doesn't build 
 	// call Build() and Build3D() right after calling this for the random seed to work 
 	public void Init() {
 		Random.seed = Seed;
+		numVoxAcross.x = 64;
+		numVoxAcross.y = 32;
+		numVoxAcross.z = 64;
 
-		Block = new bool[MapSize.x, MapSize.y, MapSize.z];
-		Mat = new Material[MapSize.x, MapSize.y, MapSize.z];
+		Block = new bool[numVoxAcross.x, numVoxAcross.y, numVoxAcross.z];
+		Mat = new Material[numVoxAcross.x, numVoxAcross.y, numVoxAcross.z];
 
 		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_floor_003", typeof(Material)));
 		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_plate_005", typeof(Material)));
@@ -98,8 +101,7 @@ public class ProcGenVoxel : ScriptableObject {
 		JumpPad = GameObject.Find("JumpPad"); // a GameObject called JumpPad must already be in the scene for this to work, it will be removed after everything is done by the script
 		SpawnPoint = GameObject.Find("SpawnPoint"); // a GameObject called SpawnPoint must already be in the scene for this to work, it will be removed after everything is done by the script
 		WeaponSpawn = GameObject.Find("WeaponSpawn"); // a GameObject called WeaponSpawn must already be in the scene, it will be removed afterwards by calling RemoveOriginals()
-		mapObject = GameObject.Find("Map"); // an empty GameObject container, already in the scene 
-		primObject = GameObject.Find("Prims"); // an empty GameObject container, already in the scene 
+		primObject = GameObject.Find("[PRIMS]"); // an empty GameObject container, already in the scene 
 		ffaSpawnBag = GameObject.Find("FFA Spawns"); // an empty GameObject container, already in the scene 
 		blueSpawnBag = GameObject.Find("Blue Team Spawns"); // an empty GameObject container, already in the scene 
 		redSpawnBag = GameObject.Find("Red Team Spawns"); // an empty GameObject container, already in the scene 
@@ -116,12 +118,12 @@ public class ProcGenVoxel : ScriptableObject {
 		int formsMade = 0;
 		for (int i = 0; i < numTries && formsMade < Forms; i++) {
 			Vec2i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, numVoxAcross.x);
+			t.z = Random.Range(0, numVoxAcross.z);
 			
 			Vec2i u;
-			u.x = Random.Range(0, MapSize.x);
-			u.z = Random.Range(0, MapSize.z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
+			u.x = Random.Range(0, numVoxAcross.x);
+			u.z = Random.Range(0, numVoxAcross.z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
 			
 			Vec2i start;
 			Vec2i end;
@@ -142,16 +144,16 @@ public class ProcGenVoxel : ScriptableObject {
 		} // end of ground floor creation
 
 		//...and then add bridges and corridors higher up
-		for (int h = Random.Range(MinCorridorStartHeight, MaxCorridorStartHeight + 1); h < MapSize.y - MinHeight - HeightRand; h += Random.Range(MinFloorLevelStep, MaxFloorLevelStep + 1)) { // h is the height of the floor
+		for (int h = Random.Range(MinCorridorStartHeight, MaxCorridorStartHeight + 1); h < numVoxAcross.y - MinHeight - HeightRand; h += Random.Range(MinFloorLevelStep, MaxFloorLevelStep + 1)) { // h is the height of the floor
 			formsMade = 0;
 			for (int i = 0; i < numTries && formsMade < FormsPerFloor; i++) {
 				Vec2i t;
-				t.x = Random.Range(0, MapSize.x);
-				t.z = Random.Range(0, MapSize.z);
+				t.x = Random.Range(0, numVoxAcross.x);
+				t.z = Random.Range(0, numVoxAcross.z);
 				
 				Vec2i u;
-				u.x = Random.Range(0, MapSize.x);
-				u.z = Random.Range(0, MapSize.z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
+				u.x = Random.Range(0, numVoxAcross.x);
+				u.z = Random.Range(0, numVoxAcross.z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
 				
 				Vec2i start;
 				Vec2i end;
@@ -178,9 +180,9 @@ public class ProcGenVoxel : ScriptableObject {
 	// this generates the level in 3d(puts it in the scene) based what Build() created - call Build() before this
 	int numMade = 0;
 	public void Build3d () {
-		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.y; j++)
-		for (int k = 0; k < MapSize.z; k++) {
+		for (int i = 0; i < numVoxAcross.x; i++)
+		for (int j = 0; j < numVoxAcross.y; j++)
+		for (int k = 0; k < numVoxAcross.z; k++) {
 			// only build walls around a block if it's not a wall itself
 			if (Block[i, j, k]) {
 					if (!getBlock(i - 1, j, k)) {
@@ -235,41 +237,39 @@ public class ProcGenVoxel : ScriptableObject {
 		} // end of block scan
 		
 		// place assets 
-		// will probably be specific for every single one, that's why they're not treated together. 
-		// things like "don't place torches on ceilings" are checked here specifically for every single asset
 		numMade = 0;
 		for (int i = 0; i < numTries && numMade < Torches; i++) {
 			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, numVoxAcross.x);
+			t.y = Random.Range(0, numVoxAcross.y);
+			t.z = Random.Range(0, numVoxAcross.z);
 			if (Block[t.x, t.y, t.z]) {
 				if (!getBlock(t.x - 1, t.y, t.z)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x * 0.5f + TorchOffset, Scale.y * t.y, Scale.z * t.z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = mapObject.transform;
+					nt.transform.parent = primObject.transform;
 					numMade++;
 				}else 
 				if (!getBlock(t.x + 1, t.y, t.z)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x * 0.5f - TorchOffset, Scale.y * t.y, Scale.z * t.z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = mapObject.transform;
+					nt.transform.parent = primObject.transform;
 					numMade++;
 				}else 
 				if (!getBlock(t.x, t.y, t.z - 1)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z - Scale.z * 0.5f + TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = mapObject.transform;
+					nt.transform.parent = primObject.transform;
 					numMade++;
 				}else 
 				if (!getBlock(t.x, t.y, t.z + 1)) {
 					var nt = (GameObject)GameObject.Instantiate(Torch);
 					nt.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * t.y, Scale.z * t.z + Scale.z * 0.5f - TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = mapObject.transform;
+					nt.transform.parent = primObject.transform;
 					numMade++;
 				}
 				// no torches on ceilings and floors! 
@@ -280,24 +280,25 @@ public class ProcGenVoxel : ScriptableObject {
 		numMade = 0;
 		for (int i = 0; i < numTries && numMade < JumpPads; i++) {
 			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(JumpHeight, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, numVoxAcross.x);
+			t.y = Random.Range(JumpHeight, numVoxAcross.y);
+			t.z = Random.Range(0, numVoxAcross.z);
 			if (Block[t.x, t.y, t.z] && !Block[t.x, t.y - 1, t.z]) { // if this is the floor of any form above jump height 
 				int d = floorScan(t.x - 1, t.y, t.z); // distance 
 				if (d >= JumpHeight && columnOpen(t.x - 1, t.y, t.z, MinHeight)) {
 					var nj = (GameObject)GameObject.Instantiate(JumpPad);
 					nj.transform.position = Pos + new Vector3(Scale.x * t.x - Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 					nj.transform.localScale = JumpPadScale;
-					nj.transform.parent = mapObject.transform;
+					nj.transform.parent = primObject.transform;
 					numMade++;
 				} else {
 					d = floorScan(t.x + 1, t.y, t.z);
+
 					if (d >= JumpHeight && columnOpen(t.x + 1, t.y, t.z, MinHeight)) {
 						var nj = (GameObject)GameObject.Instantiate(JumpPad);
 						nj.transform.position = Pos + new Vector3(Scale.x * t.x + Scale.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z);
 						nj.transform.localScale = JumpPadScale;
-						nj.transform.parent = mapObject.transform;
+						nj.transform.parent = primObject.transform;
 						numMade++;
 					} else {
 						d = floorScan(t.x, t.y, t.z - 1);
@@ -305,7 +306,7 @@ public class ProcGenVoxel : ScriptableObject {
 							var nj = (GameObject)GameObject.Instantiate(JumpPad);
 							nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z - Scale.z);
 							nj.transform.localScale = JumpPadScale;
-							nj.transform.parent = mapObject.transform;
+							nj.transform.parent = primObject.transform;
 							numMade++;
 						} else {
 							d = floorScan(t.x, t.y, t.z + 1);
@@ -313,7 +314,7 @@ public class ProcGenVoxel : ScriptableObject {
 								var nj = (GameObject)GameObject.Instantiate(JumpPad);
 								nj.transform.position = Pos + new Vector3(Scale.x * t.x, Scale.y * (t.y - d + 0.5f + JumpPadOffset), Scale.z * t.z + Scale.z);
 								nj.transform.localScale = JumpPadScale;
-								nj.transform.parent = mapObject.transform;
+								nj.transform.parent = primObject.transform;
 								numMade++;
 							}
 						}
@@ -326,9 +327,9 @@ public class ProcGenVoxel : ScriptableObject {
 		numMade = 0; // count spawn points as forms, no need for a separate var 
 		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
 			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, numVoxAcross.x);
+			t.y = Random.Range(0, numVoxAcross.y);
+			t.z = Random.Range(0, numVoxAcross.z);
 			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!getBlock(t.x, t.y - 1, t.z)) {
 				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
@@ -343,9 +344,9 @@ public class ProcGenVoxel : ScriptableObject {
 		numMade = 0; // count spawn points as forms, no need for a separate var 
 		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
 			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, numVoxAcross.x);
+			t.y = Random.Range(0, numVoxAcross.y);
+			t.z = Random.Range(0, numVoxAcross.z);
 			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!getBlock(t.x, t.y - 1, t.z)) {
 				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
@@ -360,9 +361,9 @@ public class ProcGenVoxel : ScriptableObject {
 		numMade = 0; // count spawn points as forms, no need for a separate var 
 		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
 			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, numVoxAcross.x);
+			t.y = Random.Range(0, numVoxAcross.y);
+			t.z = Random.Range(0, numVoxAcross.z);
 			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!getBlock(t.x, t.y - 1, t.z)) {
 				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
@@ -377,9 +378,9 @@ public class ProcGenVoxel : ScriptableObject {
 		numMade = 0; // count spawn points as forms, no need for a separate var 
 		for (int i = 0; i < numTries && numMade < MonsterSpawns; i++) {
 			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, numVoxAcross.x);
+			t.y = Random.Range(0, numVoxAcross.y);
+			t.z = Random.Range(0, numVoxAcross.z);
 			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!getBlock(t.x, t.y - 1, t.z)) {
 				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
@@ -394,9 +395,9 @@ public class ProcGenVoxel : ScriptableObject {
 		numMade = 0; // count weapon spawns as forms, no need for a separate var 
 		for (int i = 0; i < numTries && numMade < numGunSpawns; i++) {
 			Vec3i t;
-			t.x = Random.Range(0, MapSize.x);
-			t.y = Random.Range(0, MapSize.y);
-			t.z = Random.Range(0, MapSize.z);
+			t.x = Random.Range(0, numVoxAcross.x);
+			t.y = Random.Range(0, numVoxAcross.y);
+			t.z = Random.Range(0, numVoxAcross.z);
 
 			// if the place is accessible (ceiling height) 
 			if (columnOpen(t, MinHeight)) {
@@ -424,9 +425,9 @@ public class ProcGenVoxel : ScriptableObject {
 	// private methods 
 
 	void emptyMap() {
-		for (int i = 0; i < MapSize.x; i++)
-		for (int j = 0; j < MapSize.y; j++)
-		for (int k = 0; k < MapSize.z; k++) {
+		for (int i = 0; i < numVoxAcross.x; i++)
+		for (int j = 0; j < numVoxAcross.y; j++)
+		for (int k = 0; k < numVoxAcross.z; k++) {
 				Block[i, j, k] = false;
 		}
 	}
@@ -434,9 +435,9 @@ public class ProcGenVoxel : ScriptableObject {
 	// used so that there is a single room in the level 
 	void preBuild() {
 		Vec3i a;
-		a.x = Random.Range(0, MapSize.x - MaxFormWidth);
+		a.x = Random.Range(0, numVoxAcross.x - MaxFormWidth);
 		a.y = 0;
-		a.z = Random.Range(0, MapSize.z - MaxFormWidth);
+		a.z = Random.Range(0, numVoxAcross.z - MaxFormWidth);
 		Vec3i b;
 		b.x = Random.Range(a.x + MinFormWidth, a.x + MaxFormWidth);
 		b.y = Random.Range(MinHeight, MinHeight + HeightRand);
@@ -460,7 +461,7 @@ public class ProcGenVoxel : ScriptableObject {
 		int h = (int)((float)Mathf.Min(e.x - s.x, e.z - s.z) * SizeToHeight); // height(of the room)
 		if (h < MinHeight) h = MinHeight;
 		h += Random.Range(0, HeightRand);
-		if (h >= MapSize.y) {
+		if (h >= numVoxAcross.y) {
 			MonoBehaviour.print("Voxel map generation error: room height is too large! Please set MapSize.y to a higher value.");
 			return;
 		}
@@ -582,9 +583,9 @@ public class ProcGenVoxel : ScriptableObject {
 
 	//used to safely get a block(ie when you're not sure whether it is out of the map)
 	bool getBlock (Vec3i p) { // position
-		if (p.x < 0 || p.x >= MapSize.x) return MapIsOpen;
-		if (p.y < 0 || p.y >= MapSize.y) return MapIsOpen;
-		if (p.z < 0 || p.z >= MapSize.z) return MapIsOpen;
+		if (p.x < 0 || p.x >= numVoxAcross.x) return MapIsOpen;
+		if (p.y < 0 || p.y >= numVoxAcross.y) return MapIsOpen;
+		if (p.z < 0 || p.z >= numVoxAcross.z) return MapIsOpen;
 		return Block[p.x, p.y, p.z];
 	}
 

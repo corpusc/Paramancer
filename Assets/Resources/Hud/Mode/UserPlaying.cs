@@ -7,7 +7,6 @@ public class UserPlaying {
 	// private 
 	Scoreboard scores = new Scoreboard();
 	// screenshot 
-	bool weShouldHideHUD = false;
 	float whenScreenshotShouldBeFinished;
 	// meter bars 
 	BarMeter health = new BarMeter();
@@ -23,16 +22,16 @@ public class UserPlaying {
 
 	public float Draw(CcNet net, Arsenal arse, int midX, int midY, float lvs, Hud hud) {
 		// screenshot (might prevent Draw()ing) 
-		if (weShouldHideHUD) {
+		if (hud.Invisible) {
 			if (Time.time > whenScreenshotShouldBeFinished)
-				weShouldHideHUD = false;
+				hud.Invisible = false;
 			return 0f;
 		}else{
 			if (CcInput.Started(UserAction.TakePicture)) {
 				var fn = "Paramancer " + (int)Random.Range(0, 99999) + ".png"; // file name 
 			    Application.CaptureScreenshot(fn);
-				hud.Log.AddToLog("+", "Took picture [ " + fn + " ]", S.ColToVec(Color.grey));
-				weShouldHideHUD = true;
+				hud.Log.AddEntry("+", "Took picture (" + fn + ")", S.ColToVec(Color.grey));
+				hud.Invisible = true;
 				whenScreenshotShouldBeFinished = Time.time + 1f;
 				return 0f;
 			}

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Hud : MonoBehaviour {
+	public bool Invisible = false;
 	public string GoToPrevMenu = "<< Back <<";
 	public float TopOfMaxedLog = 0f; // the maximum height it can be, without overlapping anything else 
 

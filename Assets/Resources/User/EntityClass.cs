@@ -1181,7 +1181,7 @@ public class EntityClass : MonoBehaviour {
 					PlaySound("guncocked");
 
 					currentOfferedPickup.Pickup();
-					hud.Log.AddToLog("+", offeredPickup, S.ColToVec(Color.gray));
+					hud.Log.AddEntry("+", offeredPickup, S.ColToVec(Color.gray));
 				}
 			}else{ // must be a weapon 
 				for (int i=0; i<arse.Guns.Length; i++) {
@@ -1196,7 +1196,7 @@ public class EntityClass : MonoBehaviour {
 							arse.Guns[(int)GunInHand].Cooldown = 0f;
 							weaponSwitchingSoundAndVisual();
 							currentOfferedPickup.Pickup();
-							hud.Log.AddToLog("+", offeredPickup, S.ColToVec(Color.gray));
+							hud.Log.AddEntry("+", offeredPickup, S.ColToVec(Color.gray));
 						}
 					}
 				}

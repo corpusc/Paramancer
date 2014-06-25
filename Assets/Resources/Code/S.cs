@@ -1,4 +1,4 @@
-﻿// global general purpose singleton
+// global general purpose singleton
 
 using UnityEngine;
 using System;
@@ -56,7 +56,7 @@ static public class S {
 			if (Hud == null) {
 			Debug.Log(s);
 		}else{
-			Hud.Log.AddToLog("R14:", s, S.ColToVec(c));
+			Hud.Log.AddEntry("R14:", s, S.ColToVec(c));
 		}
 	}
 
