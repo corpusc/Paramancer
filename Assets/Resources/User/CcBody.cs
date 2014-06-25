@@ -50,16 +50,18 @@ public class CcBody : MonoBehaviour {
 
 			if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && JumpBoosted)) {
 				yMove = JumpBoosted ? 7f : 4f;
-				if (JumpBoosted && Random.Range(0, 100) == 0) {
+
+				if /****/ (Random.Range(0, 100) == 0 && JumpBoosted) {
 					ne.PlaySound("spacey");
-				} else if (Random.Range(0, 100) == 0){
+				} else if (Random.Range(0, 100) == 0) {
 					ne.PlaySound("Whoah");
 				} else {
 					ne.PlaySound("Jump");
 				}
+
 				net.SendTINYUserUpdate(ne.User.viewID, UserAction.MoveUp);
 			}
-		}else{
+		}else{ // we're in the air 
 			yMove -= Time.deltaTime * net.CurrMatch.Gravity;
 		}
 	}

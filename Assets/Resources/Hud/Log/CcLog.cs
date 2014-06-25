@@ -77,14 +77,14 @@ public class CcLog : MonoBehaviour {
 				case KeyCode.Escape:
 					Typing = false;
 					newEntry = "";
-					//AddToLog(net.localPlayer.name + ":", "e.keyCode == KeyCode.Escape", net.ColToVec(net.localPlayer.colA) );
+					//AddEntry(net.localPlayer.name + ":", "e.keyCode == KeyCode.Escape", net.ColToVec(net.localPlayer.colA) );
 					break;
 				case KeyCode.Return:
 					//if (hud.Mode != HudMode.Playing)
 						//break;
 
 					if (e.type != EventType.KeyDown) {
-						//AddToLog(net.localPlayer.name + ":", "goto default;", net.ColToVec(net.localPlayer.colA) );
+						//AddEntry(net.localPlayer.name + ":", "goto default;", net.ColToVec(net.localPlayer.colA) );
 						goto default; // without this (was originally a break;) 
 						// the webplayer version kept coming in here MANY times in a row, 
 						// (so....seeing tons of consecutive KeyUp events?) making the chat entry
@@ -96,7 +96,8 @@ public class CcLog : MonoBehaviour {
 					// if input box not empty, add entry 
 					if (newEntry != "") {
 						if (net.Connected) {
-							networkView.RPC("AddToLog", RPCMode.All, 
+							networkView.RPC(
+								"AddEntry", RPCMode.All, 
 			                	net.LocUs.name + ":", newEntry, S.ColToVec(net.LocUs.colA) );
 						}else{
 							AddEntry(

@@ -79,7 +79,7 @@ public class BasketballScript : MonoBehaviour {
 						ResetBall();
 						net.team2Score++;
 						net.networkView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
-						net.networkView.RPC("AddToLog",RPCMode.All, "BASKETBALL: ", "TEAM BLUE SCORES!", col);
+						net.networkView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "TEAM BLUE SCORES!", col);
 					}
 				}else if (hitInfo.collider.gameObject.layer == 12) {
 					// red scores 
@@ -87,13 +87,13 @@ public class BasketballScript : MonoBehaviour {
 						ResetBall();
 						net.team1Score++;
 						net.networkView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
-						net.networkView.RPC("AddToLog",RPCMode.All, "BASKETBALL: ", "TEAM RED SCORES!", col);
+						net.networkView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "TEAM RED SCORES!", col);
 					}
 				}else if (hitInfo.collider.gameObject.layer == 10) {
 					// LAVA 
 					if (net.InServerMode) {
 						ResetBall();
-						net.networkView.RPC("AddToLog",RPCMode.All, "BASKETBALL: ", "OH NO, I FELL IN THE LAVA!", col);
+						net.networkView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "OH NO, I FELL IN THE LAVA!", col);
 					}
 				}else{
 					transform.position = hitInfo.point + (hitInfo.normal*0.5f);
