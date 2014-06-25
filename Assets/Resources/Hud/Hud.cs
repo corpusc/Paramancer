@@ -86,7 +86,7 @@ public class Hud : MonoBehaviour {
 		locUser = GetComponent<LocalUser>();
 		
 		// make local player
-		net.LocUs = new NetUser();
+		net.LocUs = new NetEntity();
 		net.LocUs.local = true;
 		net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
 		net.LocUs.headType = PlayerPrefs.GetInt("PlayerHead", 0);

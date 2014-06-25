@@ -47,7 +47,7 @@ public class CcNet : MonoBehaviour {
 	public int listenPort = 25000;
 	public string MatchTypeAndMap = ""; // match type & map name (for server browser)
 	public string password = "";
-	public List<NetUser> players;
+	public List<NetEntity> players;
 	public List<PickupPoint> pickupPoints = new List<PickupPoint>();
 	private float nextPingTime = 0f;
 	public int team1Score = 0;
@@ -65,7 +65,7 @@ public class CcNet : MonoBehaviour {
 
 
 	// personal stuff 
-	public NetUser LocUs;
+	public NetEntity LocUs;
 	public bool gunBobbing = true;
 	public bool JumpAuto = true;
 
@@ -103,7 +103,7 @@ public class CcNet : MonoBehaviour {
 		CurrMatch = new MatchData(Match.FFAFragMatch);
 		
 		Application.LoadLevel(nameOfOfflineBackdrop);
-		players = new List<NetUser>();
+		players = new List<NetEntity>();
 	}
 
 	public BasketballScript GetBball() {
@@ -989,7 +989,7 @@ public class CcNet : MonoBehaviour {
 	void AddPlayer(bool local, NetworkViewID anID, Color cA, Color cB, Color cC, int head, string name, 
 		NetworkPlayer np, int targetTeam, int lives
 	) {
-		var u = new NetUser();
+		var u = new NetEntity();
 		u.colA = cA;
 		u.colB = cB;
 		u.colC = cC;
@@ -1425,7 +1425,7 @@ public class CcNet : MonoBehaviour {
 				if (players[i].Entity != null) 
 					Destroy(players[i].Entity.gameObject);
 			}
-			players = new List<NetUser>();
+			players = new List<NetEntity>();
 			
 			hud.Mode = HudMode.MainMenu;
 			Application.LoadLevel(nameOfOfflineBackdrop);
@@ -1530,7 +1530,7 @@ public class CcNet : MonoBehaviour {
 			if (players[i].Entity!= null) 
 				Destroy(players[i].Entity.gameObject);
 		}
-		players = new List<NetUser>();
+		players = new List<NetEntity>();
 		
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
@@ -1557,7 +1557,7 @@ public class CcNet : MonoBehaviour {
 				Destroy(players[i].Entity.gameObject);
 		}
 		
-		players = new List<NetUser>();
+		players = new List<NetEntity>();
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
 		mapIsLoaded = false;

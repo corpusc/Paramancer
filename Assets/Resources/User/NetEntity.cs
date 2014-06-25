@@ -3,7 +3,7 @@ using System.Collections;
 
 
 
-public class NetUser {
+public class NetEntity {
 	// misc 
 	public float Health {
 		get {   

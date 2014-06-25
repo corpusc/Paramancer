@@ -46,7 +46,7 @@ public class EntityClass : MonoBehaviour {
 	public GameObject weaponSoundObj;
 
 	// network
-	public NetUser User;
+	public NetEntity User;
 	public bool isLocal = true;
 
 	// body 

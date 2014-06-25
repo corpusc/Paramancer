@@ -26,7 +26,7 @@ public class UserPlaying {
 			if (Time.time > whenScreenshotShouldBeFinished)
 				hud.Invisible = false;
 			return 0f;
-		}else{
+		}else{ // visible 
 			if (CcInput.Started(UserAction.TakePicture)) {
 				var fn = "Paramancer " + (int)Random.Range(0, 99999) + ".png"; // file name 
 			    Application.CaptureScreenshot(fn);
@@ -40,8 +40,8 @@ public class UserPlaying {
 		var locEnt = net.LocUs.Entity;
 
 		var gunACooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
-		Gun gunA = locEnt.GunInHand;
-		Gun gunB = locEnt.GunOnBack;
+		Gun gunHand = locEnt.GunInHand;
+		Gun gunBack = locEnt.GunOnBack;
 		
 		// bars/meters 
 		// the larger bars centered along bottom of screen 
@@ -121,10 +121,10 @@ public class UserPlaying {
 		}
 		
 		// weapon cooldown (atm, only used for coloring equipped item) 
-		if (gunA >= Gun.Pistol) {
+		if (gunHand >= Gun.Pistol) {
 			float coolDownPercent = 50f; // more like: 0f to 50f
-			if (arse.Guns[(int)gunA].Delay > 0f) {
-				coolDownPercent = (gunACooldown / arse.Guns[(int)gunA].Delay) * 50f;
+			if (arse.Guns[(int)gunHand].Delay > 0f) {
+				coolDownPercent = (gunACooldown / arse.Guns[(int)gunHand].Delay) * 50f;
 				coolDownPercent = 50f-coolDownPercent;
 			}
 			
@@ -136,7 +136,7 @@ public class UserPlaying {
 		var old = GUI.matrix; // we need to store this, cuz we only want to spin the crosshairs
 		GUIUtility.RotateAroundPivot(-Camera.main.transform.rotation.eulerAngles.y, new Vector2(midX, midY));
 
-		if (gunA != Gun.Gravulator) {
+		if (gunHand != Gun.Gravulator) {
 		GUI.DrawTexture(new Rect(
 			midX-crosshairRadius, 
 			midY-crosshairRadius, 
@@ -144,7 +144,7 @@ public class UserPlaying {
 			crosshairRadius*2), Pics.CrossHair);
 		}
 
-		if (gunA == Gun.Swapper) {
+		if (gunHand == Gun.Swapper) {
 			int swapperFrame = Mathf.FloorToInt((Time.time * 15f) % Pics.CrosshairSwapper.Length);
 			if (!locEnt.swapperLocked) 
 				swapperFrame = 0;
@@ -195,7 +195,7 @@ public class UserPlaying {
 			
 			var g = arse.Guns[i];
 			GUI.color = new Color(1f, 1f, 1f, 0.2f); // trans white
-			if /*'*/ ((Gun)i == gunA) {
+			if /*'*/ ((Gun)i == gunHand) {
 				GUI.color = prevCrossHair;
 				GUI.DrawTexture(r, g.Pic);
 				float w = hud.GetWidthLabel(g.Name) + 5;
@@ -203,7 +203,7 @@ public class UserPlaying {
 				forName.x = Screen.width - w;
 				forName.width = w;
 				S.OutlinedLabel(forName, g.Name); // name
-			}else if ((Gun)i == gunB) {
+			}else if ((Gun)i == gunBack) {
 				GUI.DrawTexture(r, g.Pic);
 				S.OutlinedLabel(r, "on back"); // name
 			}else{
