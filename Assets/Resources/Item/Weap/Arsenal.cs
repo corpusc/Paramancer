@@ -131,10 +131,10 @@ public class Arsenal : MonoBehaviour {
 	void shootSwapper (Vector3 origin, Vector3 end, NetworkViewID shooterID, bool hit) {
 		bool localFire = false;
 		Vector3 localstart = origin;
-		for (int i=0; i<net.players.Count; i++){
-			if (net.players[i].viewID == shooterID && net.players[i].local) {
+		for (int i=0; i<net.Entities.Count; i++){
+			if (net.Entities[i].viewID == shooterID && net.Entities[i].local) {
 				localFire = true;
-				localstart = net.players[i].Entity.HudGun.transform.position + (Camera.main.transform.forward*0.5f);
+				localstart = net.Entities[i].Entity.HudGun.transform.position + (Camera.main.transform.forward*0.5f);
 			}
 		}
 		
@@ -154,11 +154,11 @@ public class Arsenal : MonoBehaviour {
 		bool localFire = false;
 		Vector3 localStart = origin;
 
-		for (int i=0; i<net.players.Count; i++) {
+		for (int i=0; i<net.Entities.Count; i++) {
 			// if local player 
-			if (net.players[i].viewID == shooterID && net.players[i].local){
+			if (net.Entities[i].viewID == shooterID && net.Entities[i].local){
 				localFire = true;
-				localStart = net.players[i].Entity.HudGun.transform.position + (Camera.main.transform.forward * 0.5f);
+				localStart = net.Entities[i].Entity.HudGun.transform.position + (Camera.main.transform.forward * 0.5f);
 			}
 		}
 
@@ -293,8 +293,8 @@ public class Arsenal : MonoBehaviour {
 		}
 		
 		// play sound 
-		for (int i=0; i<net.players.Count; i++) {
-			if (net.players[i].viewID == shooterID) {
+		for (int i=0; i<net.Entities.Count; i++) {
+			if (net.Entities[i].viewID == shooterID) {
 				switch (weapon) {
 					// case Item.Gravulator: 
 					// *** the activation sound is currently located along with jump/land sfx. //FIXME??? 
@@ -310,14 +310,14 @@ public class Arsenal : MonoBehaviour {
 	}
 		
 	void playPitchedSfx(int i, AudioClip ac) { // randomly pitched for variety 
-		net.players[i].Entity.weaponSoundObj.audio.clip = ac;
+		net.Entities[i].Entity.weaponSoundObj.audio.clip = ac;
 		
 		// if local user 
-		if (net.players[i].viewID == net.LocUs.viewID) 
-			net.players[i].Entity.weaponSoundObj.audio.volume = 0.3f;
+		if (net.Entities[i].viewID == net.LocUs.viewID) 
+			net.Entities[i].Entity.weaponSoundObj.audio.volume = 0.3f;
 		
-		net.players[i].Entity.weaponSoundObj.audio.pitch = Random.Range(0.9f, 1.1f);
-		net.players[i].Entity.weaponSoundObj.audio.Play();
+		net.Entities[i].Entity.weaponSoundObj.audio.pitch = Random.Range(0.9f, 1.1f);
+		net.Entities[i].Entity.weaponSoundObj.audio.Play();
 	}
 	
 	public float GetWeaponDamage(Gun weapon) {
@@ -396,8 +396,8 @@ public class Arsenal : MonoBehaviour {
 
 				// rocket jumping 
 				// 		look for self in user list 
-				for (int k=0; k<net.players.Count; k++) {
-					var user = net.players[k];
+				for (int k=0; k<net.Entities.Count; k++) {
+					var user = net.Entities[k];
 
 					if (user.local) {
 						var entPos = user.Entity.transform.position;

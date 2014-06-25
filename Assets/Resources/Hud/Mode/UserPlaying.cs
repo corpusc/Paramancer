@@ -102,9 +102,9 @@ public class UserPlaying {
 		// lives 
 		if (net.CurrMatch.playerLives > 0) {
 			int lifeCount = 0;
-			for (int i=0; i<net.players.Count; i++) {
-				if (net.players[i].local) 
-					lifeCount = net.players[i].lives;
+			for (int i=0; i<net.Entities.Count; i++) {
+				if (net.Entities[i].local) 
+					lifeCount = net.Entities[i].lives;
 			}
 			
 			//Debug.Log(lifeCount);
@@ -116,7 +116,7 @@ public class UserPlaying {
 		// spectate maybe 
 		Color gcol = GUI.color;
 		if (locEnt.Spectating) {
-			string s = "Spectating: " + net.players[locEnt.Spectatee].name + "\n\nYou will be able to play once this round is over.";
+			string s = "Spectating: " + net.Entities[locEnt.Spectatee].name + "\n\nYou will be able to play once this round is over.";
 			S.OutlinedLabel(new Rect(5, 5, 300, 60), s);
 		}
 		

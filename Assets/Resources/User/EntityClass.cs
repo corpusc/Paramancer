@@ -169,21 +169,21 @@ public class EntityClass : MonoBehaviour {
 		}
 
 		if (Spectating && isLocal) {
-			if (net.players.Count > 0) {
+			if (net.Entities.Count > 0) {
 				if (HudGun) 
 					HudGun.renderer.enabled = false;
 				
 				if (CcInput.Started(UserAction.Activate) ||
-					net.players[Spectatee].lives <= 0
+					net.Entities[Spectatee].lives <= 0
 				) {
 					Spectatee++;
 					
-					if (Spectatee >= net.players.Count) 
+					if (Spectatee >= net.Entities.Count) 
 						Spectatee = 0;
 				}
 
 				Camera.main.transform.parent = null;
-				Camera.main.transform.position = net.players[Spectatee].Entity.transform.position;
+				Camera.main.transform.position = net.Entities[Spectatee].Entity.transform.position;
 				//CurrModel.transform.position = net.players[Spectatee].Entity.transform.position;
 
 				float invY = 1f;
@@ -373,13 +373,13 @@ public class EntityClass : MonoBehaviour {
 						// swapper aiming
 						List<int> validSwapTargets = new List<int>();
 						
-						for (int i=0; i<net.players.Count; i++){
-							if (!net.players[i].local && Vector3.Dot(Camera.main.transform.forward, (net.players[i].Entity.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.players[i].Health>0f){
+						for (int i=0; i<net.Entities.Count; i++){
+							if (!net.Entities[i].local && Vector3.Dot(Camera.main.transform.forward, (net.Entities[i].Entity.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.Entities[i].Health>0f){
 								
-								Ray swapCheckRay = new Ray(Camera.main.transform.position, net.players[i].Entity.transform.position - Camera.main.transform.position);
+								Ray swapCheckRay = new Ray(Camera.main.transform.position, net.Entities[i].Entity.transform.position - Camera.main.transform.position);
 								RaycastHit swapCheckHit = new RaycastHit();
 								int swapCheckLayer = 1<<0;
-								float swapCheckLength = Vector3.Distance(net.players[i].Entity.transform.position, Camera.main.transform.position);
+								float swapCheckLength = Vector3.Distance(net.Entities[i].Entity.transform.position, Camera.main.transform.position);
 								
 								if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer) ) {
 									validSwapTargets.Add(i);
@@ -390,7 +390,7 @@ public class EntityClass : MonoBehaviour {
 						int nearestScreenspacePlayer = 0;
 						float nearestDistance = 9999f;
 						for (int i=0; i<validSwapTargets.Count; i++) {
-							Vector3 thisPos = Camera.main.WorldToScreenPoint(net.players[validSwapTargets[i]].Entity.transform.position);
+							Vector3 thisPos = Camera.main.WorldToScreenPoint(net.Entities[validSwapTargets[i]].Entity.transform.position);
 							if (Vector3.Distance(thisPos, 
 								new Vector3(Screen.width/2, Screen.height/2, 0)) < nearestDistance
 							) {
@@ -400,7 +400,7 @@ public class EntityClass : MonoBehaviour {
 						
 						if (swapperLocked) {
 							// move target to locked on player
-							Vector3 screenPos = Camera.main.WorldToScreenPoint(net.players[nearestScreenspacePlayer].Entity.transform.position);
+							Vector3 screenPos = Camera.main.WorldToScreenPoint(net.Entities[nearestScreenspacePlayer].Entity.transform.position);
 							swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
 							swapperLockTarget = nearestScreenspacePlayer;
 						}else{
@@ -814,8 +814,8 @@ public class EntityClass : MonoBehaviour {
 					FireBullet(gun);
 				}else{
 					// locked on, we hit
-				net.Shoot(gun, transform.position, net.players[swapperLockTarget].Entity.transform.position - transform.position, net.players[swapperLockTarget].Entity.transform.position , net.LocUs.viewID, true, alt, Vector3.zero);
-					net.RegisterHit(gun, net.LocUs.viewID, net.players[swapperLockTarget].viewID, net.players[swapperLockTarget].Entity.transform.position);
+				net.Shoot(gun, transform.position, net.Entities[swapperLockTarget].Entity.transform.position - transform.position, net.Entities[swapperLockTarget].Entity.transform.position , net.LocUs.viewID, true, alt, Vector3.zero);
+					net.RegisterHit(gun, net.LocUs.viewID, net.Entities[swapperLockTarget].viewID, net.Entities[swapperLockTarget].Entity.transform.position);
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
@@ -998,8 +998,8 @@ public class EntityClass : MonoBehaviour {
 				// hit a player, tell the server
 				hit = true;
 				
-				for (int i=0; i<net.players.Count; i++) {
-					if (bHit.collider.gameObject == net.players[i].Entity.gameObject){
+				for (int i=0; i<net.Entities.Count; i++) {
+					if (bHit.collider.gameObject == net.Entities[i].Entity.gameObject){
 						hitPlayer = i;
 					}
 				}
@@ -1017,7 +1017,7 @@ public class EntityClass : MonoBehaviour {
 		net.Shoot(weapon, bStart, bOri, bEnd, net.LocUs.viewID, hit, alt, hitNorm);
 
 		if (registerhit) 
-			net.RegisterHit(weapon, net.LocUs.viewID, net.players[hitPlayer].viewID, bHit.point);
+			net.RegisterHit(weapon, net.LocUs.viewID, net.Entities[hitPlayer].viewID, bHit.point);
 	}
 
 	private Transform getRandomSpawn(string s) {

@@ -642,8 +642,8 @@ public class Hud : MonoBehaviour {
 		if (net.InServerMode) {
 			menuBegin(Color.red);
 
-			for (int i=0; i<net.players.Count; i++) {
-				if (net.players[i].viewID != net.LocUs.viewID) {
+			for (int i=0; i<net.Entities.Count; i++) {
+				if (net.Entities[i].viewID != net.LocUs.viewID) {
 					GUILayout.BeginHorizontal();
 					
 					if (GUILayout.Button(HudMode.KickAPlayer.ToString())) {
@@ -652,10 +652,10 @@ public class Hud : MonoBehaviour {
 					}
 
 					string pingString = "?";
-					if (net.players[i].ping.isDone) 
-						pingString = net.players[i].ping.time.ToString();
+					if (net.Entities[i].ping.isDone) 
+						pingString = net.Entities[i].ping.time.ToString();
 					
-					GUILayout.Label("- " + net.players[i].name + " - [Ping: " + pingString + "]");
+					GUILayout.Label("- " + net.Entities[i].name + " - [Ping: " + pingString + "]");
 					
 					GUILayout.EndHorizontal();
 				}

@@ -47,7 +47,7 @@ public class CcNet : MonoBehaviour {
 	public int listenPort = 25000;
 	public string MatchTypeAndMap = ""; // match type & map name (for server browser)
 	public string password = "";
-	public List<NetEntity> players;
+	public List<NetEntity> Entities;
 	public List<PickupPoint> pickupPoints = new List<PickupPoint>();
 	private float nextPingTime = 0f;
 	public int team1Score = 0;
@@ -103,7 +103,7 @@ public class CcNet : MonoBehaviour {
 		CurrMatch = new MatchData(Match.FFAFragMatch);
 		
 		Application.LoadLevel(nameOfOfflineBackdrop);
-		players = new List<NetEntity>();
+		Entities = new List<NetEntity>();
 	}
 
 	public BasketballScript GetBball() {
@@ -118,8 +118,8 @@ public class CcNet : MonoBehaviour {
 	void SendTINYUserUpdateRPC(NetworkViewID nvi, int action) {
 		latestPacket = Time.time;
 		
-		for (int i=0; i<players.Count; i++) {
-			var u = players[i]; // user 
+		for (int i=0; i<Entities.Count; i++) {
+			var u = Entities[i]; // user 
 
 			if (u.viewID == nvi && 
 			    u.Entity != null
@@ -143,10 +143,10 @@ public class CcNet : MonoBehaviour {
 		// received a player's properties, let's update the local view of that player
 		latestPacket = Time.time;
 		
-		for (int i=0; i<players.Count; i++) {
-			if (viewID == players[i].viewID && players[i].Entity != null) {
-				players[i].lastPong = Time.time;
-				players[i].Entity.UpdatePlayer(pos, ang, crouch, moveVec, yMove, 
+		for (int i=0; i<Entities.Count; i++) {
+			if (viewID == Entities[i].viewID && Entities[i].Entity != null) {
+				Entities[i].lastPong = Time.time;
+				Entities[i].Entity.UpdatePlayer(pos, ang, crouch, moveVec, yMove, 
 					info.timestamp, (Gun)gunA, (Gun)gunB, playerUp, playerForward);
 			}
 		}
@@ -162,9 +162,9 @@ public class CcNet : MonoBehaviour {
 	}
 	[RPC]
 	void ConsumeHealthRPC(NetworkViewID viewID) {
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == viewID) {
-				players[i].Health = 100f;
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].viewID == viewID) {
+				Entities[i].Health = 100f;
 			}
 		}
 		if (LocUs.viewID == viewID) 
@@ -188,8 +188,8 @@ public class CcNet : MonoBehaviour {
 		
 		if (InServerMode) {
 			// see if anyone gets hurt 
-			for (int i=0; i<players.Count; i++){
-				if (Vector3.Distance(position, players[i].Entity.transform.position) 
+			for (int i=0; i<Entities.Count; i++){
+				if (Vector3.Distance(position, Entities[i].Entity.transform.position) 
 					< 
 				    arse.Guns[weapon].BlastRadius + 0.5f /* FIXME: it's the entity lateral radius, shouldn't be hardcoded */
 				) {
@@ -198,19 +198,19 @@ public class CcNet : MonoBehaviour {
 					// ignore if on the same team as the person who fired (unless bomb) 
 					if (CurrMatch.teamBased && !CurrMatch.FriendlyFire) {
 						int shooterIndex = -1;
-						for (int k=0; k<players.Count; k++){
-							if (players[k].viewID == shooterID) 
+						for (int k=0; k<Entities.Count; k++){
+							if (Entities[k].viewID == shooterID) 
 								shooterIndex = k;
 						}
 						
-						if (shooterIndex != -1 && players[i].team == players[shooterIndex].team) 
+						if (shooterIndex != -1 && Entities[i].team == Entities[shooterIndex].team) 
 							skip = true;
 						if (shooterIndex != -1 && i == shooterIndex && (Gun)weapon == Gun.Bomb) 
 							skip = false;
 					}
 					
-					if (players[i].Health > 0f && !skip) {
-						RegisterHitRPC(weapon, shooterID, players[i].viewID, players[i].Entity.transform.position);
+					if (Entities[i].Health > 0f && !skip) {
+						RegisterHitRPC(weapon, shooterID, Entities[i].viewID, Entities[i].Entity.transform.position);
 					}
 				}
 			}
@@ -259,16 +259,16 @@ public class CcNet : MonoBehaviour {
 		
 		//Debug.Log("hit registered");
 		
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == shooterID) si = i;
-			if (players[i].viewID == victimID) vi = i;
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].viewID == shooterID) si = i;
+			if (Entities[i].viewID == victimID) vi = i;
 		}
 		
-		if (si == -1 || vi == -1 || players[vi].Health <= 0f) 
+		if (si == -1 || vi == -1 || Entities[vi].Health <= 0f) 
 			return;
 		
 		if ((Gun)weapon == Gun.Swapper){
-			networkView.RPC("SwapPlayers",RPCMode.All, shooterID, players[si].Entity.transform.position, victimID, players[vi].Entity.transform.position);
+			networkView.RPC("SwapPlayers",RPCMode.All, shooterID, Entities[si].Entity.transform.position, victimID, Entities[vi].Entity.transform.position);
 			return;
 		}
 		
@@ -276,48 +276,48 @@ public class CcNet : MonoBehaviour {
 		// subtract health 
 		if (si == vi && (Gun)weapon == Gun.RocketLauncher) {
 			// rocket jumping 
-			players[vi].Health -= 30f;
+			Entities[vi].Health -= 30f;
 		}else{
 			// normal damage 
 			if ((Gun)weapon == Gun.GrenadeLauncher || (Gun)weapon == Gun.RocketLauncher) { // less damage when farther from the explosion 
-				float d = Vector3.Distance(hitPos, players[vi].Entity.transform.position) + 1f;
-				players[vi].Health -= arse.GetWeaponDamage((Gun)weapon) / d;
+				float d = Vector3.Distance(hitPos, Entities[vi].Entity.transform.position) + 1f;
+				Entities[vi].Health -= arse.GetWeaponDamage((Gun)weapon) / d;
 
-			} else players[vi].Health -= arse.GetWeaponDamage((Gun)weapon);
+			} else Entities[vi].Health -= arse.GetWeaponDamage((Gun)weapon);
 		}
 		
-		if (players[vi].Health <= 0f) {
+		if (Entities[vi].Health <= 0f) {
 			// player died 
-			players[vi].Health = 0f;
+			Entities[vi].Health = 0f;
 			killShot = true;
 		}
 		
 		// scores
 		if (killShot) {
-			players[vi].deaths++;
+			Entities[vi].deaths++;
 			
 			if (CurrMatch.deathsSubtractScore) 
-				players[vi].currentScore--;
+				Entities[vi].currentScore--;
 			if (si == vi) {
 				Sfx.PlayOmni("humiliation");
 			} else {
-				players[si].kills++;
+				Entities[si].kills++;
 				if (CurrMatch.killsIncreaseScore) 
-					players[si].currentScore++;
+					Entities[si].currentScore++;
 			}
 		}
 		
 		// team stuff
 		if (killShot && CurrMatch.teamBased) {
-			if (players[vi].team == 1 && players[si].team == 2 && CurrMatch.deathsSubtractScore) team1Score--;
-			if (players[vi].team == 2 && players[si].team == 1 && CurrMatch.deathsSubtractScore) team2Score--;
-			if (players[si].team == 1 && players[vi].team == 2 && CurrMatch.killsIncreaseScore) team1Score++;
-			if (players[si].team == 2 && players[vi].team == 1 && CurrMatch.killsIncreaseScore) team2Score++;
+			if (Entities[vi].team == 1 && Entities[si].team == 2 && CurrMatch.deathsSubtractScore) team1Score--;
+			if (Entities[vi].team == 2 && Entities[si].team == 1 && CurrMatch.deathsSubtractScore) team2Score--;
+			if (Entities[si].team == 1 && Entities[vi].team == 2 && CurrMatch.killsIncreaseScore) team1Score++;
+			if (Entities[si].team == 2 && Entities[vi].team == 1 && CurrMatch.killsIncreaseScore) team2Score++;
 		}
 		
 		// assign results
-		networkView.RPC("AssignPlayerStats", RPCMode.All, victimID, players[vi].Health, players[vi].kills, players[vi].deaths, players[vi].currentScore);
-		networkView.RPC("AssignPlayerStats", RPCMode.All, shooterID, players[si].Health, players[si].kills, players[si].deaths, players[si].currentScore);
+		networkView.RPC("AssignPlayerStats", RPCMode.All, victimID, Entities[vi].Health, Entities[vi].kills, Entities[vi].deaths, Entities[vi].currentScore);
+		networkView.RPC("AssignPlayerStats", RPCMode.All, shooterID, Entities[si].Health, Entities[si].kills, Entities[si].deaths, Entities[si].currentScore);
 
 		if (killShot) {
 			networkView.RPC("AnnounceKill", RPCMode.All, weapon, shooterID, victimID);
@@ -331,8 +331,8 @@ public class CcNet : MonoBehaviour {
 		
 		// check for game over
 		if (CurrMatch.winScore > 0) {
-			for (int i=0; i<players.Count; i++) {
-				if (players[i].currentScore>=CurrMatch.winScore) {
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].currentScore>=CurrMatch.winScore) {
 					networkView.RPC("AnnounceGameOver", RPCMode.All);
 				}
 			}
@@ -341,18 +341,18 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void SwapPlayers(NetworkViewID shooterID, Vector3 shooterPos, NetworkViewID victimID, Vector3 victimPos) {
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].local) {
-				if (players[i].viewID == shooterID) {
-					players[i].Entity.transform.position = victimPos;
-					players[i].Entity.sendRPCUpdate = true;
-					players[i].Entity.PlaySound("Swapped");
-					players[i].Entity.ForceLook(shooterPos);
-				}else if (players[i].viewID == victimID) {
-					players[i].Entity.transform.position = shooterPos;
-					players[i].Entity.sendRPCUpdate = true;
-					players[i].Entity.PlaySound("Swapped");
-					players[i].Entity.ForceLook(victimPos);
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].local) {
+				if (Entities[i].viewID == shooterID) {
+					Entities[i].Entity.transform.position = victimPos;
+					Entities[i].Entity.sendRPCUpdate = true;
+					Entities[i].Entity.PlaySound("Swapped");
+					Entities[i].Entity.ForceLook(shooterPos);
+				}else if (Entities[i].viewID == victimID) {
+					Entities[i].Entity.transform.position = shooterPos;
+					Entities[i].Entity.sendRPCUpdate = true;
+					Entities[i].Entity.PlaySound("Swapped");
+					Entities[i].Entity.ForceLook(victimPos);
 				}
 			}
 		}
@@ -378,12 +378,12 @@ public class CcNet : MonoBehaviour {
 			g.GetComponent<Giblet>().Gravity = CurrMatch.Gravity;
 		}
 		
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == viewID && 
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].viewID == viewID && 
 				//players[i].local && 
-				players[i].Health > 0f
+				Entities[i].Health > 0f
 			) {
-				players[i].Entity.PlaySound("guydamage"); // positioned at the hit player 
+				Entities[i].Entity.PlaySound("guydamage"); // positioned at the hit player 
 				Sfx.PlayOmni("TakeDamage"); // heard at same volume (& centered panning), regardless of where the hit player is 
 			}
 		}
@@ -406,11 +406,11 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void SharePlayerScores(NetworkViewID viewID, int kills, int deaths, int currentScore) {
 		latestPacket = Time.time;
-		for (int i=0; i<players.Count; i++){
-			if (players[i].viewID==viewID){
-				players[i].kills = kills;
-				players[i].deaths = deaths;
-				players[i].currentScore = currentScore;
+		for (int i=0; i<Entities.Count; i++){
+			if (Entities[i].viewID==viewID){
+				Entities[i].kills = kills;
+				Entities[i].deaths = deaths;
+				Entities[i].currentScore = currentScore;
 			}
 		}
 	}
@@ -425,12 +425,12 @@ public class CcNet : MonoBehaviour {
 			LocUs.currentScore = score;
 		}
 		
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == viewID) {
-				players[i].Health = health;
-				players[i].kills = kills;
-				players[i].deaths = deaths;
-				players[i].currentScore = score;
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].viewID == viewID) {
+				Entities[i].Health = health;
+				Entities[i].kills = kills;
+				Entities[i].deaths = deaths;
+				Entities[i].currentScore = score;
 			}
 		}
 	}
@@ -444,38 +444,38 @@ public class CcNet : MonoBehaviour {
 		int victimIdx = 0;
 		string fraggerName = "Someone";
 		string victimName = "Someone";
-		for(int i = 0; i < players.Count; i++) {
-			if (players[i].viewID == fraggerID) { // if this is the fragger 
+		for(int i = 0; i < Entities.Count; i++) {
+			if (Entities[i].viewID == fraggerID) { // if this is the fragger 
 				if (victimID != fraggerID) {
-					players[i].Entity.MultiFragCount++;
-					players[i].Entity.PrevFrag = Time.time;
-					handleMultiFrag(i, players[i].name);
+					Entities[i].Entity.MultiFragCount++;
+					Entities[i].Entity.PrevFrag = Time.time;
+					handleMultiFrag(i, Entities[i].name);
 				}
-				fraggerName = players[i].name;
+				fraggerName = Entities[i].name;
 				fraggerIdx = i;
 			}
 			
-			if (players[i].viewID == victimID) { // if this is the victim 
-				victimName = players[i].name;
+			if (Entities[i].viewID == victimID) { // if this is the victim 
+				victimName = Entities[i].name;
 				victimIdx = i;
 				if (victimID != fraggerID)
-					players[i].Entity.PlaySound("Die");
+					Entities[i].Entity.PlaySound("Die");
 
 				// lives 
-				players[i].lives--;
+				Entities[i].lives--;
 				if (CurrMatch.playerLives > 0 &&
-				    players[i].lives <= 0 && 
-				    players[i].local)
+				    Entities[i].lives <= 0 && 
+				    Entities[i].local)
 				{
-					players[i].Entity.Spectating = true;
+					Entities[i].Entity.Spectating = true;
 				}
 
 				// basketball 
-				if (CurrMatch.basketball && players[i].hasBall) {
-					players[i].hasBall = false;
+				if (CurrMatch.basketball && Entities[i].hasBall) {
+					Entities[i].hasBall = false;
 
 					if (InServerMode)
-						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
+						ThrowBall(Entities[i].Entity.transform.position, -Vector3.up, 2f);
 				}
 			}
 		}
@@ -485,7 +485,7 @@ public class CcNet : MonoBehaviour {
 			LocUs.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz? NOTE: they could be used for statistics
 		if (LocUs.viewID == victimID) { // if local player was the victim 
 			LocUs.totalDeaths++;
-			LocUs.FraggedBy = players[fraggerIdx].Entity.gameObject;
+			LocUs.FraggedBy = Entities[fraggerIdx].Entity.gameObject;
 		}
 		
 		// lives 
@@ -493,11 +493,11 @@ public class CcNet : MonoBehaviour {
 			Connected && 
 			!gameOver && 
 			CurrMatch.playerLives > 0 && 
-			players.Count > 1)
+			Entities.Count > 1)
 		{
 			int livingPlayers = 0;
-			for (int i=0; i<players.Count; i++) {
-				if (players[i].lives > 0) 
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].lives > 0) 
 					livingPlayers++;
 			}
 			
@@ -520,17 +520,17 @@ public class CcNet : MonoBehaviour {
 	}
 
 	void handleMultiFrag(int i, string f) { // f is for fragger
-		switch (players[i].Entity.MultiFragCount) {
+		switch (Entities[i].Entity.MultiFragCount) {
 			case 0: break;
 			case 1: break;
-			case 2: players[i].Entity.PlaySound("DoubleKill"); break;
-			case 3: players[i].Entity.PlaySound("TripleKill"); break;
-			case 4: players[i].Entity.PlaySound("QuadraKill"); break;
-			case 5: players[i].Entity.PlaySound("PentaKill"); break;
-			case 6: players[i].Entity.PlaySound("HexaKill"); break;
+			case 2: Entities[i].Entity.PlaySound("DoubleKill"); break;
+			case 3: Entities[i].Entity.PlaySound("TripleKill"); break;
+			case 4: Entities[i].Entity.PlaySound("QuadraKill"); break;
+			case 5: Entities[i].Entity.PlaySound("PentaKill"); break;
+			case 6: Entities[i].Entity.PlaySound("HexaKill"); break;
 			default:
 
-			players[i].Entity.PlaySound("GodLike");
+			Entities[i].Entity.PlaySound("GodLike");
 			var le = new LogEntry();
 			le.Maker = "";
 			le.Color = Color.magenta;
@@ -584,13 +584,13 @@ public class CcNet : MonoBehaviour {
 		latestPacket = Time.time;
 		
 		if (viewID == LocUs.viewID) {
-			for (int i=0; i<players.Count; i++) {
-				if (players[i].viewID == viewID) {
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].viewID == viewID) {
 					if ((CurrMatch.playerLives > 0 && 
-						players[i].lives > 0) ||
+						Entities[i].lives > 0) ||
 						CurrMatch.playerLives == 0
 					) {
-						players[i].Entity.Respawn();
+						Entities[i].Entity.Respawn();
 					}
 				}
 			}
@@ -599,9 +599,9 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void PONG(NetworkViewID viewID) {
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == viewID) 
-				players[i].lastPong = Time.time;
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].viewID == viewID) 
+				Entities[i].lastPong = Time.time;
 		}
 	}
 	
@@ -609,9 +609,9 @@ public class CcNet : MonoBehaviour {
 		// ping periodically
 		if (Connected && Time.time > nextPingTime) {
 			nextPingTime = Time.time + 5f;
-			for (int i=0; i<players.Count; i++) {
-				if (!players[i].local) {
-					new Ping(players[i].netPlayer.ipAddress);
+			for (int i=0; i<Entities.Count; i++) {
+				if (!Entities[i].local) {
+					new Ping(Entities[i].netPlayer.ipAddress);
 				}
 			}
 		}
@@ -634,18 +634,18 @@ public class CcNet : MonoBehaviour {
 			}
 			
 			// remind the server we here 
-			for (int i=0; i<players.Count; i++) {
-				if (players[i].local && Time.time > players[i].lastPong + 5f) {
-					networkView.RPC("PONG", RPCMode.Server,players[i].viewID);
-					players[i].lastPong = Time.time;
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].local && Time.time > Entities[i].lastPong + 5f) {
+					networkView.RPC("PONG", RPCMode.Server,Entities[i].viewID);
+					Entities[i].lastPong = Time.time;
 				}	
 			}
 		}
 		
 		if (Connected && InServerMode) {
-			for (int i=0; i<players.Count; i++) {
-				if (!players[i].local) {
-					if (Time.time>players[i].lastPong + 20f) {
+			for (int i=0; i<Entities.Count; i++) {
+				if (!Entities[i].local) {
+					if (Time.time>Entities[i].lastPong + 20f) {
 						// gone 20 secs without hearing from client, auto-kick 
 						Kick(i,true);
 					}
@@ -655,22 +655,22 @@ public class CcNet : MonoBehaviour {
 		
 		if (InServerMode) {
 			// respawn dead players 
-			for (int i=0; i<players.Count; i++) {
-				if (players[i].Entity != null && players[i].Health <= 0f) {
-					if (Time.time > players[i].respawnTime) {
-						if (CurrMatch.playerLives == 0 || players[i].lives > 0)
-							players[i].Health = 100f;
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].Entity != null && Entities[i].Health <= 0f) {
+					if (Time.time > Entities[i].respawnTime) {
+						if (CurrMatch.playerLives == 0 || Entities[i].lives > 0)
+							Entities[i].Health = 100f;
 						
 						networkView.RPC("AssignPlayerStats", RPCMode.All, 
-						                players[i].viewID, 
-						                players[i].Health, 
-						                players[i].kills, 
-						                players[i].deaths, 
-						                players[i].currentScore);
-						networkView.RPC("RespawnPlayer", RPCMode.All, players[i].viewID);
+						                Entities[i].viewID, 
+						                Entities[i].Health, 
+						                Entities[i].kills, 
+						                Entities[i].deaths, 
+						                Entities[i].currentScore);
+						networkView.RPC("RespawnPlayer", RPCMode.All, Entities[i].viewID);
 					}
 				}else{ // set spawn countdown 
-					players[i].respawnTime = Time.time + CurrMatch.respawnWait;
+					Entities[i].respawnTime = Time.time + CurrMatch.respawnWait;
 				}
 			}
 		}
@@ -686,9 +686,9 @@ public class CcNet : MonoBehaviour {
 				
 				networkView.RPC("PlayerChangedTeams",RPCMode.AllBuffered, LocUs.viewID, LocUs.team);
 				
-				for (int i=0; i<players.Count; i++) {
-					if (players[i].viewID == LocUs.viewID && players[i].Health > 0f) 
-						players[i].Entity.Respawn();
+				for (int i=0; i<Entities.Count; i++) {
+					if (Entities[i].viewID == LocUs.viewID && Entities[i].Health > 0f) 
+						Entities[i].Entity.Respawn();
 				}
 			}
 		}
@@ -872,12 +872,12 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void PlayerChangedTeams(NetworkViewID viewID, int team) {
 		latestPacket = Time.time;
-		for (int i=0; i<players.Count; i++) {
+		for (int i=0; i<Entities.Count; i++) {
 			//always set model visibility on team change, that way if *you* change teams, all lights are changed
-			players[i].Entity.SetModelVisibility(!players[i].local);
+			Entities[i].Entity.SetModelVisibility(!Entities[i].local);
 			
-			if (viewID == players[i].viewID) {
-				players[i].team = team;
+			if (viewID == Entities[i].viewID) {
+				Entities[i].team = team;
 				//players[i].Entity.SetModelVisibility(!players[i].local);
 				
 				LogEntry l = new LogEntry();
@@ -890,10 +890,10 @@ public class CcNet : MonoBehaviour {
 						l.Text = "<< you defected! >>";
 					}else if (LocUs.team == 1) {
 						l.Color = Color.red;
-						l.Text = "<< " + players[i].name + " defected to your team! >>";
+						l.Text = "<< " + Entities[i].name + " defected to your team! >>";
 					}else{
 						l.Color = Color.cyan;
-						l.Text = "<< " + players[i].name + " turned their back on the team! >>";
+						l.Text = "<< " + Entities[i].name + " turned their back on the team! >>";
 					}
 				}else{
 					if (LocUs.viewID == viewID) {
@@ -901,10 +901,10 @@ public class CcNet : MonoBehaviour {
 						l.Text = "<< you defected! >>";
 					}else if (LocUs.team == 2) {
 						l.Color = Color.cyan;
-						l.Text = "<< " + players[i].name + " defected to your team! >>";
+						l.Text = "<< " + Entities[i].name + " defected to your team! >>";
 					}else{
 						l.Color = Color.red;
-						l.Text = "<< " + players[i].name + " turned their back on the team! >>";
+						l.Text = "<< " + Entities[i].name + " turned their back on the team! >>";
 					}
 				}
 				
@@ -921,7 +921,7 @@ public class CcNet : MonoBehaviour {
 	) {
 		latestPacket = Time.time;
 		
-		if (players.Count == 1 && CurrMatch.playerLives > 0) {
+		if (Entities.Count == 1 && CurrMatch.playerLives > 0) {
 			if (InServerMode && Connected && !gameOver) {
 				// this is a lives match, and now we have enough players 
 				gameTimeLeft = 0f;
@@ -933,11 +933,11 @@ public class CcNet : MonoBehaviour {
 		
 		// this could just be a team change update at the start of the level 
 		bool weExist = false;
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == viewID) {
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].viewID == viewID) {
 				weExist = true;
-				players[i].team = targetTeam;
-				players[i].lives = lives;
+				Entities[i].team = targetTeam;
+				Entities[i].lives = lives;
 			}
 		}
 		
@@ -957,7 +957,7 @@ public class CcNet : MonoBehaviour {
 		if (mapIsLoaded) {
 			// only instantiate the actual object of the player if we are in the right level 
 			// uninstantiated players are added when the level finished loading 
-			players[players.Count-1].InstantiateEntity(GOs.Get("FPSEntity"));
+			Entities[Entities.Count-1].InstantiateEntity(GOs.Get("FPSEntity"));
 		}
 		
 		// tell local Entity to broadcast position so new players know 
@@ -965,12 +965,12 @@ public class CcNet : MonoBehaviour {
 
 		if (InServerMode) {
 			// let new players know the scores 
-			for (int i=0; i<players.Count; i++) {
+			for (int i=0; i<Entities.Count; i++) {
 				networkView.RPC("SharePlayerScores", RPCMode.Others, 
-	                players[i].viewID, 
-	                players[i].kills, 
-	                players[i].deaths, 
-					players[i].currentScore);
+	                Entities[i].viewID, 
+	                Entities[i].kills, 
+	                Entities[i].deaths, 
+					Entities[i].currentScore);
 			}
 			
 			networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
@@ -1005,7 +1005,7 @@ public class CcNet : MonoBehaviour {
 		u.currentScore = 0;
 		u.lives = lives;
 		u.lastPong = Time.time;
-		players.Add(u);
+		Entities.Add(u);
 	}
 	
 	public void AssignGameModeConfig(MatchData md, string levelName) {
@@ -1048,10 +1048,10 @@ public class CcNet : MonoBehaviour {
 		// also figure out which team to drop them in 
 		int team1count = 0;
 		int team2count = 0;
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].team == 1) 
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].team == 1) 
 				team1count++;
-			if (players[i].team == 2) 
+			if (Entities[i].team == 2) 
 				team2count++;
 		}
 		
@@ -1064,7 +1064,7 @@ public class CcNet : MonoBehaviour {
 			targetTeam = 1;
 		
 		//keep teams if we are already assigned to teams
-		if (serverGameChange && players.Count > 0) {
+		if (serverGameChange && Entities.Count > 0) {
 			if (lastGameWasTeamBased) {
 				targetTeam = -1;
 			}else{
@@ -1125,8 +1125,8 @@ public class CcNet : MonoBehaviour {
 		
 		// make sure all connected players have lives 
 		if (newGame)
-			for (int i=0; i<players.Count; i++)
-				players[i].lives = playerLives;
+			for (int i=0; i<Entities.Count; i++)
+				Entities[i].lives = playerLives;
 		
 		if (!InServerMode)
 			gameOver = gameIsOver;
@@ -1175,9 +1175,9 @@ public class CcNet : MonoBehaviour {
 		if (targetTeam != -1) {
 			// don't keep current teams
 			LocUs.team = targetTeam;
-			for (int i=0; i<players.Count; i++){
-				if (players[i].viewID == LocUs.viewID){
-					players[i].team = targetTeam;
+			for (int i=0; i<Entities.Count; i++){
+				if (Entities[i].viewID == LocUs.viewID){
+					Entities[i].team = targetTeam;
 				}
 			}
 		}
@@ -1190,9 +1190,9 @@ public class CcNet : MonoBehaviour {
 			if (Random.Range(0,10) < 5) 
 				LocUs.team = 2;
 			
-			for (int i=0; i<players.Count; i++) {
-				if (players[i].viewID == LocUs.viewID) {
-					players[i].team = LocUs.team;
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].viewID == LocUs.viewID) {
+					Entities[i].team = LocUs.team;
 				}
 			}
 		}
@@ -1203,14 +1203,14 @@ public class CcNet : MonoBehaviour {
 		// clear stuff out if we are already playing 
 		preppingLevel = false;
 		mapIsLoaded = false;
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].Entity != null) 
-				Destroy(players[i].Entity.gameObject);
-			players[i].Entity = null;
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].Entity != null) 
+				Destroy(Entities[i].Entity.gameObject);
+			Entities[i].Entity = null;
 			
-			players[i].kills = 0;
-			players[i].deaths = 0;
-			players[i].currentScore = 0;
+			Entities[i].kills = 0;
+			Entities[i].deaths = 0;
+			Entities[i].currentScore = 0;
 		}
 		
 		LocUs.kills = 0;
@@ -1246,8 +1246,8 @@ public class CcNet : MonoBehaviour {
 			}
 			
 			// add fps entities for all known players 
-			for (int i=0; i<players.Count; i++) {
-				players[i].InstantiateEntity(GOs.Get("FPSEntity"));
+			for (int i=0; i<Entities.Count; i++) {
+				Entities[i].InstantiateEntity(GOs.Get("FPSEntity"));
 			}
 			
 			// tell everyone we're here 
@@ -1421,11 +1421,11 @@ public class CcNet : MonoBehaviour {
 			InServerMode = false;
 			
 			Camera.main.transform.parent = null;
-			for (int i=0; i<players.Count; i++) {
-				if (players[i].Entity != null) 
-					Destroy(players[i].Entity.gameObject);
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].Entity != null) 
+					Destroy(Entities[i].Entity.gameObject);
 			}
-			players = new List<NetEntity>();
+			Entities = new List<NetEntity>();
 			
 			hud.Mode = HudMode.MainMenu;
 			Application.LoadLevel(nameOfOfflineBackdrop);
@@ -1438,20 +1438,20 @@ public class CcNet : MonoBehaviour {
 	void PlayerLeave(NetworkViewID viewID, string name) {
 		latestPacket = Time.time;
 		
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == viewID) {
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].viewID == viewID) {
 				
-				if (basketball && players[i].hasBall) {
+				if (basketball && Entities[i].hasBall) {
 					basketball.transform.parent = null;
 					if (InServerMode) {
-						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
+						ThrowBall(Entities[i].Entity.transform.position, -Vector3.up, 2f);
 					}
 				}
 				
 				
-				if (players[i].Entity != null) 
-					Destroy(players[i].Entity.gameObject);
-				players.RemoveAt(i);
+				if (Entities[i].Entity != null) 
+					Destroy(Entities[i].Entity.gameObject);
+				Entities.RemoveAt(i);
 			}
 		}
 		
@@ -1464,8 +1464,8 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	public void Kick(int playerIndex, bool autokick){
-		Network.CloseConnection(players[playerIndex].netPlayer, true);
-		networkView.RPC("KickedPlayer", RPCMode.AllBuffered, players[playerIndex].viewID, autokick);
+		Network.CloseConnection(Entities[playerIndex].netPlayer, true);
+		networkView.RPC("KickedPlayer", RPCMode.AllBuffered, Entities[playerIndex].viewID, autokick);
 	}
 	
 	[RPC]
@@ -1474,21 +1474,21 @@ public class CcNet : MonoBehaviour {
 		Debug.Log("A player was kicked");
 		string name = "???";
 		
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].viewID == viewID) {
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].viewID == viewID) {
 				
-				if (basketball && players[i].hasBall) {
+				if (basketball && Entities[i].hasBall) {
 					basketball.transform.parent = null;
 					
 					if (InServerMode) {
-						ThrowBall(players[i].Entity.transform.position, -Vector3.up, 2f);
+						ThrowBall(Entities[i].Entity.transform.position, -Vector3.up, 2f);
 					}
 				}
 				
-				name = players[i].name;
-				if (players[i].Entity!= null) 
-					Destroy(players[i].Entity.gameObject);
-				players.RemoveAt(i);
+				name = Entities[i].name;
+				if (Entities[i].Entity!= null) 
+					Destroy(Entities[i].Entity.gameObject);
+				Entities.RemoveAt(i);
 			}
 		}
 		
@@ -1526,11 +1526,11 @@ public class CcNet : MonoBehaviour {
 		NetVI = new NetworkViewID();
 				
 		Camera.main.transform.parent = null;
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].Entity!= null) 
-				Destroy(players[i].Entity.gameObject);
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].Entity!= null) 
+				Destroy(Entities[i].Entity.gameObject);
 		}
-		players = new List<NetEntity>();
+		Entities = new List<NetEntity>();
 		
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
@@ -1552,12 +1552,12 @@ public class CcNet : MonoBehaviour {
 		NetVI = new NetworkViewID();
 		Camera.main.transform.parent = null;
 		
-		for (int i=0; i<players.Count; i++) {
-			if (players[i].Entity != null) 
-				Destroy(players[i].Entity.gameObject);
+		for (int i=0; i<Entities.Count; i++) {
+			if (Entities[i].Entity != null) 
+				Destroy(Entities[i].Entity.gameObject);
 		}
 		
-		players = new List<NetEntity>();
+		Entities = new List<NetEntity>();
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
 		mapIsLoaded = false;

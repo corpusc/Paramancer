@@ -13,18 +13,18 @@ public class Scoreboard {
 		if (!net.CurrMatch.teamBased) {
 			int highScore = -9999;
 			if (net.gameOver) {
-				for (int i=0; i<net.players.Count; i++) {
-					if (highScore < net.players[i].currentScore) {
-						highScore = net.players[i].currentScore;
+				for (int i=0; i<net.Entities.Count; i++) {
+					if (highScore < net.Entities[i].currentScore) {
+						highScore = net.Entities[i].currentScore;
 					}
 				}
 			}
 			
 			int mostLives = 0;
 			if (net.gameOver) {
-				for (int i=0; i<net.players.Count; i++) {
-					if (net.players[i].lives > mostLives) {
-						mostLives = net.players[i].lives;
+				for (int i=0; i<net.Entities.Count; i++) {
+					if (net.Entities[i].lives > mostLives) {
+						mostLives = net.Entities[i].lives;
 					}
 				}
 			}
@@ -38,29 +38,29 @@ public class Scoreboard {
 				GUI.Label(new Rect(400, 0, 50, lvs), "Lives:");
 			
 			// cycle thru players 
-			for (int i=0; i<net.players.Count; i++) {
+			for (int i=0; i<net.Entities.Count; i++) {
 				GUI.color = new Color(0.8f, 0.8f, 0.8f, 1f);
 				
-				if (net.players[i].local) 
+				if (net.Entities[i].local) 
 					GUI.color = new Color(1, 1, 1, 1f);
-				if (net.players[i].currentScore == highScore && mostLives == 0)
+				if (net.Entities[i].currentScore == highScore && mostLives == 0)
 					GUI.color = new Color(
 						Random.Range(0.5f, 1f), 
 						Random.Range(0.5f, 1f), 
 						Random.Range(0.5f, 1f), 1f);
-				if (net.players[i].lives == mostLives && mostLives > 0) 
+				if (net.Entities[i].lives == mostLives && mostLives > 0) 
 					GUI.color = new Color(
 						Random.Range(0.5f, 1f), 
 						Random.Range(0.5f, 1f), 
 						Random.Range(0.5f, 1f), 1f);
 				
-				GUI.Label(new Rect(0,   cY, 150, lvs), net.players[i].name);
-				GUI.Label(new Rect(150, cY, 50, lvs), net.players[i].kills.ToString());
-				GUI.Label(new Rect(200, cY, 50, lvs), net.players[i].deaths.ToString());
-				GUI.Label(new Rect(260, cY, 50, lvs), net.players[i].currentScore.ToString());
+				GUI.Label(new Rect(0,   cY, 150, lvs), net.Entities[i].name);
+				GUI.Label(new Rect(150, cY, 50, lvs), net.Entities[i].kills.ToString());
+				GUI.Label(new Rect(200, cY, 50, lvs), net.Entities[i].deaths.ToString());
+				GUI.Label(new Rect(260, cY, 50, lvs), net.Entities[i].currentScore.ToString());
 				
 				if (net.CurrMatch.playerLives != 0) 
-					GUI.Label(new Rect(400, cY, 50, lvs), net.players[i].lives.ToString());
+					GUI.Label(new Rect(400, cY, 50, lvs), net.Entities[i].lives.ToString());
 
 				cY += lvs;
 			}			
@@ -97,8 +97,8 @@ public class Scoreboard {
 			GUILayout.Box("RED: " + net.team1Score.ToString());
 			teamPane();
 
-			for (int i=0; i<net.players.Count; i++) {
-				if (net.players[i].team == 1) {
+			for (int i=0; i<net.Entities.Count; i++) {
+				if (net.Entities[i].team == 1) {
 					showNameAndStats(i, net);
 				}
 			}
@@ -124,8 +124,8 @@ public class Scoreboard {
 			// score 
 			GUILayout.Box("BLUE: " + net.team2Score.ToString());
 			teamPane();
-			for (int i=0; i<net.players.Count; i++) {
-				if (net.players[i].team == 2) {
+			for (int i=0; i<net.Entities.Count; i++) {
+				if (net.Entities[i].team == 2) {
 					showNameAndStats(i, net);
 				}
 			}
@@ -138,15 +138,15 @@ public class Scoreboard {
 	}
 
 	void showNameAndStats(int i, CcNet net) {
-		if (net.players[i].local) 
+		if (net.Entities[i].local) 
 			S.SetShoutyColor();
 
 		GUILayout.BeginHorizontal();
-		GUILayout.Label(net.players[i].name);
+		GUILayout.Label(net.Entities[i].name);
 		GUILayout.FlexibleSpace();
-		GUILayout.Label(net.players[i].kills.ToString(), GUILayout.MinWidth(fragsX));
-		GUILayout.Label(net.players[i].deaths.ToString(), GUILayout.MinWidth(deathsX));
-		GUILayout.Label(net.players[i].currentScore.ToString(), GUILayout.MinWidth(scoreX));
+		GUILayout.Label(net.Entities[i].kills.ToString(), GUILayout.MinWidth(fragsX));
+		GUILayout.Label(net.Entities[i].deaths.ToString(), GUILayout.MinWidth(deathsX));
+		GUILayout.Label(net.Entities[i].currentScore.ToString(), GUILayout.MinWidth(scoreX));
 		GUILayout.EndHorizontal();
 	}
 

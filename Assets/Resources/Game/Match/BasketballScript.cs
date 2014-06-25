@@ -22,8 +22,8 @@ public class BasketballScript : MonoBehaviour {
 	}
 	
 	public void ResetBall() {
-		for (int i=0; i<net.players.Count; i++) {
-			net.players[i].hasBall = false;
+		for (int i=0; i<net.Entities.Count; i++) {
+			net.Entities[i].hasBall = false;
 		}
 
 		transform.parent = null;
@@ -34,8 +34,8 @@ public class BasketballScript : MonoBehaviour {
 	
 	public void Throw(Vector3 fromPos, Vector3 direction, float strength) {
 		throwTime = Time.time;
-		for (int i=0; i<net.players.Count; i++) {
-			net.players[i].hasBall = false;
+		for (int i=0; i<net.Entities.Count; i++) {
+			net.Entities[i].hasBall = false;
 		}
 		transform.parent = null;
 		transform.position = fromPos;
@@ -49,14 +49,14 @@ public class BasketballScript : MonoBehaviour {
 		moveVector = Vector3.zero;
 		held = true;
 		
-		for (int i=0; i<net.players.Count; i++) {
-			if (net.players[i].viewID == throwerID){
-				net.players[i].hasBall = true;
+		for (int i=0; i<net.Entities.Count; i++) {
+			if (net.Entities[i].viewID == throwerID){
+				net.Entities[i].hasBall = true;
 				
-				transform.parent = net.players[i].Entity.gunMesh1.transform.parent;
+				transform.parent = net.Entities[i].Entity.gunMesh1.transform.parent;
 				transform.localPosition = (-Vector3.right * 0.7f) + (Vector3.forward * 0.2f);
 				
-				net.players[i].Entity.PlaySound("Catch");
+				net.Entities[i].Entity.PlaySound("Catch");
 			}
 		}
 	}
@@ -113,15 +113,15 @@ public class BasketballScript : MonoBehaviour {
 			if (net.InServerMode) {
 				// let's check to see if any of the players can pick up the ball 
 				bool captured = false;
-				for (int i=0; i<net.players.Count; i++) {
-					if (!captured && net.players[i].Health>0f && 
-					    Vector3.Distance(transform.position, net.players[i].Entity.transform.position)<1.5f
+				for (int i=0; i<net.Entities.Count; i++) {
+					if (!captured && net.Entities[i].Health>0f && 
+					    Vector3.Distance(transform.position, net.Entities[i].Entity.transform.position)<1.5f
 				    ) {
 						if (throwerID == null || 
-						    net.players[i].viewID != throwerID || 
+						    net.Entities[i].viewID != throwerID || 
 						    Time.time > throwTime+0.5f
 					    ) {
-							net.AnnounceBallCapture(net.players[i].viewID);
+							net.AnnounceBallCapture(net.Entities[i].viewID);
 							captured = true;
 						}
 					}
