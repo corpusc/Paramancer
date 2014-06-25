@@ -62,7 +62,6 @@ public static class VoxGen {
 	// the maximal height of a room is determined by the map height & the room size 
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth 
 	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y 
-	// To create a map, set all the values you need, and call Init(), Build() and Build3d() 
 
 
 
@@ -94,7 +93,7 @@ public static class VoxGen {
 		Debug.Log("Build() -----  seed: " + seed + " ----- ");
 		Build();
 		Debug.Log("Build3d() -----  seed: " + seed + " ----- ");
-		Build3d();
+		Build3D();
 		Debug.Log("RemoveOriginals() -----  seed: " + seed + " ----- ");
 		RemoveOriginals();
 	}
@@ -204,61 +203,52 @@ public static class VoxGen {
 
 	// this generates the level in 3d(puts it in the scene) based what Build() created - call Build() before this
 	static int numMade = 0;
-	public static void Build3d () {
+	public static void Build3D () {
 		for (int i = 0; i < numVoxAcross.X; i++)
 		for (int j = 0; j < numVoxAcross.Y; j++)
 		for (int k = 0; k < numVoxAcross.Z; k++) {
 			if (IsAir[i, j, k]) {
+				Debug.Log("air voxel " + i);
+
 				if (!getBlock(i - 1, j, k)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.position = Pos + new Vector3(Scale.x * i - Scale.x * 0.5f, Scale.y * j, Scale.z * k);
-					np.transform.localScale = Scale;
-					np.transform.forward = Vector3.left;
-					np.renderer.material = Mat[i, j, k];
-					np.transform.parent = primObject.transform;
+					makeQuad(new Vector3(Scale.x * i - Scale.x * 0.5f, Scale.y * j, Scale.z * k),
+						Vector3.left);
 				}
 				if (!getBlock(i + 1, j, k)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.position = Pos + new Vector3(Scale.x * i + Scale.x * 0.5f, Scale.y * j, Scale.z * k);
-					np.transform.localScale = Scale;
-					np.transform.forward = Vector3.right;
-					np.renderer.material = Mat[i, j, k];
-					np.transform.parent = primObject.transform;
+					makeQuad(new Vector3(Scale.x * i + Scale.x * 0.5f, Scale.y * j, Scale.z * k),
+						Vector3.right);
 				}
 				if (!getBlock(i, j, k - 1)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j, Scale.z * k - Scale.z * 0.5f);
-					np.transform.localScale = Scale;
-					np.transform.forward = Vector3.back;
-					np.renderer.material = Mat[i, j, k];
-					np.transform.parent = primObject.transform;
+					makeQuad(new Vector3(Scale.x * i, Scale.y * j, Scale.z * k - Scale.z * 0.5f),
+						Vector3.back);
 				}
 				if (!getBlock(i, j, k + 1)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j, Scale.z * k + Scale.z * 0.5f);
-					np.transform.localScale = Scale;
-					np.transform.forward = Vector3.forward;
-					np.renderer.material = Mat[i, j, k];
-					np.transform.parent = primObject.transform;
+					makeQuad(new Vector3(Scale.x * i, Scale.y * j, Scale.z * k + Scale.z * 0.5f),
+						Vector3.forward);
 				}
 				if (!getBlock(i, j - 1, k)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j - Scale.y * 0.5f, Scale.z * k);
-					np.transform.localScale = Scale;
-					np.transform.forward = Vector3.down;
-					np.renderer.material = Mat[i, j, k];
-					np.transform.parent = primObject.transform;
+					makeQuad(new Vector3(Scale.x * i, Scale.y * j - Scale.y * 0.5f, Scale.z * k),
+						Vector3.down);
 				}
 				if (!getBlock(i, j + 1, k)) {
-					var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-					np.transform.position = Pos + new Vector3(Scale.x * i, Scale.y * j + Scale.y * 0.5f, Scale.z * k);
-					np.transform.localScale = Scale;
-					np.transform.forward = Vector3.up;
-					np.renderer.material = Mat[i, j, k];
-					np.transform.parent = primObject.transform;
+					makeQuad(new Vector3(Scale.x * i, Scale.y * j + Scale.y * 0.5f, Scale.z * k),
+						Vector3.up);
 				}
-			} // end of wall creation around air vox 
+			}else{ // NOT air 
+				Debug.Log("void voxel" + i);
+			}
 		} // end of vox scan 
+
+
+
+		private static void makeQuad(Vector3 offset, Vector3 dir) {
+			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+			np.transform.position = Pos + offset;
+			np.transform.localScale = Scale;
+			np.transform.forward = dir;
+			np.renderer.material = Mat[i, j, k];
+			np.transform.parent = primObject.transform;
+		}
 
 
 

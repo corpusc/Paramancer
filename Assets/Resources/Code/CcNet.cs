@@ -1217,7 +1217,7 @@ public class CcNet : MonoBehaviour {
 		LocUs.currentScore = 0;
 		arse.Clear();
 		
-		// load msp 
+		// load map 
 		preppingMap = true;
 		Application.LoadLevel(mapName);
 	}
