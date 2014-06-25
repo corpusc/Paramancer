@@ -4,25 +4,20 @@ using System.Collections;
 
 
 public class AI : MonoBehaviour {
-
-	[HideInInspector]
-	public EntityClass EC;
-	[HideInInspector]
-	public Vector3 TargetPos;
-	[HideInInspector]
-	public Vector3 DesiredPos;
-	[HideInInspector]
-	public GameObject FraggedBy;
+	[HideInInspector]	public EntityClass EC;
+	[HideInInspector]	public Vector3 TargetPos;
+	[HideInInspector]	public Vector3 DesiredPos;
+	[HideInInspector]	public GameObject FraggedBy;
 	public float MovementSpeed = 5f;
 	public NetworkViewID viewID;
 	
 	// private 
-	bool prevVisible = true; // if the target was visible in the previous frame
+	bool prevVisible = true; // if the target was visible in the previous frame 
 
 
 
 	void Start() {
-		// if an AI component is attached, it means that we are a mob
+		// if an AI component is attached, it means that we are a mob 
 		EC.isMob = true;
 	}
 	
@@ -56,7 +51,9 @@ public class AI : MonoBehaviour {
 			prevVisible = true;
 		}
 		
+		// if alive 
 		if (EC.bod.Health > 0f) {
+			// movement & other stuff 
 			Vector3 lastPos = transform.position;
 
 			rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, (DesiredPos - transform.position).normalized * MovementSpeed, Time.deltaTime);
@@ -71,6 +68,6 @@ public class AI : MonoBehaviour {
 				EC.bod.Health = 0f;
 				EC.net.RegisterHit(Gun.Lava, viewID, viewID, lavaHit.point);
 			}
-		} // end of movement and other stuff done if alive
-	} // end of Update()
+		}
+	}
 }

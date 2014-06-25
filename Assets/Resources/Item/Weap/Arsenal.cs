@@ -134,7 +134,7 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<net.Entities.Count; i++){
 			if (net.Entities[i].viewID == shooterID && net.Entities[i].local) {
 				localFire = true;
-				localstart = net.Entities[i].Entity.HudGun.transform.position + (Camera.main.transform.forward*0.5f);
+				localstart = net.Entities[i].Visuals.HudGun.transform.position + (Camera.main.transform.forward*0.5f);
 			}
 		}
 		
@@ -158,7 +158,7 @@ public class Arsenal : MonoBehaviour {
 			// if local player 
 			if (net.Entities[i].viewID == shooterID && net.Entities[i].local){
 				localFire = true;
-				localStart = net.Entities[i].Entity.HudGun.transform.position + (Camera.main.transform.forward * 0.5f);
+				localStart = net.Entities[i].Visuals.HudGun.transform.position + (Camera.main.transform.forward * 0.5f);
 			}
 		}
 
@@ -310,14 +310,14 @@ public class Arsenal : MonoBehaviour {
 	}
 		
 	void playPitchedSfx(int i, AudioClip ac) { // randomly pitched for variety 
-		net.Entities[i].Entity.weaponSoundObj.audio.clip = ac;
+		net.Entities[i].Visuals.weaponSoundObj.audio.clip = ac;
 		
 		// if local user 
 		if (net.Entities[i].viewID == net.LocUs.viewID) 
-			net.Entities[i].Entity.weaponSoundObj.audio.volume = 0.3f;
+			net.Entities[i].Visuals.weaponSoundObj.audio.volume = 0.3f;
 		
-		net.Entities[i].Entity.weaponSoundObj.audio.pitch = Random.Range(0.9f, 1.1f);
-		net.Entities[i].Entity.weaponSoundObj.audio.Play();
+		net.Entities[i].Visuals.weaponSoundObj.audio.pitch = Random.Range(0.9f, 1.1f);
+		net.Entities[i].Visuals.weaponSoundObj.audio.Play();
 	}
 	
 	public float GetWeaponDamage(Gun weapon) {
@@ -400,7 +400,7 @@ public class Arsenal : MonoBehaviour {
 					var user = net.Entities[k];
 
 					if (user.local) {
-						var entPos = user.Entity.transform.position;
+						var entPos = user.Visuals.transform.position;
 
 						if (Vector3.Distance(entPos, rPos)
 						    <
@@ -410,13 +410,13 @@ public class Arsenal : MonoBehaviour {
 							if (entPos.y > rPos.y) {
 								// if we were the shooter of this rocket 
 								if (activeRockets[i].shooterID == user.viewID){
-									user.Entity.bod.yMove = 5.2f;
+									user.Visuals.bod.yMove = 5.2f;
 								}else{ // for now, we never actually bounce remote players 
-									user.Entity.bod.yMove = 2f;
+									user.Visuals.bod.yMove = 2f;
 								}
 
-								user.Entity.bod.grounded = false;
-								user.Entity.sendRPCUpdate = true;
+								user.Visuals.bod.grounded = false;
+								user.Visuals.sendRPCUpdate = true;
 							}
 						}
 					}

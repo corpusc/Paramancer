@@ -187,7 +187,7 @@ public class Hud : MonoBehaviour {
 		// handle all the modes! 
 		switch (Mode) {
 			case HudMode.Playing:
-				net.LocUs.Entity.FOV = tFOV;
+				net.LocUs.Visuals.FOV = tFOV;
 				TopOfMaxedLog = playMode.Draw(net, arse, midX, midY, VSpanLabel, this);
 				maybePromptClickIn();
 				break;
@@ -227,9 +227,9 @@ public class Hud : MonoBehaviour {
 				drawSettings();
 				if (//null != net && 
 			    	null != net.LocUs && 
-			    	null != net.LocUs.Entity
+			    	null != net.LocUs.Visuals
 			    )
-					net.LocUs.Entity.FOV = tFOV;
+					net.LocUs.Visuals.FOV = tFOV;
 				break;
 			
 			case HudMode.Credits:

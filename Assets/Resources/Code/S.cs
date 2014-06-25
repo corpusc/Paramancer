@@ -134,21 +134,21 @@ static public class S {
 		return Mathf.Atan2(v.x, v.z);
 	}
 
-	public static Vector3 ColToVec(Color colIn) {
-		// convert colour to a vector
-		Vector3 retVec = Vector3.zero;
-		retVec.x = colIn.r;
-		retVec.y = colIn.g;
-		retVec.z = colIn.b;
-		return retVec;
+	public static Vector3 ColToVec(Color c) {
+		// convert colour to a vector 
+		var v = Vector3.zero;
+		v.x = c.r;
+		v.y = c.g;
+		v.z = c.b;
+		return v;
 	}
-	public static Color VecToCol(Vector3 vecIn) {
-		// convert vector to a color
-		Color retCol = Color.white;
-		retCol.r = vecIn.x;
-		retCol.g = vecIn.y;
-		retCol.b = vecIn.z;
-		return retCol;
+	public static Color VecToCol(Vector3 v) {
+		// convert vector to a colour 
+		var c = Color.white;
+		c.r = v.x;
+		c.g = v.y;
+		c.b = v.z;
+		return c;
 	}
 
 	public static void RotateX(this Vector3 v, float angle) {

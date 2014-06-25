@@ -53,10 +53,10 @@ public class BasketballScript : MonoBehaviour {
 			if (net.Entities[i].viewID == throwerID){
 				net.Entities[i].hasBall = true;
 				
-				transform.parent = net.Entities[i].Entity.gunMesh1.transform.parent;
+				transform.parent = net.Entities[i].Visuals.gunMesh1.transform.parent;
 				transform.localPosition = (-Vector3.right * 0.7f) + (Vector3.forward * 0.2f);
 				
-				net.Entities[i].Entity.PlaySound("Catch");
+				net.Entities[i].Visuals.PlaySound("Catch");
 			}
 		}
 	}
@@ -115,7 +115,7 @@ public class BasketballScript : MonoBehaviour {
 				bool captured = false;
 				for (int i=0; i<net.Entities.Count; i++) {
 					if (!captured && net.Entities[i].Health>0f && 
-					    Vector3.Distance(transform.position, net.Entities[i].Entity.transform.position)<1.5f
+					    Vector3.Distance(transform.position, net.Entities[i].Visuals.transform.position)<1.5f
 				    ) {
 						if (throwerID == null || 
 						    net.Entities[i].viewID != throwerID || 

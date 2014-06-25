@@ -71,9 +71,9 @@ public class GunPickup : MonoBehaviour {
 		if (luO == null) {
 			if (null != net &&
 				null != net.LocUs &&
-			    null != net.LocUs.Entity
+			    null != net.LocUs.Visuals
 		    )
-				luO = net.LocUs.Entity.gameObject;
+				luO = net.LocUs.Visuals.gameObject;
 		}else{
 			if (Vector3.Distance(
 				luO.transform.position, transform.position) < 2f && 

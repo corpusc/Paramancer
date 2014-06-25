@@ -37,7 +37,7 @@ public class UserPlaying {
 			}
 		}
 
-		var locEnt = net.LocUs.Entity;
+		var locEnt = net.LocUs.Visuals;
 
 		var gunACooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
 		Gun gunHand = locEnt.GunInHand;

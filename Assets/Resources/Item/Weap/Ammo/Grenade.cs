@@ -51,7 +51,7 @@ public class Grenade : MonoBehaviour {
 					// but some kinda FIXME needed for insta self kills while throwing and sprinting forward?
 
 					// if we're NOT hitting who shot us 
-					//if (hitInfo.collider.networkView != net.localPlayer.Entity.networkView) {
+					//if (hitInfo.collider.networkView != net.LocUs.Visuals.networkView) {
 						maybeDetonate();
 					//}
 				}else{
