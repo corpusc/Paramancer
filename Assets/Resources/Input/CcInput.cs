@@ -38,16 +38,26 @@ public static class CcInput {
 		return "THAT BIND DOESN'T EXIST";
 	}
 	
-	public static bool Started(UserAction action) {
+	public static bool Started(UserAction ua) {
 		for (int i = 0; i < BindData.Length; i++) {
-			if (action == BindData[i].Action)
+			if (ua == BindData[i].Action)
 				if (Input.GetKeyDown(BindData[i].KeyCode) )
 					return true;
 		}
 		
 		return false;
 	}
-	
+	public static bool Ended(UserAction ua) {
+		for (int i = 0; i < BindData.Length; i++) {
+			// if 
+			if (ua == BindData[i].Action)
+				if (Input.GetKeyUp(BindData[i].KeyCode) )
+					return true;
+		}
+		
+		return false;
+	}
+
 	public static bool Holding(UserAction action) {
 		for (int i = 0; i < BindData.Length; i++) {
 			if (action == BindData[i].Action)
@@ -78,6 +88,7 @@ public static class CcInput {
 			BindData[i].Pic = Pics.Get(s);
 			
 			switch ((UserAction)i) {
+				#region movement
 				case UserAction.MoveForward: 
 					bind(i, KeyCode.E);
 					break;
@@ -95,7 +106,8 @@ public static class CcInput {
 					break;
 				case UserAction.MoveDown:
 					bind(i, KeyCode.Z);
-					break;
+				break;
+				#endregion
 					
 				case UserAction.Activate:
 					bind(i, KeyCode.Mouse0);
@@ -133,7 +145,7 @@ public static class CcInput {
 					
 					
 					
-				// weapons 
+				#region guns
 				case UserAction.Pistol:
 					bind(i, KeyCode.Alpha2);
 					break;
@@ -161,6 +173,7 @@ public static class CcInput {
 				case UserAction.Spatula:
 					bind(i, KeyCode.Q);
 					break;
+				#endregion
 			}
 		}
 	}

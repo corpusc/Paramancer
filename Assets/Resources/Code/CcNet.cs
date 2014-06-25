@@ -81,7 +81,7 @@ public class CcNet : MonoBehaviour {
 	// private 
 	public string nameOfOfflineBackdrop = "OfflineBackdrop";
 	// map 
-	bool preppingLevel = false;
+	bool preppingMap = false;
 	bool mapIsLoaded = false;
 	// scripts 
 	CcLog log;
@@ -1200,7 +1200,7 @@ public class CcNet : MonoBehaviour {
 		team2Score = 0;
 		
 		// clear stuff out if we are already playing 
-		preppingLevel = false;
+		preppingMap = false;
 		mapIsLoaded = false;
 		for (int i=0; i<Entities.Count; i++) {
 			if (Entities[i].Visuals != null) 
@@ -1218,17 +1218,17 @@ public class CcNet : MonoBehaviour {
 		arse.Clear();
 		
 		// now let's load the level 
-		preppingLevel = true;
+		preppingMap = true;
 		Application.LoadLevel(mapName);
 	}
 	
 	void OnLevelWasLoaded() {
 		if (CurrMatch.NeedsGenerating) {
-			DebugVoxel.CreateMap(CurrMatch.Seed, CurrMatch.Theme);
+			VoxINIT.CreateMap(CurrMatch.Seed, CurrMatch.Theme);
 		}
 
-		if (preppingLevel) {
-			preppingLevel = false;
+		if (preppingMap) {
+			preppingMap = false;
 			mapIsLoaded = true;
 			
 			// drop the basket ball in 

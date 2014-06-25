@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 
 
-public class ProcGenGrid {
+public class GenGrid {
 	public Cell[,] Cells;
 	public Vec2i Max; // maximum dimensions of the map 
 	public int numRooms = 40; // rooms/hallways to create 
@@ -44,7 +44,7 @@ public class ProcGenGrid {
 
 
 
-	public ProcGenGrid() {
+	public GenGrid() {
 		Debug.Log("********************** const of Maze() **********************");
 
 		Max.x = 64;

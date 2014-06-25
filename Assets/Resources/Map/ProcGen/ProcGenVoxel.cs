@@ -10,6 +10,8 @@ public struct Vec3i {
 	public int z;
 };
 
+
+
 public class ProcGenVoxel : ScriptableObject {
 	public int Seed = 0;
 	public bool[,,] Block; // true = the block is open, false = unreachable(wall etc) 

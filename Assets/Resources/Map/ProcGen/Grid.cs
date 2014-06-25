@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 
 
-public class DebugGrid : MonoBehaviour {
-	ProcGenGrid grid;
+public class Grid : MonoBehaviour {
+	GenGrid grid;
 
 
 
 	void Start() {
 		// generate a grid 
 		Debug.LogError("let's count these");
-		grid = new ProcGenGrid();
+		grid = new GenGrid();
 		Debug.LogError("let's count these");
 		var pic = new Texture2D(grid.Max.x, grid.Max.z);
 		Debug.LogError("let's count these");
@@ -55,42 +55,42 @@ public class DebugGrid : MonoBehaviour {
 	int wpI = 0; // wall point index 
 	List<WallPoint> walls = new List<WallPoint>();
 	void Update() {
-		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-		if (wallPointNear(ray)) {
-			cwt.GO.renderer.material.color = S.ShoutyBlue;
-		}else{
-			if (cwt != null) {
-				cwt.GO.renderer.material.color = Color.white;
-				cwt = null;
-			}
-		}
-
-
-
-		if (Input.GetKeyDown(KeyCode.Mouse0)) {
-			prevWall = maybeMakeBUILDStyleWall(ray);
-		}
-
-		if (Input.GetKeyUp(KeyCode.Mouse0)) {
-			var nw = maybeMakeBUILDStyleWall(ray);
-
-			if (prevWall != null) {
-				var nq = GameObject.CreatePrimitive(PrimitiveType.Quad);
-				var delta = nw.Pos - prevWall.Pos;
-				var p = prevWall.Pos + delta/2;
-				p.y += 2f;
-				nq.transform.position = p;
-				nq.transform.right = delta;
-				var f = 4f;
-				var v = new Vector3 (delta.magnitude, f, f);
-				nq.transform.localScale = v;
-				v /= 4f;
-				nq.renderer.material = grid.SciFiMat;
-				nq.renderer.material.mainTextureScale = v;
-				prevWall = null;	
-			}
-		}
+//		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+//
+//		if (wallPointNear(ray)) {
+//			cwt.GO.renderer.material.color = S.ShoutyBlue;
+//		}else{
+//			if (cwt != null) {
+//				cwt.GO.renderer.material.color = Color.white;
+//				cwt = null;
+//			}
+//		}
+//
+//
+//
+//		if (CcInput.Started(UserAction.Activate)) {
+//			prevWall = maybeMakeBUILDStyleWall(ray);
+//		}
+//
+//		if (CcInput.Ended(UserAction.Activate)) {
+//			var nw = maybeMakeBUILDStyleWall(ray);
+//
+//			if (prevWall != null) {
+//				var nq = GameObject.CreatePrimitive(PrimitiveType.Quad);
+//				var delta = nw.Pos - prevWall.Pos;
+//				var p = prevWall.Pos + delta/2;
+//				p.y += 2f;
+//				nq.transform.position = p;
+//				nq.transform.right = delta;
+//				var f = 4f;
+//				var v = new Vector3 (delta.magnitude, f, f);
+//				nq.transform.localScale = v;
+//				v /= 4f;
+//				nq.renderer.material = grid.SciFiMat;
+//				nq.renderer.material.mainTextureScale = v;
+//				prevWall = null;	
+//			}
+//		}
 	}
 	
 	bool wallPointNear(Ray ray) {
