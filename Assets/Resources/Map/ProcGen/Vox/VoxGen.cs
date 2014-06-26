@@ -50,6 +50,7 @@ public static class VoxGen {
 	public static int JumpHeight = 2; // the height that cannot be jumped over normally (needs a jump pad & must be lesser than MapSize.y) 
 	public static float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on 
 	// spawns 
+	//		entities 
 	public static Vector3 SpawnPointScale = Vector3.one;
 	public static GameObject SpawnPoint;
 	public static int SpawnPoints = 4; // the amount of spawn points to be placed(of each type[FFA/red/blue]) 
@@ -61,15 +62,17 @@ public static class VoxGen {
 
 	// the maximal height of a room is determined by the map height & the room size 
 	// This assumes the values you passed make sense, ie you didn't make MinFormWidth > MaxFormWidth 
-	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, and MinHeight + HeightRand must be lesser than MapSize.y 
+	// WARNING: MaxFormWidth must be lesser than MapSize.x and MapSize.z, 
+	//		and MinHeight + HeightRand must be lesser than MapSize.y 
 
 
 
 	// private 
 	const int numGunSpawns = 10;
 	const int numTries = 20000; // ... at making a room 
-	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
+	static bool building = false;
 	static bool[,,] IsAir;
+	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
 	static List<Material> MatPool = new List<Material>();
 
 	static GameObject primObject;
@@ -81,11 +84,25 @@ public static class VoxGen {
 
 
 
+	public static void OnGUI() {
+		if (!building)
+			return;
+
+		int xSpan = Screen.width / numVoxAcross.X;
+
+		for (int x = 0; x < numVoxAcross.X; x++) {
+			GUI.Label(new Rect(x * xSpan, 0, xSpan, Screen.height), Pics.Health);
+		}
+	}
+
+
+
 	public static void GenerateMap(int seed, Theme theme) {
+		building = true;
+
 		Seed = seed;
 		Theme = theme;
 		Scale = Vector3.one * 2f;
-
 
 		Init();
 		Build();
@@ -93,6 +110,8 @@ public static class VoxGen {
 		Build3D();
 		Debug.Log("RemoveOriginals() -----  seed: " + seed + " ----- ");
 		RemoveOriginals();
+
+		building = false;
 	}
 
 
@@ -130,114 +149,55 @@ public static class VoxGen {
 
 
 
-	// this will build a model of the level in memory, to generate the 3d model in the scene, use Build3d() 
+	// this will build a model of the level in memory 
 	public static void Build() {
 		emptyMap();
 		preBuild();
+		makeGroundFloor();
+		addBridgesAndCorridorsHigherUp();
+	}
 
-		// start off by creating the ground floor (the main map) 
-		int formsMade = 0;
-		for (int i = 0; i < numTries && formsMade < Forms; i++) {
-			Vec2i t;
-			t.x = Random.Range(0, numVoxAcross.X);
-			t.z = Random.Range(0, numVoxAcross.Z);
-			
-			Vec2i u;
-			u.x = Random.Range(0, numVoxAcross.X);
-			u.z = Random.Range(0, numVoxAcross.Z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
-			
-			Vec2i start;
-			Vec2i end;
-			start.x = Mathf.Min(t.x, u.x);
-			start.z = Mathf.Min(t.z, u.z);
-			end.x = Mathf.Max(t.x, u.x);
-			end.z = Mathf.Max(t.z, u.z);
 
-			if (containsBlocks(start, end)) {
-				if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
-					if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
-						if (getArea(start, end) <= MaxArea && getArea(start, end) >= MinArea)
 
-						if (countBlocks(start, end) < getArea(start, end) * MaxOverride * (MaxFloorHeight + 1f)) {
-							fillRect(start, end);
-							formsMade++;
-						}
-			}
-		} // end of ground floor creation
-
-		//...and then add bridges and corridors higher up
-		for (int h = Random.Range(MinCorridorStartHeight, MaxCorridorStartHeight + 1); h < numVoxAcross.Y - MinHeight - HeightRand; h += Random.Range(MinFloorLevelStep, MaxFloorLevelStep + 1)) { // h is the height of the floor
-			formsMade = 0;
-			for (int i = 0; i < numTries && formsMade < FormsPerFloor; i++) {
-				Vec2i t;
-				t.x = Random.Range(0, numVoxAcross.X);
-				t.z = Random.Range(0, numVoxAcross.Z);
-				
-				Vec2i u;
-				u.x = Random.Range(0, numVoxAcross.X);
-				u.z = Random.Range(0, numVoxAcross.Z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
-				
-				Vec2i start;
-				Vec2i end;
-				start.x = Mathf.Min(t.x, u.x);
-				start.z = Mathf.Min(t.z, u.z);
-				end.x = Mathf.Max(t.x, u.x);
-				end.z = Mathf.Max(t.z, u.z);
-				if (eachFloorOpen(start, end, h + 1, h + MinHeight)) // MinHeight is considered to be the player height, to check if the corridor can be accessed
-					if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
-						if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
-							if (containsWalls(start, end, h)) // so that bridges don't generate in mid-air
-
-						// no MaxOverride check here because we want bridges to generate
-						if (getArea(start, end) <= MaxCorridorArea) {
-							putWall(start, end, h);
-							fillRect(start, end, h);
-							formsMade++;
-						}
-			} // end of the creation of a single corridor/bridge
-		} // end of corridor/bridge creation
-
-	} // end of Build ()
-
-	// this generates the level in 3d(puts it in the scene) based what Build() created - call Build() before this
 	static int numMade = 0;
 	public static void Build3D () {
-		for (int i = 0; i < numVoxAcross.X; i++)
-		for (int y = 0; y < numVoxAcross.Y; y++)
-		for (int z = 0; z < numVoxAcross.Z; z++) {
+		for (int x = 0; x < numVoxAcross.X/4; x++)
+		for (int y = 0; y < numVoxAcross.Y/4; y++)
+		for (int z = 0; z < numVoxAcross.Z/4; z++) {
 			// if air... 
-			if (IsAir[i, y, z]) {
+			if (IsAir[x, y, z]) {
 				// ...need to make surface quads against neighboring void voxels 
 				var hx = Scale.x * 0.5f;
 				var hy = Scale.y * 0.5f;
 				var hz = Scale.z * 0.5f;
 
 				maybeMakeQuad(Vector3.left, 
-					i-1, y, z,
-					new Vector3(Scale.x*i-hx, Scale.y*y, Scale.z*z));
+					x-1, y, z,
+					new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
 				maybeMakeQuad(Vector3.right, 
-					i+1, y, z,
-					new Vector3(Scale.x*i+hx, Scale.y*y, Scale.z*z));
+					x+1, y, z,
+					new Vector3(Scale.x*x+hx, Scale.y*y, Scale.z*z));
 				
 				maybeMakeQuad(Vector3.forward, 
-					i, y, z+1,
-					new Vector3(Scale.x*i, Scale.y*y, Scale.z*z+hz));
+					x, y, z+1,
+					new Vector3(Scale.x*x, Scale.y*y, Scale.z*z+hz));
 				maybeMakeQuad(Vector3.back,
-					i, y, z-1,
-					new Vector3(Scale.x*i, Scale.y*y, Scale.z*z-hz));
+					x, y, z-1,
+					new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
 				
 				maybeMakeQuad(Vector3.up, 
-					i, y+1, z,
-					new Vector3(Scale.x*i, Scale.y*y+hy, Scale.z*z));
+					x, y+1, z,
+					new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
 				maybeMakeQuad(Vector3.down, 
-					i, j-1, k,
-					new Vector3(Scale.x*i, Scale.y*j-hy, Scale.z*z));
+					x, y-1, z,
+					new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
 
-				Debug.Log("AIR " + i);
+				Debug.Log("AIR " + x);
 			}else{ // NOT air 
-				Debug.Log("VOID " + i);
+				Debug.Log("VOID " + x);
 			}
-		} // end of vox scan 
+		} 
+		Debug.Log("end of vox scan");
 
 
 
@@ -246,6 +206,8 @@ public static class VoxGen {
 
 		// spawn map features 
 		makeLights();
+		Debug.Log("end of makeLights");
+
 		// place jump pads 
 		numMade = 0;
 		for (int i = 0; i < numTries && numMade < numJumpPads; i++) {
@@ -293,8 +255,9 @@ public static class VoxGen {
 					}
 				}
 			} // end of checking the block for possible jump pad placing 
-		} // end of placing jump pads 
-		
+		}
+		Debug.Log("end of placing jump pads");
+
 		// place FFA spawn points 
 		numMade = 0; // count spawn points as forms, no need for a separate var 
 		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
@@ -311,6 +274,7 @@ public static class VoxGen {
 				numMade++;
 			}
 		}
+		Debug.Log("ffa");
 
 		// place blue spawn points 
 		numMade = 0; // count spawn points as forms, no need for a separate var 
@@ -328,6 +292,7 @@ public static class VoxGen {
 				numMade++;
 			}
 		}
+		Debug.Log("blue");
 
 		// place red spawn points 
 		numMade = 0; // count spawn points as forms, no need for a separate var 
@@ -345,6 +310,7 @@ public static class VoxGen {
 				numMade++;
 			}
 		}
+		Debug.Log("red");
 
 		// place monster spawn points 
 		numMade = 0; // count spawn points as forms, no need for a separate var 
@@ -362,6 +328,7 @@ public static class VoxGen {
 				numMade++;
 			}
 		}
+		Debug.Log("mob");
 
 		// place weapon spawns 
 		numMade = 0; // count weapon spawns as forms, no need for a separate var 
@@ -383,6 +350,7 @@ public static class VoxGen {
 				}
 			}
 		}
+		Debug.Log("weap");
 	} // end of Build3d() 
 
 
@@ -716,13 +684,87 @@ public static class VoxGen {
 
 
 
+	private static void makeGroundFloor() {
+		int numMade = 0;
+		for (int i = 0; i < numTries && numMade < Forms; i++) {
+			Vec2i t;
+			t.x = Random.Range(0, numVoxAcross.X);
+			t.z = Random.Range(0, numVoxAcross.Z);
+			
+			Vec2i u;
+			u.x = Random.Range(0, numVoxAcross.X);
+			u.z = Random.Range(0, numVoxAcross.Z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
+			
+			Vec2i start;
+			Vec2i end;
+			start.x = Mathf.Min(t.x, u.x);
+			start.z = Mathf.Min(t.z, u.z);
+			end.x = Mathf.Max(t.x, u.x);
+			end.z = Mathf.Max(t.z, u.z);
+			
+			if (containsBlocks(start, end)) {
+				if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
+					if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
+						if (getArea(start, end) <= MaxArea && getArea(start, end) >= MinArea)
+						if (countBlocks(start, end) < getArea(start, end) * MaxOverride * (MaxFloorHeight + 1f)) {
+							fillRect(start, end);
+							numMade++;
+						}
+			}
+		}
+	}
+
+
+
+	private static void addBridgesAndCorridorsHigherUp() {
+		// h is the height of the floor 
+		for (int h = Random.Range(MinCorridorStartHeight, MaxCorridorStartHeight + 1); 
+		     h < numVoxAcross.Y - MinHeight - HeightRand; 
+		     h += Random.Range(MinFloorLevelStep, MaxFloorLevelStep + 1)
+		) {
+			numMade = 0;
+
+			// make single corridor/bridge 
+			for (int i = 0; i < numTries && numMade < FormsPerFloor; i++) {
+				Vec2i t;
+				t.x = Random.Range(0, numVoxAcross.X);
+				t.z = Random.Range(0, numVoxAcross.Z);
+				
+				Vec2i u;
+				u.x = Random.Range(0, numVoxAcross.X);
+				u.z = Random.Range(0, numVoxAcross.Z); // this is last-exclusive, hence all the <= and ...+ 1 later on 
+				
+				Vec2i start;
+				start.x = Mathf.Min(t.x, u.x);
+				start.z = Mathf.Min(t.z, u.z);
+
+				Vec2i end;
+				end.x = Mathf.Max(t.x, u.x);
+				end.z = Mathf.Max(t.z, u.z);
+
+				if (eachFloorOpen(start, end, h + 1, h + MinHeight)) // MinHeight is considered to be the player height, to check if the corridor can be accessed 
+					if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
+						if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
+							if (containsWalls(start, end, h)) // so that bridges don't generate in mid-air 
+								// no MaxOverride check here because we want bridges to generate 
+								if (getArea(start, end) <= MaxCorridorArea) {
+									putWall(start, end, h);
+									fillRect(start, end, h);
+									numMade++;
+								}
+			}
+		} // end of corridor/bridge creation
+	}
+
+
+
 	private static void maybeMakeQuad(Vector3 dir, int x, int y, int z, Vector3 offset) {
 		if (!getBlock(x, y, z)) {
 			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 			np.transform.position = Pos + offset;
 			np.transform.localScale = Scale;
 			np.transform.forward = dir;
-			np.renderer.material = Mat[x, y, z];
+			//np.renderer.material = Mat[x, y, z];
 			np.transform.parent = primObject.transform;
 		}
 	}
