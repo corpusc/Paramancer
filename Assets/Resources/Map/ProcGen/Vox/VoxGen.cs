@@ -54,9 +54,11 @@ public static class VoxGen {
 
 
 	// private 
+	static int numMade = 0; // curr tally of just about everything that gets made 
 	const int numGunSpawns = 10;
 	const int numTries = 20000; // ... at making a room 
 	static int currX = 0;
+	static int currRoom = 0;
 	static bool building = false;
 	static bool[,,] isAir;
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
@@ -73,10 +75,10 @@ public static class VoxGen {
 		if (!building)
 			return;
 
-		int xSpan = Screen.width / numVoxAcross.X;
+		int xSpan = Screen.width / /*numVoxAcross.X*/ rooms.Count;
 		GUI.Box(new Rect(0, Screen.height/2, Screen.width, Screen.height), 
 		        "Generating a map for you....... wait for it...........WAIT FOR IT");
-		GUI.Label(new Rect(currX * xSpan, 0, xSpan, Screen.height), Pics.Health);
+		GUI.Label(new Rect(/*currX*/ currRoom * xSpan, 0, xSpan, Screen.height), Pics.Health);
 	}
 
 
@@ -85,14 +87,16 @@ public static class VoxGen {
 		if (!building)
 			return;
 
-		generateXSlice(currX);
-		currX++;
+		//generateXSlice(currX);
+		//currX++;
+		generateRoomSurfaceTiles(currRoom);
+		currRoom++;
 
 		// if we still need to generate more slices 
-		if (currX < numVoxAcross.X) {
+		if (currRoom < rooms.Count /*currX < numVoxAcross.X*/) {
 			return;
 		}else{ // do post-gen processes 
-			currX = 0;
+			//currX = 0;
 			building = false;
 
 			// spawn map features 
@@ -190,7 +194,56 @@ public static class VoxGen {
 
 
 
-	static int numMade = 0;
+	private static void generateRoomSurfaceTiles(int idx) {
+		var hx = Scale.x * 0.5f;
+		var hy = Scale.y * 0.5f;
+		var hz = Scale.z * 0.5f;
+		
+		for (int y = 0; y < rooms[idx].Size.Y; y++)
+		for (int z = 0; z < rooms[idx].Size.Z; z++) {
+			maybeMakeQuad(Vector3.left, 
+			              x-1, y, z,
+			              new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
+		}
+
+		for (int y = 0; y < rooms[idx].Size.Y; y++)
+		for (int z = 0; z < rooms[idx].Size.Z; z++) {
+			maybeMakeQuad(Vector3.right, 
+			              x+1, y, z,
+			              new Vector3(Scale.x*x+hx, Scale.y*y, Scale.z*z));
+		}
+
+		for (int x = 0; x < rooms[idx].Size.X; x++)
+		for (int y = 0; y < rooms[idx].Size.Y; y++)
+			maybeMakeQuad(Vector3.forward, 
+			              x, y, z+1,
+			              new Vector3(Scale.x*x, Scale.y*y, Scale.z*z+hz));
+		}
+
+		for (int x = 0; x < rooms[idx].Size.X; x++)
+		for (int y = 0; y < rooms[idx].Size.Y; y++)
+			maybeMakeQuad(Vector3.back,
+			              x, y, z-1,
+			              new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
+		}
+
+		for (int x = 0; x < rooms[idx].Size.X; x++)
+		for (int z = 0; z < rooms[idx].Size.Z; z++) {
+			maybeMakeQuad(Vector3.up, 
+			              x, y+1, z,
+			              new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
+		}
+
+		for (int x = 0; x < rooms[idx].Size.X; x++)
+		for (int z = 0; z < rooms[idx].Size.Z; z++) {
+			maybeMakeQuad(Vector3.down, 
+			              x, y-1, z,
+			              new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
+		}
+	}
+
+
+
 	private static void generateXSlice(int x) {
 		for (int y = 0; y < numVoxAcross.Y; y++)
 		for (int z = 0; z < numVoxAcross.Z; z++) {
@@ -222,7 +275,7 @@ public static class VoxGen {
 					x, y-1, z,
 					new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
 			}
-		} // if no floor was reached before the map ended 
+		}
 	}
 
 
@@ -278,14 +331,17 @@ public static class VoxGen {
 			MonoBehaviour.print("Voxel map generation error: room height is too large! Please set MapSize.y to a higher value.");
 			return;
 		}
+
 		Vec3i a;
 		a.X = s.x;
 		a.Y = Random.Range(0, MaxFloorHeight + 1);
 		a.Z = s.z;
+
 		Vec3i b;
 		b.X = e.x;
 		b.Y = a.Y + h;
 		b.Z = e.z;
+
 		carveOutRoom(a, b);
 	}
 	// this is only called for bridges & overground corridors 
