@@ -18,8 +18,8 @@ public static class VoxGen {
 	public static int Forms = 40; // the amount of rooms/halls to create on the ground floor 
 	public static int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor 
 	public static float MaxOverride = 0.3f; // only create a form if there aren't too many things already in there 
-	public static int MinFormWidth = 2; // the minimal span of a form(this will end up being the width ussually) 
-	public static int MaxFormWidth = 16; // the maximal span of a form(this will end up being the length ussually) 
+	public static int MinRoomSpan = 2; // the minimal span of a form(this will end up being the width ussually) 
+	public static int MaxRoomSpan = 16; // the maximal span of a form(this will end up being the length ussually) 
 	public static int MinArea = 20; // don't create tiny rooms that will not be noticed 
 	public static int MaxArea = 100; // limits the creation of extremely large rooms, favorizes corridors 
 	public static int MaxCorridorArea = 60; // for corridors/bridges above the ground floor 
@@ -28,19 +28,18 @@ public static class VoxGen {
 	public static float SizeToHeight = 0.85f; // this is used to give a larger height to rooms with a square-like shape.  Setting it to a lower value will cause rooms to appear flatter. 
 	public static int MinHeight = 2; // the minimal height a room can have 
 	public static int MaxFloorHeight = 1; // the maximal height of the floor of the rooms on the ground floor. Use 0 for no randomness. 
-	public static int HeightRand = 4; // the maximal additional room height(minimal is 0)(last-exclusive, so set to 1 for no randomness) 
+	public static int HeightRand = 4; // the maximal additional room height (minimal is 0) (last-exclusive, so set to 1 for no randomness) 
 	public static int CorridorHeightRand = 2; // same as above, but for corridors 
 	public static int MinFloorLevelStep = 8; // the minimal height distance between two corridor levels on top of each other 
 	public static int MaxFloorLevelStep = 10; // the maximal height distance between two corridor levels on top of each other 
 	public static int MinCorridorStartHeight = 3; // the minimal height at which corridors & bridges are created 
 	public static int MaxCorridorStartHeight = 5; // the maximal height at which corridors & bridges are created 
 	public static bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed 
-
 	public static Theme Theme = Theme.SciFi; // used to control the placing of art assets & the texture images 
 
 	// assets to be placed on the map 
 	//		lights 
-	public static float TorchScale = 0.3f;
+	public static float TorchScale = 1f;
 	public static float TorchOffset = 0.1f; // the distance from the center of the torch to the wall/floor it is attached to 
 	// 		jump pads 
 	public static int numJumpPads = 10;
@@ -69,6 +68,7 @@ public static class VoxGen {
 	// private 
 	const int numGunSpawns = 10;
 	const int numTries = 20000; // ... at making a room 
+	static int currX = 0;
 	static bool building = false;
 	static bool[,,] isAir;
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
@@ -87,30 +87,148 @@ public static class VoxGen {
 		if (!building)
 			return;
 
+
+
 		int xSpan = Screen.width / numVoxAcross.X;
 
-		for (int x = 0; x < numVoxAcross.X; x++) {
-			GUI.Label(new Rect(x * xSpan, 0, xSpan, Screen.height), Pics.Health);
+		//for (int x = 0; x < numVoxAcross.X; x++) {
+			GUI.Label(new Rect(currX * xSpan, 0, xSpan, Screen.height), Pics.Health);
+		//}
+	}
+
+
+
+	public static void Update() {
+		if (!building)
+			return;
+		
+		
+		
+		generateXSlice(currX);
+		currX++;
+		// if we still need to generate more slices 
+		if (currX < numVoxAcross.X) {
+			return; // DON'T DO ANYTHING ELSE IN Update() UNTIL DONE GEN'ING MAP!!!!!
 		}
+
+
+		// ELSE do post-gen processes 
+
+		currX = 0; // reset position 
+		building = false;
+
+
+
+		// spawn map features 
+		makeLights();
+		makeJumpPads();
+		
+		// place FFA spawn points 
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
+			Vec3i t;
+			t.X = Random.Range(0, numVoxAcross.X);
+			t.Y = Random.Range(0, numVoxAcross.Y);
+			t.Z = Random.Range(0, numVoxAcross.Z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!air(t.X, t.Y - 1, t.Z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
+				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = ffaSpawnBag.transform;
+				numMade++;
+			}
+		}
+		Debug.Log("ffa");
+		
+		// place blue spawn points 
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
+			Vec3i t;
+			t.X = Random.Range(0, numVoxAcross.X);
+			t.Y = Random.Range(0, numVoxAcross.Y);
+			t.Z = Random.Range(0, numVoxAcross.Z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!air(t.X, t.Y - 1, t.Z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
+				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = blueSpawnBag.transform;
+				numMade++;
+			}
+		}
+		Debug.Log("blue");
+		
+		// place red spawn points 
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
+			Vec3i t;
+			t.X = Random.Range(0, numVoxAcross.X);
+			t.Y = Random.Range(0, numVoxAcross.Y);
+			t.Z = Random.Range(0, numVoxAcross.Z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!air(t.X, t.Y - 1, t.Z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
+				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = redSpawnBag.transform;
+				numMade++;
+			}
+		}
+		Debug.Log("red");
+		
+		// place monster spawn points 
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < MonsterSpawns; i++) {
+			Vec3i t;
+			t.X = Random.Range(0, numVoxAcross.X);
+			t.Y = Random.Range(0, numVoxAcross.Y);
+			t.Z = Random.Range(0, numVoxAcross.Z);
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!air(t.X, t.Y - 1, t.Z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
+				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = monsterSpawnBag.transform;
+				numMade++;
+			}
+		}
+		Debug.Log("mob");
+		
+		// place weapon spawns 
+		numMade = 0; // count weapon spawns as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < numGunSpawns; i++) {
+			Vec3i t;
+			t.X = Random.Range(0, numVoxAcross.X);
+			t.Y = Random.Range(0, numVoxAcross.Y);
+			t.Z = Random.Range(0, numVoxAcross.Z);
+			
+			// if the place is accessible (ceiling height) 
+			if (columnOpen(t, MinHeight)) {
+				if (!air(t.X, t.Y - 1, t.Z)) {
+					var ns = (GameObject)GameObject.Instantiate(WeaponSpawn); // new weapon spawn 
+					ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y + WeaponSpawnOffset - Scale.y * 0.5f, Scale.z * t.Z);
+					ns.transform.localScale = WeaponSpawnScale;
+					ns.transform.parent = weaponSpawnBag.transform;
+					ns.GetComponent<PickupPoint>().pickupPointID = numMade;
+					numMade++;
+				}
+			}
+		}
+		Debug.Log("weap");
 	}
 
 
 
 	public static void GenerateMap(int seed, Theme theme) {
-		building = true;
-
 		Seed = seed;
 		Theme = theme;
 		Scale = Vector3.one * 2f;
 
 		Init();
 		Build();
-		Debug.Log("Build3d() -----  seed: " + seed + " ----- ");
-		Build3D();
-		Debug.Log("RemoveOriginals() -----  seed: " + seed + " ----- ");
-		RemoveOriginals();
-
-		building = false;
+		Debug.Log("Generating map with seed: " + seed);
+		building = true;
 	}
 
 
@@ -150,8 +268,8 @@ public static class VoxGen {
 
 	// this will build a model of the level in memory 
 	public static void Build() {
-		emptyMap();
-		preBuild();
+		//emptyMap();    i think bools default to false....???
+		makeOneRoom();
 		makeGroundFloor();
 		addBridgesAndCorridorsHigherUp();
 	}
@@ -159,10 +277,9 @@ public static class VoxGen {
 
 
 	static int numMade = 0;
-	public static void Build3D () {
-		for (int x = 0; x < numVoxAcross.X/3; x++)
-		for (int y = 0; y < numVoxAcross.Y/3; y++)
-		for (int z = 0; z < numVoxAcross.Z/3; z++) {
+	private static void generateXSlice(int x) {
+		for (int y = 0; y < numVoxAcross.Y/4; y++)
+		for (int z = 0; z < numVoxAcross.Z; z++) {
 			// if air... 
 			if (isAir[x, y, z]) {
 				// ...need to make surface quads against neighboring void voxels 
@@ -190,179 +307,16 @@ public static class VoxGen {
 				maybeMakeQuad(Vector3.down, 
 					x, y-1, z,
 					new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
-
-				Debug.Log("AIR " + x);
 			}
-		} Debug.Log("end of vox scan");
-
-
-
-
-
-
-		// spawn map features 
-		makeLights();
-		makeJumpPads();
-
-		// place FFA spawn points 
-		numMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
-			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
-			if (!getBlock(t.X, t.Y - 1, t.Z)) {
-				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
-				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
-				ns.transform.localScale = SpawnPointScale;
-				ns.transform.parent = ffaSpawnBag.transform;
-				numMade++;
-			}
-		}
-		Debug.Log("ffa");
-
-		// place blue spawn points 
-		numMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
-			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
-			if (!getBlock(t.X, t.Y - 1, t.Z)) {
-				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
-				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
-				ns.transform.localScale = SpawnPointScale;
-				ns.transform.parent = blueSpawnBag.transform;
-				numMade++;
-			}
-		}
-		Debug.Log("blue");
-
-		// place red spawn points 
-		numMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
-			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
-			if (!getBlock(t.X, t.Y - 1, t.Z)) {
-				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
-				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
-				ns.transform.localScale = SpawnPointScale;
-				ns.transform.parent = redSpawnBag.transform;
-				numMade++;
-			}
-		}
-		Debug.Log("red");
-
-		// place monster spawn points 
-		numMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < MonsterSpawns; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
-			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
-			if (!getBlock(t.X, t.Y - 1, t.Z)) {
-				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
-				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
-				ns.transform.localScale = SpawnPointScale;
-				ns.transform.parent = monsterSpawnBag.transform;
-				numMade++;
-			}
-		}
-		Debug.Log("mob");
-
-		// place weapon spawns 
-		numMade = 0; // count weapon spawns as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < numGunSpawns; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
-
-			// if the place is accessible (ceiling height) 
-			if (columnOpen(t, MinHeight)) {
-				if (!getBlock(t.X, t.Y - 1, t.Z)) {
-					var ns = (GameObject)GameObject.Instantiate(WeaponSpawn); // new weapon spawn 
-					ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y + WeaponSpawnOffset - Scale.y * 0.5f, Scale.z * t.Z);
-					ns.transform.localScale = WeaponSpawnScale;
-					ns.transform.parent = weaponSpawnBag.transform;
-					ns.GetComponent<PickupPoint>().pickupPointID = numMade;
-					numMade++;
-				}
-			}
-		}
-		Debug.Log("weap");
-	} // end of Build3d() 
-
-
-
-	public static void RemoveOriginals () { // ....so they don't cause any trouble like spawning players outside the map 
-		GameObject.Destroy(JumpPad);
-		GameObject.Destroy(SpawnPoint);
-		GameObject.Destroy(WeaponSpawn);
+		} // if no floor was reached before the map ended 
 	}
-	
+
 
 
 
 
 
 	// private methods 
-	private static void makeLights() {
-		const int numLights = 25;
-		numMade = 0;
-
-		for (int i = 0; i < numTries && numMade < numLights; i++) {
-			Vec3i v;
-			v.X = Random.Range (0, numVoxAcross.X);
-			v.Y = Random.Range (0, numVoxAcross.Y);
-			v.Z = Random.Range (0, numVoxAcross.Z);
-
-			if (isAir [v.X, v.Y, v.Z]) {
-				if (!getBlock (v.X - 1, v.Y, v.Z)) {
-					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
-					nt.transform.position = Pos + new Vector3 (Scale.x * v.X - Scale.x * 0.5f + TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
-					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primObject.transform;
-					numMade++;
-				}
-				else
-					if (!getBlock (v.X + 1, v.Y, v.Z)) {
-						var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
-						nt.transform.position = Pos + new Vector3 (Scale.x * v.X + Scale.x * 0.5f - TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
-						nt.transform.localScale = Scale * TorchScale;
-						nt.transform.parent = primObject.transform;
-						numMade++;
-					}
-					else
-						if (!getBlock (v.X, v.Y, v.Z - 1)) {
-							var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
-							nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z - Scale.z * 0.5f + TorchOffset);
-							nt.transform.localScale = Scale * TorchScale;
-							nt.transform.parent = primObject.transform;
-							numMade++;
-						}
-						else
-							if (!getBlock (v.X, v.Y, v.Z + 1)) {
-								var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
-								nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z + Scale.z * 0.5f - TorchOffset);
-								nt.transform.localScale = Scale * TorchScale;
-								nt.transform.parent = primObject.transform;
-								numMade++;
-							}
-				// no torches on ceilings and floors! 
-			}
-			// end of scanning an individual block to see if a torch can be placed 
-		}
-	}
-
-
-
 	private static void emptyMap() {
 		for (int i = 0; i < numVoxAcross.X; i++)
 		for (int j = 0; j < numVoxAcross.Y; j++)
@@ -371,18 +325,23 @@ public static class VoxGen {
 		}
 	}
 
-	// used so that there is a single room in the level 
-	private static void preBuild() {
+
+
+	private static void makeOneRoom() {
 		Vec3i a;
-		a.X = Random.Range(0, numVoxAcross.X - MaxFormWidth);
+		a.X = Random.Range(0, numVoxAcross.X - MaxRoomSpan);
 		a.Y = 0;
-		a.Z = Random.Range(0, numVoxAcross.Z - MaxFormWidth);
+		a.Z = Random.Range(0, numVoxAcross.Z - MaxRoomSpan);
+
 		Vec3i b;
-		b.X = Random.Range(a.X + MinFormWidth, a.X + MaxFormWidth);
+		b.X = Random.Range(a.X + MinRoomSpan, a.X + MaxRoomSpan);
 		b.Y = Random.Range(MinHeight, MinHeight + HeightRand);
-		b.Z = Random.Range(a.Z + MinFormWidth, a.Z + MaxFormWidth);
+		b.Z = Random.Range(a.Z + MinRoomSpan, a.Z + MaxRoomSpan);
+
 		fillRect(a, b);
 	}
+
+
 
 	// sets blocks to true (opens them to create rooms) and sets their material 
 	private static void fillRect(Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders) 
@@ -482,6 +441,8 @@ public static class VoxGen {
 		return countBlocks(a, b);
 	}
 
+
+
 	private static bool containsBlocks(Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders)
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it checks the blocks inclusively, so checking from 3, 3, 3 to 3, 3, 3 can cause it to return true
 		for (int j = s.Y; j <= e.Y; j++)
@@ -516,6 +477,8 @@ public static class VoxGen {
 		return containsBlocks (a, b);
 	}
 
+
+
 	// only returns the floor area 
 	private static int getArea (Vec3i s, Vec3i e) { // start, end, must be sorted 
 		return (e.X - s.X + 1) * (e.Z - s.Z + 1);
@@ -526,21 +489,20 @@ public static class VoxGen {
 
 
 
-	// used to safely get a block (ie when you're not sure whether it is out of the map) 
-	private static bool getBlock(Vec3i p) {
+	private static bool air(Vec3i p) {
 		if (p.X < 0 || p.X >= numVoxAcross.X) return MapIsOpen;
 		if (p.Y < 0 || p.Y >= numVoxAcross.Y) return MapIsOpen;
 		if (p.Z < 0 || p.Z >= numVoxAcross.Z) return MapIsOpen;
 
 		return isAir[p.X, p.Y, p.Z];
 	}
-	private static bool getBlock(int x, int y, int z) {
+	private static bool air(int x, int y, int z) {
 		Vec3i v;
 		v.X = x;
 		v.Y = y;
 		v.Z = z;
 
-		return getBlock(v);
+		return air(v);
 	}
 
 
@@ -592,7 +554,7 @@ public static class VoxGen {
 		// y offset (go down from starting vox) 
 		for (int yOff = 0; yOff <= sv.Y + 1; yOff++) {
 			// + 1 because it also scans the floor that is not coded as bloks, instead, is dependent on the MapIsOpen variable
-			if (!getBlock(sv.X, sv.Y-yOff, sv.Z)) 
+			if (!air(sv.X, sv.Y-yOff, sv.Z)) 
 				return yOff;
 		}
 
@@ -609,7 +571,7 @@ public static class VoxGen {
 
 
 	// checks if all floors at given heights contain open blocks, used to check if you can get into a corridor at all(MinHeight is considerd the player height)
-	private static bool eachFloorOpen (Vec2i s, Vec2i e, int hs, int he) { // start, end, starting height, ending height(inclusive, must be sorted and not be out of borders)
+	private static bool eachFloorOpen(Vec2i s, Vec2i e, int hs, int he) { // start, end, starting height, ending height(inclusive, must be sorted and not be out of borders)
 		for (int i = hs; i <= he; i++)
 			if (!containsBlocks(s, e, i)) return false;
 
@@ -621,7 +583,7 @@ public static class VoxGen {
 	// used for checking if a spawn can be placed, only checks a column of blocks 
 	private static bool columnOpen(Vec3i s, int h) { // starting position, height from starting position 
 		for (int i = s.Y; i <= s.Y + h; i++)
-			if (!getBlock(s.X, i, s.Z)) 
+			if (!air(s.X, i, s.Z)) 
 				return false;
 
 		return true; // if we got here, it means all checked are air voxels 
@@ -655,8 +617,8 @@ public static class VoxGen {
 			end.z = Mathf.Max(t.z, u.z);
 			
 			if (containsBlocks(start, end)) {
-				if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
-					if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
+				if ((end.x >= start.x + MinRoomSpan) && (end.z >= start.z + MinRoomSpan))
+					if ((end.x <= start.x + MaxRoomSpan) && (end.z <= start.z + MaxRoomSpan))
 						if (getArea(start, end) <= MaxArea && getArea(start, end) >= MinArea)
 						if (countBlocks(start, end) < getArea(start, end) * MaxOverride * (MaxFloorHeight + 1f)) {
 							fillRect(start, end);
@@ -695,8 +657,8 @@ public static class VoxGen {
 				end.z = Mathf.Max(t.z, u.z);
 
 				if (eachFloorOpen(start, end, h + 1, h + MinHeight)) // MinHeight is considered to be the player height, to check if the corridor can be accessed 
-					if ((end.x >= start.x + MinFormWidth) && (end.z >= start.z + MinFormWidth))
-						if ((end.x <= start.x + MaxFormWidth) && (end.z <= start.z + MaxFormWidth))
+					if ((end.x >= start.x + MinRoomSpan) && (end.z >= start.z + MinRoomSpan))
+						if ((end.x <= start.x + MaxRoomSpan) && (end.z <= start.z + MaxRoomSpan))
 							if (containsWalls(start, end, h)) // so that bridges don't generate in mid-air 
 								// no MaxOverride check here because we want bridges to generate 
 								if (getArea(start, end) <= MaxCorridorArea) {
@@ -711,7 +673,7 @@ public static class VoxGen {
 
 
 	private static void maybeMakeQuad(Vector3 dir, int x, int y, int z, Vector3 offset) {
-		if (!getBlock(x, y, z)) {
+		if (!air(x, y, z)) {
 			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 			np.transform.position = Pos + offset;
 			np.transform.localScale = Scale;
@@ -723,7 +685,52 @@ public static class VoxGen {
 
 
 
-	private static makeJumpPads() {
+	private static void makeLights() {
+		const int numLights = 25;
+		numMade = 0;
+		
+		for (int i = 0; i < numTries && numMade < numLights; i++) {
+			Vec3i v;
+			v.X = Random.Range(0, numVoxAcross.X);
+			v.Y = Random.Range(0, numVoxAcross.Y);
+			v.Z = Random.Range(0, numVoxAcross.Z);
+			
+			if (isAir[v.X, v.Y, v.Z]) {
+				if (!air(v.X-1, v.Y, v.Z)) {
+					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
+					nt.transform.position = Pos + new Vector3 (Scale.x * v.X - Scale.x * 0.5f + TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = primObject.transform;
+					numMade++;
+				}else
+				if (!air(v.X+1, v.Y, v.Z)) {
+					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
+					nt.transform.position = Pos + new Vector3 (Scale.x * v.X + Scale.x * 0.5f - TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = primObject.transform;
+					numMade++;
+				}else
+				if (!air(v.X, v.Y, v.Z-1)) {
+					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
+					nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z - Scale.z * 0.5f + TorchOffset);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = primObject.transform;
+					numMade++;
+				}else
+				if (!air(v.X, v.Y, v.Z+1)) {
+					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
+					nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z + Scale.z * 0.5f - TorchOffset);
+					nt.transform.localScale = Scale * TorchScale;
+					nt.transform.parent = primObject.transform;
+					numMade++;
+				}
+			} // end of scanning an individual block to see if a torch can be placed 
+		}
+	}
+	
+	
+	
+	private static void makeJumpPads() {
 		numMade = 0;
 
 		for (int i = 0; i < numTries && numMade < numJumpPads; i++) {
