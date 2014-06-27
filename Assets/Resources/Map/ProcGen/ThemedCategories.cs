@@ -1,39 +1,39 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 
 
 public class ThemedCategories {
-	public List<Material> lips = new List<Material>();
-	public List<Material> walls = new List<Material>();
-	public List<Material> floors = new List<Material>();
-	public List<Material> ceilings = new List<Material>();
+	public List<Material> Lips = new List<Material>(); // moulding 
+	public List<Material> Walls = new List<Material>();
+	public List<Material> Floors = new List<Material>();
+	public List<Material> Ceilings = new List<Material>();
 
 
 
 	public ThemedCategories() {
 		Debug.Log("");
 		
-		var MetalFloor = Mats.Get("metal_floor_003");
-		var MetalGroovedEdges = Mats.Get("metal_plate_005");
-		var MetalWithRivets = Mats.Get("metal_plate_008");
-		var SciFiMat = Mats.Get("sci_fi_003");
+		var metalFloor = Mats.Get("metal_floor_003");
+		var metalGroovedEdges = Mats.Get("metal_plate_005");
+		var metalWithRivets = Mats.Get("metal_plate_008");
+		var sciFiMat = Mats.Get("sci_fi_003");
 		
-		ceilings.Add(Mats.Get("Shutter_01"));
-		ceilings.Add(MetalFloor);
-		ceilings.Add(MetalGroovedEdges);
-		ceilings.Add(MetalWithRivets);
-		ceilings.Add(SciFiMat);
+		Ceilings.Add(Mats.Get("Shutter_01"));
+		Ceilings.Add(metalFloor);
+		Ceilings.Add(metalGroovedEdges);
+		Ceilings.Add(metalWithRivets);
+		Ceilings.Add(sciFiMat);
 
-		walls.Add(SciFiMat);
-		walls.Add(MetalGroovedEdges);
-		walls.Add(MetalWithRivets);
+		Walls.Add(sciFiMat);
+		Walls.Add(metalGroovedEdges);
+		Walls.Add(metalWithRivets);
 		
-		floors.Add(MetalFloor);
-		floors.Add(MetalGroovedEdges);
-		floors.Add(SciFiMat);
+		Floors.Add(metalFloor);
+		Floors.Add(metalGroovedEdges);
+		Floors.Add(sciFiMat);
 		
-		lips.Add(MetalFloor);
-		lips.Add(MetalWithRivets);
+		Lips.Add(metalFloor);
+		Lips.Add(metalWithRivets);
 	}
 }

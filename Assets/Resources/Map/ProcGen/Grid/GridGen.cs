@@ -19,6 +19,8 @@ public class GridGen {
 	public int MinHeight = 2;
 	public int MaxHeight = 5;
 
+
+
 	// private 
 	int numTries = 50000; // ...before Build() gives up 
 	GameObject primBin;
@@ -32,6 +34,8 @@ public class GridGen {
 	// lips of passageway/mouth 
 	float thickMAX = 1 / 8f;
 	float thinMAX = 1 / 16f;
+
+	ThemedCategories cat = new ThemedCategories();
 
 
 

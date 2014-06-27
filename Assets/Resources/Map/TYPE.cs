@@ -8,6 +8,20 @@ public struct Vec2i {
 	public int z;
 };
 
+public struct Vec3i {
+	public int X;
+	public int Y;
+	public int Z;
+};
+
+public class VoxelRect {
+	public Vec3i Pos;
+	public Vec3i Size;
+	public Material Walls;
+	public Material Floor;
+	public Material Ceiling;
+};
+
 public class Cell {
 	public Material MatWalls;
 	public Material MatFloor;
