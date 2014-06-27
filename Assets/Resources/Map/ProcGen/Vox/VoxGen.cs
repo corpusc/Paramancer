@@ -10,11 +10,18 @@ public struct Vec3i {
 	public int Z;
 };
 
+public class VoxelRect {
+	public Vec3i Pos;
+	public Vec3i Size;
+	public Material Walls;
+	public Material Floor;
+	public Material Ceiling;
+};
+
 
 
 public static class VoxGen {
 	public static int Seed = 0;
-	public static Material[,,] Mat;
 	public static int Forms = 40; // the amount of rooms/halls to create on the ground floor 
 	public static int FormsPerFloor = 10; // the amount of corridors/bridges that connect rooms reaching the given height, per floor 
 	public static float MaxOverride = 0.3f; // only create a form if there aren't too many things already in there 
@@ -74,12 +81,10 @@ public static class VoxGen {
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
 	static List<Material> MatPool = new List<Material>();
 
-	static GameObject primObject;
-	static GameObject ffaSpawnBag;
-	static GameObject blueSpawnBag;
-	static GameObject redSpawnBag;
-	static GameObject weaponSpawnBag;
-	static GameObject monsterSpawnBag;
+	// bags are containers. 
+	// a simple transform gameobject which will be parented by the children/content as they are created 
+	static GameObject primBag; 
+	static GameObject spawnBag;
 
 
 
@@ -91,9 +96,9 @@ public static class VoxGen {
 
 		int xSpan = Screen.width / numVoxAcross.X;
 
-		//for (int x = 0; x < numVoxAcross.X; x++) {
-			GUI.Label(new Rect(currX * xSpan, 0, xSpan, Screen.height), Pics.Health);
-		//}
+		GUI.Box(new Rect(0, Screen.height/2, Screen.width, Screen.height), 
+		        "Generating your spesh'uhl map.... wait for it.....WAIT FOR IT!");
+		GUI.Label(new Rect(currX * xSpan, 0, xSpan, Screen.height), Pics.Health);
 	}
 
 
@@ -119,89 +124,43 @@ public static class VoxGen {
 
 
 
+
 		// spawn map features 
 		makeLights();
 		makeJumpPads();
 		
 		// place FFA spawn points 
-		numMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
-			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
-			if (!air(t.X, t.Y - 1, t.Z)) {
-				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
-				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
-				ns.transform.localScale = SpawnPointScale;
-				ns.transform.parent = ffaSpawnBag.transform;
-				numMade++;
-			}
-		}
-		Debug.Log("ffa");
-		
+		makeSpawns(SpawnPoints);
+
 		// place blue spawn points 
-		numMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
+		makeSpawns(SpawnPoints);
 			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!air(t.X, t.Y - 1, t.Z)) {
 				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
 				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = blueSpawnBag.transform;
-				numMade++;
-			}
-		}
-		Debug.Log("blue");
 		
 		// place red spawn points 
-		numMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < SpawnPoints; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
+		makeSpawns(SpawnPoints);
 			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!air(t.X, t.Y - 1, t.Z)) {
 				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
 				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = redSpawnBag.transform;
-				numMade++;
-			}
-		}
-		Debug.Log("red");
 		
 		// place monster spawn points 
-		numMade = 0; // count spawn points as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < MonsterSpawns; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
+		makeSpawns(MonsterSpawns);
 			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
 			if (!air(t.X, t.Y - 1, t.Z)) {
 				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
 				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
 				ns.transform.localScale = SpawnPointScale;
 				ns.transform.parent = monsterSpawnBag.transform;
-				numMade++;
-			}
-		}
-		Debug.Log("mob");
 		
 		// place weapon spawns 
-		numMade = 0; // count weapon spawns as forms, no need for a separate var 
-		for (int i = 0; i < numTries && numMade < numGunSpawns; i++) {
-			Vec3i t;
-			t.X = Random.Range(0, numVoxAcross.X);
-			t.Y = Random.Range(0, numVoxAcross.Y);
-			t.Z = Random.Range(0, numVoxAcross.Z);
+		makeSpawns(numGunSpawns);
 			
 			// if the place is accessible (ceiling height) 
 			if (columnOpen(t, MinHeight)) {
@@ -211,11 +170,25 @@ public static class VoxGen {
 					ns.transform.localScale = WeaponSpawnScale;
 					ns.transform.parent = weaponSpawnBag.transform;
 					ns.GetComponent<PickupPoint>().pickupPointID = numMade;
-					numMade++;
-				}
+		}
+	}
+	private static makeSpawns(int num) {
+		numMade = 0; // count spawn points as forms, no need for a separate var 
+		for (int i = 0; i < numTries && numMade < num; i++) {
+			Vec3i t;
+			t.X = Random.Range(0, numVoxAcross.X);
+			t.Y = Random.Range(0, numVoxAcross.Y);
+			t.Z = Random.Range(0, numVoxAcross.Z);
+
+			if (columnOpen(t, MinHeight)) // if the place is accessible(ceiling height)
+			if (!air(t.X, t.Y - 1, t.Z)) {
+				var ns = (GameObject)GameObject.Instantiate(SpawnPoint); // new spawn point 
+				ns.transform.position = Pos + new Vector3(Scale.x * t.X, Scale.y * t.Y, Scale.z * t.Z);
+				ns.transform.localScale = SpawnPointScale;
+				ns.transform.parent = ffaSpawnBag.transform;
+				numMade++;
 			}
 		}
-		Debug.Log("weap");
 	}
 
 
@@ -244,24 +217,21 @@ public static class VoxGen {
 		isAir = new bool[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
 		Mat = new Material[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
 
-		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_floor_003", typeof(Material)));
-		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_plate_005", typeof(Material)));
-		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_plate_008", typeof(Material)));
-		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/sci_fi_003", typeof(Material)));
-		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/Shutter_01", typeof(Material)));
-
 		// stuff manually place into the scene 
 		JumpPad = GameObject.Find("JumpPad");
 		SpawnPoint = GameObject.Find("SpawnPoint");
 		WeaponSpawn = GameObject.Find("WeaponSpawn");
 
 		// bags 
-		primObject = GameObject.Find("[PRIMS]");
-		ffaSpawnBag = GameObject.Find("FFA Spawns");
-		blueSpawnBag = GameObject.Find("Blue Team Spawns");
-		redSpawnBag = GameObject.Find("Red Team Spawns");
-		weaponSpawnBag = GameObject.Find("_PickupSpots");
-		monsterSpawnBag = GameObject.Find("Monster Spawns");
+		// ...are containers.
+		// since we can't have "folders" in a scene, we parent spammy quads and 
+		// such to these objects, so they can be collapsed/hidden under one word 
+		primBag = GameObject.Find("[PRIM]");
+		spawnBag = GameObject.Find("[SPAWN]");
+		//blueSpawnBag = GameObject.Find("Blue Team Spawns");
+		//redSpawnBag = GameObject.Find("Red Team Spawns");
+		//weaponSpawnBag = GameObject.Find("_PickupSpots");
+		//monsterSpawnBag = GameObject.Find("Monster Spawns");
 	}
 
 
@@ -269,7 +239,7 @@ public static class VoxGen {
 	// this will build a model of the level in memory 
 	public static void Build() {
 		//emptyMap();    i think bools default to false....???
-		makeOneRoom();
+		makeFirstRoom();
 		makeGroundFloor();
 		addBridgesAndCorridorsHigherUp();
 	}
@@ -278,7 +248,7 @@ public static class VoxGen {
 
 	static int numMade = 0;
 	private static void generateXSlice(int x) {
-		for (int y = 0; y < numVoxAcross.Y/4; y++)
+		for (int y = 0; y < numVoxAcross.Y; y++)
 		for (int z = 0; z < numVoxAcross.Z; z++) {
 			// if air... 
 			if (isAir[x, y, z]) {
@@ -327,7 +297,7 @@ public static class VoxGen {
 
 
 
-	private static void makeOneRoom() {
+	private static void makeFirstRoom() {
 		Vec3i a;
 		a.X = Random.Range(0, numVoxAcross.X - MaxRoomSpan);
 		a.Y = 0;
@@ -344,7 +314,7 @@ public static class VoxGen {
 
 
 	// sets blocks to true (opens them to create rooms) and sets their material 
-	private static void fillRect(Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders) 
+	private static void fillRect(Vec3i s, Vec3i e) { // start, end (must be sorted and not be out of bounds) 
 		var curr = MatPool[Random.Range(0, MatPool.Count)]; // current mat 
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int j = s.Y; j <= e.Y; j++)
@@ -354,7 +324,7 @@ public static class VoxGen {
 		}
 	}
 	// at ground floor 
-	private static void fillRect (Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
+	private static void fillRect(Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
 		int h = (int)((float)Mathf.Min(e.x - s.x, e.z - s.z) * SizeToHeight); // height(of the room)
 		if (h < MinHeight) h = MinHeight;
 		h += Random.Range(0, HeightRand);
@@ -679,7 +649,7 @@ public static class VoxGen {
 			np.transform.localScale = Scale;
 			np.transform.forward = dir;
 			//np.renderer.material = Mat[x, y, z];
-			np.transform.parent = primObject.transform;
+			np.transform.parent = primBag.transform;
 		}
 	}
 
@@ -700,28 +670,28 @@ public static class VoxGen {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X - Scale.x * 0.5f + TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primObject.transform;
+					nt.transform.parent = primBag.transform;
 					numMade++;
 				}else
 				if (!air(v.X+1, v.Y, v.Z)) {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X + Scale.x * 0.5f - TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primObject.transform;
+					nt.transform.parent = primBag.transform;
 					numMade++;
 				}else
 				if (!air(v.X, v.Y, v.Z-1)) {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z - Scale.z * 0.5f + TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primObject.transform;
+					nt.transform.parent = primBag.transform;
 					numMade++;
 				}else
 				if (!air(v.X, v.Y, v.Z+1)) {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z + Scale.z * 0.5f - TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primObject.transform;
+					nt.transform.parent = primBag.transform;
 					numMade++;
 				}
 			} // end of scanning an individual block to see if a torch can be placed 
@@ -750,7 +720,7 @@ public static class VoxGen {
 					var nj = (GameObject)GameObject.Instantiate(JumpPad);
 					nj.transform.position = Pos + new Vector3(Scale.x * v.X - Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
 					nj.transform.localScale = JumpPadScale;
-					nj.transform.parent = primObject.transform;
+					nj.transform.parent = primBag.transform;
 					numMade++;
 				} else {
 					d = getTinyDistance(v.X + 1, v.Y, v.Z);
@@ -759,7 +729,7 @@ public static class VoxGen {
 						var nj = (GameObject)GameObject.Instantiate(JumpPad);
 						nj.transform.position = Pos + new Vector3(Scale.x * v.X + Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
 						nj.transform.localScale = JumpPadScale;
-						nj.transform.parent = primObject.transform;
+						nj.transform.parent = primBag.transform;
 						numMade++;
 					} else {
 						d = getTinyDistance(v.X, v.Y, v.Z - 1);
@@ -768,7 +738,7 @@ public static class VoxGen {
 							var nj = (GameObject)GameObject.Instantiate(JumpPad);
 							nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z - Scale.z);
 							nj.transform.localScale = JumpPadScale;
-							nj.transform.parent = primObject.transform;
+							nj.transform.parent = primBag.transform;
 							numMade++;
 						} else {
 							d = getTinyDistance(v.X, v.Y, v.Z + 1);
@@ -777,7 +747,7 @@ public static class VoxGen {
 								var nj = (GameObject)GameObject.Instantiate(JumpPad);
 								nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z + Scale.z);
 								nj.transform.localScale = JumpPadScale;
-								nj.transform.parent = primObject.transform;
+								nj.transform.parent = primBag.transform;
 								numMade++;
 							}
 						}

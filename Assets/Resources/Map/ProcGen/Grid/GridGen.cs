@@ -19,18 +19,9 @@ public class GridGen {
 	public int MinHeight = 2;
 	public int MaxHeight = 5;
 
-	public Material MetalFloor;
-	public Material MetalGroovedEdges;
-	public Material MetalWithRivets;
-	public Material SciFiMat;
-
 	// private 
 	int numTries = 50000; // ...before Build() gives up 
 	GameObject primBin;
-	List<Material> floors = new List<Material>();
-	List<Material> walls = new List<Material>();
-	List<Material> ceilings = new List<Material>();
-	List<Material> lips = new List<Material>();
 
 	char currH; // current cell height 
 	Cell neiN; // current neighbor 
@@ -50,27 +41,6 @@ public class GridGen {
 		Max.x = 64;
 		Max.z = 64;
 		Cells = new Cell[Max.x, Max.z];
-
-		MetalFloor = (Material)Resources.Load("Mat/Allegorithmic/metal_floor_003", typeof(Material));
-		MetalGroovedEdges = (Material)Resources.Load("Mat/Allegorithmic/metal_plate_005", typeof(Material));
-		MetalWithRivets = (Material)Resources.Load("Mat/Allegorithmic/metal_plate_008", typeof(Material));
-		SciFiMat = (Material)Resources.Load("Mat/Allegorithmic/sci_fi_003", typeof(Material));
-
-		ceilings.Add(MetalFloor);
-		ceilings.Add(MetalGroovedEdges);
-		ceilings.Add(MetalWithRivets);
-		ceilings.Add(SciFiMat);
-
-		walls.Add(SciFiMat);
-		walls.Add(MetalGroovedEdges);
-		walls.Add(MetalWithRivets);
-
-		floors.Add(MetalFloor);
-		floors.Add(MetalGroovedEdges);
-		floors.Add(SciFiMat);
-
-		lips.Add(MetalFloor);
-		lips.Add(MetalWithRivets);
 
 		initCells();
 		Build();
