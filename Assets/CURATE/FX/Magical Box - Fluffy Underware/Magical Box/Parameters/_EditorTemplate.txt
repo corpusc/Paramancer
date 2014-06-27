@@ -1,0 +1,46 @@
+using UnityEngine;
+using UnityEditor;
+using System.Collections;
+
+[MBParameterHandler(typeof(MBParticle%NAME%))]
+public class MBEditorParticle%NAME%Handler : MBEditorParameterHandler
+{
+    /* ENABLE THIS IF YOUR PARAMETER DOESN'T USE BIRTH ANIMATION AT ALL
+	public MBEditorParticle%NAME%Handler()
+    {
+        HideBirthGUI = true; // this will hide the birth animation group in the GUI
+    }
+	*/
+
+    /// <summary>
+    /// Place parameter's initial (+AnimatedBirth) GUI code here
+    /// </summary>
+    public override void OnBirthGUI()
+    {
+		base.OnBirthGUI();
+		MBParticle%NAME% P = Target as MBParticle%NAME%;
+		
+		if (P.AnimatedBirth) {
+		}
+    }
+
+    /// <summary>
+    /// Place parameter's AnimatedLifetime GUI code here (if any)
+    /// </summary>
+    public override void OnLifetimeGUI()
+    {
+		base.OnLifetimeGUI();
+		MBParticle%NAME% P = Target as MBParticle%NAME%;
+    }
+
+	/* YOU WON'T NEED THIS UNLESS YOU NEED TO EXPLICITELY FREE SOME RESOURCES 
+	/// <summary>
+	/// "Destructor"
+	/// </summary>
+    public override void OnDestroy()
+    {
+		base.OnDestroy();
+    }
+	*/
+
+}

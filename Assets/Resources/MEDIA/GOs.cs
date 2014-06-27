@@ -15,6 +15,7 @@ public static class GOs {
 		handleFolder("Av");
 		handleFolder("Game");
 		handleFolder("Item");
+		handleFolder("Theme");
 	}
 
 	public static GameObject Get(string s) { // hash lookups in a Dictionary are fast right? 

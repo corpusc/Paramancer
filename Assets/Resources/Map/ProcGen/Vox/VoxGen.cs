@@ -40,7 +40,6 @@ public static class VoxGen {
 
 	// assets to be placed on the map 
 	//		lights 
-	public static GameObject Torch;
 	public static float TorchScale = 0.3f;
 	public static float TorchOffset = 0.1f; // the distance from the center of the torch to the wall/floor it is attached to 
 	// 		jump pads 
@@ -71,7 +70,7 @@ public static class VoxGen {
 	const int numGunSpawns = 10;
 	const int numTries = 20000; // ... at making a room 
 	static bool building = false;
-	static bool[,,] IsAir;
+	static bool[,,] isAir;
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
 	static List<Material> MatPool = new List<Material>();
 
@@ -124,7 +123,7 @@ public static class VoxGen {
 		numVoxAcross.Z = 64;
 		numVoxAcross.Y = 32;
 
-		IsAir = new bool[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
+		isAir = new bool[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
 		Mat = new Material[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
 
 		MatPool.Add((Material)Resources.Load("MEDIA/Mat/SciFi/metal_floor_003", typeof(Material)));
@@ -161,11 +160,11 @@ public static class VoxGen {
 
 	static int numMade = 0;
 	public static void Build3D () {
-		for (int x = 0; x < numVoxAcross.X/4; x++)
-		for (int y = 0; y < numVoxAcross.Y/4; y++)
-		for (int z = 0; z < numVoxAcross.Z/4; z++) {
+		for (int x = 0; x < numVoxAcross.X/3; x++)
+		for (int y = 0; y < numVoxAcross.Y/3; y++)
+		for (int z = 0; z < numVoxAcross.Z/3; z++) {
 			// if air... 
-			if (IsAir[x, y, z]) {
+			if (isAir[x, y, z]) {
 				// ...need to make surface quads against neighboring void voxels 
 				var hx = Scale.x * 0.5f;
 				var hy = Scale.y * 0.5f;
@@ -193,11 +192,8 @@ public static class VoxGen {
 					new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
 
 				Debug.Log("AIR " + x);
-			}else{ // NOT air 
-				Debug.Log("VOID " + x);
 			}
-		} 
-		Debug.Log("end of vox scan");
+		} Debug.Log("end of vox scan");
 
 
 
@@ -206,57 +202,7 @@ public static class VoxGen {
 
 		// spawn map features 
 		makeLights();
-		Debug.Log("end of makeLights");
-
-		// place jump pads 
-		numMade = 0;
-		for (int i = 0; i < numTries && numMade < numJumpPads; i++) {
-			Vec3i v;
-			v.X = Random.Range(0, numVoxAcross.X);
-			v.Y = Random.Range(JumpHeight, numVoxAcross.Y);
-			v.Z = Random.Range(0, numVoxAcross.Z);
-
-			// if this is the floor of any room above jump height 
-			if (IsAir[v.X, v.Y, v.Z] && !IsAir[v.X, v.Y - 1, v.Z]) {
-				int d = floorScan(v.X - 1, v.Y, v.Z); // distance 
-				if (d >= JumpHeight && columnOpen(v.X - 1, v.Y, v.Z, MinHeight)) {
-					var nj = (GameObject)GameObject.Instantiate(JumpPad);
-					nj.transform.position = Pos + new Vector3(Scale.x * v.X - Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
-					nj.transform.localScale = JumpPadScale;
-					nj.transform.parent = primObject.transform;
-					numMade++;
-				} else {
-					d = floorScan(v.X + 1, v.Y, v.Z);
-
-					if (d >= JumpHeight && columnOpen(v.X + 1, v.Y, v.Z, MinHeight)) {
-						var nj = (GameObject)GameObject.Instantiate(JumpPad);
-						nj.transform.position = Pos + new Vector3(Scale.x * v.X + Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
-						nj.transform.localScale = JumpPadScale;
-						nj.transform.parent = primObject.transform;
-						numMade++;
-					} else {
-						d = floorScan(v.X, v.Y, v.Z - 1);
-						if (d >= JumpHeight && columnOpen(v.X, v.Y, v.Z - 1, MinHeight)) {
-							var nj = (GameObject)GameObject.Instantiate(JumpPad);
-							nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z - Scale.z);
-							nj.transform.localScale = JumpPadScale;
-							nj.transform.parent = primObject.transform;
-							numMade++;
-						} else {
-							d = floorScan(v.X, v.Y, v.Z + 1);
-							if (d >= JumpHeight && columnOpen(v.X, v.Y, v.Z + 1, MinHeight)) {
-								var nj = (GameObject)GameObject.Instantiate(JumpPad);
-								nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z + Scale.z);
-								nj.transform.localScale = JumpPadScale;
-								nj.transform.parent = primObject.transform;
-								numMade++;
-							}
-						}
-					}
-				}
-			} // end of checking the block for possible jump pad placing 
-		}
-		Debug.Log("end of placing jump pads");
+		makeJumpPads();
 
 		// place FFA spawn points 
 		numMade = 0; // count spawn points as forms, no need for a separate var 
@@ -368,17 +314,18 @@ public static class VoxGen {
 
 	// private methods 
 	private static void makeLights() {
+		const int numLights = 25;
 		numMade = 0;
-		int numLights = 25;
+
 		for (int i = 0; i < numTries && numMade < numLights; i++) {
 			Vec3i v;
 			v.X = Random.Range (0, numVoxAcross.X);
 			v.Y = Random.Range (0, numVoxAcross.Y);
 			v.Z = Random.Range (0, numVoxAcross.Z);
 
-			if (IsAir [v.X, v.Y, v.Z]) {
+			if (isAir [v.X, v.Y, v.Z]) {
 				if (!getBlock (v.X - 1, v.Y, v.Z)) {
-					var nt = (GameObject)GameObject.Instantiate(Torch);
+					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X - Scale.x * 0.5f + TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
 					nt.transform.localScale = Scale * TorchScale;
 					nt.transform.parent = primObject.transform;
@@ -386,7 +333,7 @@ public static class VoxGen {
 				}
 				else
 					if (!getBlock (v.X + 1, v.Y, v.Z)) {
-						var nt = (GameObject)GameObject.Instantiate(Torch);
+						var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 						nt.transform.position = Pos + new Vector3 (Scale.x * v.X + Scale.x * 0.5f - TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
 						nt.transform.localScale = Scale * TorchScale;
 						nt.transform.parent = primObject.transform;
@@ -394,7 +341,7 @@ public static class VoxGen {
 					}
 					else
 						if (!getBlock (v.X, v.Y, v.Z - 1)) {
-							var nt = (GameObject)GameObject.Instantiate(Torch);
+							var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 							nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z - Scale.z * 0.5f + TorchOffset);
 							nt.transform.localScale = Scale * TorchScale;
 							nt.transform.parent = primObject.transform;
@@ -402,7 +349,7 @@ public static class VoxGen {
 						}
 						else
 							if (!getBlock (v.X, v.Y, v.Z + 1)) {
-								var nt = (GameObject)GameObject.Instantiate(Torch);
+								var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 								nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z + Scale.z * 0.5f - TorchOffset);
 								nt.transform.localScale = Scale * TorchScale;
 								nt.transform.parent = primObject.transform;
@@ -420,7 +367,7 @@ public static class VoxGen {
 		for (int i = 0; i < numVoxAcross.X; i++)
 		for (int j = 0; j < numVoxAcross.Y; j++)
 		for (int k = 0; k < numVoxAcross.Z; k++) {
-			IsAir[i, j, k] = false;
+			isAir[i, j, k] = false;
 		}
 	}
 
@@ -443,7 +390,7 @@ public static class VoxGen {
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
-			IsAir[i, j, k] = true;
+			isAir[i, j, k] = true;
 			Mat[i, j, k] = curr;
 		}
 	}
@@ -488,7 +435,7 @@ public static class VoxGen {
 		for (int i = s.x; i <= e.x; i++) // the <= is there because it fills the space between the positions inclusively, 
 										// so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int k = s.z; k <= e.z; k++)
-			IsAir[i, h, k] = false;
+			isAir[i, h, k] = false;
 	}
 
 
@@ -499,7 +446,7 @@ public static class VoxGen {
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it counts the blocks inclusively, so counting from 3, 3, 3 to 3, 3, 3 can cause it to return 1 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
-			if (IsAir[i, j, k]) 
+			if (isAir[i, j, k]) 
 				t++;
 		}
 
@@ -539,7 +486,7 @@ public static class VoxGen {
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it checks the blocks inclusively, so checking from 3, 3, 3 to 3, 3, 3 can cause it to return true
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
-			if (IsAir[i, j, k]) 
+			if (isAir[i, j, k]) 
 				return true;
 		}
 
@@ -585,7 +532,7 @@ public static class VoxGen {
 		if (p.Y < 0 || p.Y >= numVoxAcross.Y) return MapIsOpen;
 		if (p.Z < 0 || p.Z >= numVoxAcross.Z) return MapIsOpen;
 
-		return IsAir[p.X, p.Y, p.Z];
+		return isAir[p.X, p.Y, p.Z];
 	}
 	private static bool getBlock(int x, int y, int z) {
 		Vec3i v;
@@ -603,7 +550,7 @@ public static class VoxGen {
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it checks the blocks inclusively, so checking from 3, 3, 3 to 3, 3, 3 can cause it to return true 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++)
-			if (!IsAir[i, j, k]) return true;
+			if (!isAir[i, j, k]) return true;
 
 		return false; // if we got here, it means that there are no walls in the area
 	}
@@ -766,6 +713,65 @@ public static class VoxGen {
 			np.transform.forward = dir;
 			//np.renderer.material = Mat[x, y, z];
 			np.transform.parent = primObject.transform;
+		}
+	}
+
+
+
+	private static makeJumpPads() {
+		numMade = 0;
+
+		for (int i = 0; i < numTries && numMade < numJumpPads; i++) {
+			// get random x/z at JumpHeight 
+			Vec3i v;
+			v.X = Random.Range(0, numVoxAcross.X);
+			v.Y = Random.Range(JumpHeight, numVoxAcross.Y);
+			v.Z = Random.Range(0, numVoxAcross.Z);
+			
+			// if valid air space & there's a surface/floor directly underneath it 
+			if (isAir[v.X, v.Y, v.Z] && 
+			    !isAir[v.X, v.Y-1, v.Z]
+		    ) {
+				int d = floorScan(v.X - 1, v.Y, v.Z); // distance 
+				
+				if (d >= JumpHeight && columnOpen(v.X - 1, v.Y, v.Z, MinHeight)) {
+					var nj = (GameObject)GameObject.Instantiate(JumpPad);
+					nj.transform.position = Pos + new Vector3(Scale.x * v.X - Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
+					nj.transform.localScale = JumpPadScale;
+					nj.transform.parent = primObject.transform;
+					numMade++;
+				} else {
+					d = floorScan(v.X + 1, v.Y, v.Z);
+					
+					if (d >= JumpHeight && columnOpen(v.X + 1, v.Y, v.Z, MinHeight)) {
+						var nj = (GameObject)GameObject.Instantiate(JumpPad);
+						nj.transform.position = Pos + new Vector3(Scale.x * v.X + Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
+						nj.transform.localScale = JumpPadScale;
+						nj.transform.parent = primObject.transform;
+						numMade++;
+					} else {
+						d = floorScan(v.X, v.Y, v.Z - 1);
+
+						if (d >= JumpHeight && columnOpen(v.X, v.Y, v.Z - 1, MinHeight)) {
+							var nj = (GameObject)GameObject.Instantiate(JumpPad);
+							nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z - Scale.z);
+							nj.transform.localScale = JumpPadScale;
+							nj.transform.parent = primObject.transform;
+							numMade++;
+						} else {
+							d = floorScan(v.X, v.Y, v.Z + 1);
+
+							if (d >= JumpHeight && columnOpen(v.X, v.Y, v.Z + 1, MinHeight)) {
+								var nj = (GameObject)GameObject.Instantiate(JumpPad);
+								nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z + Scale.z);
+								nj.transform.localScale = JumpPadScale;
+								nj.transform.parent = primObject.transform;
+								numMade++;
+							}
+						}
+					}
+				}
+			} // end of checking the block for possible jump pad placing 
 		}
 	}
 }

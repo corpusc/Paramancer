@@ -1,0 +1,60 @@
+using UnityEngine;
+using System.Collections;
+
+/// <summary>
+/// %NAME% parameter
+/// </summary>
+[MBParameterInfo(Menu="Custom/%DISPLAYNAME%",
+				 CanAnimateBirth= MBParameterAnimationMode.%ANIMBIRTH%,
+				 CanAnimateLife = MBParameterAnimationMode.%ANIMLIFE%)]
+public class MBParticle%NAME% : MBParameter {
+
+	/// <summary>
+    /// Called on each MBEmitter.Play()
+    /// </summary>
+    /// <remarks>Use this to initialize your parameter</remarks>
+    public override void OnPlay()
+    {
+    }
+
+    /// <summary>
+    /// Sets a particle's initial parameters
+    /// </summary>
+    /// <remarks>
+    /// This is called once on particle's birth. If AnimatedBirth is true you should animate values here (use PT.DeltaTime and PT.Emitter.AgePercent)
+    /// </remarks>
+    public override void OnBirth(MBParticle PT)
+	{
+		if (AnimatedBirth) {
+		}
+	}
+
+    /// <summary>
+    /// Change particle values over its lifetime
+    /// </summary>
+    /// <remarks>This is called each frame a particle exists. You should animate values using PT.AgePercent and PT.DeltaTime</remarks>
+    /// <returns>false if Particle should die. In this case set a DeathReason!</returns>
+    public override bool OnLifetime(MBParticle PT) 
+	{
+		return true; 
+	}
+    
+    /// <summary>
+    /// Validate/Check/Limit fields and properties here
+    /// </summary>
+    /// <remarks>This is called by the Editor window after values were changed.</remarks>
+    public override void Validate() 
+	{
+	}
+
+    /// <summary>
+    /// Restore default settings
+    /// </summary>
+    /// <remarks>Called by the user in the parameter editor</remarks>
+    public override void Reset()
+    {
+		base.Reset();
+		//Order=500;  /* You might want to change this! See "Rendering & Processing Order" in the manual! */
+    }
+
+}

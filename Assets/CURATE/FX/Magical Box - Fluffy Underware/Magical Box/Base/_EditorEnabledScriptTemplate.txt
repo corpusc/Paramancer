@@ -1,0 +1,34 @@
+using UnityEngine;
+
+[ExecuteInEditMode]
+public class MB%NAME% : MBEditorEnabledScript
+{
+
+    /// <summary>
+    /// Called once when the parent emitter/particlesystem starts playing
+    /// </summary>
+    protected override void OnStartsPlaying()
+    {
+    }
+
+    /// <summary>
+    /// Called once when the parent emitter/particlesystem stops playing
+    /// </summary>
+    protected override void OnStopsPlaying()
+    {
+    }
+    /// <summary>
+    /// Called every frame when parent emitter/particlesystem is playing
+    /// </summary>
+    protected override void OnPlaying()
+    {
+    }
+
+    /// <summary>
+    /// Behaves like Update(), but works both in editor and at runtime
+    /// </summary>
+    protected override void OnUpdate()
+    {
+    }
+
+}
