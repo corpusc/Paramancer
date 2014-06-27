@@ -527,7 +527,7 @@ public static class VoxGen {
 
 
 	// used to safely get a block (ie when you're not sure whether it is out of the map) 
-	private static bool getBlock(Vec3i p /* position */) {
+	private static bool getBlock(Vec3i p) {
 		if (p.X < 0 || p.X >= numVoxAcross.X) return MapIsOpen;
 		if (p.Y < 0 || p.Y >= numVoxAcross.Y) return MapIsOpen;
 		if (p.Z < 0 || p.Z >= numVoxAcross.Z) return MapIsOpen;
@@ -583,22 +583,27 @@ public static class VoxGen {
 
 
 
-	private static int floorScan(Vec3i sv) { // starting voxel 
+	// "Tiny" is the tidiest way to refer to some compressed/quantized number
+	// like an int/index (which is much smaller, in data size, than a float)
+	// .... which would be the typical type for representing distances. 
+
+	// *** RETURNS NEGATIVE *** if no floor was reached before the map ended 
+	private static int getTinyDistance(Vec3i sv) { // starting voxel 
 		// y offset (go down from starting vox) 
 		for (int yOff = 0; yOff <= sv.Y + 1; yOff++) {
-			// <= p.y + 1 because it also scans the floor that is not coded as bloks, instead, is dependent on the MapIsOpen variable
+			// + 1 because it also scans the floor that is not coded as bloks, instead, is dependent on the MapIsOpen variable
 			if (!getBlock(sv.X, sv.Y-yOff, sv.Z)) 
 				return yOff;
 		}
 
-		return -1; // if no floor was reached before the map ended 
+		return -1;
 	}
-	private static int floorScan(int x, int y, int z) {
+	private static int getTinyDistance(int x, int y, int z) {
 		Vec3i v;
 		v.X = x;
 		v.Y = y;
 		v.Z = z;
-		return floorScan(v);
+		return getTinyDistance(v);
 	}
 
 
@@ -732,16 +737,16 @@ public static class VoxGen {
 			if (isAir[v.X, v.Y, v.Z] && 
 			    !isAir[v.X, v.Y-1, v.Z]
 		    ) {
-				int d = floorScan(v.X - 1, v.Y, v.Z); // distance 
+				int d = getTinyDistance(v.X - 1, v.Y, v.Z); // distance 
 				
-				if (d >= JumpHeight && columnOpen(v.X - 1, v.Y, v.Z, MinHeight)) {
+				if (d >= JumpHeight && columnOpen(v.X-1, v.Y, v.Z, MinHeight)) {
 					var nj = (GameObject)GameObject.Instantiate(JumpPad);
 					nj.transform.position = Pos + new Vector3(Scale.x * v.X - Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
 					nj.transform.localScale = JumpPadScale;
 					nj.transform.parent = primObject.transform;
 					numMade++;
 				} else {
-					d = floorScan(v.X + 1, v.Y, v.Z);
+					d = getTinyDistance(v.X + 1, v.Y, v.Z);
 					
 					if (d >= JumpHeight && columnOpen(v.X + 1, v.Y, v.Z, MinHeight)) {
 						var nj = (GameObject)GameObject.Instantiate(JumpPad);
@@ -750,7 +755,7 @@ public static class VoxGen {
 						nj.transform.parent = primObject.transform;
 						numMade++;
 					} else {
-						d = floorScan(v.X, v.Y, v.Z - 1);
+						d = getTinyDistance(v.X, v.Y, v.Z - 1);
 
 						if (d >= JumpHeight && columnOpen(v.X, v.Y, v.Z - 1, MinHeight)) {
 							var nj = (GameObject)GameObject.Instantiate(JumpPad);
@@ -759,7 +764,7 @@ public static class VoxGen {
 							nj.transform.parent = primObject.transform;
 							numMade++;
 						} else {
-							d = floorScan(v.X, v.Y, v.Z + 1);
+							d = getTinyDistance(v.X, v.Y, v.Z + 1);
 
 							if (d >= JumpHeight && columnOpen(v.X, v.Y, v.Z + 1, MinHeight)) {
 								var nj = (GameObject)GameObject.Instantiate(JumpPad);
