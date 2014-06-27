@@ -40,11 +40,9 @@ public static class VoxGen {
 	// spawns 
 	//		entities 
 	public static Vector3 SpawnPointScale = Vector3.one;
-	public static GameObject SpawnPoint;
 	public static int NumUserSpawns = 4; // (FFA/red/blue) 
 	public static int NumMobSpawns = 6;
 	// 		weapons 
-	public static GameObject WeaponSpawn;
 	public static Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
 	public static float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on 
 
@@ -77,7 +75,7 @@ public static class VoxGen {
 
 		int xSpan = Screen.width / numVoxAcross.X;
 		GUI.Box(new Rect(0, Screen.height/2, Screen.width, Screen.height), 
-		        "Generating a map for you......... wait for it.....WAIT FOR IT!");
+		        "Generating a map for you....... wait for it...........WAIT FOR IT");
 		GUI.Label(new Rect(currX * xSpan, 0, xSpan, Screen.height), Pics.Health);
 	}
 
@@ -89,22 +87,22 @@ public static class VoxGen {
 
 		generateXSlice(currX);
 		currX++;
+
 		// if we still need to generate more slices 
 		if (currX < numVoxAcross.X) {
-			return; // DON'T DO ANYTHING ELSE IN Update() UNTIL DONE GEN'ING MAP!!!!!
+			return;
 		}else{ // do post-gen processes 
-			// reset building vars 
 			currX = 0;
 			building = false;
 
 			// spawn map features 
 			makeLights();
 			makeJumpPads();
-			makeSpawns(NumUserSpawns, SpawnPoint, getChildTransform("FFA"));
-			makeSpawns(NumUserSpawns, SpawnPoint, getChildTransform("TeamBlue"));
-			makeSpawns(NumUserSpawns, SpawnPoint, getChildTransform("TeamRed"));
-			makeSpawns(NumMobSpawns, SpawnPoint, getChildTransform("Mob"));
-			makeSpawns(numGunSpawns, WeaponSpawn, getChildTransform("Gun"), true);
+			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("FFA"));
+			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamBlue"));
+			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamRed"));
+			makeSpawns(NumMobSpawns, GOs.Get("UserSpawn"), getChildTransform("Mob"));
+			makeSpawns(numGunSpawns, GOs.Get("GunSpawn"), getChildTransform("Gun"), true);
 		}
 	}
 
@@ -167,10 +165,6 @@ public static class VoxGen {
 		numVoxAcross.Y = 32;
 
 		isAir = new bool[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
-
-		// stuff manually place into the scene 
-		SpawnPoint = GameObject.Find("SpawnPoint");
-		WeaponSpawn = GameObject.Find("WeaponSpawn");
 
 		// bags 
 		// ...are containers.
@@ -258,25 +252,25 @@ public static class VoxGen {
 		b.Y = Random.Range(MinHeight, MinHeight + HeightRand);
 		b.Z = Random.Range(a.Z + MinRoomSpan, a.Z + MaxRoomSpan);
 
-		fillRect(a, b);
+		carveOutRoom(a, b);
 	}
 
 
 
-	// sets blocks to true (opens them to create rooms) and sets their material 
-	private static void fillRect(Vec3i s, Vec3i e) { // start, end (must be sorted and not be out of bounds) 
+	private static void carveOutRoom(Vec3i s, Vec3i e) { // start, end (must be sorted and not be out of bounds) 
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
 			isAir[i, j, k] = true;
 
+			// set material 
 			var room = new VoxelRect();
 			room.Surfaces = cat.GetRandomSurfaces();
 			rooms.Add(room);
 		}
 	}
 	// at ground floor 
-	private static void fillRect(Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
+	private static void carveOutRoom(Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
 		int h = (int)((float)Mathf.Min(e.x - s.x, e.z - s.z) * SizeToHeight); // height(of the room)
 		if (h < MinHeight) h = MinHeight;
 		h += Random.Range(0, HeightRand);
@@ -292,10 +286,10 @@ public static class VoxGen {
 		b.X = e.x;
 		b.Y = a.Y + h;
 		b.Z = e.z;
-		fillRect(a, b);
+		carveOutRoom(a, b);
 	}
 	// this is only called for bridges & overground corridors 
-	private static void fillRect(Vec2i s, Vec2i e, int h) { // start, end, height (of floor).  must be sorted and not be out of borders 
+	private static void carveOutRoom(Vec2i s, Vec2i e, int h) { // start, end, height (of floor).  must be sorted and not be out of borders 
 		Vec3i a;
 		a.X = s.x;
 		a.Y = h + 1; // h + 1 because floors generate at h(for bridges)
@@ -306,7 +300,7 @@ public static class VoxGen {
 		b.Y = h + Random.Range(MinHeight, MinHeight + HeightRand) + 1;
 		b.Z = e.z;
 
-		fillRect(a, b);
+		carveOutRoom(a, b);
 	}
 
 
@@ -543,7 +537,7 @@ public static class VoxGen {
 					if ((end.x <= start.x + MaxRoomSpan) && (end.z <= start.z + MaxRoomSpan))
 						if (getArea(start, end) <= MaxArea && getArea(start, end) >= MinArea)
 						if (countBlocks(start, end) < getArea(start, end) * MaxOverride * (MaxFloorHeight + 1f)) {
-							fillRect(start, end);
+							carveOutRoom(start, end);
 							numMade++;
 						}
 			}
@@ -585,7 +579,7 @@ public static class VoxGen {
 								// no MaxOverride check here because we want bridges to generate 
 								if (getArea(start, end) <= MaxCorridorArea) {
 									putWall(start, end, h);
-									fillRect(start, end, h);
+									carveOutRoom(start, end, h);
 									numMade++;
 								}
 							}
