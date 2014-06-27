@@ -34,7 +34,6 @@ public static class VoxGen {
 	public static float TorchOffset = 0.1f; // the distance from the center of the torch to the wall/floor it is attached to 
 	// 		jump pads 
 	public static int numJumpPads = 10;
-	public static GameObject JumpPad;
 	public static Vector3 JumpPadScale = new Vector3(1f, 0.3f, 1f);
 	public static int JumpHeight = 2; // the height that cannot be jumped over normally (needs a jump pad & must be lesser than MapSize.y) 
 	public static float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on 
@@ -64,6 +63,7 @@ public static class VoxGen {
 	static bool[,,] isAir;
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
 	static ThemedCategories cat = new ThemedCategories();
+	static List<VoxelRect> rooms = new List<VoxelRect>();
 	// bags act as containers. (scenes don't have folders) 
 	// a simple transform gameobject which children/content will mark as their parent as they are born 
 	static GameObject primBag; 
@@ -110,10 +110,10 @@ public static class VoxGen {
 
 
 
-	private static void makeSpawns(int num, GameObject o, bool isGun = false) {
+	private static void makeSpawns(int num, GameObject o, Transform tr, bool isGun = false) {
 		numMade = 0;
+		float yOff = 0f;
 		var scale = SpawnPointScale;
-		float yOff;
 
 		if (isGun) {
 			yOff = WeaponSpawnOffset - Scale.y * 0.5f;
@@ -129,7 +129,7 @@ public static class VoxGen {
 			if (columnOpen(t, MinHeight)) // if the place is accessible (ceiling height)
 			if (!air(t.X, t.Y-1, t.Z)) {
 				var ns = (GameObject)GameObject.Instantiate(o);
-				ns.transform.parent = parent;
+				ns.transform.parent = tr;
 				ns.transform.localScale = scale;
 				ns.transform.position = Pos + new Vector3(
 					Scale.x*t.X, 
@@ -167,10 +167,8 @@ public static class VoxGen {
 		numVoxAcross.Y = 32;
 
 		isAir = new bool[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
-		Mat = new Material[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
 
 		// stuff manually place into the scene 
-		JumpPad = GameObject.Find("JumpPad");
 		SpawnPoint = GameObject.Find("SpawnPoint");
 		WeaponSpawn = GameObject.Find("WeaponSpawn");
 
@@ -267,12 +265,14 @@ public static class VoxGen {
 
 	// sets blocks to true (opens them to create rooms) and sets their material 
 	private static void fillRect(Vec3i s, Vec3i e) { // start, end (must be sorted and not be out of bounds) 
-		var curr = MatPool[Random.Range(0, MatPool.Count)]; // current mat 
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
 			isAir[i, j, k] = true;
-			Mat[i, j, k] = curr;
+
+			var room = new VoxelRect();
+			room.Surfaces = cat.GetRandomSurfaces();
+			rooms.Add(room);
 		}
 	}
 	// at ground floor 
@@ -578,16 +578,20 @@ public static class VoxGen {
 				end.x = Mathf.Max(t.x, u.x);
 				end.z = Mathf.Max(t.z, u.z);
 
-				if (eachFloorOpen(start, end, h + 1, h + MinHeight)) // MinHeight is considered to be the player height, to check if the corridor can be accessed 
-					if ((end.x >= start.x + MinRoomSpan) && (end.z >= start.z + MinRoomSpan))
-						if ((end.x <= start.x + MaxRoomSpan) && (end.z <= start.z + MaxRoomSpan))
-							if (containsWalls(start, end, h)) // so that bridges don't generate in mid-air 
+				if (eachFloorOpen(start, end, h + 1, h + MinHeight)) { // MinHeight is considered to be the player height, to check if the corridor can be accessed 
+					if ((end.x >= start.x + MinRoomSpan) && (end.z >= start.z + MinRoomSpan)) {
+						if ((end.x <= start.x + MaxRoomSpan) && (end.z <= start.z + MaxRoomSpan)) {
+							if (containsWalls(start, end, h)) { // so that bridges don't generate in mid-air 
 								// no MaxOverride check here because we want bridges to generate 
 								if (getArea(start, end) <= MaxCorridorArea) {
 									putWall(start, end, h);
 									fillRect(start, end, h);
 									numMade++;
 								}
+							}
+						}
+					}
+				}
 			}
 		} // end of corridor/bridge creation
 	}
@@ -669,7 +673,7 @@ public static class VoxGen {
 				int d = getTinyDistance(v.X - 1, v.Y, v.Z); // distance 
 				
 				if (d >= JumpHeight && columnOpen(v.X-1, v.Y, v.Z, MinHeight)) {
-					var nj = (GameObject)GameObject.Instantiate(JumpPad);
+					var nj = (GameObject)GameObject.Instantiate(GOs.Get("JumpPad"));
 					nj.transform.position = Pos + new Vector3(Scale.x * v.X - Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
 					nj.transform.localScale = JumpPadScale;
 					nj.transform.parent = primBag.transform;
@@ -678,7 +682,7 @@ public static class VoxGen {
 					d = getTinyDistance(v.X + 1, v.Y, v.Z);
 					
 					if (d >= JumpHeight && columnOpen(v.X + 1, v.Y, v.Z, MinHeight)) {
-						var nj = (GameObject)GameObject.Instantiate(JumpPad);
+						var nj = (GameObject)GameObject.Instantiate(GOs.Get("JumpPad"));
 						nj.transform.position = Pos + new Vector3(Scale.x * v.X + Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
 						nj.transform.localScale = JumpPadScale;
 						nj.transform.parent = primBag.transform;
@@ -687,7 +691,7 @@ public static class VoxGen {
 						d = getTinyDistance(v.X, v.Y, v.Z - 1);
 
 						if (d >= JumpHeight && columnOpen(v.X, v.Y, v.Z - 1, MinHeight)) {
-							var nj = (GameObject)GameObject.Instantiate(JumpPad);
+							var nj = (GameObject)GameObject.Instantiate(GOs.Get("JumpPad"));
 							nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z - Scale.z);
 							nj.transform.localScale = JumpPadScale;
 							nj.transform.parent = primBag.transform;
@@ -696,7 +700,7 @@ public static class VoxGen {
 							d = getTinyDistance(v.X, v.Y, v.Z + 1);
 
 							if (d >= JumpHeight && columnOpen(v.X, v.Y, v.Z + 1, MinHeight)) {
-								var nj = (GameObject)GameObject.Instantiate(JumpPad);
+								var nj = (GameObject)GameObject.Instantiate(GOs.Get("JumpPad"));
 								nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z + Scale.z);
 								nj.transform.localScale = JumpPadScale;
 								nj.transform.parent = primBag.transform;

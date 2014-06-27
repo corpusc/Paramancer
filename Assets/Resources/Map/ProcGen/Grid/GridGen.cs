@@ -116,15 +116,8 @@ public class GridGen {
 		end.x = Mathf.Clamp(end.x, 0, Max.x - 1);
 		end.z = Mathf.Clamp(end.z, 0, Max.z - 1); // because sometimes MaxFormWidth > MapSize
 
-		// random heights and materials 
+		// random height 
 		char height = (char)Random.Range(MinHeight, MaxHeight);
-		var floo = floors[Random.Range(0, floors.Count)];
-		var ceil = ceilings[Random.Range(0, ceilings.Count)];
-		var lip = lips[Random.Range(0, lips.Count)];
-		var wall = walls[Random.Range(0, walls.Count)];
-
-		while (wall == lip)
-			wall = walls[Random.Range(0, walls.Count)];
 
 		// set all cells in rect 
 		for (int i = start.x; i <= end.x; i++)
@@ -137,10 +130,7 @@ public class GridGen {
 				Cells[i, j].CeilingHeight = height;
 
 			Cells[i, j].Floor = true;
-			Cells[i, j].MatWalls = wall;
-			Cells[i, j].MatFloor = floo;
-			Cells[i, j].MatCeiling = ceil;
-			Cells[i, j].MatLip = lip;
+			Cells[i, j].Surfaces = cat.GetRandomSurfaces();
 		}
 	}
 
@@ -183,7 +173,7 @@ public class GridGen {
 			np.transform.localScale = new Vector3(scale.x, scale.z * pwH, scale.z);
 			np.transform.position = Pos + v;
 			np.transform.forward = ori;
-			np.renderer.material = Cells[i, j].MatWalls;
+			np.renderer.material = Cells[i, j].Surfaces.Walls;
 
 			if (uvScale == Vector2.zero) { // no offset 
 				uvScale = new Vector2(1, pwH); // (normal full cell thickness) 
@@ -192,7 +182,7 @@ public class GridGen {
 				var uo = new Vector2(thickMAX*3, 0f); // UV offset   (FIXME? hardwired to a particular quadrant where rivets spanned the entirety) 
 				if (xIsThinner)
 					uo.x += thickMAX/4; // FIXME?  hardwired
-				np.renderer.material = Cells[i, j].MatLip;
+				np.renderer.material = Cells[i, j].Surfaces.Lip;
 				np.renderer.material.mainTextureOffset = uo;
 				np.renderer.material.SetTextureOffset("_BumpMap", uo);
 			}
@@ -472,7 +462,7 @@ public class GridGen {
 					0f, 
 					(float)j * Scale.z);
 				np.transform.localScale = Scale;
-				np.renderer.material = Cells[i, j].MatFloor;
+				np.renderer.material = Cells[i, j].Surfaces.Floor;
 				np.transform.parent = primBin.transform;
 			}
 			
@@ -485,7 +475,7 @@ public class GridGen {
 					Scale.z * (float)currH, 
 					Scale.z * (float)j);
 				np.transform.localScale = Scale;
-				np.renderer.material = Cells[i, j].MatCeiling;
+				np.renderer.material = Cells[i, j].Surfaces.Ceiling;
 			}
 		} // done processing cells 
 	} // end of Build3D()

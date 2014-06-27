@@ -14,19 +14,21 @@ public struct Vec3i {
 	public int Z;
 };
 
-public class VoxelRect {
-	public Vec3i Pos;
-	public Vec3i Size;
+public class Surfaces {
+	public Material Lip;
 	public Material Walls;
 	public Material Floor;
 	public Material Ceiling;
 };
 
+public class VoxelRect {
+	public Vec3i Pos;
+	public Vec3i Size;
+	public Surfaces Surfaces;
+};
+
 public class Cell {
-	public Material MatWalls;
-	public Material MatFloor;
-	public Material MatCeiling;
-	public Material MatLip;
+	public Surfaces Surfaces;
 	public bool IsAir = false; 
 	public bool Floor = false; // for holes connecting levels 
 	public char CeilingHeight = (char)0;

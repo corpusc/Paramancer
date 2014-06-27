@@ -36,4 +36,18 @@ public class ThemedCategories {
 		Lips.Add(metalFloor);
 		Lips.Add(metalWithRivets);
 	}
+
+	public Surfaces GetRandomSurfaces()	{
+		var sur = new Surfaces();
+
+		sur.Floor = Floors[Random.Range(0, Floors.Count)];
+		sur.Ceiling = Ceilings[Random.Range(0, Ceilings.Count)];
+		sur.Lip = Lips[Random.Range(0, Lips.Count)];
+		sur.Walls = Walls[Random.Range(0, Walls.Count)];
+		
+		while (sur.Walls == sur.Lip)
+			sur.Walls = Walls[Random.Range(0, Walls.Count)];
+
+		return sur;
+	}
 }
