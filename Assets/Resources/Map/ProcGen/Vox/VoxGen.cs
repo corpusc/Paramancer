@@ -140,26 +140,31 @@ public static class VoxGen {
 		// if we still need to generate more slices 
 		if (currRoom < rooms.Count /*currX < numVoxAcross.X*/) {
 			return;
-		}else{ // do post-gen processes 
-			Debug.Log("finished all rooms");
-			building = false;
+		}else
+			postGenerationProcesses();
+	}
 
-			// spawn map features 
-			Debug.Log("makeLights");
-			makeLights();
-			Debug.Log("makeJumpPads");
-			makeJumpPads();
-			Debug.Log("ffa");
-			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("FFA"));
-			Debug.Log("tb");
-			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamBlue"));
-			Debug.Log("tr");
-			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamRed"));
-			Debug.Log("m");
-			makeSpawns(NumMobSpawns, GOs.Get("UserSpawn"), getChildTransform("Mob"));
-			Debug.Log("gun");
-			makeSpawns(numGunSpawns, GOs.Get("GunSpawn"), getChildTransform("Gun"), true);
-		}
+
+
+	private static void postGenerationProcesses() {
+		Debug.Log("finished all rooms     num rooms: " + rooms.Count);
+		building = false;
+		
+		// spawn map features 
+		Debug.Log("makeLights");
+		makeLights();
+		Debug.Log("makeJumpPads");
+		makeJumpPads();
+		Debug.Log("ffa");
+		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("FFA"));
+		Debug.Log("tb");
+		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamBlue"));
+		Debug.Log("tr");
+		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamRed"));
+		Debug.Log("m");
+		makeSpawns(NumMobSpawns, GOs.Get("UserSpawn"), getChildTransform("Mob"));
+		Debug.Log("gun");
+		makeSpawns(numGunSpawns, GOs.Get("GunSpawn"), getChildTransform("Gun"), true);
 	}
 
 
@@ -219,39 +224,33 @@ public static class VoxGen {
 
 		setStart(Vector3.left);
 		for (; y < yMax; y++)
-		for (; z < zMax; z++) {
+		for (; z < zMax; z++)
 			maybeMakeQuad(x-1, y, z, new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
-		}
 
 		setStart(Vector3.right);
 		for (; y < yMax; y++)
-		for (; z < zMax; z++) {
+		for (; z < zMax; z++)
 			maybeMakeQuad(x+1, y, z, new Vector3(Scale.x*x+hx, Scale.y*y, Scale.z*z));
-		}
 
 		setStart(Vector3.forward);
 		for (; x < xMax; x++)
-		for (; y < yMax; y++) {
+		for (; y < yMax; y++)
 			maybeMakeQuad(x, y, z+1, new Vector3(Scale.x*x, Scale.y*y, Scale.z*z+hz));
-		}
 
 		setStart(Vector3.back);
 		for (; x < xMax; x++)
-		for (; y < yMax; y++) {
+		for (; y < yMax; y++)
 			maybeMakeQuad(x, y, z-1, new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
-		}
 
 		setStart(Vector3.up);
 		for (; x < xMax; x++)
-		for (; z < zMax; z++) {
+		for (; z < zMax; z++)
 			maybeMakeQuad(x, y+1, z, new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
-		}
 
 		setStart(Vector3.down);
 		for (; x < xMax; x++)
-		for (; z < zMax; z++) {
+		for (; z < zMax; z++)
 			maybeMakeQuad(x, y-1, z, new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
-		}
 	}
 
 
@@ -352,9 +351,8 @@ public static class VoxGen {
 		// so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int i = s.X; i <= e.X; i++) 
 		for (int j = s.Y; j <= e.Y; j++)
-		for (int k = s.Z; k <= e.Z; k++) {
+		for (int k = s.Z; k <= e.Z; k++)
 			isAir[i, j, k] = true;
-		}
 
 		// cache room 
 		var room = new VoxelRect();
@@ -605,8 +603,6 @@ public static class VoxGen {
 						}
 			}
 		}
-
-		Debug.Log("makeGroundFloor     num rooms: " + rooms.Count);
 	}
 
 
@@ -662,9 +658,9 @@ public static class VoxGen {
 			Material mat;
 
 			if /***/ (currDir == Vector3.up) {
-				mat = rooms[currRoom].Surfaces.Floor;
-			}else if (currDir == Vector3.down) {
 				mat = rooms[currRoom].Surfaces.Ceiling;
+			}else if (currDir == Vector3.down) {
+				mat = rooms[currRoom].Surfaces.Floor;
 			}else{
 				mat = rooms[currRoom].Surfaces.Walls;
 			}
