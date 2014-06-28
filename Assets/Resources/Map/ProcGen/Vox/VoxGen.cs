@@ -212,7 +212,10 @@ public static class VoxGen {
 		z = r.Pos.Z;
 		xMax = r.Pos.X + r.Size.X;
 		yMax = r.Pos.Y + r.Size.Y;
-		zMax = r.Pos.Z + r.Size.Z;			
+		zMax = r.Pos.Z + r.Size.Z;
+
+		Debug.Log("room: " + currRoom + " - " + r.Pos.X + " " + r.Pos.Y + " " + r.Pos.Z + " - " + r.Size.X + " " + r.Size.Y + " " + r.Size.Z);
+
 	}
 
 
@@ -223,9 +226,11 @@ public static class VoxGen {
 		var hz = Scale.z * 0.5f;
 
 		setStart(Vector3.left);
-		for (; y < yMax; y++)
-		for (; z < zMax; z++)
+		for (; y < yMax; y++) {
+		for (; z < zMax; z++) {
 			maybeMakeQuad(x-1, y, z, new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
+		}
+		}
 
 		setStart(Vector3.right);
 		for (; y < yMax; y++)
@@ -248,9 +253,11 @@ public static class VoxGen {
 			maybeMakeQuad(x, y+1, z, new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
 
 		setStart(Vector3.down);
-		for (; x < xMax; x++)
-		for (; z < zMax; z++)
+		for (; x < xMax; x++) {
+		for (; z < zMax; z++) {
 			maybeMakeQuad(x, y-1, z, new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
+		}
+		}
 	}
 
 
@@ -310,12 +317,20 @@ public static class VoxGen {
 		a.X = Random.Range(0, numVoxAcross.X - MaxRoomSpan);
 		a.Y = 0;
 		a.Z = Random.Range(0, numVoxAcross.Z - MaxRoomSpan);
-
+		
 		Vec3i b;
 		b.X = Random.Range(a.X + MinRoomSpan, a.X + MaxRoomSpan);
 		b.Y = Random.Range(MinHeight, MinHeight + HeightRand);
 		b.Z = Random.Range(a.Z + MinRoomSpan, a.Z + MaxRoomSpan);
-
+		
+		a.X = 0;
+		a.Y = 0;
+		a.Z = 0;
+		
+		b.X = 2; // not size/span....absolute end positions 
+		b.Y = 3;
+		b.Z = 4;
+		
 		carveOutRoom(a, b);
 	}
 
@@ -362,6 +377,7 @@ public static class VoxGen {
 		room.Size.Y = e.Y - s.Y + 1;
 		room.Size.Z = e.Z - s.Z + 1;
 		rooms.Add(room);
+		Debug.Log(room.Pos.X + " " + room.Pos.Y + " " + room.Pos.Z + " - " + room.Size.X + " " + room.Size.Y + " " + room.Size.Z);
 	}
 
 
