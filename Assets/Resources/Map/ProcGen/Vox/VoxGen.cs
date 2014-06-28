@@ -40,8 +40,8 @@ public static class VoxGen {
 	// spawns 
 	//		entities 
 	public static Vector3 SpawnPointScale = Vector3.one;
-	public static int NumUserSpawns = 4; // (FFA/red/blue) 
-	public static int NumMobSpawns = 6;
+	public static int NumUserSpawns = 6; // (FFA/red/blue) 
+	public static int NumMobSpawns = 8;
 	// 		weapons 
 	public static Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
 	public static float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on 
@@ -74,6 +74,23 @@ public static class VoxGen {
 
 
 
+	static VoxGen() {
+		numVoxAcross.X = 64;
+		numVoxAcross.Z = 64;
+		numVoxAcross.Y = 32;
+		
+		isAir = new bool[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
+		
+		// bags 
+		// ...are containers.
+		// since we can't have "folders" in a scene, we parent spammy quads and 
+		// such to these objects, so they can be collapsed/hidden under one word 
+		primBag = GameObject.Find("[PRIM]");
+		spawnBag = GameObject.Find("[SPAWN]");
+	}
+	
+	
+	
 	public static void OnGUI() {
 		if (!building)
 			return;
@@ -86,12 +103,37 @@ public static class VoxGen {
 
 
 
+	public static void GenerateMap(int seed, Theme theme) {
+		Random.seed = 
+			Seed = 
+			seed;
+		Theme = theme;
+		Scale = Vector3.one * 2f;
+		
+		// cleanup previous possible map 
+		rooms.Clear();
+		clearAllAirSpaces();
+
+		Debug.Log("makeFirstRoom     num rooms: " + rooms.Count);
+		makeFirstRoom();
+		Debug.Log("makeGroundFloor     num rooms: " + rooms.Count);
+		makeGroundFloor();
+		addBridgesAndCorridorsHigherUp();
+		Debug.Log("Generating map with seed: " + seed);
+		//currX = 0;
+		currRoom = 0;
+		building = true;
+	}
+	
+	
+	
 	public static void Update() {
 		if (!building)
 			return;
 
 		//generateXSlice(currX);
 		//currX++;
+		Debug.Log("generateOneRoom     num rooms: " + rooms.Count);
 		generateOneRoom();
 		currRoom++;
 
@@ -99,16 +141,23 @@ public static class VoxGen {
 		if (currRoom < rooms.Count /*currX < numVoxAcross.X*/) {
 			return;
 		}else{ // do post-gen processes 
-			//currX = 0;
+			Debug.Log("finished all rooms");
 			building = false;
 
 			// spawn map features 
+			Debug.Log("makeLights");
 			makeLights();
+			Debug.Log("makeJumpPads");
 			makeJumpPads();
+			Debug.Log("ffa");
 			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("FFA"));
+			Debug.Log("tb");
 			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamBlue"));
+			Debug.Log("tr");
 			makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamRed"));
+			Debug.Log("m");
 			makeSpawns(NumMobSpawns, GOs.Get("UserSpawn"), getChildTransform("Mob"));
+			Debug.Log("gun");
 			makeSpawns(numGunSpawns, GOs.Get("GunSpawn"), getChildTransform("Gun"), true);
 		}
 	}
@@ -146,53 +195,6 @@ public static class VoxGen {
 				numMade++;
 			}
 		}
-	}
-
-
-
-	public static void GenerateMap(int seed, Theme theme) {
-		Seed = seed;
-		Theme = theme;
-		Scale = Vector3.one * 2f;
-
-		Init();
-		Build();
-		Debug.Log("Generating map with seed: " + seed);
-		building = true;
-	}
-
-
-
-	// setup (doesn't build) 
-	// call Build() and Build3D() right after this for the random seed to work 
-	public static void Init() {
-		Random.seed = Seed;
-		numVoxAcross.X = 64;
-		numVoxAcross.Z = 64;
-		numVoxAcross.Y = 32;
-
-		isAir = new bool[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
-
-		// bags 
-		// ...are containers.
-		// since we can't have "folders" in a scene, we parent spammy quads and 
-		// such to these objects, so they can be collapsed/hidden under one word 
-		primBag = GameObject.Find("[PRIM]");
-		spawnBag = GameObject.Find("[SPAWN]");
-		//blueSpawnBag = GameObject.Find("Blue Team Spawns");
-		//redSpawnBag = GameObject.Find("Red Team Spawns");
-		//weaponSpawnBag = GameObject.Find("_PickupSpots");
-		//monsterSpawnBag = GameObject.Find("Monster Spawns");
-	}
-
-
-
-	// this will build a model of the level in memory 
-	public static void Build() {
-		//emptyMap();    i think bools default to false....???
-		makeFirstRoom();
-		makeGroundFloor();
-		addBridgesAndCorridorsHigherUp();
 	}
 
 
@@ -294,7 +296,7 @@ public static class VoxGen {
 
 
 	// private methods 
-	private static void emptyMap() {
+	private static void clearAllAirSpaces() {
 		for (int i = 0; i < numVoxAcross.X; i++)
 		for (int j = 0; j < numVoxAcross.Y; j++)
 		for (int k = 0; k < numVoxAcross.Z; k++) {
@@ -352,15 +354,16 @@ public static class VoxGen {
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
 			isAir[i, j, k] = true;
-			// cache room 
-			var room = new VoxelRect();
-			room.Surfaces = cat.GetRandomSurfaces();
-			room.Pos = s;
-			room.Size.X = e.X - s.X + 1;
-			room.Size.Y = e.Y - s.Y + 1;
-			room.Size.Z = e.Z - s.Z + 1;
-			rooms.Add(room);
 		}
+
+		// cache room 
+		var room = new VoxelRect();
+		room.Surfaces = cat.GetRandomSurfaces();
+		room.Pos = s;
+		room.Size.X = e.X - s.X + 1;
+		room.Size.Y = e.Y - s.Y + 1;
+		room.Size.Z = e.Z - s.Z + 1;
+		rooms.Add(room);
 	}
 
 
@@ -602,6 +605,8 @@ public static class VoxGen {
 						}
 			}
 		}
+
+		Debug.Log("makeGroundFloor     num rooms: " + rooms.Count);
 	}
 
 

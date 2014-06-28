@@ -802,7 +802,7 @@ public class CcNet : MonoBehaviour {
 		if (item >= (int)Gun.Pistol)
 			cCol = arse.Guns[item].Color;
 
-		var p = GameObject.Find("_PickupSpots");
+		var p = GameObject.Find("Gun");
 		foreach (Transform child in p.transform) {
 			if (child.gameObject.GetComponent<PickupPoint>().pickupPointID == pointID)
 				child.gameObject.renderer.material.color = cCol;
@@ -1256,7 +1256,7 @@ public class CcNet : MonoBehaviour {
 			
 			// make sure we know about gun spawn points 
 			pickupPoints = new List<PickupPoint>();
-			var p = GameObject.Find("_PickupSpots");
+			var p = GameObject.Find("Gun");
 			if (p != null) {
 				string s = "items: ";
 				// consumable list so guns only appear once (intially), and the rest are healthpacks 
