@@ -1036,11 +1036,11 @@ public class EntityClass : MonoBehaviour {
 	public void Respawn() {
 		Transform t = null;
 		if (!net.CurrMatch.teamBased) {
-			t = getRandomSpawn("FFA Spawns");
+			t = getRandomSpawn("FFA");
 		}else if (User.team == 1) {
-			t = getRandomSpawn("Red Team Spawns");
+			t = getRandomSpawn("TeamRed");
 		}else if (User.team == 2) {
-			t = getRandomSpawn("Blue Team Spawns");
+			t = getRandomSpawn("TeamBlue");
 		}
 
 		transform.position = t.position + Vector3.up;

@@ -57,8 +57,6 @@ public static class VoxGen {
 	static int numMade = 0; // curr tally of just about everything that gets made 
 	const int numGunSpawns = 10;
 	const int numTries = 20000; // ... at making a room 
-	static int currX = 0;
-	static int currRoom = 0;
 	static bool building = false;
 	static bool[,,] isAir;
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
@@ -68,6 +66,11 @@ public static class VoxGen {
 	// a simple transform gameobject which children/content will mark as their parent as they are born 
 	static GameObject primBag; 
 	static GameObject spawnBag;
+	// current pointers/indexes 
+	//static int currX;
+	static int currRoom;
+	static Vector3 currDir; // direction/orientation/facing 
+	static int x, y, z, xMax, yMax, zMax; // position & size (of current room) 
 
 
 
@@ -78,7 +81,7 @@ public static class VoxGen {
 		int xSpan = Screen.width / /*numVoxAcross.X*/ rooms.Count;
 		GUI.Box(new Rect(0, Screen.height/2, Screen.width, Screen.height), 
 		        "Generating a map for you....... wait for it...........WAIT FOR IT");
-		GUI.Label(new Rect(/*currX*/ currRoom * xSpan, 0, xSpan, Screen.height), Pics.Health);
+		GUI.Label(new Rect(/*currX*/ currRoom*xSpan, 0, xSpan, Screen.height), Pics.Health);
 	}
 
 
@@ -89,7 +92,7 @@ public static class VoxGen {
 
 		//generateXSlice(currX);
 		//currX++;
-		generateRoomSurfaceTiles(currRoom);
+		generateOneRoom();
 		currRoom++;
 
 		// if we still need to generate more slices 
@@ -128,7 +131,7 @@ public static class VoxGen {
 			t.Y = Random.Range(0, numVoxAcross.Y);
 			t.Z = Random.Range(0, numVoxAcross.Z);
 
-			if (columnOpen(t, MinHeight)) // if the place is accessible (ceiling height)
+			if (columnOpen(t, MinHeight)) // if the place is accessible (ceiling height) 
 			if (!air(t.X, t.Y-1, t.Z)) {
 				var ns = (GameObject)GameObject.Instantiate(o);
 				ns.transform.parent = tr;
@@ -194,51 +197,58 @@ public static class VoxGen {
 
 
 
-	private static void generateRoomSurfaceTiles(int idx) {
+	private static void setStart(Vector3 dir) {
+		currDir = dir;
+		var r = rooms[currRoom];
+		x = r.Pos.X;
+		y = r.Pos.Y;
+		z = r.Pos.Z;
+		xMax = r.Pos.X + r.Size.X;
+		yMax = r.Pos.Y + r.Size.Y;
+		zMax = r.Pos.Z + r.Size.Z;			
+	}
+
+
+
+	private static void generateOneRoom() {
 		var hx = Scale.x * 0.5f;
 		var hy = Scale.y * 0.5f;
 		var hz = Scale.z * 0.5f;
-		
-		for (int y = 0; y < rooms[idx].Size.Y; y++)
-		for (int z = 0; z < rooms[idx].Size.Z; z++) {
-			maybeMakeQuad(Vector3.left, 
-			              x-1, y, z,
-			              new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
+
+		setStart(Vector3.left);
+		for (; y < yMax; y++)
+		for (; z < zMax; z++) {
+			maybeMakeQuad(x-1, y, z, new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
 		}
 
-		for (int y = 0; y < rooms[idx].Size.Y; y++)
-		for (int z = 0; z < rooms[idx].Size.Z; z++) {
-			maybeMakeQuad(Vector3.right, 
-			              x+1, y, z,
-			              new Vector3(Scale.x*x+hx, Scale.y*y, Scale.z*z));
+		setStart(Vector3.right);
+		for (; y < yMax; y++)
+		for (; z < zMax; z++) {
+			maybeMakeQuad(x+1, y, z, new Vector3(Scale.x*x+hx, Scale.y*y, Scale.z*z));
 		}
 
-		for (int x = 0; x < rooms[idx].Size.X; x++)
-		for (int y = 0; y < rooms[idx].Size.Y; y++)
-			maybeMakeQuad(Vector3.forward, 
-			              x, y, z+1,
-			              new Vector3(Scale.x*x, Scale.y*y, Scale.z*z+hz));
+		setStart(Vector3.forward);
+		for (; x < xMax; x++)
+		for (; y < yMax; y++) {
+			maybeMakeQuad(x, y, z+1, new Vector3(Scale.x*x, Scale.y*y, Scale.z*z+hz));
 		}
 
-		for (int x = 0; x < rooms[idx].Size.X; x++)
-		for (int y = 0; y < rooms[idx].Size.Y; y++)
-			maybeMakeQuad(Vector3.back,
-			              x, y, z-1,
-			              new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
+		setStart(Vector3.back);
+		for (; x < xMax; x++)
+		for (; y < yMax; y++) {
+			maybeMakeQuad(x, y, z-1, new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
 		}
 
-		for (int x = 0; x < rooms[idx].Size.X; x++)
-		for (int z = 0; z < rooms[idx].Size.Z; z++) {
-			maybeMakeQuad(Vector3.up, 
-			              x, y+1, z,
-			              new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
+		setStart(Vector3.up);
+		for (; x < xMax; x++)
+		for (; z < zMax; z++) {
+			maybeMakeQuad(x, y+1, z, new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
 		}
 
-		for (int x = 0; x < rooms[idx].Size.X; x++)
-		for (int z = 0; z < rooms[idx].Size.Z; z++) {
-			maybeMakeQuad(Vector3.down, 
-			              x, y-1, z,
-			              new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
+		setStart(Vector3.down);
+		for (; x < xMax; x++)
+		for (; z < zMax; z++) {
+			maybeMakeQuad(x, y-1, z, new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
 		}
 	}
 
@@ -254,24 +264,24 @@ public static class VoxGen {
 				var hy = Scale.y * 0.5f;
 				var hz = Scale.z * 0.5f;
 
-				maybeMakeQuad(Vector3.left, 
+				maybeMakeQuad(//Vector3.left, 
 					x-1, y, z,
 					new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
-				maybeMakeQuad(Vector3.right, 
+				maybeMakeQuad(//Vector3.right, 
 					x+1, y, z,
 					new Vector3(Scale.x*x+hx, Scale.y*y, Scale.z*z));
 				
-				maybeMakeQuad(Vector3.forward, 
+				maybeMakeQuad(//Vector3.forward, 
 					x, y, z+1,
 					new Vector3(Scale.x*x, Scale.y*y, Scale.z*z+hz));
-				maybeMakeQuad(Vector3.back,
+				maybeMakeQuad(//Vector3.back,
 					x, y, z-1,
 					new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
 				
-				maybeMakeQuad(Vector3.up, 
+				maybeMakeQuad(//Vector3.up, 
 					x, y+1, z,
 					new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
-				maybeMakeQuad(Vector3.down, 
+				maybeMakeQuad(//Vector3.down, 
 					x, y-1, z,
 					new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
 			}
@@ -310,53 +320,47 @@ public static class VoxGen {
 
 
 
-	private static void carveOutRoom(Vec3i s, Vec3i e) { // start, end (must be sorted and not be out of bounds) 
-		for (int i = s.X; i <= e.X; i++) // the <= is there because it fills the space between the positions inclusively, so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
+	private static void carveOutRoom(Vec2i s, Vec2i e, int h = 0) { // start, end, height (of floor) 
+		Vec3i a;
+		a.X = s.x;
+		a.Z = s.z;
+
+		Vec3i b;
+		b.X = e.x;
+		b.Z = e.z;
+
+		// if at ground floor 
+		if (h == 0) {
+			h = (int)((float)Mathf.Min(e.x - s.x, e.z - s.z) * SizeToHeight); // height(of the room)
+			if (h < MinHeight) 
+				h = MinHeight;
+			h += Random.Range(0, HeightRand);
+
+			a.Y = Random.Range(0, MaxFloorHeight + 1);
+			b.Y = a.Y + h;
+		}else{ // bridges & overground corridors 
+			a.Y = h + 1;
+			b.Y = h + Random.Range(MinHeight, MinHeight + HeightRand) + 1;
+		}
+
+		carveOutRoom(a, b);
+	}
+	private static void carveOutRoom(Vec3i s, Vec3i e) { // start, end 
+		// the <= is there because it fills the space between the positions inclusively, 
+		// so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
+		for (int i = s.X; i <= e.X; i++) 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
 			isAir[i, j, k] = true;
-
-			// set material 
+			// cache room 
 			var room = new VoxelRect();
 			room.Surfaces = cat.GetRandomSurfaces();
+			room.Pos = s;
+			room.Size.X = e.X - s.X + 1;
+			room.Size.Y = e.Y - s.Y + 1;
+			room.Size.Z = e.Z - s.Z + 1;
 			rooms.Add(room);
 		}
-	}
-	// at ground floor 
-	private static void carveOutRoom(Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders)
-		int h = (int)((float)Mathf.Min(e.x - s.x, e.z - s.z) * SizeToHeight); // height(of the room)
-		if (h < MinHeight) h = MinHeight;
-		h += Random.Range(0, HeightRand);
-		if (h >= numVoxAcross.Y) {
-			MonoBehaviour.print("Voxel map generation error: room height is too large! Please set MapSize.y to a higher value.");
-			return;
-		}
-
-		Vec3i a;
-		a.X = s.x;
-		a.Y = Random.Range(0, MaxFloorHeight + 1);
-		a.Z = s.z;
-
-		Vec3i b;
-		b.X = e.x;
-		b.Y = a.Y + h;
-		b.Z = e.z;
-
-		carveOutRoom(a, b);
-	}
-	// this is only called for bridges & overground corridors 
-	private static void carveOutRoom(Vec2i s, Vec2i e, int h) { // start, end, height (of floor).  must be sorted and not be out of borders 
-		Vec3i a;
-		a.X = s.x;
-		a.Y = h + 1; // h + 1 because floors generate at h(for bridges)
-		a.Z = s.z;
-
-		Vec3i b;
-		b.X = e.x;
-		b.Y = h + Random.Range(MinHeight, MinHeight + HeightRand) + 1;
-		b.Z = e.z;
-
-		carveOutRoom(a, b);
 	}
 
 
@@ -648,13 +652,23 @@ public static class VoxGen {
 
 
 
-	private static void maybeMakeQuad(Vector3 dir, int x, int y, int z, Vector3 offset) {
+	private static void maybeMakeQuad(int x, int y, int z, Vector3 offset) {
 		if (!air(x, y, z)) {
+			Material mat;
+
+			if /***/ (currDir == Vector3.up) {
+				mat = rooms[currRoom].Surfaces.Floor;
+			}else if (currDir == Vector3.down) {
+				mat = rooms[currRoom].Surfaces.Ceiling;
+			}else{
+				mat = rooms[currRoom].Surfaces.Walls;
+			}
+
 			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
 			np.transform.position = Pos + offset;
 			np.transform.localScale = Scale;
-			np.transform.forward = dir;
-			//np.renderer.material = Mat[x, y, z];
+			np.transform.forward = currDir;
+			np.renderer.material = mat;
 			np.transform.parent = primBag.transform;
 		}
 	}
