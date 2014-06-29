@@ -66,7 +66,7 @@ public static class VoxGen {
 	//static int currX;
 	static int currRoom;
 	static Vector3 currDir; // direction/orientation/facing 
-	static int x, y, z, xMax, yMax, zMax; // starting & max position (of current room) 
+	static int sx, sy, sz, x, y, z, xMax, yMax, zMax; // start & current positions & max counts (of current room) 
 
 
 
@@ -168,15 +168,21 @@ public static class VoxGen {
 	private static void setStart(Vector3 dir) { 
 		currDir = dir;
 		var r = rooms[currRoom];
-		x = r.Pos.X;
-		y = r.Pos.Y;
-		z = r.Pos.Z;
+
+		sx = r.Pos.X;
+		sy = r.Pos.Y;
+		sz = r.Pos.Z;
+		x = sx;
+		y = sy;
+		z = sz;
 		xMax = r.Pos.X + r.Size.X;
 		yMax = r.Pos.Y + r.Size.Y;
 		zMax = r.Pos.Z + r.Size.Z;
 
-		Debug.Log("room: " + currRoom + " - " + r.Pos.X + " " + r.Pos.Y + " " + r.Pos.Z + 
-		          " - " + r.Size.X + " " + r.Size.Y + " " + r.Size.Z);
+		if (currRoom == 0)
+			Debug.Log("xMax: " + xMax + "  yMax: " + yMax + "  zMax: " + zMax);
+//		Debug.Log("room: " + currRoom + " - " + r.Pos.X + " " + r.Pos.Y + " " + r.Pos.Z + 
+//		          " - " + r.Size.X + " " + r.Size.Y + " " + r.Size.Z);
 
 	}
 
@@ -188,38 +194,37 @@ public static class VoxGen {
 		var hz = Scale.z * 0.5f;
 
 		setStart(Vector3.left);
-		for (; y < yMax; y++) {
-		for (; z < zMax; z++) {
+		for (y = sy; y < yMax; y++)
+		for (z = sz; z < zMax; z++)
 			maybeMakeQuad(x-1, y, z, new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
-		}
-		}
 
 		setStart(Vector3.right);
-		for (; y < yMax; y++)
-		for (; z < zMax; z++)
-			maybeMakeQuad(x+1, y, z, new Vector3(Scale.x*x+hx, Scale.y*y, Scale.z*z));
+		for (y = sy; y < yMax; y++)
+		for (z = sz; z < zMax; z++)
+			maybeMakeQuad(xMax/*x+1*/, y, z, new Vector3(Scale.x*(xMax-1)/*x*/+hx, Scale.y*y, Scale.z*z));
 
 		setStart(Vector3.forward);
-		for (; x < xMax; x++)
-		for (; y < yMax; y++)
-			maybeMakeQuad(x, y, z+1, new Vector3(Scale.x*x, Scale.y*y, Scale.z*z+hz));
+		for (x = sx; x < xMax; x++)
+		for (y = sy; y < yMax; y++)
+			maybeMakeQuad(x, y, zMax/*z+1*/, new Vector3(Scale.x*x, Scale.y*y, Scale.z*(zMax-1)/*z*/+hz));
 
 		setStart(Vector3.back);
-		for (; x < xMax; x++)
-		for (; y < yMax; y++)
+		for (x = sx; x < xMax; x++)
+		for (y = sy; y < yMax; y++) {
+			if (currRoom == 0)
+				Debug.Log("x: " + x + "y: " + y + " z: " + z);
 			maybeMakeQuad(x, y, z-1, new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
+		}
 
 		setStart(Vector3.up);
-		for (; x < xMax; x++)
-		for (; z < zMax; z++)
-			maybeMakeQuad(x, y+1, z, new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
+		for (x = sx; x < xMax; x++)
+		for (z = sz; z < zMax; z++)
+			maybeMakeQuad(x, yMax/*y+1*/, z, new Vector3(Scale.x*x, Scale.y*(yMax-1)/*y*/+hy, Scale.z*z));
 
 		setStart(Vector3.down);
-		for (; x < xMax; x++) {
-		for (; z < zMax; z++) {
+		for (x = sx; x < xMax; x++)
+		for (z = sz; z < zMax; z++)
 			maybeMakeQuad(x, y-1, z, new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
-		}
-		}
 
 		currRoom++;
 	}
@@ -341,7 +346,10 @@ public static class VoxGen {
 		room.Size.Y = e.Y - s.Y + 1;
 		room.Size.Z = e.Z - s.Z + 1;
 		rooms.Add(room);
-		Debug.Log(room.Pos.X + " " + room.Pos.Y + " " + room.Pos.Z + " - " + room.Size.X + " " + room.Size.Y + " " + room.Size.Z);
+
+		if (currRoom == 0)
+			Debug.Log(room.Pos.X + " " + room.Pos.Y + " " + room.Pos.Z + 
+				" - " + room.Size.X + " " + room.Size.Y + " " + room.Size.Z);
 	}
 
 
