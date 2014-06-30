@@ -37,7 +37,7 @@ public class MatchData {
 	public Gun pickupSlot4 = Gun.RailGun;
 	public Gun pickupSlot5 = Gun.Pistol;
 
-	
+
 	
 	public MatchData(Match match) {
 		var all = new List<string>() { VoxelName, "Furnace", "Conflict Room", "The OctaDrome", "Overpass", "Tower" };

@@ -12,8 +12,8 @@ public enum RuleSet {
 	// and get/save the MacGuffin/damsel (or perform some heroic act) 
 	
 	Solo, // singleplayer 
-	Coop, // multiplayer (PVE/co-operative)... players cannot hurt each other 
-	Invasion, // multiplayer (PVP)... players CAN hurt each other 
+	Coop, // multiplayer campaign (PVE/co-operative)... players cannot hurt each other 
+	Invasion, // multiplayer campaign (PVP)... players CAN hurt each other 
 	Arena, // pure PVP.  no mobs/monsters, no campaign, and probably VERY FEW items/pickups (outside of guns) 
 
 	Count,

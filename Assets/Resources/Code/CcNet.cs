@@ -1143,7 +1143,7 @@ public class CcNet : MonoBehaviour {
 		countdownAnnounced = false;
 		
 		if (!InServerMode) {
-			// lets update the local game settings 
+			// update the local game settings 
 			CurrMatch.MapName = mapName;
 			CurrMatch.Name = matchName;
 			CurrMatch.Descript = matchDescript;

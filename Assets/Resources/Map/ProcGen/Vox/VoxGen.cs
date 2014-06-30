@@ -47,6 +47,11 @@ public static class VoxGen {
 	// 		weapons 
 	public static Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
 	public static float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on 
+	// bags act as containers. (since scenes don't have folders) 
+	// a simple transform gameobject which children/content will mark as their parent as they are born 
+	public static GameObject PrimBag; 
+	public static GameObject SpawnBag;
+
 
 
 	// private 
@@ -58,10 +63,6 @@ public static class VoxGen {
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
 	static ThemedCategories cat = new ThemedCategories();
 	static List<VoxelRect> rooms = new List<VoxelRect>();
-	// bags act as containers. (scenes don't have folders) 
-	// a simple transform gameobject which children/content will mark as their parent as they are born 
-	static GameObject primBag; 
-	static GameObject spawnBag;
 	// current pointers/indexes 
 	//static int currX;
 	static int currRoom;
@@ -81,8 +82,8 @@ public static class VoxGen {
 		// ...are containers.
 		// since we can't have "folders" in a scene, we parent spammy quads and 
 		// such to these objects, so they can be collapsed/hidden under one word 
-		primBag = GameObject.Find("[PRIM]");
-		spawnBag = GameObject.Find("[SPAWN]");
+		PrimBag = GameObject.Find("[PRIM]");
+		SpawnBag = GameObject.Find("[SPAWN]");
 	}
 	
 	
@@ -656,7 +657,7 @@ public static class VoxGen {
 			np.transform.localScale = Scale;
 			np.transform.forward = currDir;
 			np.renderer.material = mat;
-			np.transform.parent = primBag.transform;
+			np.transform.parent = PrimBag.transform;
 		}
 	}
 
@@ -677,28 +678,28 @@ public static class VoxGen {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X - Scale.x * 0.5f + TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primBag.transform;
+					nt.transform.parent = PrimBag.transform;
 					numMade++;
 				}else
 				if (!air(v.X+1, v.Y, v.Z)) {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X + Scale.x * 0.5f - TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primBag.transform;
+					nt.transform.parent = PrimBag.transform;
 					numMade++;
 				}else
 				if (!air(v.X, v.Y, v.Z-1)) {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z - Scale.z * 0.5f + TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primBag.transform;
+					nt.transform.parent = PrimBag.transform;
 					numMade++;
 				}else
 				if (!air(v.X, v.Y, v.Z+1)) {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z + Scale.z * 0.5f - TorchOffset);
 					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = primBag.transform;
+					nt.transform.parent = PrimBag.transform;
 					numMade++;
 				}
 			} // end of scanning an individual block to see if a torch can be placed 
@@ -727,7 +728,7 @@ public static class VoxGen {
 					var nj = (GameObject)GameObject.Instantiate(GOs.Get("JumpPad"));
 					nj.transform.position = Pos + new Vector3(Scale.x * v.X - Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
 					nj.transform.localScale = JumpPadScale;
-					nj.transform.parent = primBag.transform;
+					nj.transform.parent = PrimBag.transform;
 					numMade++;
 				} else {
 					d = getTinyDistance(v.X + 1, v.Y, v.Z);
@@ -736,7 +737,7 @@ public static class VoxGen {
 						var nj = (GameObject)GameObject.Instantiate(GOs.Get("JumpPad"));
 						nj.transform.position = Pos + new Vector3(Scale.x * v.X + Scale.x, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z);
 						nj.transform.localScale = JumpPadScale;
-						nj.transform.parent = primBag.transform;
+						nj.transform.parent = PrimBag.transform;
 						numMade++;
 					} else {
 						d = getTinyDistance(v.X, v.Y, v.Z - 1);
@@ -745,7 +746,7 @@ public static class VoxGen {
 							var nj = (GameObject)GameObject.Instantiate(GOs.Get("JumpPad"));
 							nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z - Scale.z);
 							nj.transform.localScale = JumpPadScale;
-							nj.transform.parent = primBag.transform;
+							nj.transform.parent = PrimBag.transform;
 							numMade++;
 						} else {
 							d = getTinyDistance(v.X, v.Y, v.Z + 1);
@@ -754,7 +755,7 @@ public static class VoxGen {
 								var nj = (GameObject)GameObject.Instantiate(GOs.Get("JumpPad"));
 								nj.transform.position = Pos + new Vector3(Scale.x * v.X, Scale.y * (v.Y - d + 0.5f + JumpPadOffset), Scale.z * v.Z + Scale.z);
 								nj.transform.localScale = JumpPadScale;
-								nj.transform.parent = primBag.transform;
+								nj.transform.parent = PrimBag.transform;
 								numMade++;
 							}
 						}
@@ -801,8 +802,8 @@ public static class VoxGen {
 	
 	
 	
-	private static Transform getChildTransform(string s) {
-		var tr = spawnBag.transform;
+	public static Transform getChildTransform(string s) {
+		var tr = SpawnBag.transform;
 
 		for (int i = 0; i < tr.childCount; i++) {
 			var v = tr.GetChild(i);

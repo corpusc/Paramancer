@@ -11,6 +11,7 @@ public class GunPickup : MonoBehaviour {
 	// private 
 	CcNet net;
 	GameObject luO; // local user game object 
+	// icons are only for kits, which need to be moved out of the Guns enum (FIXME) 
 	GameObject iconFront; // ...or top, since kit model defaults to "laying flat on the ground" 
 	GameObject iconBack; // ...or bottom ^^ 
 	float sinny = 0f;
@@ -22,11 +23,13 @@ public class GunPickup : MonoBehaviour {
 	
 	void makeQuad(ref GameObject go, float angle, float zOffs) {
 		go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-		setMat(go, Pics.Get("Grenade Launcher"));
+		setMat(go, Pics.Health);//"Grenade Launcher"));
 		go.transform.localRotation = Quaternion.AngleAxis(angle, Vector3.right);
 		go.transform.position = transform.position + new Vector3(0, zOffs, 0);
-		//go.transform.parent = Model.transform;     can't make children in prefab!!!!!!!!! 
+		go.collider.enabled = false;
+		go.transform.parent = VoxGen.PrimBag.transform; 
 	}
+
 	void setMat(GameObject go, Texture pic) {
 		go.renderer.material.SetTexture("_MainTex", pic);
 		go.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
@@ -52,7 +55,7 @@ public class GunPickup : MonoBehaviour {
 
 
 
-		if (Name == "Grenade Launcher") {
+		if (Name == "Rocket Launcher" || Name == "Grenade Launcher") {
 			Model.transform.Rotate(0, 0, zOff);
 			Model.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
 			start = Model.transform.position + Vector3.up * 0.33f;
