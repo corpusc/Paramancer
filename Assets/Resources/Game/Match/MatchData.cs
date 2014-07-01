@@ -107,14 +107,14 @@ public class MatchData {
 				break;
 			case Match.SlowMotion:
 				Name = "Slow Motion";
-				Descript = "Who used the time machine?!";
+				Descript = "...";
 				MoveSpeedMult = 0.2f;
 				spawnGunA = Gun.RocketLauncher;
 				spawnGunB = Gun.GrenadeLauncher;
 				break;
 			case Match.HighSpeed:
 				Name = "High Speed";
-				Descript = "Who used the time machine... again?!";
+				Descript = "...";
 				MoveSpeedMult = 1.8f;
 				spawnGunA = Gun.RocketLauncher;
 				spawnGunB = Gun.GrenadeLauncher;

@@ -244,31 +244,26 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 200
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
+    - time: .384022474
+      value: .439393997
+      inSlope: -500.200928
+      outSlope: -500.200928
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - time: .550561786
       value: 1
       inSlope: 0
       outSlope: 0
@@ -336,7 +331,7 @@ MonoBehaviour:
   BaseFlightSpeed: 40
   MinPtsPerSecond: 75
   MaxPtsPerSecond: 125
-  ExplosionParticles: 200
+  numSploPts: 25
   ExplosionSize: .400000006
   ForwardOffset: 1
   Turn: 300

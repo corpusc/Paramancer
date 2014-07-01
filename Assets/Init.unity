@@ -119,7 +119,7 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1
+    width: .5
     height: 1
   near clip plane: .300000012
   far clip plane: 1000
@@ -322,6 +322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359f0fb783c8c814daa4c218ac0146e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Invisible: 0
   GoToPrevMenu: << Back <<
   TopOfMaxedLog: 0
   Log: {fileID: 0}

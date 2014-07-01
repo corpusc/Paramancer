@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 
 public static class VoxGen {
+	public static bool Generating = false;
 	public static Theme Theme = Theme.SciFi; // determines what assets to use, and how 
 	public static bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed 
 	public static int Seed = 0;
@@ -58,7 +59,6 @@ public static class VoxGen {
 	static int numMade = 0; // curr tally of just about everything that gets made 
 	const int numGunSpawns = 10;
 	const int numTries = 20000; // ... at making a room 
-	static bool building = false;
 	static bool[,,] isAir;
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
 	static ThemedCategories cat = new ThemedCategories();
@@ -89,7 +89,7 @@ public static class VoxGen {
 	
 	
 	public static void OnGUI() {
-		if (!building)
+		if (!Generating)
 			return;
 
 		int xSpan = Screen.width / /*numVoxAcross.X*/ rooms.Count;
@@ -120,13 +120,13 @@ public static class VoxGen {
 
 		//currX = 0;
 		currRoom = 0;
-		building = true;
+		Generating = true;
 	}
 	
 	
 	
 	public static void Update() {
-		if (!building)
+		if (!Generating)
 			return;
 
 		//generateXSlice(currX);
@@ -144,7 +144,7 @@ public static class VoxGen {
 
 	private static void postGenerationProcesses() {
 		Debug.Log("finished all rooms     num rooms: " + rooms.Count);
-		building = false;
+		Generating = false;
 		
 		// spawn map features 
 		Debug.Log("makeLights");

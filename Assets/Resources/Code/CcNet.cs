@@ -1244,7 +1244,7 @@ public class CcNet : MonoBehaviour {
 					Destroy(GameObject.Find("_BasketBlue"));
 			}
 			
-			// add fps entities for all known players 
+			// add entities for all known users 
 			for (int i=0; i<Entities.Count; i++) {
 				Entities[i].InstantiateGO(GOs.Get("FPSEntity"));
 			}
