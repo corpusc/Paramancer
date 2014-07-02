@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 
 
@@ -28,14 +27,23 @@ public class VoxelRect {
 };
 
 public class Cell {
-	public Surfaces Surfaces;
-	public bool IsAir = false; 
-	public bool Floor = false; // for holes connecting levels 
+	// GenGrid ONLY! 
 	public char CeilingHeight = (char)0;
+	public bool Floor;
 	public bool NeedsNWLip = true;
 	public bool NeedsNELip = true;
 	public bool NeedsSELip = true;
 	public bool NeedsSWLip = true;
+	// *** end of GenGrid *** 
+
+	public Surfaces Surfaces;
+	public bool IsAir; 
+	public bool NorthSide;
+	public bool SouthSide;
+	public bool EastSide;
+	public bool WestSide;
+	public bool UpSide;
+	public bool DownSide;
 }
 
 // BUILDinator style (arbitrary line segment rimmed) maps 

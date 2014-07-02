@@ -81,8 +81,8 @@ public class CcNet : MonoBehaviour {
 	// private 
 	public string nameOfOfflineBackdrop = "OfflineBackdrop";
 	// map 
-	bool preppingMap = false;
-	bool mapIsLoaded = false;
+	bool preppingMap;
+	bool mapIsLoaded;
 	// scripts 
 	CcLog log;
 	Hud hud;
@@ -1007,8 +1007,8 @@ public class CcNet : MonoBehaviour {
 		Entities.Add(ent);
 	}
 	
-	public void AssignGameModeConfig(MatchData md, string levelName) {
-		CurrMatch.MapName = levelName;
+	public void AssignGameModeConfig(MatchData md, string mapName) {
+		CurrMatch.MapName = mapName;
 		
 		// FIXME?: no need for all these lines?   we could just do 'CurrMatch = md;'?
 		// allowedLevels is the only thing missing from here?
@@ -1222,7 +1222,9 @@ public class CcNet : MonoBehaviour {
 		Application.LoadLevel(mapName);
 	}
 	
-	void OnLevelWasLoaded() {
+	void OnLevelWasLoaded(int level) {
+		Debug.Log("OnLevelWasLoaded() - level: " + level);
+
 		if (CurrMatch.NeedsGenerating) {
 			VoxGen.GenerateMap(CurrMatch.Seed, CurrMatch.Theme);
 		}

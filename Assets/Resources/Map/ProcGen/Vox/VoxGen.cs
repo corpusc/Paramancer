@@ -59,7 +59,7 @@ public static class VoxGen {
 	static int numMade = 0; // curr tally of just about everything that gets made 
 	const int numGunSpawns = 10;
 	const int numTries = 20000; // ... at making a room 
-	static bool[,,] isAir;
+	static Cell[,,] cells;
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
 	static ThemedCategories cat = new ThemedCategories();
 	static List<VoxelRect> rooms = new List<VoxelRect>();
@@ -76,7 +76,7 @@ public static class VoxGen {
 		numVoxAcross.Z = 64;
 		numVoxAcross.Y = 32;
 		
-		isAir = new bool[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
+		cells = new Cell[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
 		
 		// bags 
 		// ...are containers.
@@ -110,7 +110,7 @@ public static class VoxGen {
 		Debug.Log("Generating map with seed: " + seed);
 		// cleanup previous possible map 
 		rooms.Clear();
-		clearAllAirSpaces();
+		cellsClear();
 
 		Debug.Log("makeFirstRoom     num rooms: " + rooms.Count);
 		makeFirstRoom();
@@ -236,7 +236,7 @@ public static class VoxGen {
 		for (int y = 0; y < numVoxAcross.Y; y++)
 		for (int z = 0; z < numVoxAcross.Z; z++) {
 			// if air... 
-			if (isAir[x, y, z]) {
+			if (cells[x, y, z].IsAir) {
 				// ...need to make surface quads against neighboring void voxels 
 				var hx = Scale.x * 0.5f;
 				var hy = Scale.y * 0.5f;
@@ -272,11 +272,11 @@ public static class VoxGen {
 
 
 	// private methods 
-	private static void clearAllAirSpaces() {
+	private static void cellsClear() {
 		for (int i = 0; i < numVoxAcross.X; i++)
 		for (int j = 0; j < numVoxAcross.Y; j++)
 		for (int k = 0; k < numVoxAcross.Z; k++) {
-			isAir[i, j, k] = false;
+			cells[i, j, k] = new Cell();
 		}
 	}
 
@@ -337,7 +337,7 @@ public static class VoxGen {
 		for (int i = s.X; i <= e.X; i++) 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++)
-			isAir[i, j, k] = true;
+			cells[i, j, k].IsAir = true;
 
 		// cache room 
 		var room = new VoxelRect();
@@ -360,7 +360,7 @@ public static class VoxGen {
 		for (int i = s.x; i <= e.x; i++) // the <= is there because it fills the space between the positions inclusively, 
 										// so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int k = s.z; k <= e.z; k++)
-			isAir[i, h, k] = false;
+			cells[i, h, k].IsAir = false;
 	}
 
 
@@ -371,7 +371,7 @@ public static class VoxGen {
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it counts the blocks inclusively, so counting from 3, 3, 3 to 3, 3, 3 can cause it to return 1 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
-			if (isAir[i, j, k]) 
+			if (cells[i, j, k].IsAir) 
 				t++;
 		}
 
@@ -431,7 +431,7 @@ public static class VoxGen {
 		for (int i = s.X; i <= e.X; i++) 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++) {
-			if (isAir[i, j, k]) 
+			if (cells[i, j, k].IsAir) 
 				return true;
 		}
 		
@@ -455,7 +455,7 @@ public static class VoxGen {
 		if (p.Y < 0 || p.Y >= numVoxAcross.Y) return MapIsOpen;
 		if (p.Z < 0 || p.Z >= numVoxAcross.Z) return MapIsOpen;
 
-		return isAir[p.X, p.Y, p.Z];
+		return cells[p.X, p.Y, p.Z].IsAir;
 	}
 	private static bool air(int x, int y, int z) {
 		Vec3i v;
@@ -473,7 +473,7 @@ public static class VoxGen {
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it checks the blocks inclusively, so checking from 3, 3, 3 to 3, 3, 3 can cause it to return true 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++)
-			if (!isAir[i, j, k]) return true;
+			if (!cells[i, j, k].IsAir) return true;
 
 		return false; // if we got here, it means that there are no walls in the area
 	}
@@ -673,7 +673,7 @@ public static class VoxGen {
 			v.Y = Random.Range(0, numVoxAcross.Y);
 			v.Z = Random.Range(0, numVoxAcross.Z);
 			
-			if (isAir[v.X, v.Y, v.Z]) {
+			if (cells[v.X, v.Y, v.Z].IsAir) {
 				if (!air(v.X-1, v.Y, v.Z)) {
 					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
 					nt.transform.position = Pos + new Vector3 (Scale.x * v.X - Scale.x * 0.5f + TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
@@ -719,8 +719,8 @@ public static class VoxGen {
 			v.Z = Random.Range(0, numVoxAcross.Z);
 			
 			// if valid air space & there's a surface/floor directly underneath it 
-			if (isAir[v.X, v.Y, v.Z] && 
-			    !isAir[v.X, v.Y-1, v.Z]
+			if (cells[v.X, v.Y, v.Z].IsAir && 
+			    !cells[v.X, v.Y-1, v.Z].IsAir
 		    ) {
 				int d = getTinyDistance(v.X - 1, v.Y, v.Z); // distance 
 				
