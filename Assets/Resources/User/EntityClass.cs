@@ -1028,7 +1028,7 @@ public class EntityClass : MonoBehaviour {
 			return null;
 		}
 		
-		int i = Random.Range(0, go.transform.childCount);
+		int i = (int)Random.Range(0, go.transform.childCount);
 		
 		return go.transform.GetChild(i);
 	}
