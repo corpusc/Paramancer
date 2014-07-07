@@ -143,7 +143,7 @@ public static class VoxGen {
 
 
 	private static void postGenerationProcesses() {
-		Debug.Log("finished all rooms     num rooms: " + rooms.Count);
+		Debug.Log("finished all rooms     num: " + rooms.Count);
 		Generating = false;
 		
 		// spawn map features 
@@ -151,21 +151,16 @@ public static class VoxGen {
 		makeLights();
 		Debug.Log("makeJumpPads");
 		makeJumpPads();
-		Debug.Log("ffa");
 		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("FFA"));
-		Debug.Log("tb");
 		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamBlue"));
-		Debug.Log("tr");
 		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamRed"));
-		Debug.Log("m");
 		makeSpawns(NumMobSpawns, GOs.Get("UserSpawn"), getChildTransform("Mob"));
-		Debug.Log("gun");
 		makeSpawns(numGunSpawns, GOs.Get("GunSpawn"), getChildTransform("Gun"), true);
 	}
 
 
 
-	// starting position needs to be reset for each quad (the max positions might as well be here too, for neatness)
+	// starting position needs to be reset for each quad (the max positions might as well be here,  just for grouping) 
 	private static void setStart(Vector3 dir) { 
 		currDir = dir;
 		var r = rooms[currRoom];
@@ -184,7 +179,6 @@ public static class VoxGen {
 			Debug.Log("xMax: " + xMax + "  yMax: " + yMax + "  zMax: " + zMax);
 //		Debug.Log("room: " + currRoom + " - " + r.Pos.X + " " + r.Pos.Y + " " + r.Pos.Z + 
 //		          " - " + r.Size.X + " " + r.Size.Y + " " + r.Size.Z);
-
 	}
 
 

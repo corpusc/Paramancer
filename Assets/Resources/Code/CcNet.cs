@@ -39,7 +39,7 @@ public class CcNet : MonoBehaviour {
 	public NetworkViewID NetVI;
 	public bool Connected = false;
 	public bool InServerMode = false;
-	// if you change the client, change this.
+	// if you change the client, change this name. 
 	// should be unique or different types of clients will clash 
 	public string MasterServerFacingName = "Rogue-Lite FPS";
 	public string MatchName = "Init";
@@ -49,40 +49,43 @@ public class CcNet : MonoBehaviour {
 	public string password = "";
 	public List<NetEntity> Entities;
 	public List<PickupPoint> pickupPoints = new List<PickupPoint>();
-	private float nextPingTime = 0f;
 	public int team1Score = 0;
 	public int team2Score = 0;
 	public bool gameOver = false;
 	public bool serverGameChange = false;
 	public bool broadcastPos = false;
 	public bool lastGameWasTeamBased = false;
-	private float latestPacket = 0f;
-	private float latestServerHeartbeat = 0f;
 
-	// game modes/types 
+	// match (game modes/types) 
 	public MatchData CurrMatch;
-	private GameObject basketball;
+	public float MatchTimeLeft = 0f;
+	public float IntermissionTimeLeft = 0f;
 
-
-	// personal stuff 
+	// personal / local user 
 	public NetEntity LocUs;
 	public bool gunBobbing = true;
 	public bool JumpAuto = true;
 
+
+
+	// private 
+	float nextPingTime = 0f;
+	float latestPacket = 0f;
+	float latestServerHeartbeat = 0f;
+	string nameOfOfflineBackdrop = "OfflineBackdrop";
+	// match 
+	float gameStartTime = 0f;
+	// bball 
+	GameObject basketball;
+	// map 
+	bool preppingMap;
+	bool playableMapIsLoaded;
 	// announcements 
 	bool twoMinsAnnounced = false;
 	bool oneMinAnnounced = false;
 	bool thirtySecsAnnounced = false;
 	bool almostOverAnnounced = false;
 	bool countdownAnnounced = false;
-
-	float gameStartTime = 0f;
-
-	// private 
-	public string nameOfOfflineBackdrop = "OfflineBackdrop";
-	// map 
-	bool preppingMap;
-	bool mapIsLoaded;
 	// scripts 
 	CcLog log;
 	Hud hud;
@@ -391,9 +394,9 @@ public class CcNet : MonoBehaviour {
 	
 	[RPC]
 	void AnnounceGameOver() {
-		gameTimeLeft = 0f;
+		MatchTimeLeft = 0f;
 		gameOver = true;
-		NextMatchTime = 15f;
+		IntermissionTimeLeft = 15f;
 	}
 	
 	[RPC]
@@ -502,9 +505,9 @@ public class CcNet : MonoBehaviour {
 			}
 			
 			if (livingPlayers <= 1) {
-				gameTimeLeft = 0f;
+				MatchTimeLeft = 0f;
 				gameOver = true;
-				NextMatchTime = 15f;
+				IntermissionTimeLeft = 15f;
 				networkView.RPC("AnnounceGameOver", RPCMode.Others);
 			}
 		}
@@ -684,7 +687,7 @@ public class CcNet : MonoBehaviour {
 					LocUs.team = 1;
 				}
 				
-				networkView.RPC("PlayerChangedTeams",RPCMode.AllBuffered, LocUs.viewID, LocUs.team);
+				networkView.RPC("PlayerChangedTeams", RPCMode.AllBuffered, LocUs.viewID, LocUs.team);
 				
 				for (int i=0; i<Entities.Count; i++) {
 					if (Entities[i].viewID == LocUs.viewID && Entities[i].Health > 0f) 
@@ -694,7 +697,7 @@ public class CcNet : MonoBehaviour {
 		}
 
 		if (!countdownAnnounced) {
-			gameStartTime = Time.time + 5f; //so that you can't deal damage before "FIGHT!"
+			gameStartTime = Time.time + 5f; // so that you can't deal damage before "FIGHT!"
 			countdownAnnounced = true;
 			if (InServerMode) {
 				Sfx.PlayOmni("321Fight");
@@ -702,21 +705,21 @@ public class CcNet : MonoBehaviour {
 		}
 
 		// time announcements 
-		gameTimeLeft -= Time.deltaTime;
+		MatchTimeLeft -= Time.deltaTime;
 		if (InServerMode) {
-			if (gameTimeLeft < 120f && !twoMinsAnnounced) {
+			if (MatchTimeLeft < 120f && !twoMinsAnnounced) {
 				Sfx.PlayOmni("RemainingMins2");
 				twoMinsAnnounced = true;
 			}
-			else if (gameTimeLeft < 60f && !oneMinAnnounced) {
+			else if (MatchTimeLeft < 60f && !oneMinAnnounced) {
 				Sfx.PlayOmni("RemainingMins1");
 				oneMinAnnounced = true;
 			}
-			else if (gameTimeLeft < 30f && !thirtySecsAnnounced) {
+			else if (MatchTimeLeft < 30f && !thirtySecsAnnounced) {
 				Sfx.PlayOmni("RemainingSecs30");
 				thirtySecsAnnounced = true;
 			}
-			else if (gameTimeLeft < 10f && !almostOverAnnounced) {
+			else if (MatchTimeLeft < 10f && !almostOverAnnounced) {
 				Sfx.PlayOmni("AlmostOver");
 				almostOverAnnounced = true;
 			}
@@ -724,19 +727,19 @@ public class CcNet : MonoBehaviour {
 		
 		// game time up? 
 		if (Connected && !gameOver) {
-			if (gameTimeLeft <= 0f && CurrMatch.Duration > 0f){
-				gameTimeLeft = 0f;
+			if (MatchTimeLeft <= 0f && CurrMatch.Duration > 0f){
+				MatchTimeLeft = 0f;
 				gameOver = true;
 				
-				NextMatchTime = 15f;
+				IntermissionTimeLeft = 15f;
 			}
 		}
 		
 		// if game over, count in next match 
 		if (Connected && gameOver) {
-			NextMatchTime -= Time.deltaTime;
-			if (NextMatchTime <= 0f){
-				NextMatchTime = 0f;
+			IntermissionTimeLeft -= Time.deltaTime;
+			if (IntermissionTimeLeft <= 0f) {
+				IntermissionTimeLeft = 0f;
 				
 				if (InServerMode) {
 					//begin next match using current settings
@@ -924,9 +927,9 @@ public class CcNet : MonoBehaviour {
 		if (Entities.Count == 1 && CurrMatch.playerLives > 0) {
 			if (InServerMode && Connected && !gameOver) {
 				// this is a lives match, and now we have enough players 
-				gameTimeLeft = 0f;
+				MatchTimeLeft = 0f;
 				gameOver = true;
-				NextMatchTime = 5f; // CHANGE ME
+				IntermissionTimeLeft = 5f; // CHANGE ME
 				networkView.RPC("AnnounceGameOver", RPCMode.Others);
 			}	
 		}
@@ -954,7 +957,7 @@ public class CcNet : MonoBehaviour {
 		          S.VecToCol(cB), 
 		          S.VecToCol(cC), head, name, np, targetTeam, lives);
 		
-		if (mapIsLoaded) {
+		if (playableMapIsLoaded) {
 			// only instantiate the actual GameObject of the player if we are in the right map. 
 			// uninstantiated players are added when the map finishes loading 
 			Entities[Entities.Count-1].InstantiateGO(GOs.Get("FPSEntity"));
@@ -975,12 +978,12 @@ public class CcNet : MonoBehaviour {
 			networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
 		
-		if (mapIsLoaded) {
-			LogEntry newMsg = new LogEntry();
-			newMsg.Maker = "";
-			newMsg.Color = Color.grey;
-			newMsg.Text = "<< " + name + " has joined >>";
-			log.Entries.Add(newMsg);
+		if (playableMapIsLoaded) {
+			var le = new LogEntry();
+			le.Maker = "";
+			le.Color = Color.grey;
+			le.Text = "<< " + name + " has joined >>";
+			log.Entries.Add(le);
 			log.TimeToHideEntireLog = Time.time+log.FadeTime;
 		}
 	}
@@ -1062,7 +1065,7 @@ public class CcNet : MonoBehaviour {
 		if (CurrMatch.teamBased && team2count>team1count) 
 			targetTeam = 1;
 		
-		//keep teams if we are already assigned to teams
+		// keep teams if we are already assigned to teams 
 		if (serverGameChange && Entities.Count > 0) {
 			if (lastGameWasTeamBased) {
 				targetTeam = -1;
@@ -1074,7 +1077,7 @@ public class CcNet : MonoBehaviour {
 		
 		int livesBroadcast = 0;
 		if (serverGameChange) {
-			gameTimeLeft = CurrMatch.Duration * 60f;
+			MatchTimeLeft = CurrMatch.Duration * 60f;
 			gameOver = false;
 			countdownAnnounced = false;
 			twoMinsAnnounced = false;
@@ -1091,15 +1094,14 @@ public class CcNet : MonoBehaviour {
 		networkView.RPC("BroadcastNewGame", RPCMode.All, NetVI, 
 			CurrMatch.Name, CurrMatch.MapName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, 
 			CurrMatch.respawnWait, CurrMatch.deathsSubtractScore, CurrMatch.killsIncreaseScore, CurrMatch.teamBased, 
-			targetTeam, CurrMatch.FriendlyFire, CurrMatch.pitchBlack, gameOver, gameTimeLeft, 
+			targetTeam, CurrMatch.FriendlyFire, CurrMatch.pitchBlack, gameOver, MatchTimeLeft, 
 			(int)CurrMatch.spawnGunA, (int)CurrMatch.spawnGunB, (int)CurrMatch.pickupSlot1, (int)CurrMatch.pickupSlot2, 
 			(int)CurrMatch.pickupSlot3, (int)CurrMatch.pickupSlot4, (int)CurrMatch.pickupSlot5, livesBroadcast, serverGameChange, 
 			CurrMatch.basketball, CurrMatch.MoveSpeedMult, CurrMatch.Gravity, CurrMatch.NeedsGenerating, CurrMatch.Seed, (int)CurrMatch.Theme);
 	}
-	
-	public float gameTimeLeft = 0f;
-	public float NextMatchTime = 0f;
-	
+
+
+
 	[RPC]
 	void BroadcastNewGame(NetworkViewID viewID, string matchName, string mapName, string matchDescript, int winScore, 
 		float duration, float respawnWait, bool deathsSubtractScore, bool killsIncreaseScore, bool teamBased, 
@@ -1120,7 +1122,7 @@ public class CcNet : MonoBehaviour {
 			return;
 		
 		if (!InServerMode) 
-			gameTimeLeft = serverGameTime - (float)(Network.time - info.timestamp);
+			MatchTimeLeft = serverGameTime - (float)(Network.time - info.timestamp);
 		
 		// make sure all connected players have lives 
 		if (newGame)
@@ -1130,7 +1132,7 @@ public class CcNet : MonoBehaviour {
 		if (!InServerMode)
 			gameOver = gameIsOver;
 		
-		NextMatchTime = 15f;
+		IntermissionTimeLeft = 15f;
 		
 		// if we get to this point, it's a new game, so let's get it together! 
 		NetVI = viewID;
@@ -1201,7 +1203,7 @@ public class CcNet : MonoBehaviour {
 		
 		// clear stuff out if we are already playing 
 		preppingMap = false;
-		mapIsLoaded = false;
+		playableMapIsLoaded = false;
 		for (int i=0; i<Entities.Count; i++) {
 			if (Entities[i].Visuals != null) 
 				Destroy(Entities[i].Visuals.gameObject);
@@ -1231,7 +1233,7 @@ public class CcNet : MonoBehaviour {
 
 		if (preppingMap) {
 			preppingMap = false;
-			mapIsLoaded = true;
+			playableMapIsLoaded = true;
 			
 			// drop the basket ball in 
 			if (CurrMatch.basketball) {
@@ -1431,7 +1433,7 @@ public class CcNet : MonoBehaviour {
 			
 			hud.Mode = HudMode.MainMenu;
 			Application.LoadLevel(nameOfOfflineBackdrop);
-			mapIsLoaded = false;
+			playableMapIsLoaded = false;
 		}
 	}
 	
@@ -1537,7 +1539,7 @@ public class CcNet : MonoBehaviour {
 		
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
-		mapIsLoaded = false;
+		playableMapIsLoaded = false;
 	}
 	
 	[RPC]
@@ -1563,7 +1565,7 @@ public class CcNet : MonoBehaviour {
 		Entities = new List<NetEntity>();
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
-		mapIsLoaded = false;
+		playableMapIsLoaded = false;
 		var le = new LogEntry();
 		le.Maker = "";
 		le.Color = Color.grey;

@@ -53,7 +53,7 @@ static public class S {
 		Log(s, Color.grey);
 	}
 	static public void Log(string s, Color c) {
-			if (Hud == null) {
+		if (Hud == null) {
 			Debug.Log(s);
 		}else{
 			Hud.Log.AddEntry("R14:", s, S.ColToVec(c));

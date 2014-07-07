@@ -4,34 +4,44 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Hud : MonoBehaviour {
-	public bool Invisible = false;
-	public string GoToPrevMenu = "<< Back <<";
-	public float TopOfMaxedLog = 0f; // the maximum height it can be, without overlapping anything else 
-
-	// gui 
-	public CcLog Log;
 	public Font Font;
+	public CcLog Log;
+
+	[HideInInspector]
+	public bool Invisible = false;
+	[HideInInspector]
+	public string GoToPrevMenu = "<< Back <<";
+	[HideInInspector]
+	public float TopOfMaxedLog = 0f; // the maximum height it can be, without overlapping anything else 
+	//[HideInInspector]
 	public GUIStyle GS;
+	//[HideInInspector]
 	public GUIContent GC;
-	public float VSpanBox; // box vertical span
-	public float VSpanButton; // button vertical span
-	public float VSpanLabel; // label vertical span
+	//[HideInInspector]
+	public float VSpanBox; // box vertical span 
+	//[HideInInspector]
+	public float VSpanButton; // button vertical span 
+	//[HideInInspector]
+	public float VSpanLabel; // label vertical span 
+	[HideInInspector]
 	public Rect Window = new Rect(0, 0, 600, 400); // background for most menus 
+
 	private HudMode mode = HudMode.SplashLogos;
 	public HudMode Mode {
 		get { return mode; }
 		set {
 			scrollPos = Vector2.zero;
 
-			// tasks to do when LEAVING this mode
+			// tasks to do when LEAVING this mode 
 			switch (mode) {
 				case HudMode.Controls:
 					CcInput.SaveKeyConfig();
 					controls.enabled = false;
+					PlayerPrefs.Save();
 					break;
-			case HudMode.Settings:
-				PlayerPrefs.Save(); //potential FIXME(I didn't see saving anywhere in the settings code, so added it here)
-				break;
+				case HudMode.Settings:
+					PlayerPrefs.Save();
+					break;
 			}
 			
 			mode = value;
@@ -53,7 +63,7 @@ public class Hud : MonoBehaviour {
 	}
 
 
-	// private
+	// private 
 	string defaultName = "Lazy Noob";
 	MessageOfTheMoment motm = new MessageOfTheMoment();
 	UserPlaying playMode = new UserPlaying();
@@ -61,12 +71,12 @@ public class Hud : MonoBehaviour {
 	AboutMenu aboutMenu = new AboutMenu();
 	float tFOV = 90f;
 
-	// UI element sizes
-	int midX, midY; // middle of the screen
-	int vSpan = 20; // FIXME: hardwired vertical span of the text.  doubled in many places for button height
+	// UI element sizes 
+	int midX, midY; // middle of the screen 
+	int vSpan = 20; // FIXME: hardwired vertical span of the text.  doubled in many places for button height 
 	Vector2 scrollPos = Vector2.zero;
 
-	// scripts
+	// scripts 
 	CcNet net;
 	Arsenal arse;
 	Controls controls;
@@ -76,16 +86,15 @@ public class Hud : MonoBehaviour {
 	
 	void Start() {
 		matchSetup.Init();
-		//GUI.skin = ScriptableObject.CreateInstance<GUISkin>();
 
-		// scripts
+		// scripts 
 		net = GetComponent<CcNet>();
 		Log = GetComponent<CcLog>();
 		arse = GetComponent<Arsenal>();
 		controls = GetComponent<Controls>();
 		locUser = GetComponent<LocalUser>();
 		
-		// make local player
+		// make local player 
 		net.LocUs = new NetEntity();
 		net.LocUs.local = true;
 		net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
@@ -262,7 +271,7 @@ public class Hud : MonoBehaviour {
 		if (net.Connected && 
 		    net.gameOver) 
 		{
-			string s = "Next Game in: " +  Mathf.FloorToInt(net.NextMatchTime).ToString() + " seconds.";
+			string s = "Next Game in: " +  Mathf.FloorToInt(net.IntermissionTimeLeft).ToString() + " seconds.";
 			S.SetShoutyColor();
 			S.OutlinedLabel(new Rect(midX-50, 5, 200, 30), s);
 		}

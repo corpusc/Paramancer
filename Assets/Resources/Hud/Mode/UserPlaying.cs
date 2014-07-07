@@ -39,7 +39,7 @@ public class UserPlaying {
 
 		var locEnt = net.LocUs.Visuals;
 
-		var gunACooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
+		var gunHandCooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
 		Gun gunHand = locEnt.GunInHand;
 		Gun gunBack = locEnt.GunOnBack;
 		
@@ -75,7 +75,7 @@ public class UserPlaying {
 		if (!net.gameOver) {
 			if (net.CurrMatch.Duration > 0f) {
 				// show time left 
-				string s = timeFromSecs(net.gameTimeLeft);
+				string s = timeFromSecs(net.MatchTimeLeft);
 				var w = hud.GetWidthLabel(s);
 				GUI.color = Color.white;
 				S.OutlinedLabel(new Rect(
@@ -124,7 +124,7 @@ public class UserPlaying {
 		if (gunHand >= Gun.Pistol) {
 			float coolDownPercent = 50f; // more like: 0f to 50f
 			if (arse.Guns[(int)gunHand].Delay > 0f) {
-				coolDownPercent = (gunACooldown / arse.Guns[(int)gunHand].Delay) * 50f;
+				coolDownPercent = (gunHandCooldown / arse.Guns[(int)gunHand].Delay) * 50f;
 				coolDownPercent = 50f-coolDownPercent;
 			}
 			

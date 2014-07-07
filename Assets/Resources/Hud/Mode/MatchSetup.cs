@@ -22,7 +22,6 @@ public class MatchSetup {
 	}
 
 	public void Draw(bool serving, CcNet net, Hud hud, int vSpan) {
-		GUI.skin.label.wordWrap = false;
 		int qSpan = Screen.width / 4; // quarter of screen width span 
 		Rect startButton = new Rect(qSpan, Screen.height - vSpan*4, qSpan*2, vSpan*4);
 		screen = new Rect(0, 0, Screen.width, Screen.height);
