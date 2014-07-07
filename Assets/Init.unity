@@ -292,11 +292,10 @@ MonoBehaviour:
   serverGameChange: 0
   broadcastPos: 0
   lastGameWasTeamBased: 0
+  MatchTimeLeft: 0
+  IntermissionTimeLeft: 0
   gunBobbing: 1
   JumpAuto: 1
-  nameOfOfflineBackdrop: OfflineBackdrop
-  gameTimeLeft: 0
-  NextMatchTime: 0
 --- !u!114 &1973207296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,11 +321,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359f0fb783c8c814daa4c218ac0146e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Font: {fileID: 12800000, guid: 6dcecc57693b1d2419e4eb77f98caf4c, type: 3}
+  Log: {fileID: 0}
   Invisible: 0
   GoToPrevMenu: << Back <<
   TopOfMaxedLog: 0
-  Log: {fileID: 0}
-  Font: {fileID: 0}
   GS:
     m_Name: 
     m_Normal:

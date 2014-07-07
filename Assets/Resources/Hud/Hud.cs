@@ -155,6 +155,7 @@ public class Hud : MonoBehaviour {
 		if (firstTime) {
 			firstTime = false;
 
+			GUI.skin.label.wordWrap = true;
 			// setup vertical span sizes
 			GC = new GUIContent("Qypjg");
 			GS = "Box";
