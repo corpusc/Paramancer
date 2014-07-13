@@ -79,7 +79,7 @@ public class CcNet : MonoBehaviour {
 	GameObject basketball;
 	// map 
 	bool preppingMap;
-	bool playableMapIsLoaded;
+	bool playableMapIsLoaded; // to avoid events for Init, or OfflineBackdrop scenes 
 	// announcements 
 	bool twoMinsAnnounced = false;
 	bool oneMinAnnounced = false;
@@ -883,7 +883,7 @@ public class CcNet : MonoBehaviour {
 				Entities[i].team = team;
 				//Entities[i].Visuals.SetModelVisibility(!players[i].local);
 				
-				LogEntry l = new LogEntry();
+				var l = new LogEntry();
 				l.Maker = "";
 				l.Text = "";
 				
@@ -916,7 +916,9 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 	}
-	
+
+
+
 	//-------- player joining stuff ----------
 	[RPC]
 	void NewPlayer(NetworkViewID viewID, string name, Vector3 cA, Vector3 cB, Vector3 cC, int head, 

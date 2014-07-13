@@ -10,7 +10,7 @@ public class Hud : MonoBehaviour {
 	[HideInInspector]
 	public bool Invisible = false;
 	[HideInInspector]
-	public string GoToPrevMenu = "<< Back <<";
+	public string GoToMainMenu = "<< Back <<";
 	[HideInInspector]
 	public float TopOfMaxedLog = 0f; // the maximum height it can be, without overlapping anything else 
 	//[HideInInspector]
@@ -388,8 +388,12 @@ public class Hud : MonoBehaviour {
 		if (scrolling)
 			GUILayout.EndScrollView();
 
-		if (GUILayout.Button(GoToPrevMenu)) {
+		if (GUILayout.Button(GoToMainMenu)) {
 			switch (Mode) {
+				case HudMode.About:
+					aboutMenu.ShowingFarFuture = false;
+					scrollPos = Vector2.zero; // should we reset this for ALL modes? 
+					break;
 				case HudMode.ConnectionError:
 					Network.Disconnect();
 					break;

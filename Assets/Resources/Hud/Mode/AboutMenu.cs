@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
+
+
 
 public class AboutMenu {
-	bool showingFarFuture = false;
+	public bool ShowingFarFuture = false;
 
 	public bool Draw(Hud hud) {
 		string s = "";
 		
-		if (showingFarFuture) {
+		if (ShowingFarFuture) {
 			GUILayout.Label("");
 			hud.CategoryHeader("FAR FUTURE GOALS");
 			GUILayout.Label("");
@@ -58,7 +59,7 @@ public class AboutMenu {
 
 
 			if (GUILayout.Button("NEAR-TERM GOALS")) {
-				showingFarFuture = false;
+				ShowingFarFuture = false;
 				return true;
 			}
 		}else{
@@ -105,7 +106,7 @@ public class AboutMenu {
 
 
 			if (GUILayout.Button("FAR FUTURE GOALS")) {
-				showingFarFuture = true;
+				ShowingFarFuture = true;
 				return true;
 			}
 		}

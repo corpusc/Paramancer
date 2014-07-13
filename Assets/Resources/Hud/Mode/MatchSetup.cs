@@ -308,7 +308,7 @@ public class MatchSetup {
 		}
 
 		GUILayout.FlexibleSpace();
-		if (GUILayout.Button(hud.GoToPrevMenu/*, GUILayout.ExpandWidth(false)*/)) {
+		if (GUILayout.Button(hud.GoToMainMenu/*, GUILayout.ExpandWidth(false)*/)) {
 			hud.Mode = HudMode.MainMenu;
 		}
 		
