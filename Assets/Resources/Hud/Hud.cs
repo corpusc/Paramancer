@@ -94,7 +94,7 @@ public class Hud : MonoBehaviour {
 		controls = GetComponent<Controls>();
 		locUser = GetComponent<LocalUser>();
 		
-		// make local player 
+		// make local user 
 		net.LocUs = new NetEntity();
 		net.LocUs.local = true;
 		net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
@@ -1093,8 +1093,8 @@ public class Hud : MonoBehaviour {
 
 		GUI.DrawTexture(r, Pics.Get(currFrame + ""));
 
-		if (Time.time > logoDura //|| 
-		    //Debug.isDebugBuild
+		if (Time.time > logoDura || 
+		    Debug.isDebugBuild
 	    )
 			Mode = HudMode.MainMenu;
 	}

@@ -87,8 +87,8 @@ public enum HudMode {
 	Controls,
 	Settings,
 	Credits,
-	Playing, // guess its not really BOTH, until i implement single player
-	Editing, // guess its not really BOTH, until i implement single player
+	Playing,
+	Editing,
 	
 	Count
 }

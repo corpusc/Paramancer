@@ -443,7 +443,6 @@ GameObject:
   - 4: {fileID: 92657118}
   - 33: {fileID: 92657120}
   - 23: {fileID: 92657119}
-  - 114: {fileID: 92657121}
   m_Layer: 0
   m_Name: pickupType4
   m_TagString: Untagged
@@ -490,21 +489,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 92657117}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &92657121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 92657117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 8
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!1 &160116531
 GameObject:
   m_ObjectHideFlags: 0
@@ -515,7 +499,6 @@ GameObject:
   - 4: {fileID: 160116532}
   - 33: {fileID: 160116534}
   - 23: {fileID: 160116533}
-  - 114: {fileID: 160116535}
   m_Layer: 0
   m_Name: pickupType3
   m_TagString: Untagged
@@ -562,21 +545,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 160116531}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &160116535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 160116531}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 7
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!1 &168890942
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,7 +807,6 @@ GameObject:
   - 4: {fileID: 319015017}
   - 33: {fileID: 319015019}
   - 23: {fileID: 319015018}
-  - 114: {fileID: 319015020}
   m_Layer: 0
   m_Name: pickupType5
   m_TagString: Untagged
@@ -886,21 +853,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 319015016}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &319015020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 319015016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 4
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!1 &432520760
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,7 +1073,6 @@ GameObject:
   - 4: {fileID: 518602547}
   - 33: {fileID: 518602550}
   - 23: {fileID: 518602549}
-  - 114: {fileID: 518602548}
   m_Layer: 0
   m_Name: pickupType1
   m_TagString: Untagged
@@ -1140,21 +1091,6 @@ Transform:
   m_LocalScale: {x: .5, y: .100000001, z: .5}
   m_Children: []
   m_Father: {fileID: 2018786209}
---- !u!114 &518602548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 518602546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 0
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!23 &518602549
 Renderer:
   m_ObjectHideFlags: 0
@@ -2167,7 +2103,6 @@ GameObject:
   - 4: {fileID: 935761610}
   - 33: {fileID: 935761612}
   - 23: {fileID: 935761611}
-  - 114: {fileID: 935761613}
   m_Layer: 0
   m_Name: pickupType2
   m_TagString: Untagged
@@ -2214,21 +2149,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 935761609}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &935761613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 935761609}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 1
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!1 &939167898
 GameObject:
   m_ObjectHideFlags: 0
@@ -2309,7 +2229,6 @@ GameObject:
   - 4: {fileID: 939776393}
   - 33: {fileID: 939776395}
   - 23: {fileID: 939776394}
-  - 114: {fileID: 939776396}
   m_Layer: 0
   m_Name: pickupType1
   m_TagString: Untagged
@@ -2356,21 +2275,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 939776392}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &939776396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 939776392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 5
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!1 &942886668
 GameObject:
   m_ObjectHideFlags: 0
@@ -2868,7 +2772,6 @@ GameObject:
   - 4: {fileID: 1126272909}
   - 33: {fileID: 1126272911}
   - 23: {fileID: 1126272910}
-  - 114: {fileID: 1126272912}
   m_Layer: 0
   m_Name: pickupType3
   m_TagString: Untagged
@@ -2915,21 +2818,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1126272908}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1126272912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1126272908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 2
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!1 &1160243740
 GameObject:
   m_ObjectHideFlags: 0
@@ -6143,7 +6031,6 @@ GameObject:
   - 4: {fileID: 1667357754}
   - 33: {fileID: 1667357757}
   - 23: {fileID: 1667357756}
-  - 114: {fileID: 1667357755}
   m_Layer: 0
   m_Name: pickupType1
   m_TagString: Untagged
@@ -6162,21 +6049,6 @@ Transform:
   m_LocalScale: {x: .5, y: .100000001, z: .5}
   m_Children: []
   m_Father: {fileID: 2018786209}
---- !u!114 &1667357755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1667357753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 0
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!23 &1667357756
 Renderer:
   m_ObjectHideFlags: 0
@@ -7247,7 +7119,6 @@ GameObject:
   - 4: {fileID: 1964633572}
   - 33: {fileID: 1964633574}
   - 23: {fileID: 1964633573}
-  - 114: {fileID: 1964633575}
   m_Layer: 0
   m_Name: pickupType4
   m_TagString: Untagged
@@ -7294,21 +7165,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1964633571}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1964633575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1964633571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 3
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!1 &2009988653
 GameObject:
   m_ObjectHideFlags: 0
@@ -7459,7 +7315,6 @@ GameObject:
   - 4: {fileID: 2015922191}
   - 33: {fileID: 2015922194}
   - 23: {fileID: 2015922193}
-  - 114: {fileID: 2015922192}
   m_Layer: 0
   m_Name: pickupType1
   m_TagString: Untagged
@@ -7478,21 +7333,6 @@ Transform:
   m_LocalScale: {x: .5, y: .100000001, z: .5}
   m_Children: []
   m_Father: {fileID: 2018786209}
---- !u!114 &2015922192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2015922190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 0
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!23 &2015922193
 Renderer:
   m_ObjectHideFlags: 0
@@ -7664,7 +7504,6 @@ GameObject:
   - 4: {fileID: 2076012436}
   - 33: {fileID: 2076012438}
   - 23: {fileID: 2076012437}
-  - 114: {fileID: 2076012439}
   m_Layer: 0
   m_Name: pickupType2
   m_TagString: Untagged
@@ -7711,21 +7550,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2076012435}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2076012439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2076012435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec96b8366fcff467b978205b4c142267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPointID: 6
-  RestockTime: 0
-  stocked: 0
-  currentAvailablePickup: {fileID: 0}
 --- !u!1 &2117122898
 GameObject:
   m_ObjectHideFlags: 0

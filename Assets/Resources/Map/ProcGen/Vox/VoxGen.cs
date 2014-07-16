@@ -77,13 +77,6 @@ public static class VoxGen {
 		numVoxAcross.Y = 32;
 		
 		cells = new Cell[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
-		
-		// bags 
-		// ...are containers.
-		// since we can't have "folders" in a scene, we parent spammy quads and 
-		// such to these objects, so they can be collapsed/hidden under one word 
-		PrimBag = GameObject.Find("[PRIM]");
-		SpawnBag = GameObject.Find("[SPAWN]");
 	}
 	
 	
@@ -106,7 +99,14 @@ public static class VoxGen {
 			seed;
 		Theme = theme;
 		Scale = Vector3.one * 2f;
-		
+
+		// bags 
+		// ...are containers.
+		// since we can't have "folders" in a scene, we parent spammy quads and 
+		// such to these objects, so they will be collapsed/hidden 
+		PrimBag = GameObject.Find("[PRIM]");
+		SpawnBag = GameObject.Find("[SPAWN]");
+
 		Debug.Log("Generating map with seed: " + seed);
 		// cleanup previous possible map 
 		rooms.Clear();
@@ -175,8 +175,8 @@ public static class VoxGen {
 		yMax = r.Pos.Y + r.Size.Y;
 		zMax = r.Pos.Z + r.Size.Z;
 
-		if (currRoom == 0)
-			Debug.Log("xMax: " + xMax + "  yMax: " + yMax + "  zMax: " + zMax);
+		//if (currRoom == 0)
+			//Debug.Log("xMax: " + xMax + "  yMax: " + yMax + "  zMax: " + zMax);
 //		Debug.Log("room: " + currRoom + " - " + r.Pos.X + " " + r.Pos.Y + " " + r.Pos.Z + 
 //		          " - " + r.Size.X + " " + r.Size.Y + " " + r.Size.Z);
 	}
@@ -341,10 +341,6 @@ public static class VoxGen {
 		room.Size.Y = e.Y - s.Y + 1;
 		room.Size.Z = e.Z - s.Z + 1;
 		rooms.Add(room);
-
-		if (currRoom == 0)
-			Debug.Log(room.Pos.X + " " + room.Pos.Y + " " + room.Pos.Z + 
-				" - " + room.Size.X + " " + room.Size.Y + " " + room.Size.Z);
 	}
 
 
@@ -787,7 +783,7 @@ public static class VoxGen {
 					Scale.y*t.Y + yOff, 
 					Scale.z*t.Z);
 				if (isGun)
-					ns.GetComponent<PickupPoint>().pickupPointID = numMade;
+					ns.GetComponent<SpawnData>().Gun = numMade;
 				
 				numMade++;
 			}

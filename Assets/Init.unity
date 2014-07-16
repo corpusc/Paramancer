@@ -285,7 +285,7 @@ MonoBehaviour:
   listenPort: 25000
   MatchTypeAndMap: 
   password: 
-  pickupPoints: []
+  GunSpawns: []
   team1Score: 0
   team2Score: 0
   gameOver: 0
@@ -324,7 +324,7 @@ MonoBehaviour:
   Font: {fileID: 12800000, guid: 6dcecc57693b1d2419e4eb77f98caf4c, type: 3}
   Log: {fileID: 0}
   Invisible: 0
-  GoToPrevMenu: << Back <<
+  GoToMainMenu: << Back <<
   TopOfMaxedLog: 0
   GS:
     m_Name: 

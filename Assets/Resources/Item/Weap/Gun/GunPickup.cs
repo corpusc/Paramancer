@@ -6,7 +6,7 @@ using System.Collections;
 public class GunPickup : MonoBehaviour {
 	public string Name;
 	public GameObject Model; // this WAS is an IDE linked sub-object of the prefab 
-	public PickupPoint PickupPoint;
+	public SpawnData SpawnData;
 	
 	// private 
 	CcNet net;
@@ -100,7 +100,7 @@ public class GunPickup : MonoBehaviour {
 	}
 	
 	public void Pickup() {
-		net.UnstockPickupPoint(PickupPoint);
+		net.UnstockPickupPoint(SpawnData);
 		Destroy(gameObject);
 	}
 }

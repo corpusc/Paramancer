@@ -299,14 +299,6 @@ public class MatchSetup {
 			GUILayout.EndScrollView();
 		}
 		
-		//print("Current map name: " + maps[mapId].Name);
-
-		if (matches[matchId].Maps[mapId] == MatchData.VoxelName) {
-			matches[matchId].NeedsGenerating = true;
-		} else {
-			matches[matchId].NeedsGenerating = false;
-		}
-
 		GUILayout.FlexibleSpace();
 		if (GUILayout.Button(hud.GoToMainMenu/*, GUILayout.ExpandWidth(false)*/)) {
 			hud.Mode = HudMode.MainMenu;

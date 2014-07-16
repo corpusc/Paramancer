@@ -48,7 +48,7 @@ public class CcNet : MonoBehaviour {
 	public string MatchTypeAndMap = ""; // match type & map name (for server browser)
 	public string password = "";
 	public List<NetEntity> Entities;
-	public List<PickupPoint> pickupPoints = new List<PickupPoint>();
+	public List<SpawnData> GunSpawns = new List<SpawnData>();
 	public int team1Score = 0;
 	public int team2Score = 0;
 	public bool gameOver = false;
@@ -78,8 +78,7 @@ public class CcNet : MonoBehaviour {
 	// bball 
 	GameObject basketball;
 	// map 
-	bool preppingMap;
-	bool playableMapIsLoaded; // to avoid events for Init, or OfflineBackdrop scenes 
+	bool playableMapIsReady;
 	// announcements 
 	bool twoMinsAnnounced = false;
 	bool oneMinAnnounced = false;
@@ -108,6 +107,169 @@ public class CcNet : MonoBehaviour {
 		Application.LoadLevel(nameOfOfflineBackdrop);
 		Entities = new List<NetEntity>();
 	}
+
+
+
+	void Update() {
+		setupMapIfReady();
+
+		// ping periodically
+		if (Connected && Time.time > nextPingTime) {
+			nextPingTime = Time.time + 5f;
+			for (int i=0; i<Entities.Count; i++) {
+				if (!Entities[i].local) {
+					new Ping(Entities[i].netPlayer.ipAddress);
+				}
+			}
+		}
+		
+		// let players know they are still connected 
+		if (Connected && InServerMode) {
+			if (Time.time > latestServerHeartbeat + 9f) {
+				latestServerHeartbeat = Time.time + 9f;
+				networkView.RPC("HeartbeatFromServer", RPCMode.All);
+			}
+		}
+		
+		// are we still connected to the server? 
+		if (Connected && !InServerMode) {
+			if (Time.time > latestPacket + 30f) {
+				DisconnectNow();
+				hud.Mode = HudMode.ConnectionError;
+				Error = "Client hasn't heard from host for 30 seconds.\n" +
+					"Probably because someone's connection sucks.";
+			}
+			
+			// remind the server we here 
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].local && Time.time > Entities[i].lastPong + 5f) {
+					networkView.RPC("PONG", RPCMode.Server,Entities[i].viewID);
+					Entities[i].lastPong = Time.time;
+				}	
+			}
+		}
+		
+		if (Connected && InServerMode) {
+			for (int i=0; i<Entities.Count; i++) {
+				if (!Entities[i].local) {
+					if (Time.time>Entities[i].lastPong + 20f) {
+						// gone 20 secs without hearing from client, auto-kick 
+						Kick(i,true);
+					}
+				}
+			}
+		}
+		
+		if (InServerMode) {
+			// respawn dead players 
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].Visuals != null && Entities[i].Health <= 0f) {
+					if (Time.time > Entities[i].respawnTime) {
+						if (CurrMatch.playerLives == 0 || Entities[i].lives > 0)
+							Entities[i].Health = 100f;
+						
+						networkView.RPC("AssignPlayerStats", RPCMode.All, 
+						                Entities[i].viewID, 
+						                Entities[i].Health, 
+						                Entities[i].kills, 
+						                Entities[i].deaths, 
+						                Entities[i].currentScore);
+						networkView.RPC("RespawnPlayer", RPCMode.All, Entities[i].viewID);
+					}
+				}else{ // set spawn countdown 
+					Entities[i].respawnTime = Time.time + CurrMatch.respawnWait;
+				}
+			}
+		}
+		
+		// change team 
+		if (Connected && CurrMatch.teamBased) {
+			if (CcInput.Started(UserAction.SwapTeam)) {
+				if (LocUs.team == 1) {
+					LocUs.team = 2;
+				}else{
+					LocUs.team = 1;
+				}
+				
+				networkView.RPC("PlayerChangedTeams", RPCMode.AllBuffered, LocUs.viewID, LocUs.team);
+				
+				for (int i=0; i<Entities.Count; i++) {
+					if (Entities[i].viewID == LocUs.viewID && Entities[i].Health > 0f) 
+						Entities[i].Visuals.Respawn();
+				}
+			}
+		}
+		
+		if (!countdownAnnounced) {
+			gameStartTime = Time.time + 5f; // so that you can't deal damage before "FIGHT!"
+			countdownAnnounced = true;
+			if (InServerMode) {
+				Sfx.PlayOmni("321Fight");
+			}
+		}
+		
+		// time announcements 
+		MatchTimeLeft -= Time.deltaTime;
+		if (InServerMode) {
+			if (MatchTimeLeft < 120f && !twoMinsAnnounced) {
+				Sfx.PlayOmni("RemainingMins2");
+				twoMinsAnnounced = true;
+			}
+			else if (MatchTimeLeft < 60f && !oneMinAnnounced) {
+				Sfx.PlayOmni("RemainingMins1");
+				oneMinAnnounced = true;
+			}
+			else if (MatchTimeLeft < 30f && !thirtySecsAnnounced) {
+				Sfx.PlayOmni("RemainingSecs30");
+				thirtySecsAnnounced = true;
+			}
+			else if (MatchTimeLeft < 10f && !almostOverAnnounced) {
+				Sfx.PlayOmni("AlmostOver");
+				almostOverAnnounced = true;
+			}
+		}
+		
+		// game time up? 
+		if (Connected && !gameOver) {
+			if (MatchTimeLeft <= 0f && CurrMatch.Duration > 0f){
+				MatchTimeLeft = 0f;
+				gameOver = true;
+				
+				IntermissionTimeLeft = 15f;
+			}
+		}
+		
+		// if game over, count in next match 
+		if (Connected && gameOver) {
+			IntermissionTimeLeft -= Time.deltaTime;
+			if (IntermissionTimeLeft <= 0f) {
+				IntermissionTimeLeft = 0f;
+				
+				if (InServerMode) {
+					//begin next match using current settings
+					serverGameChange = true;
+					lastGameWasTeamBased = CurrMatch.teamBased;
+					NetVI = Network.AllocateViewID();
+					RequestGameData();
+				}
+			}
+		}
+		
+		// pickups 
+		if (Connected && InServerMode && !gameOver) {
+			for (int i=0; i<GunSpawns.Count; i++) {
+				if (!GunSpawns[i].stocked) {
+					GunSpawns[i].RestockTime -= Time.deltaTime;
+					if (GunSpawns[i].RestockTime <= 0f) {
+						Gun item = (Gun)GunSpawns[i].Gun;
+						networkView.RPC("RestockPickup", RPCMode.All, GunSpawns[i].Gun, (int)item);
+					}
+				}
+			}
+		}
+	}
+
+
 
 	public BasketballScript GetBball() {
 		return basketball.GetComponent<BasketballScript>();
@@ -607,174 +769,17 @@ public class CcNet : MonoBehaviour {
 				Entities[i].lastPong = Time.time;
 		}
 	}
-	
-	void Update() {
-		// ping periodically
-		if (Connected && Time.time > nextPingTime) {
-			nextPingTime = Time.time + 5f;
-			for (int i=0; i<Entities.Count; i++) {
-				if (!Entities[i].local) {
-					new Ping(Entities[i].netPlayer.ipAddress);
-				}
-			}
-		}
-		
-		// let players know they are still connected 
-		if (Connected && InServerMode) {
-			if (Time.time > latestServerHeartbeat + 9f) {
-				latestServerHeartbeat = Time.time + 9f;
-				networkView.RPC("HeartbeatFromServer", RPCMode.All);
-			}
-		}
-		
-		// are we still connected to the server? 
-		if (Connected && !InServerMode) {
-			if (Time.time > latestPacket + 30f) {
-				DisconnectNow();
-				hud.Mode = HudMode.ConnectionError;
-				Error = "Client hasn't heard from host for 30 seconds.\n" +
-					"Probably because someone's connection sucks.";
-			}
-			
-			// remind the server we here 
-			for (int i=0; i<Entities.Count; i++) {
-				if (Entities[i].local && Time.time > Entities[i].lastPong + 5f) {
-					networkView.RPC("PONG", RPCMode.Server,Entities[i].viewID);
-					Entities[i].lastPong = Time.time;
-				}	
-			}
-		}
-		
-		if (Connected && InServerMode) {
-			for (int i=0; i<Entities.Count; i++) {
-				if (!Entities[i].local) {
-					if (Time.time>Entities[i].lastPong + 20f) {
-						// gone 20 secs without hearing from client, auto-kick 
-						Kick(i,true);
-					}
-				}
-			}
-		}
-		
-		if (InServerMode) {
-			// respawn dead players 
-			for (int i=0; i<Entities.Count; i++) {
-				if (Entities[i].Visuals != null && Entities[i].Health <= 0f) {
-					if (Time.time > Entities[i].respawnTime) {
-						if (CurrMatch.playerLives == 0 || Entities[i].lives > 0)
-							Entities[i].Health = 100f;
-						
-						networkView.RPC("AssignPlayerStats", RPCMode.All, 
-						                Entities[i].viewID, 
-						                Entities[i].Health, 
-						                Entities[i].kills, 
-						                Entities[i].deaths, 
-						                Entities[i].currentScore);
-						networkView.RPC("RespawnPlayer", RPCMode.All, Entities[i].viewID);
-					}
-				}else{ // set spawn countdown 
-					Entities[i].respawnTime = Time.time + CurrMatch.respawnWait;
-				}
-			}
-		}
-		
-		// change team 
-		if (Connected && CurrMatch.teamBased) {
-			if (CcInput.Started(UserAction.SwapTeam)) {
-				if (LocUs.team == 1) {
-					LocUs.team = 2;
-				}else{
-					LocUs.team = 1;
-				}
-				
-				networkView.RPC("PlayerChangedTeams", RPCMode.AllBuffered, LocUs.viewID, LocUs.team);
-				
-				for (int i=0; i<Entities.Count; i++) {
-					if (Entities[i].viewID == LocUs.viewID && Entities[i].Health > 0f) 
-						Entities[i].Visuals.Respawn();
-				}
-			}
-		}
 
-		if (!countdownAnnounced) {
-			gameStartTime = Time.time + 5f; // so that you can't deal damage before "FIGHT!"
-			countdownAnnounced = true;
-			if (InServerMode) {
-				Sfx.PlayOmni("321Fight");
-			}
-		}
-
-		// time announcements 
-		MatchTimeLeft -= Time.deltaTime;
-		if (InServerMode) {
-			if (MatchTimeLeft < 120f && !twoMinsAnnounced) {
-				Sfx.PlayOmni("RemainingMins2");
-				twoMinsAnnounced = true;
-			}
-			else if (MatchTimeLeft < 60f && !oneMinAnnounced) {
-				Sfx.PlayOmni("RemainingMins1");
-				oneMinAnnounced = true;
-			}
-			else if (MatchTimeLeft < 30f && !thirtySecsAnnounced) {
-				Sfx.PlayOmni("RemainingSecs30");
-				thirtySecsAnnounced = true;
-			}
-			else if (MatchTimeLeft < 10f && !almostOverAnnounced) {
-				Sfx.PlayOmni("AlmostOver");
-				almostOverAnnounced = true;
-			}
-		}
-		
-		// game time up? 
-		if (Connected && !gameOver) {
-			if (MatchTimeLeft <= 0f && CurrMatch.Duration > 0f){
-				MatchTimeLeft = 0f;
-				gameOver = true;
-				
-				IntermissionTimeLeft = 15f;
-			}
-		}
-		
-		// if game over, count in next match 
-		if (Connected && gameOver) {
-			IntermissionTimeLeft -= Time.deltaTime;
-			if (IntermissionTimeLeft <= 0f) {
-				IntermissionTimeLeft = 0f;
-				
-				if (InServerMode) {
-					//begin next match using current settings
-					serverGameChange = true;
-					lastGameWasTeamBased = CurrMatch.teamBased;
-					NetVI = Network.AllocateViewID();
-					RequestGameData();
-				}
-			}
-		}
-		
-		// pickups 
-		if (Connected && InServerMode && !gameOver) {
-			for (int i=0; i<pickupPoints.Count; i++) {
-				if (!pickupPoints[i].stocked) {
-					pickupPoints[i].RestockTime -= Time.deltaTime;
-					if (pickupPoints[i].RestockTime <= 0f) {
-						Gun item = (Gun)pickupPoints[i].pickupPointID;
-						networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
-					}
-				}
-			}
-		}
-	}
-	
 	
 	
 	[RPC]
 	void RestockPickup(int pointID, int item) {
-		for (int i=0; i<pickupPoints.Count; i++) {
-			if (pickupPoints[i].pickupPointID == pointID) {
-				if (pickupPoints[i].stocked) 
+		for (int i=0; i<GunSpawns.Count; i++) {
+			if (GunSpawns[i].Gun == pointID) {
+				if (GunSpawns[i].stocked) 
 					return;
 				
-				pickupPoints[i].stocked = true;
+				GunSpawns[i].stocked = true;
 
 				// health will be a kit model with an icon 
 				var o = GOs.Get("Kit");
@@ -782,8 +787,8 @@ public class CcNet : MonoBehaviour {
 					o = arse.Guns[item].Prefab;
 
 				var inst = (GameObject)GameObject.Instantiate(o);
-				pickupPoints[i].currentAvailablePickup = inst;
-				inst.transform.position = pickupPoints[i].transform.position;
+				GunSpawns[i].Takeable = inst;
+				inst.transform.position = GunSpawns[i].transform.position;
 				inst.transform.localScale = Vector3.one * 0.5f;
 
 				GunPickup gs;
@@ -797,39 +802,31 @@ public class CcNet : MonoBehaviour {
 					gs.Name = "Health";
 				}
 
-				gs.PickupPoint = pickupPoints[i];
+				gs.SpawnData = GunSpawns[i];
 			}
 		}
-
-		Color cCol = Color.green; // current color 
-		if (item >= (int)Gun.Pistol)
-			cCol = arse.Guns[item].Color;
-
-		var p = GameObject.Find("Gun");
-		foreach (Transform child in p.transform) {
-			if (child.gameObject.GetComponent<PickupPoint>().pickupPointID == pointID)
-				child.gameObject.renderer.material.color = cCol;
-		}
 	}
-	
-	public void UnstockPickupPoint(PickupPoint point){
-		for (int i=0; i<pickupPoints.Count; i++) {
-			if (point == pickupPoints[i]) {
-				networkView.RPC("UnstockRPC", RPCMode.All, pickupPoints[i].pickupPointID);
+
+
+
+	public void UnstockPickupPoint(SpawnData point){
+		for (int i=0; i<GunSpawns.Count; i++) {
+			if (point == GunSpawns[i]) {
+				networkView.RPC("UnstockRPC", RPCMode.All, GunSpawns[i].Gun);
 			}
 		}
 	}
 	[RPC]
 	void UnstockRPC(int pointID){
-		for (int i=0; i<pickupPoints.Count; i++) {
-			if (pointID == pickupPoints[i].pickupPointID) {
-				pickupPoints[i].stocked = false;
+		for (int i=0; i<GunSpawns.Count; i++) {
+			if (pointID == GunSpawns[i].Gun) {
+				GunSpawns[i].stocked = false;
 				
-				if (pickupPoints[i].currentAvailablePickup != null) 
-					Destroy(pickupPoints[i].currentAvailablePickup);
+				if (GunSpawns[i].Takeable != null) 
+					Destroy(GunSpawns[i].Takeable);
 				
 				if (InServerMode) 
-					pickupPoints[i].RestockTime = CurrMatch.restockTime;
+					GunSpawns[i].RestockTime = CurrMatch.restockTime;
 			}
 		}
 	}
@@ -837,14 +834,14 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void RequestPickupStocks() {
 		// a client has requested the current pickup stock info
-		for (int i=0; i<pickupPoints.Count; i++) {
-			if (pickupPoints[i].stocked) {
+		for (int i=0; i<GunSpawns.Count; i++) {
+			if (GunSpawns[i].stocked) {
 				Gun item = (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
 
 				if (item == Gun.None)
 					item = Gun.Health;
 
-				networkView.RPC("RestockPickup", RPCMode.All, pickupPoints[i].pickupPointID, (int)item);
+				networkView.RPC("RestockPickup", RPCMode.All, GunSpawns[i].Gun, (int)item);
 			}
 		}
 	}
@@ -959,7 +956,7 @@ public class CcNet : MonoBehaviour {
 		          S.VecToCol(cB), 
 		          S.VecToCol(cC), head, name, np, targetTeam, lives);
 		
-		if (playableMapIsLoaded) {
+		if (playableMapIsReady) {
 			// only instantiate the actual GameObject of the player if we are in the right map. 
 			// uninstantiated players are added when the map finishes loading 
 			Entities[Entities.Count-1].InstantiateGO(GOs.Get("FPSEntity"));
@@ -980,7 +977,7 @@ public class CcNet : MonoBehaviour {
 			networkView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
 		
-		if (playableMapIsLoaded) {
+		if (playableMapIsReady) {
 			var le = new LogEntry();
 			le.Maker = "";
 			le.Color = Color.grey;
@@ -1185,10 +1182,10 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		if (targetTeam == -1) {
-			// last game was team based, leave teams as they are
+			// last game was team based, leave teams as they are 
 		}
 		if (targetTeam == -2) {
-			// last game wasn't team based, this is, set team.
+			// last game wasn't team based, this is, set team 
 			LocUs.team = 1;
 			if (Random.Range(0,10) < 5) 
 				LocUs.team = 2;
@@ -1204,8 +1201,7 @@ public class CcNet : MonoBehaviour {
 		team2Score = 0;
 		
 		// clear stuff out if we are already playing 
-		preppingMap = false;
-		playableMapIsLoaded = false;
+		playableMapIsReady = false;
 		for (int i=0; i<Entities.Count; i++) {
 			if (Entities[i].Visuals != null) 
 				Destroy(Entities[i].Visuals.gameObject);
@@ -1222,84 +1218,91 @@ public class CcNet : MonoBehaviour {
 		arse.Clear();
 		
 		// load map 
-		preppingMap = true;
 		Application.LoadLevel(mapName);
+		
+		// if procgen map 
+		if (mapName == MatchData.VoxelName)
+			VoxGen.GenerateMap(CurrMatch.Seed, CurrMatch.Theme);
 	}
 	
 	void OnLevelWasLoaded(int level) {
 		Debug.Log("OnLevelWasLoaded() - level: " + level);
 
-		if (CurrMatch.NeedsGenerating) {
-			VoxGen.GenerateMap(CurrMatch.Seed, CurrMatch.Theme);
+		// skip Init(0) and OfflineBackdrop(1) scenes 
+		if (level > 1 && !VoxGen.Generating)
+			setupSpawns();
+	}
+
+	private void setupSpawns() {
+		playableMapIsReady = true;
+		
+		handleBBall();
+		
+		// add entities for all known users 
+		for (int i=0; i<Entities.Count; i++) {
+			Entities[i].InstantiateGO(GOs.Get("FPSEntity"));
 		}
+		
+		// tell everyone we're here 
+		networkView.RPC("NewPlayer", RPCMode.AllBuffered, LocUs.viewID, LocUs.name, 
+		                S.ColToVec(LocUs.colA), S.ColToVec(LocUs.colB), S.ColToVec(LocUs.colC), 
+		                LocUs.headType, Network.player, LocUs.team, CurrMatch.playerLives);
+		
+		setupGunSpawns();
+		
+		networkView.RPC("RequestPickupStocks", RPCMode.Server);
+		hud.Mode = HudMode.Playing;
+	}
 
-		if (preppingMap) {
-			preppingMap = false;
-			playableMapIsLoaded = true;
+	private void handleBBall() {
+		if (CurrMatch.basketball) {
+			basketball = (GameObject)GameObject.Instantiate(GOs.Get("BasketBall"));
 			
-			// drop the basket ball in 
-			if (CurrMatch.basketball) {
-				basketball = (GameObject)GameObject.Instantiate(GOs.Get("BasketBall"));
-				
-				if (!InServerMode) 
-					networkView.RPC("RequestBallStatus", RPCMode.Server);
-			}else{
-				if (GameObject.Find("_BasketRed") != null) 
-					Destroy(GameObject.Find("_BasketRed"));
-				if (GameObject.Find("_BasketBlue") != null) 
-					Destroy(GameObject.Find("_BasketBlue"));
-			}
-			
-			// add entities for all known users 
-			for (int i=0; i<Entities.Count; i++) {
-				Entities[i].InstantiateGO(GOs.Get("FPSEntity"));
-			}
-			
-			// tell everyone we're here 
-			networkView.RPC("NewPlayer", RPCMode.AllBuffered, LocUs.viewID, LocUs.name, 
-                S.ColToVec(LocUs.colA), S.ColToVec(LocUs.colB), S.ColToVec(LocUs.colC), 
-				LocUs.headType, Network.player, LocUs.team, CurrMatch.playerLives);
-			
-			// make sure we know about gun spawn points 
-			pickupPoints = new List<PickupPoint>();
-			var p = GameObject.Find("Gun");
-			if (p != null) {
-				string s = "items: ";
-				// consumable list so guns only appear once (intially), and the rest are healthpacks 
-				var guns = new List<Gun>();
-				for (int i = 0; i < (int)Gun.Count; i++)
-					guns.Add((Gun)i);
-				while (guns.Count < p.transform.childCount) // fill up the rest of spawns with health pickups 
-					guns.Add(Gun.Health);
-
-				foreach (Transform child in p.transform) {
-					//Gun item = (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
-					int i = (int)Random.Range(0, guns.Count);
-					Gun gun = guns[i];
-					guns.RemoveAt(i);
-
-					var pp = child.GetComponent<PickupPoint>();
-					pp.pickupPointID = (int)gun;
-
-					s += gun + ", ";
-					
-					if (gun == Gun.None) { // don't think this can ever happen anymore 
-						Destroy(child.gameObject);
-					}else{
-						pickupPoints.Add(pp);
-					}
-				}
-				//Debug.Log(s);
-			}
-			
-			networkView.RPC("RequestPickupStocks", RPCMode.Server);
-			hud.Mode = HudMode.Playing;
+			if (!InServerMode) 
+				networkView.RPC("RequestBallStatus", RPCMode.Server);
+		}else{
+			if (GameObject.Find("_BasketRed") != null) 
+				Destroy(GameObject.Find("_BasketRed"));
+			if (GameObject.Find("_BasketBlue") != null) 
+				Destroy(GameObject.Find("_BasketBlue"));
 		}
 	}
-	
+
+	private void setupGunSpawns() {
+		GunSpawns = new List<SpawnData>();
+		var par = GameObject.Find("Gun"); // parent of all the gun spawns 
+		if (par != null) {
+			string s = "items: ";
+			// consumable initial list... so guns only appear once, and the rest are healthpacks 
+			var guns = new List<Gun>();
+			for (int i = 0; i < (int)Gun.Count; i++)
+				guns.Add((Gun)i);
+			while (guns.Count < par.transform.childCount) // fill up the rest of spawns with health pickups 
+				guns.Add(Gun.Health);
+			
+			foreach (Transform child in par.transform) {
+				//Gun item = (Gun)Random.Range((int)Gun.None, arse.Guns.Length);
+				int i = (int)Random.Range(0, guns.Count);
+				Gun gun = guns[i];
+				guns.RemoveAt(i);
+				
+				var sd = new SpawnData();
+				sd.Gun = (int)gun;
+				
+				s += gun + ", ";
+				
+				if (gun == Gun.None) { // don't think this can ever happen anymore 
+					Destroy(child.gameObject);
+				}else{
+					GunSpawns.Add(sd);
+				}
+			}
+		}
+	}
+
 	[RPC]
 	void RequestBallStatus() {
-		// player has joined and doesn't yet know the status of the basketball, lets share it
+		// player has joined and doesn't yet know the status of the basketball, lets share it 
 		var bballScript = basketball.GetComponent<BasketballScript>();
 		networkView.RPC("ShareBallStatus",RPCMode.Others, basketball.transform.position, bballScript.moveVector, bballScript.throwerID, bballScript.held);
 	}
@@ -1435,7 +1438,7 @@ public class CcNet : MonoBehaviour {
 			
 			hud.Mode = HudMode.MainMenu;
 			Application.LoadLevel(nameOfOfflineBackdrop);
-			playableMapIsLoaded = false;
+			playableMapIsReady = false;
 		}
 	}
 	
@@ -1541,7 +1544,7 @@ public class CcNet : MonoBehaviour {
 		
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
-		playableMapIsLoaded = false;
+		playableMapIsReady = false;
 	}
 	
 	[RPC]
@@ -1567,7 +1570,7 @@ public class CcNet : MonoBehaviour {
 		Entities = new List<NetEntity>();
 		hud.Mode = HudMode.MainMenu;
 		Application.LoadLevel(nameOfOfflineBackdrop);
-		playableMapIsLoaded = false;
+		playableMapIsReady = false;
 		var le = new LogEntry();
 		le.Maker = "";
 		le.Color = Color.grey;
@@ -1575,4 +1578,19 @@ public class CcNet : MonoBehaviour {
 		log.Entries.Add(le);
 		log.TimeToHideEntireLog = Time.time + log.FadeTime;
 	}
+
+
+	
+	#region Map
+	
+	bool prevWas = false; // previously was generating map? 
+	private void setupMapIfReady() {
+		// if done generating map 
+		if (prevWas && !VoxGen.Generating)
+			setupSpawns();
+		
+		prevWas = VoxGen.Generating;
+	}
+
+	#endregion
 }
