@@ -1,0 +1,186 @@
+fileFormatVersion: 2
+guid: 513fcba26df666945ad8856ad91e77fd
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Arms
+    100002: //RootNode
+    100004: Camera
+    100006: Directional Light
+    100008: FullBodyIK
+    100010: Home
+    100012: Left_Elbow
+    100014: Left_ElbowGoal
+    100016: Left_IndexFinger01
+    100018: Left_IndexFinger02
+    100020: Left_IndexFinger03
+    100022: Left_IndexFinger04
+    100024: Left_MiddleFinger01
+    100026: Left_MiddleFinger02
+    100028: Left_MiddleFinger03
+    100030: Left_MiddleFinger04
+    100032: Left_Palm
+    100034: Left_Pinky01
+    100036: Left_Pinky02
+    100038: Left_Pinky03
+    100040: Left_Pinky04
+    100042: 'Left_PinkyFinger02 '
+    100044: 'Left_PinkyFinger03 '
+    100046: Left_RingFinger01
+    100048: Left_RingFinger02
+    100050: Left_RingFinger03
+    100052: Left_RingFinger04
+    100054: Left_Shoulder
+    100056: Left_ShoulderGoal
+    100058: Left_Thumb01
+    100060: Left_Wrist_End
+    100062: Left_Wrist_Start
+    100064: Left_WristGoal
+    100066: Right_Elbow
+    100068: Right_ElbowGoal
+    100070: Right_IndexFinger01
+    100072: Right_IndexFinger02
+    100074: Right_IndexFinger03
+    100076: Right_IndexFinger04
+    100078: Right_MiddleFinger01
+    100080: Right_MiddleFinger02
+    100082: Right_MiddleFinger03
+    100084: Right_MiddleFinger04
+    100086: Right_Palm
+    100088: Right_Pinky01
+    100090: Right_Pinky02
+    100092: Right_Pinky03
+    100094: Right_Pinky04
+    100096: Right_RingFinger01
+    100098: Right_RingFinger02
+    100100: Right_RingFinger03
+    100102: Right_RingFinger04
+    100104: Right_Shoulder
+    100106: Right_ShouldGoal
+    100108: Right_Thumb01
+    100110: Right_Thumb02
+    100112: Right_Thumb03
+    100114: Right_Wrist_End
+    100116: Right_Wrist_Start
+    100118: Right_WristGoal
+    100120: Texture Group
+    100122: WeaponLocator
+    400000: Arms
+    400002: //RootNode
+    400004: Camera
+    400006: Directional Light
+    400008: FullBodyIK
+    400010: Home
+    400012: Left_Elbow
+    400014: Left_ElbowGoal
+    400016: Left_IndexFinger01
+    400018: Left_IndexFinger02
+    400020: Left_IndexFinger03
+    400022: Left_IndexFinger04
+    400024: Left_MiddleFinger01
+    400026: Left_MiddleFinger02
+    400028: Left_MiddleFinger03
+    400030: Left_MiddleFinger04
+    400032: Left_Palm
+    400034: Left_Pinky01
+    400036: Left_Pinky02
+    400038: Left_Pinky03
+    400040: Left_Pinky04
+    400042: 'Left_PinkyFinger02 '
+    400044: 'Left_PinkyFinger03 '
+    400046: Left_RingFinger01
+    400048: Left_RingFinger02
+    400050: Left_RingFinger03
+    400052: Left_RingFinger04
+    400054: Left_Shoulder
+    400056: Left_ShoulderGoal
+    400058: Left_Thumb01
+    400060: Left_Wrist_End
+    400062: Left_Wrist_Start
+    400064: Left_WristGoal
+    400066: Right_Elbow
+    400068: Right_ElbowGoal
+    400070: Right_IndexFinger01
+    400072: Right_IndexFinger02
+    400074: Right_IndexFinger03
+    400076: Right_IndexFinger04
+    400078: Right_MiddleFinger01
+    400080: Right_MiddleFinger02
+    400082: Right_MiddleFinger03
+    400084: Right_MiddleFinger04
+    400086: Right_Palm
+    400088: Right_Pinky01
+    400090: Right_Pinky02
+    400092: Right_Pinky03
+    400094: Right_Pinky04
+    400096: Right_RingFinger01
+    400098: Right_RingFinger02
+    400100: Right_RingFinger03
+    400102: Right_RingFinger04
+    400104: Right_Shoulder
+    400106: Right_ShouldGoal
+    400108: Right_Thumb01
+    400110: Right_Thumb02
+    400112: Right_Thumb03
+    400114: Right_Wrist_End
+    400116: Right_Wrist_Start
+    400118: Right_WristGoal
+    400120: Texture Group
+    400122: WeaponLocator
+    4300000: Arms
+    7400000: modo_Anim
+    11100000: //RootNode
+    13700000: Arms
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 

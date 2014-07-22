@@ -1,0 +1,10 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPCamera
+RenderingFieldOfView 35
+ShakeSpeed 0.05
+MouseSensitivity 1.0 1.0
+MouseSmoothSteps 10
+MouseAcceleration true

@@ -1,0 +1,13 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPCamera
+BobAmplitude 0 0.85 0 0.5
+ShakeAmplitude 5 5 0
+RenderingFieldOfView 45
+ShakeSpeed 0.1
+MouseSensitivity 1 1
+MouseSmoothSteps 10
+MouseAcceleration True
+BobRate -0.5 1 0.5 0.5

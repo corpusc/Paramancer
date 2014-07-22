@@ -1,0 +1,15 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPCamera
+MouseSensitivity 0 0
+MouseAcceleration False
+PositionOffset 0 1.75 0.1
+PositionSpringStiffness 0
+PositionSpringDamping 1
+PositionSpring2Stiffness 0
+PositionSpring2Damping 1
+RenderingZoomDamping 0
+RotationSpringStiffness 0
+RotationSpringDamping 1

@@ -1,0 +1,12 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPCamera
+PositionOffset 0 0.1 1		// smoothly move the camera to slightly above the ground and 1 meter ahead
+MouseSensitivity 0 0			// prevent mouse input
+MouseAcceleration False
+RotationStrafeRoll -50			// this will rotate the camera along the ground in slopes
+RotationSpringStiffness 0.025
+RotationSpringDamping 0.999
+

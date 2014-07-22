@@ -1,0 +1,33 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPWeapon
+RenderingZoomDamping 0.5
+RenderingFieldOfView 20
+RenderingClippingPlanes 0.9 10
+PositionOffset 0.0020406 -0.2648034 0.9211685
+PositionSpringStiffness 0.01
+PositionSpringDamping 0.25
+PositionKneeling 0.0295775
+PositionFallRetract 1
+PositionPivotSpringStiffness 0.01
+PositionPivotSpringDamping 0.25
+PositionSpring2Stiffness 0.2
+PositionSpring2Damping 0.5615942
+PositionWalkSlide 0 0 0
+PositionPivot 0 0 0
+RotationOffset 4.744088 0 0
+RotationSpringStiffness 0.01
+RotationSpringDamping 0.25
+RotationSpring2Stiffness 0.85
+RotationSpring2Damping 0.8375
+RotationLookSway 0 0 0
+RotationStrafeSway 0 0 0
+RotationFallSway 0 0 0
+ShakeSpeed 0
+ShakeAmplitude 0.25 0 2
+BobRate 0.8 0.4 0 0
+BobAmplitude 0.125 -0.2 0 0
+BobMaxInputVelocity 1000
+

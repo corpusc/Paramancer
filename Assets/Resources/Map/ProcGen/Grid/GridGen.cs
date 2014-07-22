@@ -201,7 +201,7 @@ public class GridGen {
 	}
 
 	public void Build3D() {
-		primBin = GameObject.Find("Prims");
+		primBin = GameObject.Find("[PRIMS]");
 
 		// flag corners that need half of a lip 
 		for (int i = 0; i < Max.x; i++)

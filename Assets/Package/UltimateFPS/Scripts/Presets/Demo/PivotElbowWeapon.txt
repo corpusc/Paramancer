@@ -1,0 +1,17 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPWeapon
+RenderingZoomDamping 0.5
+RenderingFieldOfView 60
+PositionSpringStiffness 0.05
+PositionSpringDamping 0.75
+PositionPivotSpringStiffness 0.05
+PositionPivotSpringDamping 0.25
+PositionPivot 0 0 0.12
+PositionOffset 0.15 -0.15 -0.15
+RotationLookSway 3 3 0
+RenderingClippingPlanes 0.01 10
+
+

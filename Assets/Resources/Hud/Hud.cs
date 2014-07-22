@@ -197,7 +197,6 @@ public class Hud : MonoBehaviour {
 		// handle all the modes! 
 		switch (Mode) {
 			case HudMode.Playing:
-				net.LocUs.Visuals.FOV = tFOV;
 				TopOfMaxedLog = playMode.Draw(net, arse, midX, midY, VSpanLabel, this);
 				maybePromptClickIn();
 				break;
@@ -529,6 +528,7 @@ public class Hud : MonoBehaviour {
 		float wid = GetWidthLabel(s + "188.8");
 		GUILayout.Label(s + tFOV.ToString("#.#"), GUILayout.MinWidth(wid));
 		tFOV = GUILayout.HorizontalSlider(tFOV, 50f, 180f, GUILayout.MinWidth(128));
+		net.LocUs.Visuals.FOV = tFOV;
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 

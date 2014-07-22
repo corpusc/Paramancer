@@ -1,0 +1,31 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPCamera
+MouseSensitivity 1 1
+MouseSmoothSteps 20
+MouseSmoothWeight 1
+MouseAcceleration False
+MouseAccelerationThreshold 0.4
+RenderingFieldOfView 80
+RenderingZoomDamping 0.5
+PositionOffset 0 1.75 0.1
+PositionGroundLimit 0.1
+PositionSpringStiffness 0.01
+PositionSpringDamping 0.25
+PositionSpring2Stiffness 0.95
+PositionSpring2Damping 0.25
+PositionKneeling 0.025
+RotationPitchLimit 7.9 -11.90861
+RotationYawLimit -209.5623 -150
+RotationSpringStiffness 0.01
+RotationSpringDamping 0.25
+RotationKneeling 0.025
+RotationStrafeRoll 0.642
+ShakeSpeed 0
+ShakeAmplitude 10 10 0
+BobRate 0 0 0 0
+BobAmplitude 0 0 0 0
+BobStepThreshold 600
+BobMaxInputVelocity 1000

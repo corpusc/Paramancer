@@ -1,0 +1,14 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPController
+MotorAcceleration 0.18
+MotorJumpForce 0
+MotorAirSpeed 0
+MotorSlopeSpeedUp 0
+MotorSlopeSpeedDown 0
+PhysicsForceDamping .05
+PhysicsPushForce 5
+PhysicsGravityModifier 0.0
+PhysicsWallBounce 0

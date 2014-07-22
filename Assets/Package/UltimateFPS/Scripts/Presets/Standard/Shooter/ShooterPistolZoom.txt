@@ -1,0 +1,10 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPWeaponShooter
+MuzzleFlashPosition -0.0047317 0.013934 0.9020651
+ShellEjectDirection 1.5 1 1
+ShellEjectPosition 0.025 0.05 0.5
+ShellEjectVelocity 0.15
+ProjectileSpread 0.5

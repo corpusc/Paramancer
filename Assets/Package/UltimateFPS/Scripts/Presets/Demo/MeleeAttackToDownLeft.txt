@@ -1,0 +1,26 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPWeaponMeleeAttack
+WeaponStatePull PullUpRight
+WeaponStateSwing SwingDownLeft
+SwingDelay 0.4
+SwingDuration 0.2
+SwingRate 0.8
+SwingSoftForceFrames 50
+SwingPositionSoftForce -0.5 -0.1 0.3
+SwingRotationSoftForce 50 -25 0
+ImpactTime 0.11
+ImpactPositionSpringRecoil 0.01 0.03 -0.05
+ImpactPositionSpring2Recoil 0 0 0
+ImpactRotationSpringRecoil 0 0 0
+ImpactRotationSpring2Recoil 0 0 30
+DamageMethodName Damage
+//Damage 5
+DamageRadius 0.3
+DamageRange 2
+//DamageForce 1000
+SparkFactor 0.01
+SoundSwingPitch 0.75 1.25
+SoundImpactPitch 0.75 1.25

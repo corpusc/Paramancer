@@ -5,15 +5,20 @@ using System.Collections;
 
 public class NetEntity {
 	// misc 
-	public float Health {
-		get {   
-			if (Visuals == null) 
-				return -1f;   
-			else
-				return Visuals.bod.Health;   
-		}
-		set {   if (Visuals != null) Visuals.bod.Health = value;   }
-	}
+	public float Health = 100f;
+//	public float Health {
+//		get {   
+//			if (Visuals == null) 
+//				return -1f;   
+//			else
+//				return Visuals.bod.Health;   
+//		}
+//
+//		set {   
+//			if (Visuals != null) 
+//				Visuals.bod.Health = value;   
+//		}
+//	}
 
 	// networking 
 	public EntityClass Visuals = null;

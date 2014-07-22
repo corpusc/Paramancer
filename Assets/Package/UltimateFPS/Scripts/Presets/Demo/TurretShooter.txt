@@ -1,0 +1,25 @@
+///////////////////////////////////////////////////////////
+// Component Preset Script
+///////////////////////////////////////////////////////////
+
+ComponentType vp_FPWeaponShooter
+ProjectileScale 0.6
+ProjectileFiringRate 0.2
+ProjectileCount 10
+ProjectileSpread 1
+MotionPositionRecoil 0 0 -0.075
+MotionRotationRecoil -0.5 0 0
+MotionPositionReset 0.5
+MotionRotationReset 0.5
+MotionPositionPause 0.5
+MotionRotationPause 0.5
+MuzzleFlashPosition 0.0076085 -0.1752795 0.6203189
+MuzzleFlashScale 0.4 0.4 0.4
+MuzzleFlashFadeSpeed 0.0769472
+ShellScale 0
+ShellEjectDirection 0 1 2
+ShellEjectPosition 0.15 0.8954034 -0.25
+ShellEjectVelocity 0.2983871
+ShellEjectDelay 0
+ShellEjectSpin 1
+SoundFirePitch 0.9 0.9

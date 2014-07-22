@@ -212,7 +212,7 @@ public class EntityClass : MonoBehaviour {
 				Vector3 lastPos = transform.position;
 
 				// item pick up 
-				if (bod.Health > 0f) {
+				if (User.Health > 0f) {
 					HandlePickingUpItem();
 				}
 				offeredPickup = ""; // must do after the above check 

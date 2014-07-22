@@ -743,25 +743,9 @@ public class CcNet : MonoBehaviour {
 			default: return "....";
 		}
 	}
-	
-	[RPC]
-	void RespawnPlayer(NetworkViewID viewID) {
-		latestPacket = Time.time;
-		
-		if (viewID == LocUs.viewID) {
-			for (int i=0; i<Entities.Count; i++) {
-				if (Entities[i].viewID == viewID) {
-					if ((CurrMatch.playerLives > 0 && 
-						Entities[i].lives > 0) ||
-						CurrMatch.playerLives == 0
-					) {
-						Entities[i].Visuals.Respawn();
-					}
-				}
-			}
-		}
-	}
-	
+
+
+
 	[RPC]
 	void PONG(NetworkViewID viewID) {
 		for (int i=0; i<Entities.Count; i++) {
@@ -770,8 +754,30 @@ public class CcNet : MonoBehaviour {
 		}
 	}
 
+
+
+	#region Gun Spawns
+
+	[RPC]
+	void RespawnPlayer(NetworkViewID viewID) {
+		latestPacket = Time.time;
+		
+		if (viewID == LocUs.viewID) {
+			for (int i=0; i<Entities.Count; i++) {
+				if (Entities[i].viewID == viewID) {
+					if ((CurrMatch.playerLives > 0 && 
+					     Entities[i].lives > 0) ||
+					    CurrMatch.playerLives == 0
+					    ) {
+						Entities[i].Visuals.Respawn();
+					}
+				}
+			}
+		}
+	}
 	
-	
+
+
 	[RPC]
 	void RestockPickup(int pointID, int item) {
 		for (int i=0; i<GunSpawns.Count; i++) {
@@ -845,7 +851,13 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 	}
-	
+
+	#endregion
+
+
+
+	#region BBall
+
 	public void AnnounceBallCapture(NetworkViewID viewID) {
 		networkView.RPC("AnnounceBallCaptureRPC", RPCMode.All, viewID);
 	}
@@ -863,7 +875,11 @@ public class CcNet : MonoBehaviour {
 	void ThrowBallRPC(Vector3 fromPos, Vector3 direction, float strength) {
 		basketball.GetComponent<BasketballScript>().Throw(fromPos,direction,strength);
 	}
-	
+
+	#endregion
+
+
+
 	[RPC]
 	void HeartbeatFromServer() {
 		latestPacket = Time.time;
