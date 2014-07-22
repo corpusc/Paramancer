@@ -163,7 +163,7 @@ public enum ParticleType {
 
 public enum Theme {
 	SciFi,
-	Medieval,
+	Fantasy,
 	SteamPunk,
 
 	Count

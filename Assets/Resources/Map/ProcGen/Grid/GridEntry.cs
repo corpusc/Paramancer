@@ -36,7 +36,7 @@ public class GridEntry : MonoBehaviour {
 			-grid.Scale.y*2, 
 			grid.Scale.z);
 		Debug.Log("set pos");
-		grid.Build3D();
+		grid.GenerateSurfaces();
 		Debug.Log("survived Build3D()");
 	}
 
@@ -51,42 +51,42 @@ public class GridEntry : MonoBehaviour {
 	int wpI = 0; // wall point index 
 	List<WallPoint> walls = new List<WallPoint>();
 	void Update() {
-//		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-//
-//		if (wallPointNear(ray)) {
-//			cwt.GO.renderer.material.color = S.ShoutyBlue;
-//		}else{
-//			if (cwt != null) {
-//				cwt.GO.renderer.material.color = Color.white;
-//				cwt = null;
-//			}
-//		}
-//
-//
-//
-//		if (CcInput.Started(UserAction.Activate)) {
-//			prevWall = maybeMakeBUILDStyleWall(ray);
-//		}
-//
-//		if (CcInput.Ended(UserAction.Activate)) {
-//			var nw = maybeMakeBUILDStyleWall(ray);
-//
-//			if (prevWall != null) {
-//				var nq = GameObject.CreatePrimitive(PrimitiveType.Quad);
-//				var delta = nw.Pos - prevWall.Pos;
-//				var p = prevWall.Pos + delta/2;
-//				p.y += 2f;
-//				nq.transform.position = p;
-//				nq.transform.right = delta;
-//				var f = 4f;
-//				var v = new Vector3 (delta.magnitude, f, f);
-//				nq.transform.localScale = v;
-//				v /= 4f;
-//				nq.renderer.material = grid.SciFiMat;
-//				nq.renderer.material.mainTextureScale = v;
-//				prevWall = null;	
-//			}
-//		}
+		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+		if (wallPointNear(ray)) {
+			cwt.GO.renderer.material.color = S.ShoutyBlue;
+		}else{
+			if (cwt != null) {
+				cwt.GO.renderer.material.color = Color.white;
+				cwt = null;
+			}
+		}
+
+
+
+		if (CcInput.Started(UserAction.Activate)) {
+			prevWall = maybeMakeBUILDStyleWall(ray);
+		}
+
+		if (CcInput.Ended(UserAction.Activate)) {
+			var nw = maybeMakeBUILDStyleWall(ray);
+
+			if (prevWall != null) {
+				var nq = GameObject.CreatePrimitive(PrimitiveType.Quad);
+				var delta = nw.Pos - prevWall.Pos;
+				var p = prevWall.Pos + delta/2;
+				p.y += 2f;
+				nq.transform.position = p;
+				nq.transform.right = delta;
+				var f = 4f;
+				var v = new Vector3 (delta.magnitude, f, f);
+				nq.transform.localScale = v;
+				v /= 4f;
+				nq.renderer.material = Mats.Get("sci_fi_003");
+				nq.renderer.material.mainTextureScale = v;
+				prevWall = null;	
+			}
+		}
 	}
 	
 	bool wallPointNear(Ray ray) {

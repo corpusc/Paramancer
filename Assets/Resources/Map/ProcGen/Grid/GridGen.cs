@@ -22,7 +22,7 @@ public class GridGen {
 
 
 	// private 
-	int numTries = 50000; // ...before Build() gives up 
+	int numTries = 50000;
 	GameObject primBin;
 
 	char currH; // current cell height 
@@ -47,13 +47,13 @@ public class GridGen {
 		Cells = new Cell[Max.x, Max.z];
 
 		initCells();
-		Build();
+		makeRooms();
 	}
 
-	public void Build () {
-		preBuild();
+	void makeRooms() {
+		makeOneRoom();
 
-		int numRoomsMade = 0;
+		int numRoomsMade = 1;
 		for (int i = 0; i < numTries && numRoomsMade < numRooms; i++) {
 			Vec2i t;
 			t.x = Random.Range(0, Max.x);
@@ -89,7 +89,7 @@ public class GridGen {
 		}
 	}
 
-	void preBuild() {
+	void makeOneRoom() {
 		Vec2i a;
 		a.x = Random.Range(0, Max.x - MaxSpan);
 		a.z = Random.Range(0, Max.z - MaxSpan);
@@ -200,7 +200,7 @@ public class GridGen {
 		//neiNW = GetCell(i-1, j+1);
 	}
 
-	public void Build3D() {
+	public void GenerateSurfaces() {
 		primBin = GameObject.Find("[PRIMS]");
 
 		// flag corners that need half of a lip 
