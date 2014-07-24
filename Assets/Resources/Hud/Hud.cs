@@ -1020,6 +1020,7 @@ public class Hud : MonoBehaviour {
 		GUILayout.Label("IceFlame       - Coding, Various media & effects, Announcer, ProcGen maps");
 
 		CategoryHeader("Engine", false);
+		GUILayout.Label("....(and much of the current game design)");
 		GUILayout.Label("This is an extensively remodeled fork of a game made in a seven day game jam.  By Sophie Houlden");
 		GUILayout.Label("(sophiehoulden.com)");
 		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?! 
@@ -1033,7 +1034,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.Label("Wayne Brown         - A few icons");
 
 
-		CategoryHeader("Rogue code fragments", false);
+		CategoryHeader("Code fragments");
+		GUILayout.Label("runevision (CC-SA-A?)      - Polygon triangulation");
+		CategoryHeader("Rogue");
 		GUILayout.Label("Translated from Jason Diamond's RogueSharp (https://github.com/jdiamond)");
 		GUILayout.Label("...which is a port of: ");
 		GUILayout.Label("");

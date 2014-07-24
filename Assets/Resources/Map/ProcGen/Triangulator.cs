@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 
 
-public class Triangulator
-{
+// Author: runevision   License: CC-SA-A? 
+// (" Creative Commons Attribution Share Alike ") 
+public class Triangulator {
     private List<Vector2> m_points = new List<Vector2>();
  
 	public Triangulator (List<Vector2> points) {
