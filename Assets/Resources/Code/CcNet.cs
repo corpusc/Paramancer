@@ -1303,6 +1303,9 @@ public class CcNet : MonoBehaviour {
 				guns.RemoveAt(i);
 				
 				var gs = (GameObject)GameObject.Instantiate(GOs.Get("GunSpawn"));
+				gs.transform.position = 
+				child.transform.position;
+
 				var sd = gs.GetComponent<SpawnData>();
 				sd.Gun = (int)gun;
 
