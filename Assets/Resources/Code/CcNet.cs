@@ -1289,7 +1289,7 @@ public class CcNet : MonoBehaviour {
 		var par = GameObject.Find("Gun"); // parent of all the gun spawns 
 		if (par != null) {
 			string s = "items: ";
-			// consumable initial list... so guns only appear once, and the rest are healthpacks 
+			// initial temp list to draw from..... so guns only appear once, and the rest of the spawns are healthpacks 
 			var guns = new List<Gun>();
 			for (int i = 0; i < (int)Gun.Count; i++)
 				guns.Add((Gun)i);
@@ -1302,9 +1302,10 @@ public class CcNet : MonoBehaviour {
 				Gun gun = guns[i];
 				guns.RemoveAt(i);
 				
-				var sd = new SpawnData();
+				var gs = (GameObject)GameObject.Instantiate(GOs.Get("GunSpawn"));
+				var sd = gs.GetComponent<SpawnData>();
 				sd.Gun = (int)gun;
-				
+
 				s += gun + ", ";
 				
 				if (gun == Gun.None) { // don't think this can ever happen anymore 
