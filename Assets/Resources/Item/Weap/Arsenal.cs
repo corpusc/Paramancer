@@ -313,7 +313,7 @@ public class Arsenal : MonoBehaviour {
 		net.Entities[i].Visuals.weaponSoundObj.audio.clip = ac;
 		
 		// if local user 
-		if (net.Entities[i].viewID == net.LocUs.viewID) 
+		if (net.Entities[i].viewID == net.LocEnt.viewID) 
 			net.Entities[i].Visuals.weaponSoundObj.audio.volume = 0.3f;
 		
 		net.Entities[i].Visuals.weaponSoundObj.audio.pitch = Random.Range(0.9f, 1.1f);

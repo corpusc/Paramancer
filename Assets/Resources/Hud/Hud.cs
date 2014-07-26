@@ -55,8 +55,8 @@ public class Hud : MonoBehaviour {
 					controls.enabled = true;
 					break;
 				case HudMode.Settings:
-					net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
-					headSliderPos = (float)net.LocUs.headType / ((float)Head.Count - 1f);
+					net.LocEnt.name = PlayerPrefs.GetString("PlayerName", defaultName);
+					headSliderPos = (float)net.LocEnt.headType / ((float)Head.Count - 1f);
 					break;
 			}
 		}
@@ -69,7 +69,6 @@ public class Hud : MonoBehaviour {
 	UserPlaying playMode = new UserPlaying();
 	MatchSetup matchSetup = new MatchSetup();
 	AboutMenu aboutMenu = new AboutMenu();
-	float tFOV = 90f;
 
 	// UI element sizes 
 	int midX, midY; // middle of the screen 
@@ -95,29 +94,28 @@ public class Hud : MonoBehaviour {
 		locUser = GetComponent<LocalUser>();
 		
 		// make local user 
-		net.LocUs = new NetEntity();
-		net.LocUs.local = true;
-		net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
-		net.LocUs.headType = PlayerPrefs.GetInt("PlayerHead", 0);
-		net.LocUs.colA.r = PlayerPrefs.GetFloat("PlayerColA_R", Color.yellow.r);
-		net.LocUs.colA.g = PlayerPrefs.GetFloat("PlayerColA_G", Color.yellow.g);
-		net.LocUs.colA.b = PlayerPrefs.GetFloat("PlayerColA_B", Color.yellow.b);
-		net.LocUs.colA.a = 1;
-		net.LocUs.colB.r = PlayerPrefs.GetFloat("PlayerColB_R", Color.green.r);
-		net.LocUs.colB.g = PlayerPrefs.GetFloat("PlayerColB_G", Color.green.g);
-		net.LocUs.colB.b = PlayerPrefs.GetFloat("PlayerColB_B", Color.green.b);
-		net.LocUs.colB.a = 1;
-		net.LocUs.colC.r = PlayerPrefs.GetFloat("PlayerColC_R", Color.cyan.r);
-		net.LocUs.colC.g = PlayerPrefs.GetFloat("PlayerColC_G", Color.cyan.g);
-		net.LocUs.colC.b = PlayerPrefs.GetFloat("PlayerColC_B", Color.cyan.b);
-		net.LocUs.colC.a = 1;
+		net.LocEnt = new NetEntity();
+		net.LocEnt.local = true;
+		net.LocEnt.name = PlayerPrefs.GetString("PlayerName", defaultName);
+		net.LocEnt.headType = PlayerPrefs.GetInt("PlayerHead", 0);
+		net.LocEnt.colA.r = PlayerPrefs.GetFloat("PlayerColA_R", Color.yellow.r);
+		net.LocEnt.colA.g = PlayerPrefs.GetFloat("PlayerColA_G", Color.yellow.g);
+		net.LocEnt.colA.b = PlayerPrefs.GetFloat("PlayerColA_B", Color.yellow.b);
+		net.LocEnt.colA.a = 1;
+		net.LocEnt.colB.r = PlayerPrefs.GetFloat("PlayerColB_R", Color.green.r);
+		net.LocEnt.colB.g = PlayerPrefs.GetFloat("PlayerColB_G", Color.green.g);
+		net.LocEnt.colB.b = PlayerPrefs.GetFloat("PlayerColB_B", Color.green.b);
+		net.LocEnt.colB.a = 1;
+		net.LocEnt.colC.r = PlayerPrefs.GetFloat("PlayerColC_R", Color.cyan.r);
+		net.LocEnt.colC.g = PlayerPrefs.GetFloat("PlayerColC_G", Color.cyan.g);
+		net.LocEnt.colC.b = PlayerPrefs.GetFloat("PlayerColC_B", Color.cyan.b);
+		net.LocEnt.colC.a = 1;
 		
 		// load settings 
 		Log.FadeTime = PlayerPrefs.GetFloat("textFadeTime", 10f);
 		net.gunBobbing = PlayerPrefs.GetInt("GunBobbing", 1) == 1;
 		net.JumpAuto = PlayerPrefs.GetInt("JumpAuto", 1) == 1;
 		Sfx.VolumeMaster = PlayerPrefs.GetFloat("MasterVolume", 1f);
-		tFOV = PlayerPrefs.GetFloat("FOV", 90f);
 		S.Hud = this;
 	}
 
@@ -235,10 +233,10 @@ public class Hud : MonoBehaviour {
 				avatarView();
 				drawSettings();
 				if (//null != net && 
-			    	null != net.LocUs && 
-			    	null != net.LocUs.Visuals
+			    	null != net.LocEnt && 
+			    	null != net.LocEnt.Visuals
 			    )
-					net.LocUs.Visuals.FOV = tFOV;
+					net.LocEnt.Visuals.FOV = locUser.FOV;
 				break;
 			
 			case HudMode.Credits:
@@ -397,7 +395,7 @@ public class Hud : MonoBehaviour {
 					Network.Disconnect();
 					break;
 				case HudMode.Settings:
-					net.LocUs.name = PlayerPrefs.GetString("PlayerName", defaultName);
+					net.LocEnt.name = PlayerPrefs.GetString("PlayerName", defaultName);
 					break;
 			}
 
@@ -526,9 +524,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.FlexibleSpace();
 		var s = "FOV (field of view): ";
 		float wid = GetWidthLabel(s + "188.8");
-		GUILayout.Label(s + tFOV.ToString("#.#"), GUILayout.MinWidth(wid));
-		tFOV = GUILayout.HorizontalSlider(tFOV, 50f, 180f, GUILayout.MinWidth(128));
-		net.LocUs.Visuals.FOV = tFOV;
+		GUILayout.Label(s + locUser.FOV.ToString("#.#"), GUILayout.MinWidth(wid));
+		locUser.FOV = GUILayout.HorizontalSlider(locUser.FOV, 50f, 180f, GUILayout.MinWidth(128));
+		net.LocEnt.Visuals.FOV = locUser.FOV;
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
@@ -551,10 +549,10 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		GUILayout.FlexibleSpace();
 		SizedLabel("Name:   ");
-		net.LocUs.name = GUILayout.TextField(net.LocUs.name);
-		if (net.LocUs.name.Length > 20) 
-			net.LocUs.name = net.LocUs.name.Substring(0, 20);
-		net.LocUs.name = FormatName(net.LocUs.name);
+		net.LocEnt.name = GUILayout.TextField(net.LocEnt.name);
+		if (net.LocEnt.name.Length > 20) 
+			net.LocEnt.name = net.LocEnt.name.Substring(0, 20);
+		net.LocEnt.name = FormatName(net.LocEnt.name);
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 
@@ -562,29 +560,29 @@ public class Hud : MonoBehaviour {
 		
 		// head slider 
 		float hss = 1f / (int)Head.Count; // head slider span
-		net.LocUs.headType = (int)(headSliderPos / hss);
+		net.LocEnt.headType = (int)(headSliderPos / hss);
 		GUILayout.BeginHorizontal();
 		float w = GetWidthLabel(S.GetSpacedOut("" + Head.ElephantHeadMesh));
-		GUILayout.Label(S.GetSpacedOut("" + (Head)net.LocUs.headType), GUILayout.MaxWidth(w));
+		GUILayout.Label(S.GetSpacedOut("" + (Head)net.LocEnt.headType), GUILayout.MaxWidth(w));
 		headSliderPos = GUILayout.HorizontalSlider(headSliderPos, 0f, 1f);
 		GUILayout.EndHorizontal();
 
 		// colour sliders
 		GUILayout.BeginHorizontal();
-		GUI.color = net.LocUs.colA;
+		GUI.color = net.LocEnt.colA;
 		GUILayout.Box(Pics.White);
-		GUI.color = net.LocUs.colB;
+		GUI.color = net.LocEnt.colB;
 		GUILayout.Box(Pics.White);
-		GUI.color = net.LocUs.colC; 
+		GUI.color = net.LocEnt.colC; 
 		GUILayout.Box(Pics.White);
 		GUILayout.EndHorizontal();
 		
 		GUILayout.BeginHorizontal();
-		GUI.color = net.LocUs.colA;
+		GUI.color = net.LocEnt.colA;
 		GUILayout.Box("Colour A");
-		GUI.color = net.LocUs.colB;
+		GUI.color = net.LocEnt.colB;
 		GUILayout.Box("Colour B");
-		GUI.color = net.LocUs.colC; 
+		GUI.color = net.LocEnt.colC; 
 		GUILayout.Box("Colour C");
 		GUILayout.EndHorizontal();
 		
@@ -595,32 +593,33 @@ public class Hud : MonoBehaviour {
 		menuEnd();
 
 		// now just save player 
-		if (net.LocUs.name != "" && net.LocUs.name != " ") {
-			PlayerPrefs.SetString("PlayerName", net.LocUs.name);
+		if (net.LocEnt.name != "" && net.LocEnt.name != " ") {
+			PlayerPrefs.SetString("PlayerName", net.LocEnt.name);
 		}else{
 			PlayerPrefs.SetString("PlayerName", defaultName);
 		}
 		
-		PlayerPrefs.SetInt("PlayerHead", net.LocUs.headType);
-		PlayerPrefs.SetFloat("PlayerColA_R", net.LocUs.colA.r);
-		PlayerPrefs.SetFloat("PlayerColA_G", net.LocUs.colA.g);
-		PlayerPrefs.SetFloat("PlayerColA_B", net.LocUs.colA.b);
-		PlayerPrefs.SetFloat("PlayerColB_R", net.LocUs.colB.r);
-		PlayerPrefs.SetFloat("PlayerColB_G", net.LocUs.colB.g);
-		PlayerPrefs.SetFloat("PlayerColB_B", net.LocUs.colB.b);
-		PlayerPrefs.SetFloat("PlayerColC_R", net.LocUs.colC.r);
-		PlayerPrefs.SetFloat("PlayerColC_G", net.LocUs.colC.g);
-		PlayerPrefs.SetFloat("PlayerColC_B", net.LocUs.colC.b);
-		PlayerPrefs.SetFloat("FOV", tFOV);
+		PlayerPrefs.SetFloat("FOV", locUser.FOV);
+		PlayerPrefs.SetInt("PlayerHead", net.LocEnt.headType);
+		// the 3 user chosen colors 
+		PlayerPrefs.SetFloat("PlayerColA_R", net.LocEnt.colA.r);
+		PlayerPrefs.SetFloat("PlayerColA_G", net.LocEnt.colA.g);
+		PlayerPrefs.SetFloat("PlayerColA_B", net.LocEnt.colA.b);
+		PlayerPrefs.SetFloat("PlayerColB_R", net.LocEnt.colB.r);
+		PlayerPrefs.SetFloat("PlayerColB_G", net.LocEnt.colB.g);
+		PlayerPrefs.SetFloat("PlayerColB_B", net.LocEnt.colB.b);
+		PlayerPrefs.SetFloat("PlayerColC_R", net.LocEnt.colC.r);
+		PlayerPrefs.SetFloat("PlayerColC_G", net.LocEnt.colC.g);
+		PlayerPrefs.SetFloat("PlayerColC_B", net.LocEnt.colC.b);
 	}
 
 	void colorSliders() {
 		GUILayout.BeginHorizontal();
 
 		GUI.color = Color.red;
-		net.LocUs.colA.r = GUILayout.HorizontalSlider(net.LocUs.colA.r, 0f, 1f);
-		net.LocUs.colB.r = GUILayout.HorizontalSlider(net.LocUs.colB.r, 0f, 1f);
-		net.LocUs.colC.r = GUILayout.HorizontalSlider(net.LocUs.colC.r, 0f, 1f);
+		net.LocEnt.colA.r = GUILayout.HorizontalSlider(net.LocEnt.colA.r, 0f, 1f);
+		net.LocEnt.colB.r = GUILayout.HorizontalSlider(net.LocEnt.colB.r, 0f, 1f);
+		net.LocEnt.colC.r = GUILayout.HorizontalSlider(net.LocEnt.colC.r, 0f, 1f);
 		
 		GUILayout.EndHorizontal();
 
@@ -628,9 +627,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		
 		GUI.color = Color.green;
-		net.LocUs.colA.g = GUILayout.HorizontalSlider(net.LocUs.colA.g, 0f, 1f);
-		net.LocUs.colB.g = GUILayout.HorizontalSlider(net.LocUs.colB.g, 0f, 1f);
-		net.LocUs.colC.g = GUILayout.HorizontalSlider(net.LocUs.colC.g, 0f, 1f);
+		net.LocEnt.colA.g = GUILayout.HorizontalSlider(net.LocEnt.colA.g, 0f, 1f);
+		net.LocEnt.colB.g = GUILayout.HorizontalSlider(net.LocEnt.colB.g, 0f, 1f);
+		net.LocEnt.colC.g = GUILayout.HorizontalSlider(net.LocEnt.colC.g, 0f, 1f);
 		
 		GUILayout.EndHorizontal();
 
@@ -638,9 +637,9 @@ public class Hud : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		
 		GUI.color = Color.blue;
-		net.LocUs.colA.b = GUILayout.HorizontalSlider(net.LocUs.colA.b, 0f, 1f);
-		net.LocUs.colB.b = GUILayout.HorizontalSlider(net.LocUs.colB.b, 0f, 1f);
-		net.LocUs.colC.b = GUILayout.HorizontalSlider(net.LocUs.colC.b, 0f, 1f);
+		net.LocEnt.colA.b = GUILayout.HorizontalSlider(net.LocEnt.colA.b, 0f, 1f);
+		net.LocEnt.colB.b = GUILayout.HorizontalSlider(net.LocEnt.colB.b, 0f, 1f);
+		net.LocEnt.colC.b = GUILayout.HorizontalSlider(net.LocEnt.colC.b, 0f, 1f);
 
 		GUILayout.EndHorizontal();
 	}	
@@ -657,7 +656,7 @@ public class Hud : MonoBehaviour {
 			menuBegin(Color.red);
 
 			for (int i=0; i<net.Entities.Count; i++) {
-				if (net.Entities[i].viewID != net.LocUs.viewID) {
+				if (net.Entities[i].viewID != net.LocEnt.viewID) {
 					GUILayout.BeginHorizontal();
 					
 					if (GUILayout.Button(HudMode.KickAPlayer.ToString())) {
@@ -982,20 +981,20 @@ public class Hud : MonoBehaviour {
 		if (GameObject.Find("CharaMesh") != null) {
 			// colours
 			Material[] mats = GameObject.Find("CharaMesh").renderer.materials;
-			mats[0].color = net.LocUs.colA;
-			mats[1].color = net.LocUs.colB;
-			mats[2].color = net.LocUs.colC;
-			GameObject.Find("NormalHead").renderer.material.color = net.LocUs.colA;
+			mats[0].color = net.LocEnt.colA;
+			mats[1].color = net.LocEnt.colB;
+			mats[2].color = net.LocEnt.colC;
+			GameObject.Find("NormalHead").renderer.material.color = net.LocEnt.colA;
 			
 			// visibility of heads 
 			for (int i = 0; i < (int)Head.Count; i++) {
-				if (i == net.LocUs.headType)
+				if (i == net.LocEnt.headType)
 					GameObject.Find("" + (Head)i).renderer.enabled = true;
 				else
 					GameObject.Find("" + (Head)i).renderer.enabled = false;
 			}
 
-			GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.LocUs.name;
+			GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.LocEnt.name;
 		}
 	}
 
@@ -1191,7 +1190,7 @@ public class Hud : MonoBehaviour {
 				Mode = HudMode.Playing;
 		}else{				
 			if (buttonStarts(HudMode.NewGame, r)) {
-				net.MatchName = net.LocUs.name + "'s match...of the Damned";
+				net.MatchName = net.LocEnt.name + "'s match...of the Damned";
 			}
 		}
 

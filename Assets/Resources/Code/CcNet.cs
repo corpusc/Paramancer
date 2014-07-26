@@ -62,7 +62,7 @@ public class CcNet : MonoBehaviour {
 	public float IntermissionTimeLeft = 0f;
 
 	// personal / local user 
-	public NetEntity LocUs;
+	public NetEntity LocEnt;
 	public bool gunBobbing = true;
 	public bool JumpAuto = true;
 
@@ -185,16 +185,16 @@ public class CcNet : MonoBehaviour {
 		// change team 
 		if (Connected && CurrMatch.teamBased) {
 			if (CcInput.Started(UserAction.SwapTeam)) {
-				if (LocUs.team == 1) {
-					LocUs.team = 2;
+				if (LocEnt.team == 1) {
+					LocEnt.team = 2;
 				}else{
-					LocUs.team = 1;
+					LocEnt.team = 1;
 				}
 				
-				networkView.RPC("PlayerChangedTeams", RPCMode.AllBuffered, LocUs.viewID, LocUs.team);
+				networkView.RPC("PlayerChangedTeams", RPCMode.AllBuffered, LocEnt.viewID, LocEnt.team);
 				
 				for (int i=0; i<Entities.Count; i++) {
-					if (Entities[i].viewID == LocUs.viewID && Entities[i].Health > 0f) 
+					if (Entities[i].viewID == LocEnt.viewID && Entities[i].Health > 0f) 
 						Entities[i].Visuals.Respawn();
 				}
 			}
@@ -332,8 +332,8 @@ public class CcNet : MonoBehaviour {
 				Entities[i].Health = 100f;
 			}
 		}
-		if (LocUs.viewID == viewID) 
-			LocUs.Health = 100f;
+		if (LocEnt.viewID == viewID) 
+			LocEnt.Health = 100f;
 	}
 
 	public void DetonateRocket(Vector3 detPos, Vector3 hitNorm, NetworkViewID bulletID) {
@@ -583,11 +583,11 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void AssignPlayerStats(NetworkViewID viewID, float health, int kills, int deaths, int score) {
 		latestPacket = Time.time;
-		if (LocUs.viewID == viewID) {
-			LocUs.Health = health;
-			LocUs.kills = kills;
-			LocUs.deaths = deaths;
-			LocUs.currentScore = score;
+		if (LocEnt.viewID == viewID) {
+			LocEnt.Health = health;
+			LocEnt.kills = kills;
+			LocEnt.deaths = deaths;
+			LocEnt.currentScore = score;
 		}
 		
 		for (int i=0; i<Entities.Count; i++) {
@@ -646,11 +646,11 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// set some unused?! totals 
-		if (LocUs.viewID == fraggerID) 
-			LocUs.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz? NOTE: they could be used for statistics
-		if (LocUs.viewID == victimID) { // if local player was the victim 
-			LocUs.totalDeaths++;
-			LocUs.FraggedBy = Entities[fraggerIdx].Visuals.gameObject;
+		if (LocEnt.viewID == fraggerID) 
+			LocEnt.totalKills++; // what the fuck are totalKills and totalDeaths for?????  just FIXME and delete this shiz? NOTE: they could be used for statistics
+		if (LocEnt.viewID == victimID) { // if local player was the victim 
+			LocEnt.totalDeaths++;
+			LocEnt.FraggedBy = Entities[fraggerIdx].Visuals.gameObject;
 		}
 		
 		// lives 
@@ -762,7 +762,7 @@ public class CcNet : MonoBehaviour {
 	void RespawnPlayer(NetworkViewID viewID) {
 		latestPacket = Time.time;
 		
-		if (viewID == LocUs.viewID) {
+		if (viewID == LocEnt.viewID) {
 			for (int i=0; i<Entities.Count; i++) {
 				if (Entities[i].viewID == viewID) {
 					if ((CurrMatch.playerLives > 0 && 
@@ -901,10 +901,10 @@ public class CcNet : MonoBehaviour {
 				l.Text = "";
 				
 				if (team == 1) {
-					if (LocUs.viewID == viewID){
+					if (LocEnt.viewID == viewID){
 						l.Color = Color.red;
 						l.Text = "<< you defected! >>";
-					}else if (LocUs.team == 1) {
+					}else if (LocEnt.team == 1) {
 						l.Color = Color.red;
 						l.Text = "<< " + Entities[i].name + " defected to your team! >>";
 					}else{
@@ -912,10 +912,10 @@ public class CcNet : MonoBehaviour {
 						l.Text = "<< " + Entities[i].name + " turned their back on the team! >>";
 					}
 				}else{
-					if (LocUs.viewID == viewID) {
+					if (LocEnt.viewID == viewID) {
 						l.Color = Color.cyan;
 						l.Text = "<< you defected! >>";
-					}else if (LocUs.team == 2) {
+					}else if (LocEnt.team == 2) {
 						l.Color = Color.cyan;
 						l.Text = "<< " + Entities[i].name + " defected to your team! >>";
 					}else{
@@ -964,7 +964,7 @@ public class CcNet : MonoBehaviour {
 		
 		// another player has joined, lets add them to our view of the game 
 		bool localShopForLocalPeople = false;
-		if (viewID == LocUs.viewID) 
+		if (viewID == LocEnt.viewID) 
 			localShopForLocalPeople = true;
 		
 		AddPlayer(localShopForLocalPeople, viewID, 
@@ -1190,9 +1190,9 @@ public class CcNet : MonoBehaviour {
 		
 		if (targetTeam != -1) {
 			// don't keep current teams
-			LocUs.team = targetTeam;
+			LocEnt.team = targetTeam;
 			for (int i=0; i<Entities.Count; i++){
-				if (Entities[i].viewID == LocUs.viewID){
+				if (Entities[i].viewID == LocEnt.viewID){
 					Entities[i].team = targetTeam;
 				}
 			}
@@ -1202,13 +1202,13 @@ public class CcNet : MonoBehaviour {
 		}
 		if (targetTeam == -2) {
 			// last game wasn't team based, this is, set team 
-			LocUs.team = 1;
+			LocEnt.team = 1;
 			if (Random.Range(0,10) < 5) 
-				LocUs.team = 2;
+				LocEnt.team = 2;
 			
 			for (int i=0; i<Entities.Count; i++) {
-				if (Entities[i].viewID == LocUs.viewID) {
-					Entities[i].team = LocUs.team;
+				if (Entities[i].viewID == LocEnt.viewID) {
+					Entities[i].team = LocEnt.team;
 				}
 			}
 		}
@@ -1228,9 +1228,9 @@ public class CcNet : MonoBehaviour {
 			Entities[i].currentScore = 0;
 		}
 		
-		LocUs.kills = 0;
-		LocUs.deaths = 0;
-		LocUs.currentScore = 0;
+		LocEnt.kills = 0;
+		LocEnt.deaths = 0;
+		LocEnt.currentScore = 0;
 		arse.Clear();
 		
 		// load map 
@@ -1260,9 +1260,9 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// tell everyone we're here 
-		networkView.RPC("NewPlayer", RPCMode.AllBuffered, LocUs.viewID, LocUs.name, 
-		                S.ColToVec(LocUs.colA), S.ColToVec(LocUs.colB), S.ColToVec(LocUs.colC), 
-		                LocUs.headType, Network.player, LocUs.team, CurrMatch.playerLives);
+		networkView.RPC("NewPlayer", RPCMode.AllBuffered, LocEnt.viewID, LocEnt.name, 
+		                S.ColToVec(LocEnt.colA), S.ColToVec(LocEnt.colB), S.ColToVec(LocEnt.colC), 
+		                LocEnt.headType, Network.player, LocEnt.team, CurrMatch.playerLives);
 		
 		setupGunSpawns();
 		
@@ -1352,7 +1352,7 @@ public class CcNet : MonoBehaviour {
 			
 			if (!Connected) {
 				// we've just joined a game as host, lets create the local player & add it to the RPC buffer 
-				LocUs.viewID = Network.AllocateViewID();
+				LocEnt.viewID = Network.AllocateViewID();
 				hud.Mode = HudMode.Wait;
 				NetVI = Network.AllocateViewID();
 				RequestGameData();
@@ -1366,7 +1366,7 @@ public class CcNet : MonoBehaviour {
 			Debug.LogError("server registration failed, disconnecting");
 			Error = "server registration failed";
 			hud.Mode = HudMode.ConnectionError;
-			LocUs.viewID = new NetworkViewID();
+			LocEnt.viewID = new NetworkViewID();
 			NetVI = new NetworkViewID();
 			Network.Disconnect();
 		}
@@ -1379,7 +1379,7 @@ public class CcNet : MonoBehaviour {
 		networkView.RPC("RequestGameData", RPCMode.Server);
 		hud.Mode = HudMode.Wait;
 		latestPacket = Time.time;
-		LocUs.viewID = Network.AllocateViewID();
+		LocEnt.viewID = Network.AllocateViewID();
 	}
 	
 	void OnPlayerConnected(NetworkPlayer player) {
@@ -1421,7 +1421,7 @@ public class CcNet : MonoBehaviour {
 		
 		Debug.Log("Failed to Connect: " + Error);
 		Network.Disconnect();
-		LocUs.viewID = new NetworkViewID();
+		LocEnt.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
 		hud.Mode = HudMode.ConnectionError;
 	}
@@ -1434,12 +1434,12 @@ public class CcNet : MonoBehaviour {
 	public void DisconnectNow() {
 		if (Connected) {
 			if (!InServerMode) {
-				networkView.RPC("PlayerLeave", RPCMode.OthersBuffered, LocUs.viewID, LocUs.name);
+				networkView.RPC("PlayerLeave", RPCMode.OthersBuffered, LocEnt.viewID, LocEnt.name);
 			}else{
 				networkView.RPC("ServerLeave", RPCMode.OthersBuffered);
 			}
 			
-			LocUs.viewID = new NetworkViewID();
+			LocEnt.viewID = new NetworkViewID();
 			NetVI = new NetworkViewID();
 			
 			Network.Disconnect();
@@ -1551,7 +1551,7 @@ public class CcNet : MonoBehaviour {
 		Connected = false;
 		InServerMode = false;
 		
-		LocUs.viewID = new NetworkViewID();
+		LocEnt.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
 				
 		Camera.main.transform.parent = null;
@@ -1578,7 +1578,7 @@ public class CcNet : MonoBehaviour {
 		
 		Connected = false;
 		InServerMode = false;
-		LocUs.viewID = new NetworkViewID();
+		LocEnt.viewID = new NetworkViewID();
 		NetVI = new NetworkViewID();
 		Camera.main.transform.parent = null;
 		

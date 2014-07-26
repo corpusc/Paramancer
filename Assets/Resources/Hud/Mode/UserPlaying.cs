@@ -37,7 +37,7 @@ public class UserPlaying {
 			}
 		}
 
-		var locEnt = net.LocUs.Visuals;
+		var locEnt = net.LocEnt.Visuals;
 
 		var gunHandCooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
 		Gun gunHand = locEnt.GunInHand;
@@ -54,8 +54,8 @@ public class UserPlaying {
 
 		// damage bar 
 		int hH = 11; // health height 
-		int healthW = (int)((float)barW * (1f - net.LocUs.Health/100f));
-		health.SetBarColor(net.LocUs.Health/100f);
+		int healthW = (int)((float)barW * (1f - net.LocEnt.Health/100f));
+		health.SetBarColor(net.LocEnt.Health/100f);
 		GUI.DrawTexture(new Rect(midX-healthW/2-bm, hY-bm, healthW+bm*2, hH+bm*2), Pics.Black); // background/outline 
 		GUI.DrawTexture(new Rect(midX-healthW/2, hY, healthW, hH), Pics.White);
 		S.DrawOutlinedTexture(new Rect(midX-8, hY-4, 16, 16), Pics.Health);
@@ -217,10 +217,10 @@ public class UserPlaying {
 
 		// team icons
 		Color gcolB = GUI.color;
-		if (net.CurrMatch.teamBased && net.LocUs.team != 0) {
-			if /*``*/ (net.LocUs.team == 1) {
+		if (net.CurrMatch.teamBased && net.LocEnt.team != 0) {
+			if /*``*/ (net.LocEnt.team == 1) {
 				GUI.DrawTexture(new Rect(Screen.width-68, 4, 64, 64), Pics.TeamRedFlag);
-			} else if (net.LocUs.team == 2) {
+			} else if (net.LocEnt.team == 2) {
 				GUI.DrawTexture(new Rect(Screen.width-68, 4, 64, 64), Pics.TeamBlueFlag);
 			}
 		}

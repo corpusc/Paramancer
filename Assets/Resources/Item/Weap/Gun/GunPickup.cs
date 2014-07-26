@@ -22,12 +22,12 @@ public class GunPickup : MonoBehaviour {
 	
 	
 	void makeQuad(ref GameObject go, float angle, float zOffs) {
-		go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-		setMat(go, Pics.Health);//"Grenade Launcher"));
-		go.transform.localRotation = Quaternion.AngleAxis(angle, Vector3.right);
-		go.transform.position = transform.position + new Vector3(0, zOffs, 0);
-		go.collider.enabled = false;
-		go.transform.parent = VoxGen.PrimBag.transform; 
+//		go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+//		setMat(go, Pics.Health);//"Grenade Launcher"));
+//		go.transform.localRotation = Quaternion.AngleAxis(angle, Vector3.right);
+//		go.transform.position = transform.position + new Vector3(0, zOffs, 0);
+//		go.collider.enabled = false;
+//		go.transform.parent = VoxGen.PrimBag.transform; 
 	}
 
 	void setMat(GameObject go, Texture pic) {
@@ -73,10 +73,10 @@ public class GunPickup : MonoBehaviour {
 	void Update() {
 		if (luO == null) {
 			if (null != net &&
-				null != net.LocUs &&
-			    null != net.LocUs.Visuals
+				null != net.LocEnt &&
+			    null != net.LocEnt.Visuals
 		    )
-				luO = net.LocUs.Visuals.gameObject;
+				luO = net.LocEnt.Visuals.gameObject;
 		}else{
 			if (Vector3.Distance(
 				luO.transform.position, transform.position) < 2f && 
@@ -93,8 +93,8 @@ public class GunPickup : MonoBehaviour {
 
 		if (isHealth) {
 			transform.Rotate(300f * Time.deltaTime, 0, 0);
-			iconFront.transform.Rotate(300f * Time.deltaTime, 0, 0);
-			iconBack.transform.Rotate(300f * Time.deltaTime, 0, 0);
+			//iconFront.transform.Rotate(300f * Time.deltaTime, 0, 0);
+			//iconBack.transform.Rotate(300f * Time.deltaTime, 0, 0);
 		}else
 			Model.transform.Rotate(0, 0, 130f * Time.deltaTime);
 	}

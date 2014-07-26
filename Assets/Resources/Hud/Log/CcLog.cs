@@ -98,10 +98,10 @@ public class CcLog : MonoBehaviour {
 						if (net.Connected) {
 							networkView.RPC(
 								"AddEntry", RPCMode.All, 
-			                	net.LocUs.name + ":", newEntry, S.ColToVec(net.LocUs.colA) );
+			                	net.LocEnt.name + ":", newEntry, S.ColToVec(net.LocEnt.colA) );
 						}else{
 							AddEntry(
-								net.LocUs.name + ":", newEntry, S.ColToVec(net.LocUs.colA) );
+								net.LocEnt.name + ":", newEntry, S.ColToVec(net.LocEnt.colA) );
 						}
 					}
 					

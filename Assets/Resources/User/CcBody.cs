@@ -17,7 +17,7 @@ public class CcBody : MonoBehaviour {
 	// private 
 	float sprintActivatedTime = 0f;
 	const float sprintDuration = 5f;
-	const float sprintRegenSpeed = 1f;
+	const float sprintRegenSpeed = 0.4f;
 
 
 
