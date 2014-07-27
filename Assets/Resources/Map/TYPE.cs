@@ -14,13 +14,13 @@ public struct Vec3i {
 };
 
 public class Surfaces {
-	public Material Lip;
+	public Material Lip; // the mouldings that line corners 
 	public Material Walls;
 	public Material Floor;
 	public Material Ceiling;
 };
 
-public class VoxelRect {
+public class VoxelRoom {
 	public Vec3i Pos;
 	public Vec3i Size;
 	public Surfaces Surfaces;
@@ -29,7 +29,6 @@ public class VoxelRect {
 public class Cell {
 	// GenGrid ONLY! 
 	public char CeilingHeight = (char)0;
-	public bool Floor;
 	public bool NeedsNWLip = true;
 	public bool NeedsNELip = true;
 	public bool NeedsSELip = true;
@@ -38,12 +37,12 @@ public class Cell {
 
 	public Surfaces Surfaces;
 	public bool IsAir; 
-	public bool NorthSide;
-	public bool SouthSide;
-	public bool EastSide;
-	public bool WestSide;
-	public bool UpSide;
-	public bool DownSide;
+	public bool NorthWall;
+	public bool SouthWall;
+	public bool EastWall;
+	public bool WestWall;
+	public bool Ceiling;
+	public bool Floor;
 }
 
 // BUILDinator style (arbitrary line segment rimmed) maps 

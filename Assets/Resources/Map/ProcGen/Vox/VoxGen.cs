@@ -62,7 +62,7 @@ public static class VoxGen {
 	static Cell[,,] cells;
 	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
 	static ThemedCategories cat = new ThemedCategories();
-	static List<VoxelRect> rooms = new List<VoxelRect>();
+	static List<VoxelRoom> rooms = new List<VoxelRoom>();
 	// current pointers/indexes 
 	//static int currX;
 	static int currRoom;
@@ -205,11 +205,8 @@ public static class VoxGen {
 
 		setStart(Vector3.back);
 		for (x = sx; x < xMax; x++)
-		for (y = sy; y < yMax; y++) {
-			if (currRoom == 0)
-				Debug.Log("x: " + x + "y: " + y + " z: " + z);
+		for (y = sy; y < yMax; y++)
 			maybeMakeQuad(x, y, z-1, new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
-		}
 
 		setStart(Vector3.up);
 		for (x = sx; x < xMax; x++)
@@ -222,42 +219,6 @@ public static class VoxGen {
 			maybeMakeQuad(x, y-1, z, new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
 
 		currRoom++;
-	}
-
-
-
-	private static void generateXSlice(int x) {
-		for (int y = 0; y < numVoxAcross.Y; y++)
-		for (int z = 0; z < numVoxAcross.Z; z++) {
-			// if air... 
-			if (cells[x, y, z].IsAir) {
-				// ...need to make surface quads against neighboring void voxels 
-				var hx = Scale.x * 0.5f;
-				var hy = Scale.y * 0.5f;
-				var hz = Scale.z * 0.5f;
-
-				maybeMakeQuad(//Vector3.left, 
-					x-1, y, z,
-					new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
-				maybeMakeQuad(//Vector3.right, 
-					x+1, y, z,
-					new Vector3(Scale.x*x+hx, Scale.y*y, Scale.z*z));
-				
-				maybeMakeQuad(//Vector3.forward, 
-					x, y, z+1,
-					new Vector3(Scale.x*x, Scale.y*y, Scale.z*z+hz));
-				maybeMakeQuad(//Vector3.back,
-					x, y, z-1,
-					new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
-				
-				maybeMakeQuad(//Vector3.up, 
-					x, y+1, z,
-					new Vector3(Scale.x*x, Scale.y*y+hy, Scale.z*z));
-				maybeMakeQuad(//Vector3.down, 
-					x, y-1, z,
-					new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
-			}
-		}
 	}
 
 
@@ -334,7 +295,7 @@ public static class VoxGen {
 			cells[i, j, k].IsAir = true;
 
 		// cache room 
-		var room = new VoxelRect();
+		var room = new VoxelRoom();
 		room.Surfaces = cat.GetRandomSurfaces();
 		room.Pos = s;
 		room.Size.X = e.X - s.X + 1;
@@ -630,24 +591,54 @@ public static class VoxGen {
 
 
 
-	private static void maybeMakeQuad(int x, int y, int z, Vector3 offset) {
-		if (!air(x, y, z)) {
-			Material mat;
+	private static void maybeMakeQuad(int _x, int _y, int _z, Vector3 offset) {
+		bool weShould = false;
+
+		if (!air(_x, _y, _z)) {
+			Material mat = null;
 
 			if /***/ (currDir == Vector3.up) {
-				mat = rooms[currRoom].Surfaces.Ceiling;
+				mat = getMat(ref cells[x, y, z].Ceiling,
+					rooms[currRoom].Surfaces.Ceiling);
 			}else if (currDir == Vector3.down) {
-				mat = rooms[currRoom].Surfaces.Floor;
-			}else{
-				mat = rooms[currRoom].Surfaces.Walls;
+				mat = getMat(ref cells[x, y, z].Floor, 
+					rooms[currRoom].Surfaces.Floor);
+			}else if /***/ (currDir == Vector3.left) {
+				mat = getMat(ref cells[x, y, z].WestWall,
+					rooms[currRoom].Surfaces.Walls);
+			}else if (currDir == Vector3.right) {
+				mat = getMat(ref cells[x, y, z].EastWall,
+					rooms[currRoom].Surfaces.Walls);
+			}else if (currDir == Vector3.forward) {
+				mat = getMat(ref cells[x, y, z].NorthWall,
+     				rooms[currRoom].Surfaces.Walls);
+			}else if (currDir == Vector3.back) {
+				mat = getMat(ref cells[x, y, z].SouthWall,
+             		rooms[currRoom].Surfaces.Walls);
 			}
 
-			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-			np.transform.position = Pos + offset;
-			np.transform.localScale = Scale;
-			np.transform.forward = currDir;
-			np.renderer.material = mat;
-			np.transform.parent = PrimBag.transform;
+			if (mat == null)
+		    	return;
+
+			//if () {
+				var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+				np.transform.position = Pos + offset;
+				np.transform.localScale = Scale;
+				np.transform.forward = currDir;
+				np.renderer.material = mat;
+				np.transform.parent = PrimBag.transform;
+			//}
+		}
+	}
+
+
+
+	private static Material getMat(ref bool surface, Material mat) {
+		if (surface) { // if we already made a quad there, null will prevent spawning more 
+			return null;
+		}else{
+			surface = true;
+			return mat;
 		}
 	}
 
