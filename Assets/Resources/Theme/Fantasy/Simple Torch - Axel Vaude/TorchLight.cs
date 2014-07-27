@@ -19,7 +19,7 @@ public class TorchLight : MonoBehaviour {
 
 	void Start() {
 		randomFlickerOffset = Random.Range(0f, Mathf.PI*2);
-		GO.light.range = 8f;
+		GO.light.range = 15f;
 		GO.light.intensity = Intensity;
 		MainFlame.GetComponent<ParticleSystem>().emissionRate = Intensity*20f;
 		BaseFlame.GetComponent<ParticleSystem>().emissionRate = Intensity*15f;	
@@ -27,7 +27,6 @@ public class TorchLight : MonoBehaviour {
 		Fumee.GetComponent<ParticleSystem>().emissionRate = Intensity*12f;
 	}
 	
-
 	void Update() {
 		if (Intensity < 0) 
 			Intensity = 0;
