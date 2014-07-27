@@ -1093,10 +1093,10 @@ public class Hud : MonoBehaviour {
 			}
 		}
 
-		GUI.DrawTexture(r, Pics.Get(currFrame + ""));
+		GUI.DrawTexture(r, Pics.Get("CazCore " + currFrame));
 
-		if (Time.time > logoDura || 
-		    Debug.isDebugBuild
+		if (Time.time > logoDura //|| 
+		    //Debug.isDebugBuild
 	    )
 			Mode = HudMode.MainMenu;
 	}

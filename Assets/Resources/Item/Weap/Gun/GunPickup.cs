@@ -54,19 +54,29 @@ public class GunPickup : MonoBehaviour {
 		}
 
 
-
-		if (Name == "Rocket Launcher" || Name == "Grenade Launcher") {
+		// initial scale & rotational offsets 
+		if (Name == "Grenade Launcher") {
 			Model.transform.Rotate(0, 0, zOff);
 			Model.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
-			start = Model.transform.position + Vector3.up * 0.33f;
-		}else if (Name == "Spatula") {
-			Model.transform.Rotate(0, 0, zOff);
+		}else if (Name == "Rocket Launcher") {
+			// no rotation 
 			Model.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-			start = Model.transform.position + Vector3.up * 0.33f;
+		}else if (Name == "Spatula") {
+			Model.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+			Model.transform.Rotate(0, 0, zOff);
 		} else {
-			Model.transform.Rotate(270, 0, zOff);
 			Model.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-			start = Model.transform.position + Vector3.up * 0.33f;
+			Model.transform.Rotate(270, 0, zOff);
+		}
+
+		// offsets from spawn base/pedestal 
+		switch (Name) {
+			case "Rocket Launcher":
+				start = Model.transform.position + Vector3.up * 0.33f + Vector3.forward * 0.5f;
+				break;
+			default:
+				start = Model.transform.position + Vector3.up * 0.33f;
+				break;
 		}
 	}
 	
@@ -95,6 +105,8 @@ public class GunPickup : MonoBehaviour {
 			transform.Rotate(300f * Time.deltaTime, 0, 0);
 			//iconFront.transform.Rotate(300f * Time.deltaTime, 0, 0);
 			//iconBack.transform.Rotate(300f * Time.deltaTime, 0, 0);
+		}else if (Name == "Rocket Launcher") {
+			Model.transform.Rotate(0, 130f * Time.deltaTime, 0);
 		}else
 			Model.transform.Rotate(0, 0, 130f * Time.deltaTime);
 	}
