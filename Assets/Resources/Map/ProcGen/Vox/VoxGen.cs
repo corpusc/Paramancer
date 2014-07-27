@@ -596,38 +596,34 @@ public static class VoxGen {
 
 		if (!air(_x, _y, _z)) {
 			Material mat = null;
+			var c = cells[x, y, z];
+			var rs = rooms[currRoom].Surfaces;
 
 			if /***/ (currDir == Vector3.up) {
-				mat = getMat(ref cells[x, y, z].Ceiling,
-					rooms[currRoom].Surfaces.Ceiling);
+				mat = getMat(ref c.Ceiling,	rs.Ceiling);
 			}else if (currDir == Vector3.down) {
-				mat = getMat(ref cells[x, y, z].Floor, 
-					rooms[currRoom].Surfaces.Floor);
-			}else if /***/ (currDir == Vector3.left) {
-				mat = getMat(ref cells[x, y, z].WestWall,
-					rooms[currRoom].Surfaces.Walls);
+				mat = getMat(ref c.Floor, rs.Floor);
+			}else if (currDir == Vector3.left) {
+				mat = getMat(ref c.WestWall, rs.Walls);
 			}else if (currDir == Vector3.right) {
-				mat = getMat(ref cells[x, y, z].EastWall,
-					rooms[currRoom].Surfaces.Walls);
+				mat = getMat(ref c.EastWall, rs.Walls);
 			}else if (currDir == Vector3.forward) {
-				mat = getMat(ref cells[x, y, z].NorthWall,
-     				rooms[currRoom].Surfaces.Walls);
+				mat = getMat(ref c.NorthWall, rs.Walls);
 			}else if (currDir == Vector3.back) {
-				mat = getMat(ref cells[x, y, z].SouthWall,
-             		rooms[currRoom].Surfaces.Walls);
+				mat = getMat(ref c.SouthWall, rs.Walls);
 			}
 
+			// if quad already here 
 			if (mat == null)
 		    	return;
 
-			//if () {
-				var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
-				np.transform.position = Pos + offset;
-				np.transform.localScale = Scale;
-				np.transform.forward = currDir;
-				np.renderer.material = mat;
-				np.transform.parent = PrimBag.transform;
-			//}
+			// nothing here, so make a quad 
+			var np = GameObject.CreatePrimitive(PrimitiveType.Quad);
+			np.transform.position = Pos + offset;
+			np.transform.localScale = Scale;
+			np.transform.forward = currDir;
+			np.renderer.material = mat;
+			np.transform.parent = PrimBag.transform;
 		}
 	}
 
