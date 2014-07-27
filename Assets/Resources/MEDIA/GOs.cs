@@ -12,7 +12,7 @@ public static class GOs {
 	
 	static GOs() {
 		Debug.Log("----------------- GOs constructor -----------------");
-		handleFolder("Av");
+		handleFolder("Entity/Av");
 		handleFolder("Game");
 		handleFolder("Item");
 		handleFolder("Theme");

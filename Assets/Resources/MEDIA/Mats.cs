@@ -9,8 +9,8 @@ public static class Mats {
 	
 	
 	static Mats() {
-		handleFolder("Av/Color");
-		handleFolder("Av/Head");
+		handleFolder("Entity/Av/Color");
+		handleFolder("Entity/Av/Head");
 		handleFolder("Item/Weap/FX");
 		handleFolder("Theme");
 	}

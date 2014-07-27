@@ -12,7 +12,7 @@ public class ThemedCategories {
 
 
 
-	public ThemedCategories(Theme theme = Theme.SciFi) {
+	public ThemedCategories(Theme theme = Theme.Fantasy) {
 		Debug.Log("Contstucting ThemedCategories");
 
 		// setup surfaces palette 
@@ -41,6 +41,33 @@ public class ThemedCategories {
 	}
 	
 	void fantasy() {
+		var sand = Mats.Get("Desert_Sand_01");
+		var pave = Mats.Get("Pavement_01");
+		var roof = Mats.Get("roofing_007");
+		var ston = Mats.Get("Stones_01");
+		var wood = Mats.Get("Wood_Planks_01");
+
+		Ceilings.Add(sand);
+		Ceilings.Add(pave);
+		Ceilings.Add(roof);
+		Ceilings.Add(ston);
+		Ceilings.Add(wood);
+
+		Floors.Add(sand);
+		Floors.Add(pave);
+		Floors.Add(wood);
+
+		Walls.Add(sand);
+		Walls.Add(pave);
+		Walls.Add(roof);
+		Walls.Add(ston);
+		Walls.Add(wood);
+
+		Lips.Add(roof);
+		Lips.Add(sand);
+		Lips.Add(pave);
+		Lips.Add(ston);
+		Lips.Add(wood);
 	}
 
 	void sciFi() {
