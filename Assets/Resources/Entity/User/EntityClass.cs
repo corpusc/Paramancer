@@ -143,12 +143,40 @@ public class EntityClass : MonoBehaviour {
 		}
 	}
 
+	private void updateMob() {
+	}
+
 	public bool sendRPCUpdate = false;
 	bool previouslyLockedCursor = true; // this is just so that clicking back into the screen won't fire explosive or gravgun immediately 
 	float rpcCamTime = 0f;
 	void Update() {
-		if (isMob)
+		if (isMob) {
+			updateMob();
 			return;
+		}
+
+		// else....not a mob...
+
+
+
+		// temporary terrain hack.    YAY!   once we implement visual holes in terrain 
+		// we will be able to disable terrain collision so we can run across terrain 
+		// and seamlessly (depending on how responsive we can make the generation) 
+		// enter through a dungeon entrance, and go down inside it 
+		// should detect height first.  like once we descended _ meters into the
+		// dungeon, we will have no need of checking the terrain.
+		// generally the top of the dungeon airspace that we'd occupy would be well
+		// below the lowest point of the terrain 
+		var terr = GameObject.Find("Terrain");
+		if (transform.position.x > 0f &&
+		    transform.position.x < 5f &&
+		    transform.position.z > -5f &&
+		    transform.position.z < 0f
+	    ) {
+			terr.collider.enabled = false;
+		}else
+			terr.collider.enabled = true;
+
 
 		if (User.local)
 			net.LocEnt.Visuals = this;
