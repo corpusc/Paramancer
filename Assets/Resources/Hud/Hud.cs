@@ -129,18 +129,23 @@ public class Hud : MonoBehaviour {
 			}
 		}
 
-		if (CcInput.Started(UserAction.Menu)) 
+		// see if escaping company logo splash 
+		if (CcInput.Started(UserAction.Menu) || // wanna bring up menu from ANY other mode 
+		    Mode == HudMode.SplashLogos && 
+		    CcInput.Started(UserAction.Activate) // allow alt splash screen escape 
+	    ) {
 			if (Mode != HudMode.MainMenu) {
 				Mode = HudMode.MainMenu;
 				Screen.lockCursor = false;
 			}else{
-				// the only people who should see my fullscreen'ish button
-				// now (about how you gotta click in the window to grab cursor)
-				// should be people running the game in the Unity IDE
-				// & those who hit ESC key
+				// the only people who should see my fullscreen'ish button 
+				// now (about how you gotta click in the window to grab cursor) 
+				// should be people running the game in the Unity IDE 
+				// & those who hit ESC key 
 				if (net.Connected && !Application.isWebPlayer)
 					Mode = HudMode.Playing;
 			}
+		}
 			
 		if (CcInput.Started(UserAction.Scores))
 			playMode.ShowingScores = !playMode.ShowingScores;
@@ -256,7 +261,13 @@ public class Hud : MonoBehaviour {
 				break;
 
 			case HudMode.Wait:
-				drawSimpleWindow("", Color.green);
+				if (Debug.isDebugBuild)
+					S.OutlinedLabel(
+						new Rect(0, 0, Screen.width, Screen.height), 
+						"Wait"
+					);
+				else
+					drawSimpleWindow("", Color.green);
 				break;
 
 			// server
@@ -1095,8 +1106,8 @@ public class Hud : MonoBehaviour {
 
 		GUI.DrawTexture(r, Pics.Get("CazCore " + currFrame));
 
-		if (Time.time > logoDura //|| 
-		    //Debug.isDebugBuild
+		if (Time.time > logoDura || 
+		    Debug.isDebugBuild
 	    )
 			Mode = HudMode.MainMenu;
 	}
@@ -1128,7 +1139,8 @@ public class Hud : MonoBehaviour {
 		// draw logos 
 		float paraWid = midX-hS;
 		// 'Paramancer' dimensions are close to perfect square, so midX can be both wid & hei 
-		GUI.DrawTexture(new Rect(0, Screen.height-paraWid, paraWid, paraWid), Pics.Get("Logo - Paramancer"));
+		if (!Debug.isDebugBuild)
+			GUI.DrawTexture(new Rect(0, Screen.height-paraWid, paraWid, paraWid), Pics.Get("Logo - Paramancer"));
 
 		// 		company logo 
 		float cazWid = paraWid/2;

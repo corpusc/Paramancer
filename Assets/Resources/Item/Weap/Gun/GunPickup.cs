@@ -16,25 +16,12 @@ public class GunPickup : MonoBehaviour {
 	GameObject iconBack; // ...or bottom ^^ 
 	float sinny = 0f;
 	float zOff; // rotation offset, so that they aren't all pointed in the same direction 
-	Vector3 start;
 	bool isHealth;
-	
-	
-	
-	void makeQuad(ref GameObject go, float angle, float zOffs) {
-//		go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-//		setMat(go, Pics.Health);//"Grenade Launcher"));
-//		go.transform.localRotation = Quaternion.AngleAxis(angle, Vector3.right);
-//		go.transform.position = transform.position + new Vector3(0, zOffs, 0);
-//		go.collider.enabled = false;
-//		go.transform.parent = VoxGen.PrimBag.transform; 
-	}
+	Vector3 start; 
+	float tipAngle; // tip == opening of the barrel....needed for Gabi's Napaalm Launcher 
 
-	void setMat(GameObject go, Texture pic) {
-		go.renderer.material.SetTexture("_MainTex", pic);
-		go.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
-	}
-
+	
+	
 	void Start() {
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		sinny = Random.Range(0f, 4f);
@@ -69,18 +56,25 @@ public class GunPickup : MonoBehaviour {
 			Model.transform.Rotate(270, 0, zOff);
 		}
 
-		// offsets from spawn base/pedestal 
-		switch (Name) {
-			case "Rocket Launcher":
-				start = Model.transform.position + Vector3.up * 0.33f + Vector3.forward * 0.5f;
-				break;
-			default:
-				start = Model.transform.position + Vector3.up * 0.33f;
-				break;
-		}
+//		// offsets from spawn base/pedestal 
+//		switch (Name) {
+//			case "Rocket Launcher":
+//				start = Model.transform.position + Vector3.up * 0.33f;
+//				break;
+//			default:
+//				start = Model.transform.position + Vector3.up * 0.33f;
+//				break;
+//		}
+		start = Model.transform.position + Vector3.up * 0.33f;
 	}
 	
 	void Update() {
+		
+		// tip 
+		var tip = Quaternion.Euler(0, tipAngle, 0) * Vector3.forward;
+		tipAngle += Time.deltaTime;
+
+		// tldr 
 		if (luO == null) {
 			if (null != net &&
 				null != net.LocEnt &&
@@ -98,7 +92,7 @@ public class GunPickup : MonoBehaviour {
 		}
 		
 		sinny += Time.deltaTime * 2f;
-		Model.transform.position = start + (Vector3.up * ((Mathf.Sin(sinny)*0.2f) + 0.3f));
+		Model.transform.position = start + tip + (Vector3.up * ((Mathf.Sin(sinny)*0.2f) + 0.3f));
 //		boxObj.transform.position = transform.position + (Vector3.up * ((Mathf.Sin(sinny)*0.1f) + 0.3f));      original setting for all BOX models
 
 		if (isHealth) {
@@ -106,6 +100,12 @@ public class GunPickup : MonoBehaviour {
 			//iconFront.transform.Rotate(300f * Time.deltaTime, 0, 0);
 			//iconBack.transform.Rotate(300f * Time.deltaTime, 0, 0);
 		}else if (Name == "Rocket Launcher") {
+//
+//			tip.RotateY(Time.deltaTime * 180f);
+//			//Model.transform.ro
+//			Model.transform.position = start + tip;
+//
+//			
 			Model.transform.Rotate(0, 130f * Time.deltaTime, 0);
 		}else
 			Model.transform.Rotate(0, 0, 130f * Time.deltaTime);
@@ -114,5 +114,19 @@ public class GunPickup : MonoBehaviour {
 	public void Pickup() {
 		net.UnstockPickupPoint(SpawnData);
 		Destroy(gameObject);
+	}
+
+	void makeQuad(ref GameObject go, float angle, float zOffs) {
+		//		go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+		//		setMat(go, Pics.Health);//"Grenade Launcher"));
+		//		go.transform.localRotation = Quaternion.AngleAxis(angle, Vector3.right);
+		//		go.transform.position = transform.position + new Vector3(0, zOffs, 0);
+		//		go.collider.enabled = false;
+		//		go.transform.parent = vGen.PrimBag.transform; 
+	}
+	
+	void setMat(GameObject go, Texture pic) {
+		go.renderer.material.SetTexture("_MainTex", pic);
+		go.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
 	}
 }

@@ -18,6 +18,12 @@
  * no loadout/selection screens..... pickup everything IN THE GAME, not in menus
  * no forced waiting (for longer than 10 seconds?) between matches
  * no working towards weapon unlocks
+ * 
+ * no manual reloading
+ * no classes
+ * no clunky "cover system" interrupting your control flow
+ * no perks
+ * no kill streak "rewards" (they are THEIR OWN REWARD)
  * ....no grinding!   you don't play games to prove your virtual work ethic!
 
 -----roguelike layer
@@ -85,6 +91,7 @@ public class CcNet : MonoBehaviour {
 	bool thirtySecsAnnounced = false;
 	bool almostOverAnnounced = false;
 	bool countdownAnnounced = false;
+	VoxGen vGen;
 	// scripts 
 	CcLog log;
 	Hud hud;
@@ -93,6 +100,10 @@ public class CcNet : MonoBehaviour {
 
 	
 	void Start() {
+		Mats.Init();
+		vGen = new VoxGen();
+		vGen.Init();
+
 		DontDestroyOnLoad(this);
 		//Application.targetFrameRate = 60; // -1 (the default) makes standalone games render as fast as they can, 
 		// and web player games to render at 50-60 frames/second depending on the platform.
@@ -110,7 +121,12 @@ public class CcNet : MonoBehaviour {
 
 
 
+	void OnGUI() {
+		vGen.OnGUI();
+	}
+
 	void Update() {
+		vGen.Update();
 		setupMapIfReady();
 
 		// ping periodically
@@ -1238,14 +1254,14 @@ public class CcNet : MonoBehaviour {
 		
 		// if procgen map 
 		if (mapName == MatchData.VoxelName)
-			VoxGen.GenerateMap(CurrMatch.Seed, CurrMatch.Theme);
+			vGen.GenerateMap(CurrMatch.Seed, CurrMatch.Theme);
 	}
 	
 	void OnLevelWasLoaded(int level) {
 		Debug.Log("OnLevelWasLoaded() - level: " + level);
 
 		// skip Init(0) and OfflineBackdrop(1) scenes 
-		if (level > 1 && !VoxGen.Generating)
+		if (level > 1 && !vGen.Generating)
 			setupSpawns();
 	}
 
@@ -1606,10 +1622,10 @@ public class CcNet : MonoBehaviour {
 	bool prevWas = false; // previously was generating map? 
 	private void setupMapIfReady() {
 		// if done generating map 
-		if (prevWas && !VoxGen.Generating)
+		if (prevWas && !vGen.Generating)
 			setupSpawns();
 		
-		prevWas = VoxGen.Generating;
+		prevWas = vGen.Generating;
 	}
 
 	#endregion

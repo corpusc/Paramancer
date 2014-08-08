@@ -79,21 +79,26 @@ public static class Sfx {
 		
 		// add to the master collection that includes files from all folders 
 		foreach (var cl in aClips) {
-			var nc = new CcClip();
-			nc.Clip = cl;
-			nc.Tags.Add(s);
-			switch (cl.name) {
-				case "Jump": nc.Volume = 0.2f;	break;
-				case "Catch": nc.Volume = 0.4f; break;
-				case "click": nc.Volume = 0.2f; break;
-				case "Die": nc.Volume = 1f; break;
-				case "Gravulator": nc.Volume = 0.4f; break;
-				case "guncocked": nc.Volume = 0.2f; break;
-				case "Land": nc.Volume = 0.5f; break;
-				case "Swapped": nc.Volume = 0.4f; break;
+			if (clips.ContainsKey(cl.name)) {
+				Debug.LogError("______ The name: " + cl.name + " is already a registered AudioClip!!! ______");
+			} else {
+				var nc = new CcClip();
+				nc.Clip = cl;
+				nc.Tags.Add(s);
+				switch (cl.name) {
+					case "Jump": nc.Volume = 0.2f;	break;
+					case "Catch": nc.Volume = 0.4f; break;
+					case "click": nc.Volume = 0.2f; break;
+					case "Die": nc.Volume = 1f; break;
+					case "Gravulator": nc.Volume = 0.4f; break;
+					case "guncocked": nc.Volume = 0.2f; break;
+					case "Land": nc.Volume = 0.5f; break;
+					case "Swapped": nc.Volume = 0.4f; break;
+				}
+
+				clips.Add(cl.name, nc);
+				feedback += cl.name + ",  ";
 			}
-			clips.Add(cl.name, nc);
-			feedback += cl.name + ",  ";
 		}
 
 		Debug.Log("______ SFX/" + s + " ______ " + feedback.TrimEnd(',', ' '));

@@ -12,8 +12,8 @@ public class ThemedCategories {
 
 
 
-	public ThemedCategories(Theme theme = Theme.Fantasy) {
-		Debug.Log("Contstucting ThemedCategories");
+	public void Init(Theme theme = Theme.Fantasy) {
+		Debug.Log("Constructing ThemedCategories");
 
 		// setup surfaces palette 
 		switch (theme) {

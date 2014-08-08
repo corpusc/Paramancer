@@ -167,15 +167,15 @@ public class EntityClass : MonoBehaviour {
 		// dungeon, we will have no need of checking the terrain.
 		// generally the top of the dungeon airspace that we'd occupy would be well
 		// below the lowest point of the terrain 
-		var terr = GameObject.Find("Terrain");
-		if (transform.position.x > 0f &&
-		    transform.position.x < 5f &&
-		    transform.position.z > -5f &&
-		    transform.position.z < 0f
-	    ) {
-			terr.collider.enabled = false;
-		}else
-			terr.collider.enabled = true;
+//		var terr = GameObject.Find("Terrain");
+//		if (transform.position.x > 0f &&
+//		    transform.position.x < 5f &&
+//		    transform.position.z > -5f &&
+//		    transform.position.z < 0f
+//	    ) {
+//			terr.collider.enabled = false;
+//		}else
+//			terr.collider.enabled = true;
 
 
 		if (User.local)

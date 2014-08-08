@@ -4,84 +4,90 @@ using System.Collections.Generic;
 
 
 
-public static class VoxGen {
-	public static bool Generating = false;
-	public static Theme Theme = Theme.SciFi; // determines what assets to use, and how 
-	public static bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed 
-	public static int Seed = 0;
+public class VoxGen {
+	public bool Generating = false;
+	public Theme Theme = Theme.SciFi; // determines what assets to use, and how 
+	public bool MapIsOpen = false; // used to control whether corridors reaching the border of the map are to be closed 
+	public int Seed = 0;
 	// rooms 
-	public static int NumLowerRooms = 40; // rooms/halls to create on the ground floor 
-	public static float MaxOverride = 0.3f; // only create a room if there aren't too many things already in there 
-	public static int MinRoomSpan = 2; // the minimal span of a form(this will end up being the width ussually) 
-	public static int MaxRoomSpan = 16; // the maximal span of a form(this will end up being the length ussually) 
-	public static int MinArea = 20; // don't create tiny rooms that will not be noticed 
-	public static int MaxArea = 100; // limits the creation of extremely large rooms, favors corridors 
-	public static int MaxCorridorArea = 60; // for corridors/bridges above the ground floor 
-	public static Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map 
-	public static Vector3 Scale = Vector3.one; // the scale of all elements on the map 
-	public static float SizeToHeight = 0.85f; // this is used to give a larger height to rooms with a square-like shape.  
+	public int NumLowerRooms = 40; // rooms/halls to create on the ground floor 
+	public float MaxOverride = 0.3f; // only create a room if there aren't too many things already in there 
+	public int MinRoomSpan = 2; // the minimal span of a form(this will end up being the width ussually) 
+	public int MaxRoomSpan = 16; // the maximal span of a form(this will end up being the length ussually) 
+	public int MinArea = 20; // don't create tiny rooms that will not be noticed 
+	public int MaxArea = 100; // limits the creation of extremely large rooms, favors corridors 
+	public int MaxCorridorArea = 60; // for corridors/bridges above the ground floor 
+	public Vector3 Pos = Vector3.zero; // the position of the min-coordinate corner of the generated map 
+	public Vector3 Scale = Vector3.one; // the scale of all elements on the map 
+	public float SizeToHeight = 0.85f; // this is used to give a larger height to rooms with a square-like shape.  
 		//Setting it to a lower value will cause rooms to appear flatter. 
-	public static int MinHeight = 2; // the minimal height.  needs to allow space for player 
-	public static int MaxLowerY = 1; // the y position of the lower rooms.  use 0 for no randomness 
-	public static int HeightRand = 4; // the maximal additional room height (minimal is 0) (last-exclusive, so set to 1 for no randomness) 
+	public int MinHeight = 2; // the minimal height.  needs to allow space for player 
+	public int MaxLowerY = 1; // the y position of the lower rooms.  use 0 for no randomness 
+	public int HeightRand = 4; // the maximal additional room height (minimal is 0) (last-exclusive, so set to 1 for no randomness) 
 	// corridors 
-	public static int NumUpperRooms = 10; // corridors/bridges that connect rooms reaching the given height 
-	public static int CorridorHeightRand = 2; // same as above, but for corridors 
-	public static int MinFloorLevelStep = 8; // the minimal height distance between two corridor levels on top of each other 
-	public static int MaxFloorLevelStep = 10; // the maximal height distance between two corridor levels on top of each other 
-	public static int MinCorridorStartHeight = 3; // the minimal height at which corridors & bridges are created 
-	public static int MaxCorridorStartHeight = 5; // the maximal height at which corridors & bridges are created 
+	public int NumUpperRooms = 10; // corridors/bridges that connect rooms reaching the given height 
+	public int CorridorHeightRand = 2; // same as above, but for corridors 
+	public int MinFloorLevelStep = 8; // the minimal height distance between two corridor levels on top of each other 
+	public int MaxFloorLevelStep = 10; // the maximal height distance between two corridor levels on top of each other 
+	public int MinCorridorStartHeight = 3; // the minimal height at which corridors & bridges are created 
+	public int MaxCorridorStartHeight = 5; // the maximal height at which corridors & bridges are created 
 	// assets to be placed on the map 
 	//		lights 
-	public static float TorchScale = 1f;
-	public static float TorchOffset = 0.1f; // the distance from the center of the torch to the wall/floor it is attached to 
+	public float TorchScale = 1f;
+	public float DistanceTweenLightAndSurface = 0.1f;
 	// 		jump pads 
-	public static int numJumpPads = 10;
-	public static Vector3 JumpPadScale = new Vector3(1f, 0.3f, 1f);
-	public static int JumpHeight = 2; // the height that cannot be jumped over normally (needs a jump pad & must be lesser than MapSize.y) 
-	public static float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on 
+	public int numJumpPads = 10;
+	public Vector3 JumpPadScale = new Vector3(1f, 0.3f, 1f);
+	public int JumpHeight = 2; // the height that cannot be jumped over normally (needs a jump pad & must be lesser than MapSize.y) 
+	public float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on 
 	// spawns 
 	//		entities 
-	public static Vector3 SpawnPointScale = Vector3.one;
-	public static int NumUserSpawns = 6; // (FFA/red/blue) 
-	public static int NumMobSpawns = 8;
+	public Vector3 SpawnPointScale = Vector3.one;
+	public int NumUserSpawns = 6; // (FFA/red/blue) 
+	public int NumMobSpawns = 8;
 	// 		weapons 
-	public static Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
-	public static float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on 
+	public Vector3 WeaponSpawnScale = new Vector3(0.5f, 0.1f, 0.5f);
+	public float WeaponSpawnOffset = 0.05f; // the distance from the center of the weapon spawn to the floor it is spawned on 
 	// bags act as containers. (since scenes don't have folders) 
 	// a simple transform gameobject which children/content will mark as their parent as they are born 
-	public static GameObject PrimBag; 
-	public static GameObject SpawnBag;
+	public GameObject PrimBag; 
+	public GameObject SpawnBag;
 
 
 
 	// private 
-	static int numMade = 0; // curr tally of just about everything that gets made 
+	int numMade = 0; // curr tally of just about everything that gets made 
 	const int numGunSpawns = 10;
 	const int numTries = 20000; // ... at making a room 
-	static Cell[,,] cells;
-	static Vec3i numVoxAcross; // number of voxels across 3 dimensions 
-	static ThemedCategories cat = new ThemedCategories();
-	static List<VoxelRoom> rooms = new List<VoxelRoom>();
+	Cell[,,] cells;
+	Vec3i numVoxAcross; // number of voxels across 3 dimensions 
+	ThemedCategories cat = new ThemedCategories();
+	List<VoxelRoom> rooms = new List<VoxelRoom>();
 	// current pointers/indexes 
-	//static int currX;
-	static int currRoom;
-	static Vector3 currDir; // direction/orientation/facing 
-	static int sx, sy, sz, x, y, z, xMax, yMax, zMax; // start & current positions & max counts (of current room) 
+	//int currX;
+	int currRoom;
+	Vector3 currDir; // direction/orientation/facing 
+	int sx, sy, sz, x, y, z, xMax, yMax, zMax; // start & current positions & max counts (of current room) 
 
 
 
-	static VoxGen() {
+	public VoxGen() {
 		numVoxAcross.X = 64;
 		numVoxAcross.Z = 64;
 		numVoxAcross.Y = 32;
 		
 		cells = new Cell[numVoxAcross.X, numVoxAcross.Y, numVoxAcross.Z];
 	}
-	
-	
-	
-	public static void OnGUI() {
+
+
+
+	public void Init() {
+		cat.Init();
+	}
+
+
+
+	public void OnGUI() {
 		if (!Generating)
 			return;
 
@@ -93,19 +99,12 @@ public static class VoxGen {
 
 
 
-	public static void GenerateMap(int seed, Theme theme) {
+	public void GenerateMap(int seed, Theme theme) {
 		Random.seed = 
 			Seed = 
 			seed;
 		Theme = theme;
 		Scale = Vector3.one * 2f;
-
-		// bags 
-		// ...are containers.
-		// since we can't have "folders" in a scene, we parent spammy quads and 
-		// such to these objects, so they will be collapsed/hidden 
-		PrimBag = GameObject.Find("[PRIM]");
-		SpawnBag = GameObject.Find("[SPAWN]");
 
 		Debug.Log("Generating map with seed: " + seed);
 		// cleanup previous possible map 
@@ -125,7 +124,16 @@ public static class VoxGen {
 	
 	
 	
-	public static void Update() {
+	public void Update() {
+		// bags 
+		// ...are containers.
+		// since we can't have "folders" in a scene, we parent spammy quads and 
+		// such to these objects, so they will be collapsed/hidden 
+		if (PrimBag == null)
+			PrimBag = GameObject.Find("[PRIM]");
+		if (SpawnBag == null)
+			SpawnBag = GameObject.Find("[SPAWN]");
+		
 		if (!Generating)
 			return;
 
@@ -142,7 +150,7 @@ public static class VoxGen {
 
 
 
-	private static void postGenerationProcesses() {
+	private void postGenerationProcesses() {
 		Debug.Log("finished all rooms     num: " + rooms.Count);
 		Generating = false;
 		
@@ -161,7 +169,7 @@ public static class VoxGen {
 
 
 	// starting position needs to be reset for each quad (the max positions might as well be here,  just for grouping) 
-	private static void setStart(Vector3 dir) { 
+	private void setStart(Vector3 dir) { 
 		currDir = dir;
 		var r = rooms[currRoom];
 
@@ -183,7 +191,7 @@ public static class VoxGen {
 
 
 
-	private static void generateOneRoom() {
+	private void generateOneRoom() {
 		var hx = Scale.x * 0.5f;
 		var hy = Scale.y * 0.5f;
 		var hz = Scale.z * 0.5f;
@@ -227,7 +235,7 @@ public static class VoxGen {
 
 
 	// private methods 
-	private static void cellsClear() {
+	private void cellsClear() {
 		for (int i = 0; i < numVoxAcross.X; i++)
 		for (int j = 0; j < numVoxAcross.Y; j++)
 		for (int k = 0; k < numVoxAcross.Z; k++) {
@@ -237,7 +245,7 @@ public static class VoxGen {
 
 
 
-	private static void makeFirstRoom() {
+	private void makeFirstRoom() {
 		Vec3i a;
 		a.X = Random.Range(0, numVoxAcross.X - MaxRoomSpan);
 		a.Y = 0;
@@ -261,7 +269,7 @@ public static class VoxGen {
 
 
 
-	private static void carveOutRoom(Vec2i s, Vec2i e, int h = 0) { // start, end, height (of floor) 
+	private void carveOutRoom(Vec2i s, Vec2i e, int h = 0) { // start, end, height (of floor) 
 		Vec3i a;
 		a.X = s.x;
 		a.Z = s.z;
@@ -286,7 +294,7 @@ public static class VoxGen {
 
 		carveOutRoom(a, b);
 	}
-	private static void carveOutRoom(Vec3i s, Vec3i e) { // start, end 
+	private void carveOutRoom(Vec3i s, Vec3i e) { // start, end 
 		// the <= is there because it fills the space between the positions inclusively, 
 		// so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int i = s.X; i <= e.X; i++) 
@@ -307,7 +315,7 @@ public static class VoxGen {
 
 
 	// fills with false, used for creating bridges 
-	private static void putWall(Vec2i s, Vec2i e, int h) { // start, end, height() (must be sorted and not be out of borders) 
+	private void putWall(Vec2i s, Vec2i e, int h) { // start, end, height() (must be sorted and not be out of borders) 
 		for (int i = s.x; i <= e.x; i++) // the <= is there because it fills the space between the positions inclusively, 
 										// so filling 3, 3, 3 to 3, 3, 3 will result in filling 1 block 
 		for (int k = s.z; k <= e.z; k++)
@@ -317,7 +325,7 @@ public static class VoxGen {
 
 
 	// counts all true blocks in an area 
-	private static int countBlocks(Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders) 
+	private int countBlocks(Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders) 
 		int t = 0; // temporary 
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it counts the blocks inclusively, so counting from 3, 3, 3 to 3, 3, 3 can cause it to return 1 
 		for (int j = s.Y; j <= e.Y; j++)
@@ -329,7 +337,7 @@ public static class VoxGen {
 		return t;
 	}
 	// gets the taken area of the floor 
-	private static int countBlocks(Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders) 
+	private int countBlocks(Vec2i s, Vec2i e) { // start, end(must be sorted and not be out of borders) 
 		int m = 0; // the temporary var for storing the maximal amount of blocks in a level 
 		Vec3i a;
 		a.X = s.x;
@@ -346,7 +354,7 @@ public static class VoxGen {
 		return m;
 	}
 	// gets the taken area of the floor
-	private static int countBlocks(Vec2i s, Vec2i e, int h) { // start, end, height(must be sorted and not be out of borders)
+	private int countBlocks(Vec2i s, Vec2i e, int h) { // start, end, height(must be sorted and not be out of borders)
 		Vec3i a;
 		a.X = s.x;
 		a.Y = h;
@@ -360,7 +368,7 @@ public static class VoxGen {
 
 
 
-	private static bool containsAnyAir(Vec2i s, Vec2i e, int h = 0) { // start, end, height 
+	private bool containsAnyAir(Vec2i s, Vec2i e, int h = 0) { // start, end, height 
 		Vec3i a;
 		a.X = s.x;
 		a.Y = h;
@@ -376,7 +384,7 @@ public static class VoxGen {
 
 		return containsAnyAir(a, b);
 	}
-	private static bool containsAnyAir(Vec3i s, Vec3i e) { // start, end 
+	private bool containsAnyAir(Vec3i s, Vec3i e) { // start, end 
 		// the <= is there because it checks the blocks inclusively, 
 		// so checking from 3, 3, 3 to 3, 3, 3 can cause it to return true
 		for (int i = s.X; i <= e.X; i++) 
@@ -392,23 +400,23 @@ public static class VoxGen {
 
 
 	// only returns the floor area 
-	private static int getArea (Vec3i s, Vec3i e) { // start, end, must be sorted 
+	private int getArea (Vec3i s, Vec3i e) { // start, end, must be sorted 
 		return (e.X - s.X + 1) * (e.Z - s.Z + 1);
 	}
-	private static int getArea(Vec2i s, Vec2i e) { // start, end, must be sorted 
+	private int getArea(Vec2i s, Vec2i e) { // start, end, must be sorted 
 		return (e.x - s.x + 1) * (e.z - s.z + 1);
 	}
 
 
 
-	private static bool air(Vec3i p) {
+	private bool air(Vec3i p) {
 		if (p.X < 0 || p.X >= numVoxAcross.X) return MapIsOpen;
 		if (p.Y < 0 || p.Y >= numVoxAcross.Y) return MapIsOpen;
 		if (p.Z < 0 || p.Z >= numVoxAcross.Z) return MapIsOpen;
 
 		return cells[p.X, p.Y, p.Z].IsAir;
 	}
-	private static bool air(int x, int y, int z) {
+	private bool air(int x, int y, int z) {
 		Vec3i v;
 		v.X = x;
 		v.Y = y;
@@ -420,7 +428,7 @@ public static class VoxGen {
 
 
 	// checks if the area contains any blocks that are false (so that bridges are not suspended in mid-air) 
-	private static bool containsWalls (Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders) 
+	private bool containsWalls (Vec3i s, Vec3i e) { // start, end(must be sorted and not be out of borders) 
 		for (int i = s.X; i <= e.X; i++) // the <= is there because it checks the blocks inclusively, so checking from 3, 3, 3 to 3, 3, 3 can cause it to return true 
 		for (int j = s.Y; j <= e.Y; j++)
 		for (int k = s.Z; k <= e.Z; k++)
@@ -428,7 +436,7 @@ public static class VoxGen {
 
 		return false; // if we got here, it means that there are no walls in the area
 	}
-	private static bool containsWalls (Vec2i s, Vec2i e, int h) { // start, end, height(sorted, not out of borders)
+	private bool containsWalls (Vec2i s, Vec2i e, int h) { // start, end, height(sorted, not out of borders)
 		Vec3i a;
 		a.X = s.x;
 		a.Y = h;
@@ -441,7 +449,7 @@ public static class VoxGen {
 
 		return containsWalls (a, b);
 	}
-	private static bool containsWalls(Vec2i s, Vec2i e) { // start, end(sorted, not out of borders)
+	private bool containsWalls(Vec2i s, Vec2i e) { // start, end(sorted, not out of borders)
 		Vec3i a;
 		a.X = s.x;
 		a.Y = 0;
@@ -462,7 +470,7 @@ public static class VoxGen {
 	// .... which would be the typical type for representing distances. 
 
 	// *** RETURNS NEGATIVE *** if no floor was reached before the map ended 
-	private static int getTinyDistance(Vec3i sv) { // starting voxel 
+	private int getTinyDistance(Vec3i sv) { // starting voxel 
 		// y offset (go down from starting vox) 
 		for (int yOff = 0; yOff <= sv.Y + 1; yOff++) {
 			// + 1 because it also scans the floor that is not coded as bloks, instead, is dependent on the MapIsOpen variable
@@ -472,7 +480,7 @@ public static class VoxGen {
 
 		return -1;
 	}
-	private static int getTinyDistance(int x, int y, int z) {
+	private int getTinyDistance(int x, int y, int z) {
 		Vec3i v;
 		v.X = x;
 		v.Y = y;
@@ -485,7 +493,7 @@ public static class VoxGen {
 	// checks if all floors at given heights contain open blocks, 
 	// used to check if you can get into a corridor at all 
 	// (MinHeight is considered the player height) 
-	private static bool eachFloorOpen(Vec2i s, Vec2i e, int hs, int he) { // start, end, starting height, ending height (inclusive) 
+	private bool eachFloorOpen(Vec2i s, Vec2i e, int hs, int he) { // start, end, starting height, ending height (inclusive) 
 		for (int i = hs; i <= he; i++)
 			if (!containsAnyAir(s, e, i)) 
 				return false;
@@ -496,14 +504,14 @@ public static class VoxGen {
 
 
 	// passed vars: start position, height from there 
-	private static bool columnOpen(Vec3i s, int h) {
+	private bool columnOpen(Vec3i s, int h) {
 		for (int i = s.Y; i <= s.Y + h; i++)
 			if (!air(s.X, i, s.Z)) 
 				return false;
 
 		return true;
 	}
-	private static bool columnOpen(int x, int y, int z, int h) {
+	private bool columnOpen(int x, int y, int z, int h) {
 		Vec3i v;
 
 		v.X = x;
@@ -514,7 +522,7 @@ public static class VoxGen {
 
 
 
-	private static void makeGroundFloor() {
+	private void makeGroundFloor() {
 		int numMade = 0;
 		for (int i = 0; i < numTries && numMade < NumLowerRooms; i++) {
 			Vec2i t;
@@ -546,7 +554,7 @@ public static class VoxGen {
 
 
 
-	private static void addBridgesAndCorridorsHigherUp() {
+	private void addBridgesAndCorridorsHigherUp() {
 		// h is the height of the floor 
 		for (int h = Random.Range(MinCorridorStartHeight, MaxCorridorStartHeight + 1); 
 		     h < numVoxAcross.Y - MinHeight - HeightRand; 
@@ -591,7 +599,7 @@ public static class VoxGen {
 
 
 
-	private static void maybeMakeQuad(int _x, int _y, int _z, Vector3 offset) {
+	private void maybeMakeQuad(int _x, int _y, int _z, Vector3 offset) {
 		bool weShould = false;
 
 		if (!air(_x, _y, _z)) {
@@ -629,7 +637,7 @@ public static class VoxGen {
 
 
 
-	private static Material getMat(ref bool surface, Material mat) {
+	private Material getMat(ref bool surface, Material mat) {
 		if (surface) { // if we already made a quad there, null will prevent spawning more 
 			return null;
 		}else{
@@ -640,7 +648,15 @@ public static class VoxGen {
 
 
 
-	private static void makeLights() {
+	private void makeOneLight(Vector3 cellPos, Vector3 offset) {
+		var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch")); // was a torch 
+		nt.transform.position = Pos + cellPos + offset;
+		nt.transform.localScale = Scale * TorchScale;
+		nt.transform.parent = PrimBag.transform;
+		numMade++;
+	}
+
+	private void makeLights() {
 		const int numLights = 25;
 		numMade = 0;
 		
@@ -650,34 +666,26 @@ public static class VoxGen {
 			v.Y = Random.Range(0, numVoxAcross.Y);
 			v.Z = Random.Range(0, numVoxAcross.Z);
 			
+			// if spot is valid air space 
 			if (cells[v.X, v.Y, v.Z].IsAir) {
-				if (!air(v.X-1, v.Y, v.Z)) {
-					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
-					nt.transform.position = Pos + new Vector3 (Scale.x * v.X - Scale.x * 0.5f + TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
-					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = PrimBag.transform;
-					numMade++;
+				Vector3 offs; // offset to light 
+				var cellPos = new Vector3(Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z);
+
+				if (!air(v.X-1, v.Y, v.Z)) { // attach to west wall 
+					offs = new Vector3(- Scale.x * 0.5f + DistanceTweenLightAndSurface, 0, 0);
+					makeOneLight(cellPos, offs);
 				}else
-				if (!air(v.X+1, v.Y, v.Z)) {
-					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
-					nt.transform.position = Pos + new Vector3 (Scale.x * v.X + Scale.x * 0.5f - TorchOffset, Scale.y * v.Y, Scale.z * v.Z);
-					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = PrimBag.transform;
-					numMade++;
+				if (!air(v.X+1, v.Y, v.Z)) { // to east 
+					offs = new Vector3(+ Scale.x * 0.5f - DistanceTweenLightAndSurface, 0, 0);
+					makeOneLight(cellPos, offs);
 				}else
-				if (!air(v.X, v.Y, v.Z-1)) {
-					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
-					nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z - Scale.z * 0.5f + TorchOffset);
-					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = PrimBag.transform;
-					numMade++;
+				if (!air(v.X, v.Y, v.Z-1)) { // to south 
+					offs = new Vector3(0, 0, - Scale.z * 0.5f + DistanceTweenLightAndSurface);
+					makeOneLight(cellPos, offs);
 				}else
-				if (!air(v.X, v.Y, v.Z+1)) {
-					var nt = (GameObject)GameObject.Instantiate(GOs.Get("Torch"));
-					nt.transform.position = Pos + new Vector3 (Scale.x * v.X, Scale.y * v.Y, Scale.z * v.Z + Scale.z * 0.5f - TorchOffset);
-					nt.transform.localScale = Scale * TorchScale;
-					nt.transform.parent = PrimBag.transform;
-					numMade++;
+				if (!air(v.X, v.Y, v.Z+1)) { // to north 
+					offs = new Vector3(0, 0, + Scale.z * 0.5f - DistanceTweenLightAndSurface);
+					makeOneLight(cellPos, offs);
 				}
 			} // end of scanning an individual block to see if a torch can be placed 
 		}
@@ -685,7 +693,7 @@ public static class VoxGen {
 	
 	
 	
-	private static void makeJumpPads() {
+	private void makeJumpPads() {
 		numMade = 0;
 
 		for (int i = 0; i < numTries && numMade < numJumpPads; i++) {
@@ -744,7 +752,7 @@ public static class VoxGen {
 
 
 
-	private static void makeSpawns(int num, GameObject o, Transform tr, bool isGun = false) {
+	private void makeSpawns(int num, GameObject o, Transform tr, bool isGun = false) {
 		numMade = 0;
 		float yOff = 0f;
 		var scale = SpawnPointScale;
@@ -779,7 +787,7 @@ public static class VoxGen {
 	
 	
 	
-	public static Transform getChildTransform(string s) {
+	public Transform getChildTransform(string s) {
 		var tr = SpawnBag.transform;
 
 		for (int i = 0; i < tr.childCount; i++) {

@@ -18,6 +18,9 @@ public static class GOs {
 		handleFolder("Theme");
 	}
 
+	public static void Init() {
+	}
+	
 	public static GameObject Get(string s) { // hash lookups in a Dictionary are fast right? 
 		if (gos.ContainsKey(s))
 			return gos[s];
@@ -41,9 +44,13 @@ public static class GOs {
 		var tGOs = Resources.LoadAll<GameObject>(s);
 		
 		// add to the master collection that includes files from all subfolders 
-		foreach (var cl in tGOs) {
-			gos.Add(cl.name, cl);
-			feedback += cl.name + ",  ";
+		foreach (var o in tGOs) {
+			if (gos.ContainsKey(o.name)) {
+				Debug.LogError("______ The name: " + o.name + " is already a registered GameObject!!! ______");
+			} else {
+				gos.Add(o.name, o);
+				feedback += o.name + ",  ";
+			}
 		}
 		
 		Debug.Log("______ GAMEOBJECTS --- " + s + " ______ " + feedback.TrimEnd(',', ' '));
@@ -53,9 +60,9 @@ public static class GOs {
 		// CLEANME:     use this temp list to setup permanent vars 
 		for (int i = 0; i < tGOs.Length; i++) {
 			switch (tGOs[i].name) {
-			case "Some string":
-				// do some specific hardwired setup for that particular model 
-				break;
+//				case "Some string":
+//					// do some specific hardwired setup for that particular model 
+//					break;
 			}
 		}
 	}

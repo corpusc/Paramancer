@@ -8,7 +8,7 @@ public static class Mats {
 	
 	
 	
-	static Mats() {
+	public static void Init() {
 		handleFolder("Entity/Av/Color");
 		handleFolder("Entity/Av/Head");
 		handleFolder("Item/Weap/FX");
@@ -38,11 +38,15 @@ public static class Mats {
 		
 		var tMats = Resources.LoadAll<Material>(s);
 
-		// add to the master collection that includes files from all folders 
-		foreach (var cl in tMats) {
-			//Debug.Log("MATS - " + s + " --------------- cl.name: " + cl.name);
-			mats.Add(cl.name, cl);
-			feedback += cl.name + ",  ";
+		// add to the master collection that includes files from all subfolders 
+		foreach (var o in tMats) {
+			if (mats.ContainsKey(o.name)) {
+				Debug.LogError("______ The name: " + o.name + " is already a registered Material!!! ______");
+			} else {
+				mats.Add(o.name, o);
+				feedback += o.name + ",  ";
+				Debug.Log("__" + o.name + " __ ");
+			}
 		}
 		
 		Debug.Log("______ Mat/" + s + " ______ " + feedback.TrimEnd(',', ' '));

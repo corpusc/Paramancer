@@ -54,10 +54,14 @@ public static class Pics {
 		
 		var tPics = Resources.LoadAll<Texture>(path);
 		
-		// add to the master collection that includes files from all folders 
-		foreach (var cl in tPics) {
-			pics.Add(cl.name, cl);
-			feedback += cl.name + ",  ";
+		// add to the master collection that includes files from all subfolders 
+		foreach (var t in tPics) {
+			if (pics.ContainsKey(t.name)) {
+				Debug.LogError("______ The name: " + t.name + " is already a registered Texture!!! ______");
+			} else {
+				pics.Add(t.name, t);
+				feedback += t.name + ",  ";
+			}
 		}
 		
 		Debug.Log("______ PIC/" + s + " ______ " + feedback.TrimEnd(',', ' '));
