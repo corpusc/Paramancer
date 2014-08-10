@@ -13,7 +13,7 @@ public class CcParticle : MonoBehaviour {
 	public float MaxSpeed = 0.2f; // random max 
 	public Color StartColor = Color.blue;
 	public Color MidColor = Color.green;
-	public bool UseMidColor = false;
+	public bool UseMidColor = true;
 	public float MidColorPos = 0.5f; // reaches midcolor at maxlife * MidColorPos 
 	public Color EndColor = Color.red; // always use something transparent 
 	public float life = 4f;
@@ -67,14 +67,14 @@ public class CcParticle : MonoBehaviour {
 	
 	void Update() {
 		if (UseMidColor) {
-			if(life > maxLife * MidColorPos)
+			if (life > maxLife * MidColorPos) {
 				for (var i = 0; i < vertices.Length; i++) {
-				colors[i] = Color.Lerp(MidColor, StartColor, (life - maxLife * MidColorPos) / (maxLife * MidColorPos));
-			}
-			else for (var i = 0; i < vertices.Length; i++) {
+					colors[i] = Color.Lerp(MidColor, StartColor, (life - maxLife * MidColorPos) / (maxLife * MidColorPos));
+				}
+			}else for (var i = 0; i < vertices.Length; i++) {
 				colors[i] = Color.Lerp(EndColor, MidColor, life / (maxLife * MidColorPos));
 			}
-		} else {
+		}else{
 			for (var i = 0; i < vertices.Length; i++)
 				colors[i] = Color.Lerp(EndColor, StartColor, life / maxLife);
 		}

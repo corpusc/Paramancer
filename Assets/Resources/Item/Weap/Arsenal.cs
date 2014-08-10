@@ -237,8 +237,8 @@ public class Arsenal : MonoBehaviour {
 				np.transform.position = center + v;
 				var p = np.GetComponent<CcParticle>();
 				p.MoveVec = Quaternion.AngleAxis(90f, Camera.main.transform.forward) * v * 2f;
-				p.MinSize = 0.4f;
-				p.MaxSize = 0.4f;
+				p.MinSize = 1.4f;
+				p.MaxSize = 1.4f;
 				p.StartColor = Color.blue;
 				p.EndColor = Color.clear;
 				p.ParticType = ParticleType.Circle;
@@ -288,7 +288,7 @@ public class Arsenal : MonoBehaviour {
 				activeRockets.Add(nr.GetComponent<Rocket>());
 
 				if (alt)
-					rs.Turning = true;
+					rs.Spiralling = true;
 				break;
 		}
 		
