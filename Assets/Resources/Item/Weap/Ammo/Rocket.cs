@@ -42,7 +42,7 @@ public class Rocket : MonoBehaviour {
 			Vector3 moveForward = (transform.forward * Time.deltaTime) * (FlightSpeed * (maxLife - life) / maxLife + BaseFlightSpeed);
 			transform.position += moveForward;
 
-			em.Update(-transform.forward, prevPos, Spiralling);
+			em.Update(transform, Spiralling);
 
 			var hitInfo = new RaycastHit();
 			int layerMask = 1;   //(1<<0);

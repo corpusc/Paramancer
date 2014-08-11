@@ -16,7 +16,7 @@ public class CcParticle : MonoBehaviour {
 	public bool UseMidColor = true;
 	public float MidColorPos = 0.5f; // reaches midcolor at maxlife * MidColorPos 
 	public Color EndColor = Color.red; // always use something transparent 
-	public float life = 4f;
+	public float Dura = 4f; // lifetime duration 
 	public float f = 0.05f;
 	public float MinSize = 0.4f;
 	public float MaxSize = 0.411f;
@@ -59,24 +59,24 @@ public class CcParticle : MonoBehaviour {
 			colors[i] = StartColor;
 		mesh.colors = colors;
 		transform.localScale = Vector3.one * Random.Range(MinSize, MaxSize);
-		life -= Random.Range(0f, 0.5f);
-		maxLife = life;
+		Dura -= Random.Range(0f, 0.5f);
+		maxLife = Dura;
 		moveVec *= MaxSpeed;
 		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * rotSpeed);
 	}
 	
 	void Update() {
 		if (UseMidColor) {
-			if (life > maxLife * MidColorPos) {
+			if (Dura > maxLife * MidColorPos) {
 				for (var i = 0; i < vertices.Length; i++) {
-					colors[i] = Color.Lerp(MidColor, StartColor, (life - maxLife * MidColorPos) / (maxLife * MidColorPos));
+					colors[i] = Color.Lerp(MidColor, StartColor, (Dura - maxLife * MidColorPos) / (maxLife * MidColorPos));
 				}
 			}else for (var i = 0; i < vertices.Length; i++) {
-				colors[i] = Color.Lerp(EndColor, MidColor, life / (maxLife * MidColorPos));
+				colors[i] = Color.Lerp(EndColor, MidColor, Dura / (maxLife * MidColorPos));
 			}
 		}else{
 			for (var i = 0; i < vertices.Length; i++)
-				colors[i] = Color.Lerp(EndColor, StartColor, life / maxLife);
+				colors[i] = Color.Lerp(EndColor, StartColor, Dura / maxLife);
 		}
 		mesh.colors = colors;
 
@@ -90,9 +90,9 @@ public class CcParticle : MonoBehaviour {
 		transform.localScale += Time.deltaTime * shrinkFactor;
 
 		moveVec *= Mathf.Pow(acceleration, Time.deltaTime);
-		life -= Time.deltaTime;
+		Dura -= Time.deltaTime;
 
-		if (life <= 0f) {
+		if (Dura <= 0f) {
 			Destroy(gameObject);
 		}
 	}

@@ -85,7 +85,7 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].DelayAlt = 0.1f;
 					break; 
 				case Gun.RailGun:   
-					Guns[i].Color = Color.cyan; 
+					Guns[i].Color = Color.Lerp(Color.magenta, Color.white, 0.25f); 
 					Guns[i].Delay = 2f;
 					Guns[i].DelayAlt = 2f;
 					break;
@@ -95,7 +95,7 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].DelayAlt = 0.7f;
 					break;
 				case Gun.Swapper:   
-					Guns[i].Color = Color.magenta; 
+					Guns[i].Color = Color.white; 
 					Guns[i].Delay = 2f; 
 					Guns[i].DelayAlt = 2f; 
 					break; 
@@ -138,8 +138,8 @@ public class Arsenal : MonoBehaviour {
 			}
 		}
 		
-		var lbp = (GameObject)GameObject.Instantiate(GOs.Get("Lightning"));
-		var lb = lbp.GetComponent<Lightning>();
+		var o = (GameObject)GameObject.Instantiate(GOs.Get("Lightning"));
+		var lb = o.GetComponent<Lightning>();
 
 		if (localFire && !hit) 
 			lb.start = localstart;
@@ -168,10 +168,10 @@ public class Arsenal : MonoBehaviour {
 			nh.transform.position = end + hitNorm * 0.01f;
 			nh.transform.forward = -hitNorm;
 			nh.transform.localScale *= Guns[(int)weapon].MarkScale;
-			nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
+			nh.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.black, Color.gray, Random.Range(0f, 0.1f));
 			nh.GetComponent<BulletMark>().MaxLife = 10f;
 
-			// particles 
+			// impact puff particles 
 			for (int i = 0; i < 100; i++) {
 				Vector3 diagonalVec = Quaternion.Euler(Random.Range(-30f, 30f), Random.Range(-30f, 30f), Random.Range(-30f, 30f)) * hitNorm;
 				var np = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
@@ -183,7 +183,7 @@ public class Arsenal : MonoBehaviour {
 				p.StartColor = Guns[(int)weapon].Color;
 				p.EndColor = Color.clear;
 				p.ParticType = ParticleType.Puff;
-				p.life = Random.Range(0.65f, 0.75f);
+				p.Dura = Random.Range(0.65f, 0.75f);
 			}
 		}
 		
@@ -237,9 +237,9 @@ public class Arsenal : MonoBehaviour {
 				np.transform.position = center + v;
 				var p = np.GetComponent<CcParticle>();
 				p.MoveVec = Quaternion.AngleAxis(90f, Camera.main.transform.forward) * v * 2f;
-				p.MinSize = 1.4f;
-				p.MaxSize = 1.4f;
-				p.StartColor = Color.blue;
+				p.MinSize = 1.3f;
+				p.MaxSize = 1.3f;
+				p.StartColor = Color.Lerp(S.Purple, Color.black, 0.7f);
 				p.EndColor = Color.clear;
 				p.ParticType = ParticleType.Circle;
 				progress += 0.20f;

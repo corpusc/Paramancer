@@ -22,7 +22,7 @@ public class Lightning : MonoBehaviour {
 		if (hit) 
 			col = new Color(0, 1, 0, 1f);
 		else 
-			col = Color.magenta;
+			col = Color.white;
 		
 		lr.SetColors(col, col);
 		lr.SetWidth(0.1f, 0.7f);
