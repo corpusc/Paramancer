@@ -14,7 +14,7 @@ public class Rocket : MonoBehaviour {
 
 	// private 
 	CcNet net;
-	Vector3 lastPos;
+	Vector3 prevPos;
 	Vector3 origFwd; // the original forward direction 
 	Vector3 origUp; // the original up direction 
 	float life = 10f;
@@ -26,7 +26,7 @@ public class Rocket : MonoBehaviour {
 	void Start() {
 		maxLife = life;
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
-		lastPos = transform.position;
+		prevPos = transform.position;
 		origFwd = transform.forward;
 		origUp = transform.up;
 		transform.position += transform.forward * ForwardOffset;
@@ -42,22 +42,22 @@ public class Rocket : MonoBehaviour {
 			Vector3 moveForward = (transform.forward * Time.deltaTime) * (FlightSpeed * (maxLife - life) / maxLife + BaseFlightSpeed);
 			transform.position += moveForward;
 
-			em.Update(-transform.forward, lastPos, Spiralling);
+			em.Update(-transform.forward, prevPos, Spiralling);
 
 			var hitInfo = new RaycastHit();
 			int layerMask = 1;   //(1<<0);
-			var rayDirection = (transform.position - lastPos).normalized;
-			if (Physics.SphereCast(lastPos, 0.15f, rayDirection, out hitInfo, Vector3.Distance(transform.position, lastPos), layerMask)) {
+			var rayDirection = (transform.position - prevPos).normalized;
+			if (Physics.SphereCast(prevPos, 0.15f, rayDirection, out hitInfo, Vector3.Distance(transform.position, prevPos), layerMask)) {
 				//Debug.Log(hitInfo.collider.gameObject.name);
 				detonateMaybe(hitInfo.point, hitInfo.normal);
 			}
 			layerMask = 1<<8;
-			if (Physics.SphereCast(lastPos, 0.15f, rayDirection, out hitInfo, Vector3.Distance(transform.position, lastPos), layerMask)) {
+			if (Physics.SphereCast(prevPos, 0.15f, rayDirection, out hitInfo, Vector3.Distance(transform.position, prevPos), layerMask)) {
 				//Debug.Log(hitInfo.collider.gameObject.name);
 				detonateMaybe(hitInfo.point, Vector3.zero);
 			}
 			
-			lastPos = transform.position;
+			prevPos = transform.position;
 			
 			life -= Time.deltaTime;
 			if (life <= 0f) {
@@ -68,9 +68,9 @@ public class Rocket : MonoBehaviour {
 
 	private void detonateMaybe(Vector3 preciseLocation, Vector3 hitNorm) {
 		if (Spiralling)
-			em.Explode(lastPos, Color.green, Color.clear);
+			em.Explode(prevPos, Color.green, Color.clear);
 		else
-			em.Explode(lastPos, Color.red, Color.Lerp(
+			em.Explode(prevPos, Color.red, Color.Lerp(
 				Color.Lerp(Color.red, Color.clear, 1f), 
 				Color.Lerp(Color.black, Color.clear, 1f), 
 				Random.Range(0f, 1f)), 

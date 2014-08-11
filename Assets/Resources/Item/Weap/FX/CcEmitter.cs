@@ -16,14 +16,15 @@ public class CcEmitter {
 	public float ExplosionSpeed = 8f;
 
 	// private 
-	Vector3 backward;
+	Vector3 prevPos; // previous... 
 
 
 
 	public CcEmitter() {}
 	
-	public void Update(Vector3 aim, bool spiralling) {
+	public void Update(Vector3 aim, Vector3 pos, bool spiralling) {
 		Aim = aim;
+		prevPos = pos;
 
 		if (spiralling)
 			makeCluster(Color.green, Color.blue, Random.value, 1.5f);
@@ -37,7 +38,7 @@ public class CcEmitter {
 		for (int i = 0; i < num; i++) {
 			var np = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
 			var p = np.GetComponent<CcParticle>();
-			p.MoveVec = Aim * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
+			p.MoveVec = prevPos + Aim * Random.Range(MinParticleSpeed, MaxParticleSpeed) + Random.insideUnitSphere * PMR;
 			p.life = life;
 			p.StartColor = Color.Lerp(a, b, Random.value);
 			//p.MidColor = Color.Lerp(Color.green, Color.blue, rnd);
