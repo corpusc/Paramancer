@@ -127,7 +127,7 @@ public class VoxGen {
 	
 	public void Update() {
 		// bags 
-		// ...are containers.
+		// ...are containers. 
 		// since we can't have "folders" in a scene, we parent spammy quads and 
 		// such to these objects, so they will be collapsed/hidden 
 		if (PrimBag == null)

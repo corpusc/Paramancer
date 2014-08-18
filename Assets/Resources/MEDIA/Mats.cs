@@ -19,7 +19,7 @@ public static class Mats {
 		if (mats.ContainsKey(s))
 			return mats[s];
 		
-		Debug.LogError("______ COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
+		Debug.LogError("______ Mats: COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
 		return null;
 	}
 	
@@ -29,7 +29,7 @@ public static class Mats {
 				return pair.Value;
 		}
 		
-		Debug.LogError("______ COULDN'T FIND ANY FILE WITH '" + s + "' IN THE NAME!!! ______");
+		Debug.LogError("______ Mats: COULDN'T FIND ANY FILE WITH '" + s + "' IN THE NAME!!! ______");
 		return null;
 	}
 	

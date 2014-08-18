@@ -31,7 +31,7 @@ public static class Pics {
 		if (pics.ContainsKey(s))
 			return pics[s];
 		
-		Debug.LogError("______ COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
+		Debug.LogError("______ Pics: COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
 		return null;
 	}
 	
@@ -41,7 +41,7 @@ public static class Pics {
 				return pair.Value;
 		}
 		
-		Debug.LogError("______ COULDN'T FIND ANY FILE WITH '" + s + "' IN THE NAME!!! ______");
+		Debug.LogError("______ Pics: COULDN'T FIND ANY FILE WITH '" + s + "' IN THE NAME!!! ______");
 		return null;
 	}
 

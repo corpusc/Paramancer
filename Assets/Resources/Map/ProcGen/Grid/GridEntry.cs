@@ -13,7 +13,6 @@ public class GridEntry : MonoBehaviour {
 	void Start() {
 		// generate a grid 
 		grid = new GridGen();
-		//Debug.LogError("let's count these");
 		var pic = new Texture2D(grid.Max.x, grid.Max.z);
 		pic.filterMode = FilterMode.Point;
 		renderer.material.mainTexture = pic;

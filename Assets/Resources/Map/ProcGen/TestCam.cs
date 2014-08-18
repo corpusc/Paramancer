@@ -4,29 +4,38 @@ using System.Collections;
 
 
 public class TestCam : MonoBehaviour {
-	GameObject o;
-	TrailRenderer tr;
-
-
-
 	void Start() {
 		Screen.lockCursor = true;
-		o = new GameObject("Camera Trail");
-		o.AddComponent<TrailRenderer>();
-		tr = o.GetComponent<TrailRenderer>();
-		tr.renderer.material = Mats.Get("TrailJagged");
-		tr.renderer.material.color = Color.red;
-		tr.time = 4f;
+	}
+
+	void OnGUI() {
+		if (Screen.lockCursor) {
+			GUI.Label(new Rect(Screen.width/2, Screen.height/2, 99, 99), "P");
+		}
 	}
 	
 	void Update() {
-		transform.localEulerAngles += new Vector3(
-			-Input.GetAxis("Mouse Y") * 2f, 
-			Input.GetAxis("Mouse X") * 2f, 
-			0f);
 		float speed = 10f;
 
+		if (Screen.lockCursor) {
+			transform.localEulerAngles += new Vector3(
+				-Input.GetAxis("Mouse Y") * 2f, 
+				Input.GetAxis("Mouse X") * 2f, 
+				0f);
+		}else{
+		}
+
+
 		if /**/ (CcInput.Holding(UserAction.Sprint))       speed *= 4f;
+		if /**/ (CcInput.Started(UserAction.Alt)) {
+			if (Screen.lockCursor) {
+				Screen.lockCursor = false;
+				Screen.showCursor = true;
+			}else{
+				Screen.lockCursor = true;
+				Screen.showCursor = true;
+			}
+		}
 
 		if /**/ (CcInput.Holding(UserAction.MoveForward))  transform.position += transform.forward * Time.deltaTime * speed;
 		else if (CcInput.Holding(UserAction.MoveBackward)) transform.position -= transform.forward * Time.deltaTime * speed;
@@ -34,10 +43,5 @@ public class TestCam : MonoBehaviour {
 		else if (CcInput.Holding(UserAction.MoveRight))    transform.position += transform.right * Time.deltaTime * speed;
 		if /**/ (CcInput.Holding(UserAction.MoveUp))       transform.position += transform.up * Time.deltaTime * speed;
 		else if (CcInput.Holding(UserAction.MoveDown))     transform.position -= transform.up * Time.deltaTime * speed;
-
-		if (Input.GetKeyDown("space")) 
-			tr.enabled = !tr.enabled;
-
-		o.transform.position = transform.position - transform.up*2f;
 	}
 }

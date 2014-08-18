@@ -36,7 +36,7 @@ public static class Sfx {
 		if (clips.ContainsKey(s))
 			return clips[s].Clip;
 		
-		Debug.LogError("______ COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
+		Debug.LogError("______ Sfx: COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
 		return null;
 	}
 
@@ -44,7 +44,7 @@ public static class Sfx {
 		if (clips.ContainsKey(s))
 			return clips[s];
 		
-		Debug.LogError("______ COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
+		Debug.LogError("______ Sfx: COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
 		return null;
 	}
 	
@@ -85,6 +85,7 @@ public static class Sfx {
 				var nc = new CcClip();
 				nc.Clip = cl;
 				nc.Tags.Add(s);
+
 				switch (cl.name) {
 					case "Jump": nc.Volume = 0.2f;	break;
 					case "Catch": nc.Volume = 0.4f; break;

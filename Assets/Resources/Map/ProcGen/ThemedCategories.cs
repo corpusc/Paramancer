@@ -13,6 +13,8 @@ public class ThemedCategories {
 
 
 	public void Init(Theme theme = Theme.Fantasy) {
+		Mats.Init();
+
 		Debug.Log("Constructing ThemedCategories");
 
 		// setup surfaces palette 

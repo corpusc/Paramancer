@@ -25,7 +25,7 @@ public static class GOs {
 		if (gos.ContainsKey(s))
 			return gos[s];
 		
-		Debug.LogError("______ COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
+		Debug.LogError("______ GOs: COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
 		return null;
 	}
 	
@@ -35,7 +35,7 @@ public static class GOs {
 				return pair.Value;
 		}
 		
-		Debug.LogError("______ COULDN'T FIND ANY FILE WITH '" + s + "' IN THE NAME!!! ______");
+		Debug.LogError("______ GOs: COULDN'T FIND ANY FILE WITH '" + s + "' IN THE NAME!!! ______");
 		return null;
 	}
 	
