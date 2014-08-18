@@ -72,6 +72,7 @@ public class VoxGen {
 
 
 	public VoxGen() {
+		Mats.Init();
 		numVoxAcross.X = 64;
 		numVoxAcross.Z = 64;
 		numVoxAcross.Y = 32;
@@ -199,32 +200,50 @@ public class VoxGen {
 		setStart(Vector3.left);
 		for (y = sy; y < yMax; y++)
 		for (z = sz; z < zMax; z++)
-			maybeMakeQuad(x-1, y, z, new Vector3(Scale.x*x-hx, Scale.y*y, Scale.z*z));
+			maybeMakeQuad(x-1, y, z, new Vector3(
+					Scale.x*x-hx, 
+					Scale.y*y, 
+					Scale.z*z));
 
 		setStart(Vector3.right);
 		for (y = sy; y < yMax; y++)
 		for (z = sz; z < zMax; z++)
-			maybeMakeQuad(xMax/*x+1*/, y, z, new Vector3(Scale.x*(xMax-1)/*x*/+hx, Scale.y*y, Scale.z*z));
+			maybeMakeQuad(xMax/*x+1*/, y, z, new Vector3(
+					Scale.x*(xMax-1)/*x*/+hx, 
+					Scale.y*y, 
+					Scale.z*z));
 
 		setStart(Vector3.forward);
 		for (x = sx; x < xMax; x++)
 		for (y = sy; y < yMax; y++)
-			maybeMakeQuad(x, y, zMax/*z+1*/, new Vector3(Scale.x*x, Scale.y*y, Scale.z*(zMax-1)/*z*/+hz));
+			maybeMakeQuad(x, y, zMax/*z+1*/, new Vector3(
+					Scale.x*x, 
+					Scale.y*y, 
+					Scale.z*(zMax-1)/*z*/+hz));
 
 		setStart(Vector3.back);
 		for (x = sx; x < xMax; x++)
 		for (y = sy; y < yMax; y++)
-			maybeMakeQuad(x, y, z-1, new Vector3(Scale.x*x, Scale.y*y, Scale.z*z-hz));
+			maybeMakeQuad(x, y, z-1, new Vector3(
+					Scale.x*x, 
+					Scale.y*y, 
+					Scale.z*z-hz));
 
 		setStart(Vector3.up);
 		for (x = sx; x < xMax; x++)
 		for (z = sz; z < zMax; z++)
-			maybeMakeQuad(x, yMax/*y+1*/, z, new Vector3(Scale.x*x, Scale.y*(yMax-1)/*y*/+hy, Scale.z*z));
+			maybeMakeQuad(x, yMax/*y+1*/, z, new Vector3(
+					Scale.x*x, 
+					Scale.y*(yMax-1)/*y*/+hy, 
+					Scale.z*z));
 
 		setStart(Vector3.down);
 		for (x = sx; x < xMax; x++)
 		for (z = sz; z < zMax; z++)
-			maybeMakeQuad(x, y-1, z, new Vector3(Scale.x*x, Scale.y*y-hy, Scale.z*z));
+			maybeMakeQuad(x, y-1, z, new Vector3(
+					Scale.x*x, 
+					Scale.y*y-hy, 
+					Scale.z*z));
 
 		currRoom++;
 	}

@@ -397,7 +397,7 @@
             turn_see(turn_off);
         }
 
-        // Put on or off seeing monsters on this level
+        // set whether we're seeing monsters on this level 
         static public bool turn_see(int turn_off)
         {
             //THING mp;
@@ -462,18 +462,16 @@
             return false;
         }
 
-        // The guy just magically went up a level.
-        static void raise_level()
-        {
+        // The guy just magically went up a level 
+        static void raise_level() {
             Agent.Plyr.Stats.Xp = 
                 Agent.ExperienceGoals[
                 Agent.Plyr.Stats.Level - 1] + 1;
             Agent.LevelUpPlayerMaybe(Agent.Pos);
         }
 
-        //do a potion with standard setup.  This means it uses a LightFuse and turns on a flag
-        static void do_pot(int type, bool knowit)
-        {
+        // do a potion with standard setup.  This means it uses a LightFuse and turns on a flag 
+        static void do_pot(int type, bool knowit) {
             S.Log("************** do_pot() (POTION) commented out");
         //    PACT pp;
         //    int t;

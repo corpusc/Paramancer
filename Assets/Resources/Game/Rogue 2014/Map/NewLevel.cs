@@ -3,14 +3,12 @@ using System.Collections.Generic;
 
 
 
-    public static partial class Dungeon
-    {
+    public static partial class Dungeon {
         const int TREAS_ROOM = 20;	/* one chance in TREAS_ROOM for a treasure room */
         const int MAXTREAS = 10;	/* maximum number of treasures in a treasure room */
         const int MINTREAS = 2;	/* minimum number of treasures in a treasure room */
 
-        public static void new_level()
-        {
+        public static void new_level() {
 			S.Log("Generating a dungeon map.... ( new_level() )");
             THING t;
             int i;
@@ -20,7 +18,7 @@ using System.Collections.Generic;
             if (Agent.dyn___max_level < Agent.LevelOfMap)
                 Agent.dyn___max_level = Agent.LevelOfMap;
 
-            //clean things off from last level
+            // clean things off from last level 
             for (i = 0; i < places.Length; i++ )
             {
                 var pp = new PLACE();
@@ -30,7 +28,7 @@ using System.Collections.Generic;
                 pp.p_monst = null;
             }
 
-            //clear lists
+            // clear lists 
             MobList = null;
             ItemList = null;
 
@@ -39,25 +37,22 @@ using System.Collections.Generic;
             Agent.no_food++;
             put_things();
             
-            //make traps
-            if (R14.rnd(10) < Agent.LevelOfMap)
-            {
+            // make traps 
+            if (R14.rnd(10) < Agent.LevelOfMap)     {
                 ntraps = R14.rnd(Agent.LevelOfMap / 4) + 1;
+
                 if (ntraps > MAXTRAPS)
                     ntraps = MAXTRAPS;
                 
                 i = ntraps;
-                while (i-- > 0)
-                {
-                    /*
-                     * not only wouldn't it be NICE to have traps in mazes, since the trap
+                while (i-- > 0) {
+                    /* not only wouldn't it be NICE to have traps in mazes, since the trap
                      * number is stored where the passage number is, we can't actually do it.
                      */
-                    do
-                    {
+                    do {
                         find_floor(null, out Stairs, 0, false);
-                    }
-                    while (GetCharAt(Stairs.y, Stairs.x) != Char.FLOOR);
+                    } while (GetCharAt(Stairs.y, Stairs.x) != Char.FLOOR);
+
                     int sp = flat(Stairs.y, Stairs.x);
                     sp &= ~F_REAL;
                     sp |= R14.rnd(NTRAPS);
@@ -65,7 +60,7 @@ using System.Collections.Generic;
                 }
             }
 
-            //make staircase down.
+            // make staircase down 
             find_floor(null, out Stairs, 0, false);
             SetCharAt(Stairs.y, Stairs.x, Char.STAIRS);
             Agent.seenstairs = false;
@@ -79,8 +74,7 @@ using System.Collections.Generic;
             S.Log("made traps and stairs");
 
 
-            for (t = MobList; t != null; t = R14.next(t))
-            {
+            for (t = MobList; t != null; t = R14.next(t)) {
                 t.CurrRoom = roomin(t.t_pos);
             }
 
@@ -99,7 +93,7 @@ using System.Collections.Generic;
             if (R14.on(Agent.Plyr, Mob.CanSeeInvisible))
                 Potion.turn_see(0);
             if (R14.on(Agent.Plyr, Mob.IsTrippinBalls))
-                 R14.visuals(0);
+         		R14.visuals(0);
 
 
             S.Log("Converting ASCII to cubes");
@@ -229,44 +223,34 @@ using System.Collections.Generic;
             return i * CUBES_ACROSS_CHAR;
         }
 
-        // Pick a room that is really there
-        public static int rnd_room()
-        {
+        // Pick a room that is really there 
+        public static int rnd_room() {
             int rm;
 
-            do
-            {
+            do {
                 rm = R14.rnd(MAXROOMS);
-            }
-            while ((rooms[rm].Flags & Room.ISGONE) == Room.ISGONE);
+            } while ((rooms[rm].Flags & Room.ISGONE) == Room.ISGONE);
+
             return rm;
         }
 
-        //populate map with items
-        public static void put_things()
-        {
+        // populate map with items 
+        public static void put_things() {
             int i;
             THING obj;
 
-            /*
-             * Once you have found the amulet, the only way to get new stuff is
-             * go down into the dungeon.
-             */
+            /* Once you have found the amulet, the only way to get new stuff is go down into the dungeon */
             if (Agent.amulet && Agent.LevelOfMap < Agent.dyn___max_level)
                 return;
-            /*
-             * check for treasure rooms, and if so, put it in.
-             */
+            /* check for treasure rooms, and if so, put it in */
             if (R14.rnd(TREAS_ROOM) == 0)
                 treas_room();
             
-            //make items
-            for (i = 0; i < MAXOBJ; i++)
-            {
+            // make items 
+            for (i = 0; i < MAXOBJ; i++) {
                 int roll = R14.rnd(100);
                 //Console.WriteLine("rolled " + roll);
-                if (roll < 36)
-                {
+                if (roll < 36) {
                     obj = R14.GetNewRandomThing();
                     R14.attach(ref Dungeon.ItemList, obj);
                     find_floor(null, out obj.ItemPos, 0, false);
@@ -274,9 +258,8 @@ using System.Collections.Generic;
                 }
             }
 
-            //place amulet... if far in enough & hasn't found
-            if (Agent.LevelOfMap >= AMULETLEVEL && !Agent.amulet)
-            {
+            // place amulet... if far in enough & hasn't found 
+            if (Agent.LevelOfMap >= AMULETLEVEL && !Agent.amulet) {
                 obj = new THING();
                 R14.attach(ref ItemList, obj);
                 obj.PlusToHit = 0;
@@ -295,9 +278,8 @@ using System.Collections.Generic;
 
         public const int MAXTRIES = 10;	/* max number of tries to put down a monster */
 
-        // Add a treasure room
-        public static void treas_room()
-        {
+        // Add a treasure room 
+        public static void treas_room() {
             int nm;
             THING tp;
             room rp;
@@ -309,8 +291,8 @@ using System.Collections.Generic;
             if (spots > (MAXTREAS - MINTREAS))
                 spots = (MAXTREAS - MINTREAS);
             num_monst = nm = R14.rnd(spots) + MINTREAS;
-            while (nm-- != 0)
-            {
+            
+			while (nm-- != 0) {
                 find_floor(rp, out mp, 2 * MAXTRIES, false);
                 tp = R14.GetNewRandomThing();
                 tp.ItemPos = mp;
@@ -324,12 +306,13 @@ using System.Collections.Generic;
             spots = (rp.Size.y - 2) * (rp.Size.x - 2);
             if (nm > spots)
                 nm = spots;
+
             Agent.LevelOfMap++;
-            while (nm-- != 0)
-            {
+            
+			while (nm-- != 0) {
                 spots = 0;
-                if (find_floor(rp, out mp, MAXTRIES, true))
-                {
+
+                if (find_floor(rp, out mp, MAXTRIES, true)) {
                     tp = new THING();
                     R14.new_monster(tp, R14.randmonster(false), mp);
                     tp.t_flags |= Mob.ISMEAN;	/* no sloughers in THIS room */

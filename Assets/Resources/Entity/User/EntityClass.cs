@@ -902,15 +902,20 @@ public class EntityClass : MonoBehaviour {
 			mats[2] = inv;
 			meshObj.renderer.materials = mats;
 			
-			if (gunMesh1.renderer) 
+			if (gunMesh1.renderer) {
 				gunMesh1.renderer.material = inv;
-			if (gunMesh2.renderer) 
+				gunMesh1.renderer.enabled = false;
+			}
+			if (gunMesh2.renderer) {
 				gunMesh2.renderer.material = inv;
-			
+				gunMesh1.renderer.enabled = false;
+			}
+
 			if (GunInHand == Gun.Bomb) {
-				if (gunMesh1 != null && 
-				    gunMesh1.transform.Find("Flash Light") != null) {
-					gunMesh1.transform.Find("Flash Light").GetComponent<FlashingLight>().Visible = false;
+				var fl = gunMesh1.transform.Find("Flash Light");
+
+				if (gunMesh1 != null && fl != null) {
+					fl.GetComponent<FlashingLight>().Visible = false;
 				}
 			}
 		}else{
@@ -925,7 +930,7 @@ public class EntityClass : MonoBehaviour {
 				gunMesh2.renderer.material = arse.Guns[(int)GunOnBack].Mat;
 		}
 		
-		// heads
+		// heads 
 		for (int i=0; i<heads.Length; i++) {
 			if (i != headType) {
 				heads[i].renderer.enabled = false;
@@ -936,7 +941,7 @@ public class EntityClass : MonoBehaviour {
 			}	
 		}
 		
-		if (visible) {
+		if (visible) { // OPTME: don't set these regardless? 
 			heads[0].renderer.material = a;
 			heads[1].renderer.material = Mats.Get("CardboardBox");
 			heads[2].renderer.material = Mats.Get("Fish");

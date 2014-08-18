@@ -4,10 +4,12 @@ using System.Collections;
 
 
 public class VoxEntry : MonoBehaviour {
-	VoxGen vg = new VoxGen();
+	VoxGen vg;
 
 
 	void Start() {
+		Mats.Init();
+		vg = new VoxGen();
 		vg.GenerateMap(Random.Range(0, 100000), Theme.SciFi);	
 	}
 	

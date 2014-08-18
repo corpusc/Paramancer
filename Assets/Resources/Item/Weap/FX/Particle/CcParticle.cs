@@ -17,7 +17,7 @@ public class CcParticle : MonoBehaviour {
 	public float MidColorPos = 0.5f; // reaches midcolor at maxlife * MidColorPos 
 	public Color EndColor = Color.red; // always use something transparent 
 	public float Dura = 4f; // lifetime duration 
-	public float f = 0.05f;
+	public float OneDScale = 0.05f;
 	public float MinSize = 0.4f;
 	public float MaxSize = 0.411f;
 	public ParticleType ParticType = ParticleType.Puff;
@@ -35,7 +35,7 @@ public class CcParticle : MonoBehaviour {
 
 
 	void Start() {
-		shrinkFactor = new Vector3(f, f, f);
+		shrinkFactor = new Vector3(OneDScale, OneDScale, OneDScale);
 		rotSpeed = Random.Range(-MaxRotationSpeed, MaxRotationSpeed);
 
 		switch (ParticType) {
