@@ -186,55 +186,25 @@ public class EntityClass : MonoBehaviour {
 			MakeBombInvisible();
 		}
 
+		// frag monitor 
 		// if its been long enough since last frag, reset MultiFrag count 
 		if (Time.time - PrevFrag > 10f)
 			MultiFragCount = 0;
 
 		if (isLocal) {
+			// fov adjustment 
 			// Camera.main.aspect == the horizontal proportion (compared to the vertical proportion of 1.0) 
 			// Camera.main.fieldOfView == VERTICAL FOV 
 			Camera.main.fieldOfView = (1.0f/Camera.main.aspect) * FOV;
-		}
 
-		if (Spectating && isLocal) {
-			if (net.Entities.Count > 0) {
-				if (HudGun) 
-					HudGun.renderer.enabled = false;
-				
-				if (CcInput.Started(UserAction.Activate) ||
-					net.Entities[Spectatee].lives <= 0
-				) {
-					Spectatee++;
-					
-					if (Spectatee >= net.Entities.Count) 
-						Spectatee = 0;
-				}
-
-				Camera.main.transform.parent = null;
-				Camera.main.transform.position = net.Entities[Spectatee].Visuals.transform.position;
-				//CurrModel.transform.position = net.Entities[Spectatee].Visuals.transform.position;
-
-				float invY = 1f;
-				if (locUser.LookInvert)
-					invY = -1f;
-
-				if (Screen.lockCursor) {
-					camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.LookSensitivity * invY;
-					camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.LookSensitivity;
-
-					if (camAngle.x > 85f) 
-						camAngle.x = 85f;
-					if (camAngle.x < -85f) 
-						camAngle.x = -85f;
-				}
-
-				Camera.main.transform.eulerAngles = camAngle;
-				Camera.main.transform.Translate(0,0,-3);
+			// either we spectate.....
+			if (Spectating) {
+				stickToSpectated();
+				return;
 			}
-			
-			return;
 		}
-		
+
+		// or we move around from local input 
 		if (isLocal) {
 			if (!Spectating) {
 				Vector3 lastPos = transform.position;
@@ -505,60 +475,14 @@ public class EntityClass : MonoBehaviour {
 						}
 					}
 					
-					// select specific weapon 
-					for (int i = (int)UserAction.Pistol; i <= (int)UserAction.Spatula; i++) {
-						if (CcInput.Started((UserAction)i)) {
-							if (/* not already equipped, but carrying */ 
-							    (Gun)i != GunInHand && 
-							    arse.Guns[i].Carrying) 
-							{
-								GunOnBack = GunInHand;
-								GunInHand = (Gun)i;
-								weaponSwitchingSoundAndVisual();
-							}
-						}
-					}
+					selectSpecificWeapon();
 
-					if (hud.Mode == HudMode.Playing) { // ....then allow scrollwheel to cycle weaps/items 
-						bool nex, pre;
-						CcInput.PollScrollWheel(out nex, out pre);
-						bool next = CcInput.Started(UserAction.Next);
-						bool prev = CcInput.Started(UserAction.Previous);
-						if (next || prev || nex || pre) {
-							Gun juggledItem = GunInHand;
+					if (hud.Mode == HudMode.Playing) 
+						// ....then allow scrollwheel to cycle weaps/items 
+						switchWeapon();
+					if (CcInput.Started(UserAction.Activate))   throwBall();					
+					if (CcInput.Started(UserAction.Suicide))    net.RegisterHitRPC((int)Gun.Suicide, User.viewID, User.viewID, transform.position);
 
-							// switch weapon 
-							while (GunInHand == juggledItem || 
-							       !arse.Guns[(int)GunInHand].Carrying) 
-							{
-								if (next || nex) {
-									GunInHand++;
-									if ((int)GunInHand >= arse.Guns.Length)
-										GunInHand = Gun.Pistol;
-								}else{
-									GunInHand--;
-									if (GunInHand < Gun.Pistol)
-									    GunInHand = (Gun)arse.Guns.Length-1;
-								}
-							}
-
-							GunOnBack = juggledItem;
-							weaponSwitchingSoundAndVisual();
-						}
-					}
-					
-					// ball throwing
-					if (CcInput.Started(UserAction.Activate) &&
-						Screen.lockCursor && 
-						User.hasBall
-					) {
-						net.ThrowBall(Camera.main.transform.position, Camera.main.transform.forward, 20f);
-					}
-					
-					if (CcInput.Started(UserAction.Suicide)) {
-						net.RegisterHitRPC((int)Gun.Suicide, User.viewID, User.viewID, transform.position);
-					}
-					
 					moveFPGun();
 				}else{ // we be dead
 					if (Camera.main.transform.parent != null) 
@@ -578,12 +502,8 @@ public class EntityClass : MonoBehaviour {
 			}
 		}
 		
-		if (!crouching) {
-			camHolder.transform.localPosition = Vector3.up * 0.7f;
-		}else{
-			camHolder.transform.localPosition = Vector3.zero;
-		}
-		
+		setEyeHeight();
+
 		// visible person model anims
 		if (!User.local) 
 			camHolder.transform.localEulerAngles = camAngle;
@@ -593,65 +513,13 @@ public class EntityClass : MonoBehaviour {
 		lookDir.Normalize();
 		animObj.transform.LookAt(animObj.transform.position + lookDir,transform.up);
 		animObj.transform.localEulerAngles = new Vector3(0, animObj.transform.localEulerAngles.y, 0);
-		
-		showCorrectGuns();
 
-//		// animations
-//		if (User.health > 0f) {
-//			if (yMove == 0f) {
-//				if (moveVec.magnitude > 0.1f) {
-//					if (crouched) {
-//						animObj.animation.Play("crouchrun");
-//					}else{
-//						animObj.animation.Play("run");
-//					}
-//					
-//					if (Vector3.Dot(moveVec, lookDir) < -0.5f) {
-//						animObj.animation["crouchrun"].speed = -1;
-//						animObj.animation["run"].speed = -1;
-//					}else{
-//						animObj.animation["crouchrun"].speed = 1;
-//						animObj.animation["run"].speed = 1;
-//					}
-//				}else{
-//					if (crouched) {
-//						animObj.animation.Play("crouch");
-//					}else{
-//						animObj.animation.Play("idle");
-//					}
-//				}
-//			}else{
-//				if (yMove > 0f) {
-//					animObj.animation.Play("rise");
-//				}else{
-//					animObj.animation.Play("fall");
-//				}
-//			}
-//		}else{
-//			animObj.animation.Play("die");
-//		}
-		
-		// if dead, make unshootable
-		if (User.Health > 0f) {
-			gameObject.layer = 8;
-		}else{
-			gameObject.layer = 2;
-		}
-		
-		// if no friendly fire & on same team, make unshootable
-		if (net.CurrMatch.teamBased && !net.CurrMatch.FriendlyFire) {
-			if (User.team == net.LocEnt.team) {
-				gameObject.layer = 2;
-			}
-		}
-		
-		if (User.hasBall) {
-			if (User.local && HudGun && HudGun.renderer) 
-				HudGun.renderer.enabled = false;
-		}else{
-			if (User.local && HudGun && HudGun.renderer && User.Health > 0f) 
-				HudGun.renderer.enabled = true;
-		}
+
+
+		showCorrectGuns();
+		//animate();
+		setVulnerability();
+		setHudGunVis();
 
 		// sync model to body 
 		var v = transform.position;
@@ -662,6 +530,120 @@ public class EntityClass : MonoBehaviour {
 
 		previouslyLockedCursor = Screen.lockCursor;
 	} // end of Update() 
+
+
+
+	void setEyeHeight() {
+		if (crouching) {
+			camHolder.transform.localPosition = Vector3.zero;
+		}else{
+			camHolder.transform.localPosition = Vector3.up * 0.7f;
+		}
+	}
+
+
+
+	void animate() {
+		//		// animations
+		//		if (User.health > 0f) {
+		//			if (yMove == 0f) {
+		//				if (moveVec.magnitude > 0.1f) {
+		//					if (crouched) {
+		//						animObj.animation.Play("crouchrun");
+		//					}else{
+		//						animObj.animation.Play("run");
+		//					}
+		//					
+		//					if (Vector3.Dot(moveVec, lookDir) < -0.5f) {
+		//						animObj.animation["crouchrun"].speed = -1;
+		//						animObj.animation["run"].speed = -1;
+		//					}else{
+		//						animObj.animation["crouchrun"].speed = 1;
+		//						animObj.animation["run"].speed = 1;
+		//					}
+		//				}else{
+		//					if (crouched) {
+		//						animObj.animation.Play("crouch");
+		//					}else{
+		//						animObj.animation.Play("idle");
+		//					}
+		//				}
+		//			}else{
+		//				if (yMove > 0f) {
+		//					animObj.animation.Play("rise");
+		//				}else{
+		//					animObj.animation.Play("fall");
+		//				}
+		//			}
+		//		}else{
+		//			animObj.animation.Play("die");
+		//		}
+	}
+
+
+
+	void setVulnerability() {
+		int vuln = 8;
+		int invuln = 2;
+
+		// if alive 
+		if (User.Health > 0f) {
+			gameObject.layer = vuln;
+		}else{ // dead 
+			gameObject.layer = invuln;
+		}
+		
+		// if same team & no friendly fire 
+		if (net.CurrMatch.teamBased && !net.CurrMatch.FriendlyFire) {
+			if (User.team == net.LocEnt.team) {
+				gameObject.layer = invuln;
+			}
+		}
+	}
+
+
+
+	void setHudGunVis() {
+		if (User.hasBall) {
+			if (User.local && HudGun && HudGun.renderer) {
+				if (User.Health > 0f) {
+					HudGun.renderer.enabled = true;
+				}else{
+					HudGun.renderer.enabled = false;
+				}
+			}
+		}
+	}
+
+
+
+	void switchWeapon() {
+		bool nex, pre;
+		CcInput.PollScrollWheel(out nex, out pre);
+		bool next = CcInput.Started(UserAction.Next);
+		bool prev = CcInput.Started(UserAction.Previous);
+		if (next || prev || nex || pre) {
+			Gun juggledItem = GunInHand;
+			
+			// switch weapon 
+			while (GunInHand == juggledItem || 
+			       !arse.Guns[(int)GunInHand].Carrying) 
+			{
+				if (next || nex) {
+					GunInHand++;
+					if ((int)GunInHand >= arse.Guns.Length)
+						GunInHand = Gun.Pistol;
+				}else{
+					GunInHand--;
+					if (GunInHand < Gun.Pistol)
+						GunInHand = (Gun)arse.Guns.Length-1;
+				}
+			}
+			
+			GunOnBack = juggledItem;
+			weaponSwitchingSoundAndVisual();
+		}
+	}
 
 
 
@@ -1232,6 +1214,64 @@ public class EntityClass : MonoBehaviour {
 							hud.Log.AddEntry("+", offeredPickup, S.ColToVec(Color.gray));
 						}
 					}
+				}
+			}
+		}
+	}
+
+	void stickToSpectated() {
+		if (net.Entities.Count > 0) {
+			if (HudGun) 
+				HudGun.renderer.enabled = false;
+			
+			if (CcInput.Started(UserAction.Activate) ||
+			    net.Entities[Spectatee].lives <= 0
+			    ) {
+				Spectatee++;
+				
+				if (Spectatee >= net.Entities.Count) 
+					Spectatee = 0;
+			}
+			
+			Camera.main.transform.parent = null;
+			Camera.main.transform.position = net.Entities[Spectatee].Visuals.transform.position;
+			//CurrModel.transform.position = net.Entities[Spectatee].Visuals.transform.position;
+			
+			float yChange = 1f; // y angle change 
+			if (locUser.LookInvert)
+				yChange = -1f;
+			
+			if (Screen.lockCursor) {
+				camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.LookSensitivity * yChange;
+				camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.LookSensitivity;
+				
+				if (camAngle.x > 85f) 
+					camAngle.x = 85f;
+				if (camAngle.x < -85f) 
+					camAngle.x = -85f;
+			}
+			
+			Camera.main.transform.eulerAngles = camAngle;
+			Camera.main.transform.Translate(0,0,-3);
+		}
+	}
+
+	void throwBall() {
+		if (User.hasBall && Screen.lockCursor) {
+			net.ThrowBall(Camera.main.transform.position, Camera.main.transform.forward, 20f);
+		}
+	}
+
+	void selectSpecificWeapon() {
+		for (int i = (int)UserAction.Pistol; i <= (int)UserAction.Spatula; i++) {
+			if (CcInput.Started((UserAction)i)) {
+				if (/* not already equipped, but carrying */ 
+				    (Gun)i != GunInHand && 
+				    arse.Guns[i].Carrying) 
+				{
+					GunOnBack = GunInHand;
+					GunInHand = (Gun)i;
+					weaponSwitchingSoundAndVisual();
 				}
 			}
 		}
