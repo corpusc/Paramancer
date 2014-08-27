@@ -39,7 +39,6 @@ public class UserPlaying {
 
 		var locEnt = net.LocEnt.Visuals;
 
-		var gunHandCooldown = arse.Guns[(int)locEnt.GunInHand].Cooldown;
 		Gun gunHand = locEnt.GunInHand;
 		Gun gunBack = locEnt.GunOnBack;
 		
@@ -122,9 +121,10 @@ public class UserPlaying {
 		
 		// weapon cooldown (atm, only used for coloring equipped item) 
 		if (gunHand >= Gun.Pistol) {
-			float coolDownPercent = 50f; // more like: 0f to 50f
+			float coolDownPercent = 50f; // cool down percent.  // more like: 0f -> 50f? 
 			if (arse.Guns[(int)gunHand].Delay > 0f) {
-				coolDownPercent = (gunHandCooldown / arse.Guns[(int)gunHand].Delay) * 50f;
+				var cd = arse.Guns[(int)locEnt.GunInHand].Cooldown; // gun in hand cooldown 
+				coolDownPercent = (cd / arse.Guns[(int)gunHand].Delay) * 50f;
 				coolDownPercent = 50f-coolDownPercent;
 			}
 			

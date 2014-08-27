@@ -1,9 +1,0 @@
-///////////////////////////////////////////////////////////
-// Component Preset Script
-///////////////////////////////////////////////////////////
-
-ComponentType vp_FPWeaponShooter
-MuzzleFlashPosition 0.0058096 0.0634486 1.364611
-MuzzleFlashScale 1 1 1
-MuzzleFlashFadeSpeed 0.05
-ProjectileSpread 0.5

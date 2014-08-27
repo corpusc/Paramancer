@@ -34,6 +34,7 @@ public class CcEmitter {
 	
 	private void makeCluster(Color a, Color b, float rnd, float dura) {
 		int num = (int)((float)Random.Range(MinPerSec, MaxPerSec) * Time.deltaTime); // number of particles this frame 
+		num *= 2;
 
 		for (int i = 0; i < num; i++) {
 			var has = 45f; // half angle span 

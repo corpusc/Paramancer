@@ -8,7 +8,7 @@ public class VoxEntry : MonoBehaviour {
 
 
 	void Start() {
-		Mats.Init();
+		//Mats.Init();
 		vg = new VoxGen();
 		vg.GenerateMap(Random.Range(0, 100000), Theme.SciFi);	
 	}

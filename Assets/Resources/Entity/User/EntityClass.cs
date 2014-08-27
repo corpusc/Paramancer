@@ -890,7 +890,7 @@ public class EntityClass : MonoBehaviour {
 			}
 			if (gunMesh2.renderer) {
 				gunMesh2.renderer.material = inv;
-				gunMesh1.renderer.enabled = false;
+				gunMesh2.renderer.enabled = false;
 			}
 
 			if (GunInHand == Gun.Bomb) {
@@ -1050,7 +1050,7 @@ public class EntityClass : MonoBehaviour {
 
 	public void Respawn() {
 		Transform t = null;
-		if (!net.CurrMatch.teamBased) {
+		if /***/ (!net.CurrMatch.teamBased) {
 			t = getRandomSpawn("FFA");
 		}else if (User.team == 1) {
 			t = getRandomSpawn("TeamRed");
@@ -1078,8 +1078,7 @@ public class EntityClass : MonoBehaviour {
 		for (int i = 0; i < arse.Guns.Length; i++) {
 			arse.Guns[i].Cooldown = 0f;
 
-			if (Debug.isDebugBuild)
-				;//arse.Guns[i].Carrying = true; // carry full arsenal if in IDE 
+			if (Debug.isDebugBuild)	;//arse.Guns[i].Carrying = true; // carry full arsenal if in IDE 
 			else
 				arse.Guns[i].Carrying = false;
 		}

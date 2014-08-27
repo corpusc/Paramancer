@@ -1,9 +1,0 @@
-///////////////////////////////////////////////////////////
-// Component Preset Script
-///////////////////////////////////////////////////////////
-
-ComponentType vp_FPWeapon
-PositionOffset -0.29 -0.7 0.2
-PositionPivot 0 -0.1884205 -0.54
-RotationOffset 7 -96.31 -63
-RenderingClippingPlanes 0.5 10

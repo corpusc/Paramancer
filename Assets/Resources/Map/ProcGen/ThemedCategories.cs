@@ -13,7 +13,7 @@ public class ThemedCategories {
 
 
 	public void Init(Theme theme = Theme.Fantasy) {
-		Mats.Init();
+		//Mats.Init();
 
 		Debug.Log("Constructing ThemedCategories");
 
