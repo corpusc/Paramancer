@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 
 public static class Sfx {
+	public static Melodician Melodician = new Melodician();
 	private static float volumeMaster = 1f;
 	public static float VolumeMaster {
 		get { return volumeMaster; }

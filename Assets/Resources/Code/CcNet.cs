@@ -126,6 +126,8 @@ public class CcNet : MonoBehaviour {
 	}
 
 	void Update() {
+		Sfx.Melodician.Update();
+
 		vGen.Update();
 		setupMapIfReady();
 

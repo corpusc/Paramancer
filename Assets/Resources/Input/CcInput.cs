@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
+
+// http://docs.unity3d.com/ScriptReference/QualitySettings-pixelLightCount.html 
+
+
 public static class CcInput {
 	public static BindData[] BindData = new BindData[(int)UserAction.Count];
 
@@ -173,6 +177,47 @@ public static class CcInput {
 				case UserAction.Spatula:
 					bind(i, KeyCode.Q);
 					break;
+				#endregion
+					
+					
+					
+				#region music (Melodician) 
+//				case UserAction.NoteC:
+//					bind(i, KeyCode.BackQuote);
+//					break;
+//				case UserAction.NoteCSharp:
+//					bind(i, KeyCode.Alpha1);
+//					break;
+//				case UserAction.NoteD:
+//					bind(i, KeyCode.Alpha2);
+//					break;
+//				case UserAction.NoteDSharp:
+//					bind(i, KeyCode.Alpha3);
+//					break;
+//				case UserAction.NoteE:
+//					bind(i, KeyCode.Alpha4);
+//					break;
+//				case UserAction.NoteF:
+//					bind(i, KeyCode.Alpha5);
+//					break;
+//				case UserAction.NoteFSharp:
+//					bind(i, KeyCode.Alpha6);
+//					break;
+//				case UserAction.NoteG:
+//					bind(i, KeyCode.Alpha7);
+//					break;
+//				case UserAction.NoteGSharp:
+//					bind(i, KeyCode.Alpha8);
+//					break;
+//				case UserAction.NoteA:
+//					bind(i, KeyCode.Alpha9);
+//					break;
+//				case UserAction.NoteASharp:
+//					bind(i, KeyCode.Alpha0);
+//					break;
+//				case UserAction.NoteB:
+//					bind(i, KeyCode.Minus);
+//					break;
 				#endregion
 			}
 		}

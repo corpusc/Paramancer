@@ -149,7 +149,21 @@ public enum UserAction {
 	Suicide, // for sound: "there's nothing left for me here!"? 
 
 		// sound suggestions are player located sounds (not omni) 
-	
+
+	// music (Melodician) 
+//	NoteC,
+//	NoteCSharp,
+//	NoteD,
+//	NoteDSharp,
+//	NoteE,
+//	NoteF,
+//	NoteFSharp,
+//	NoteG,
+//	NoteGSharp,
+//	NoteA,
+//	NoteASharp,
+//	NoteB,
+
 	Count
 }
 

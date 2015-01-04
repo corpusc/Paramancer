@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 
 
@@ -45,15 +46,26 @@ public class Cell {
 	public bool Floor;
 }
 
-// BUILDinator style (arbitrary line segment rimmed) maps 
-public class WallPoint {
+// BUILDinator style maps (arbitrary line-segment-rimmed sectors) 
+public class WallEdge {
 	public Vector3 Pos;
-	public WallPoint Next;
+	public WallEdge Next; // shouldn't need this, cuz the closed loop of wall indexes should be in Sector 
+	// however, we DO need the index of the adjacent sector on the other side of this wall 
 	public GameObject GO;
 	
-	public WallPoint(Vector3 pos, WallPoint next, GameObject go) {
+	public WallEdge(Vector3 pos, WallEdge next, GameObject go) {
 		Pos = pos;
 		Next = next;
 		GO = go;
 	}
+}
+
+public class Tetragon { // we'll replace quads with..... say.... can quads vertices be reconfigured to a non perfect cube? 
+	// anyways..... we'll need 5 vertices, so we don't get that UV compression only in one triangle artifact 
+	public int Begin = int.MaxValue;
+	public int End = int.MaxValue;
+}
+
+public class Sector {
+	public List<int> WallIndices = new List<int>();
 }

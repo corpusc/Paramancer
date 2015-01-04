@@ -160,10 +160,10 @@ public class VoxGen {
 		makeLights();
 		Debug.Log("makeJumpPads");
 		makeJumpPads();
-		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("FFA"));
-		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamBlue"));
-		makeSpawns(NumUserSpawns, GOs.Get("UserSpawn"), getChildTransform("TeamRed"));
-		makeSpawns(NumMobSpawns, GOs.Get("UserSpawn"), getChildTransform("Mob"));
+		makeSpawns(NumUserSpawns, GOs.Get("Teleporter Pad A"), getChildTransform("FFA"));
+		makeSpawns(NumUserSpawns, GOs.Get("Teleporter Pad A"), getChildTransform("TeamBlue"));
+		makeSpawns(NumUserSpawns, GOs.Get("Teleporter Pad A"), getChildTransform("TeamRed"));
+		makeSpawns(NumMobSpawns, GOs.Get("Teleporter Pad F"), getChildTransform("Mob"));
 		makeSpawns(numGunSpawns, GOs.Get("GunSpawn"), getChildTransform("Gun"), true);
 	}
 
