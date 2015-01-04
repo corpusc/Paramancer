@@ -21,7 +21,7 @@ public class NetEntity {
 //	}
 
 	// networking 
-	public EntityClass Visuals = null;
+	public Actor Actor = null;
 	public NetworkPlayer netPlayer;
 	public NetworkViewID viewID;
 	public bool local;
@@ -54,7 +54,7 @@ public class NetEntity {
 
 
 	public void InstantiateGO(GameObject go) {
-		if (Visuals == null) {
+		if (Actor == null) {
 			Debug.Log("NetEntity.InstantiateGO() --- 'Visuals' was null at this point....all is well");
 		}else{
 			Debug.Log("'Visuals' NOT null, so....EXITING InstantiateGO() at the top");
@@ -62,18 +62,18 @@ public class NetEntity {
 		}
 		
 		var o = (GameObject)GameObject.Instantiate(go);
-		Visuals = o.GetComponent<EntityClass>();
-		Visuals.colA = colA;
-		Visuals.colB = colB;
-		Visuals.colC = colC;
-		Visuals.headType = headType;
+		Actor = o.GetComponent<Actor>();
+		Actor.colA = colA;
+		Actor.colB = colB;
+		Actor.colC = colC;
+		Actor.headType = headType;
 		//Visuals.viewID = viewID;
-		Visuals.isLocal = local;
-		Visuals.User = this;
+		Actor.isLocal = local;
+		Actor.User = this;
 
 		if (local && lives < 0) {
 			currentScore = -99;
-			Visuals.Spectating = true;
+			Actor.Spectating = true;
 		}
 	}
 }

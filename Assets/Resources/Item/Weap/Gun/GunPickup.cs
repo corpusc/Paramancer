@@ -78,16 +78,16 @@ public class GunPickup : MonoBehaviour {
 		if (luO == null) {
 			if (null != net &&
 				null != net.LocEnt &&
-			    null != net.LocEnt.Visuals
+			    null != net.LocEnt.Actor
 		    )
-				luO = net.LocEnt.Visuals.gameObject;
+				luO = net.LocEnt.Actor.gameObject;
 		}else{
 			if (Vector3.Distance(
 				luO.transform.position, transform.position) < 2f && 
 				luO.transform.position.y > transform.position.y - 0.5f
 			) {
-				luO.GetComponent<EntityClass>().offeredPickup = Name;
-				luO.GetComponent<EntityClass>().currentOfferedPickup = this;
+				luO.GetComponent<Actor>().offeredPickup = Name;
+				luO.GetComponent<Actor>().currentOfferedPickup = this;
 			}
 		}
 		

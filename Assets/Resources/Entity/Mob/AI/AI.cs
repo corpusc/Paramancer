@@ -4,7 +4,7 @@ using System.Collections;
 
 
 public class AI : MonoBehaviour {
-	[HideInInspector]	public EntityClass EC;
+	[HideInInspector]	public Actor EC;
 	[HideInInspector]	public Vector3 TargetPos;
 	[HideInInspector]	public Vector3 DesiredPos;
 	[HideInInspector]	public GameObject FraggedBy;

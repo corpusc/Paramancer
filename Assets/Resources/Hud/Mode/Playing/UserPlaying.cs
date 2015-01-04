@@ -37,7 +37,7 @@ public class UserPlaying {
 			}
 		}
 
-		var locEnt = net.LocEnt.Visuals;
+		var locEnt = net.LocEnt.Actor;
 
 		Gun gunHand = locEnt.GunInHand;
 		Gun gunBack = locEnt.GunOnBack;

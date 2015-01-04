@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 
 
-public class EntityClass : MonoBehaviour {
+public class Actor : MonoBehaviour {
 	// misc 
 	public Light firstPersonLight; // should be in CAM section maybe 
 
@@ -179,7 +179,7 @@ public class EntityClass : MonoBehaviour {
 
 
 		if (User.local)
-			net.LocEnt.Visuals = this;
+			net.LocEnt.Actor = this;
 		
 		// if dead... 
 		if (User.Health <= 0f) {
@@ -372,12 +372,12 @@ public class EntityClass : MonoBehaviour {
 						List<int> validSwapTargets = new List<int>();
 						
 						for (int i=0; i<net.Entities.Count; i++){
-							if (!net.Entities[i].local && Vector3.Dot(Camera.main.transform.forward, (net.Entities[i].Visuals.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.Entities[i].Health>0f){
+							if (!net.Entities[i].local && Vector3.Dot(Camera.main.transform.forward, (net.Entities[i].Actor.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.Entities[i].Health>0f){
 								
-								Ray swapCheckRay = new Ray(Camera.main.transform.position, net.Entities[i].Visuals.transform.position - Camera.main.transform.position);
+								Ray swapCheckRay = new Ray(Camera.main.transform.position, net.Entities[i].Actor.transform.position - Camera.main.transform.position);
 								RaycastHit swapCheckHit = new RaycastHit();
 								int swapCheckLayer = 1<<0;
-								float swapCheckLength = Vector3.Distance(net.Entities[i].Visuals.transform.position, Camera.main.transform.position);
+								float swapCheckLength = Vector3.Distance(net.Entities[i].Actor.transform.position, Camera.main.transform.position);
 								
 								if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer) ) {
 									validSwapTargets.Add(i);
@@ -388,7 +388,7 @@ public class EntityClass : MonoBehaviour {
 						int nearestScreenspacePlayer = 0;
 						float nearestDistance = 9999f;
 						for (int i=0; i<validSwapTargets.Count; i++) {
-							Vector3 thisPos = Camera.main.WorldToScreenPoint(net.Entities[validSwapTargets[i]].Visuals.transform.position);
+							Vector3 thisPos = Camera.main.WorldToScreenPoint(net.Entities[validSwapTargets[i]].Actor.transform.position);
 							if (Vector3.Distance(thisPos, 
 								new Vector3(Screen.width/2, Screen.height/2, 0)) < nearestDistance
 							) {
@@ -398,7 +398,7 @@ public class EntityClass : MonoBehaviour {
 						
 						if (swapperLocked) {
 							// move target to locked on player
-							Vector3 screenPos = Camera.main.WorldToScreenPoint(net.Entities[nearestScreenspacePlayer].Visuals.transform.position);
+							Vector3 screenPos = Camera.main.WorldToScreenPoint(net.Entities[nearestScreenspacePlayer].Actor.transform.position);
 							swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
 							swapperLockTarget = nearestScreenspacePlayer;
 						}else{
@@ -824,8 +824,8 @@ public class EntityClass : MonoBehaviour {
 					FireBullet(gun);
 				}else{
 					// locked on, we hit
-				net.Shoot(gun, transform.position, net.Entities[swapperLockTarget].Visuals.transform.position - transform.position, net.Entities[swapperLockTarget].Visuals.transform.position , net.LocEnt.viewID, true, alt, Vector3.zero);
-					net.RegisterHit(gun, net.LocEnt.viewID, net.Entities[swapperLockTarget].viewID, net.Entities[swapperLockTarget].Visuals.transform.position);
+				net.Shoot(gun, transform.position, net.Entities[swapperLockTarget].Actor.transform.position - transform.position, net.Entities[swapperLockTarget].Actor.transform.position , net.LocEnt.viewID, true, alt, Vector3.zero);
+					net.RegisterHit(gun, net.LocEnt.viewID, net.Entities[swapperLockTarget].viewID, net.Entities[swapperLockTarget].Actor.transform.position);
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
@@ -1014,7 +1014,7 @@ public class EntityClass : MonoBehaviour {
 				hit = true;
 				
 				for (int i=0; i<net.Entities.Count; i++) {
-					if (bHit.collider.gameObject == net.Entities[i].Visuals.gameObject){
+					if (bHit.collider.gameObject == net.Entities[i].Actor.gameObject){
 						hitPlayer = i;
 					}
 				}
@@ -1233,7 +1233,7 @@ public class EntityClass : MonoBehaviour {
 			}
 			
 			Camera.main.transform.parent = null;
-			Camera.main.transform.position = net.Entities[Spectatee].Visuals.transform.position;
+			Camera.main.transform.position = net.Entities[Spectatee].Actor.transform.position;
 			//CurrModel.transform.position = net.Entities[Spectatee].Visuals.transform.position;
 			
 			float yChange = 1f; // y angle change 

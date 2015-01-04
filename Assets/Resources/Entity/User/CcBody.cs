@@ -21,7 +21,7 @@ public class CcBody : MonoBehaviour {
 
 
 
-	public void VerticalMove(EntityClass ne) {
+	public void VerticalMove(Actor ne) {
 		var riseSpeed = 0.2f;
 		var fallSpeed = -0.2f;
 		// if not rising 
@@ -43,7 +43,7 @@ public class CcBody : MonoBehaviour {
 		}
 	}
 		
-	public void MaybeJumpOrFall(EntityClass ne, CcNet net) {
+	public void MaybeJumpOrFall(Actor ne, CcNet net) {
 		if (grounded) {
 			yMove = 0f;
 
@@ -63,7 +63,7 @@ public class CcBody : MonoBehaviour {
 		}
 	}
 	
-	public void TickEnergy(EntityClass ne) {
+	public void TickEnergy(Actor ne) {
 		if (sprintActivatedTime > sprintDuration) {
 			sprinting = false;
 			ne.PlaySound("Exhausted");
