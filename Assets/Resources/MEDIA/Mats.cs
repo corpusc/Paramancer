@@ -45,10 +45,9 @@ public static class Mats {
 			} else {
 				mats.Add(o.name, o);
 				feedback += o.name + ",  ";
-				Debug.Log("__" + o.name + " __ ");
 			}
 		}
-		
+
 		Debug.Log("______ Mat/" + s + " ______ " + feedback.TrimEnd(',', ' '));
 	}
 }

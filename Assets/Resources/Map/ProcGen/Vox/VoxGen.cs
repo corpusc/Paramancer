@@ -72,7 +72,7 @@ public class VoxGen {
 
 
 	public VoxGen() {
-		Mats.Init();
+		//Mats.Init();
 		numVoxAcross.X = 64;
 		numVoxAcross.Z = 64;
 		numVoxAcross.Y = 32;
