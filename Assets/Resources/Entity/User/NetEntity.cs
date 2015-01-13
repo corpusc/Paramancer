@@ -57,7 +57,7 @@ public class NetEntity {
 		if (Actor == null) {
 			Debug.Log("NetEntity.InstantiateGO() --- 'Visuals' was null at this point....all is well");
 		}else{
-			Debug.Log("'Visuals' NOT null, so....EXITING InstantiateGO() at the top");
+			Debug.Log("'ActorVisuals' NOT null, so....EXITING InstantiateGO() at the top");
 			return;
 		}
 		
@@ -67,8 +67,7 @@ public class NetEntity {
 		Actor.colB = colB;
 		Actor.colC = colC;
 		Actor.headType = headType;
-		//Visuals.viewID = viewID;
-		Actor.isLocal = local;
+		//ActorVisuals.viewID = viewID;
 		Actor.User = this;
 
 		if (local && lives < 0) {

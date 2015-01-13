@@ -47,7 +47,6 @@ public class Actor : MonoBehaviour {
 
 	// network
 	public NetEntity User;
-	public bool isLocal = true;
 
 	// body 
 	public CcBody bod;
@@ -100,7 +99,6 @@ public class Actor : MonoBehaviour {
 	
 	void Start() {
 		// components 
-		// add 
 		if (bod == null) 
 			bod = gameObject.AddComponent<CcBody>();
 
@@ -129,7 +127,7 @@ public class Actor : MonoBehaviour {
 		}
 		
 		if (User.lives >= 0) {
-			if (isLocal) {
+			if (User.local) {
 				SetModelVisibility(false);
 			}else{
 				SetModelVisibility(true);
@@ -191,7 +189,7 @@ public class Actor : MonoBehaviour {
 		if (Time.time - PrevFrag > 10f)
 			MultiFragCount = 0;
 
-		if (isLocal) {
+		if (User.local) {
 			// fov adjustment 
 			// Camera.main.aspect == the horizontal proportion (compared to the vertical proportion of 1.0) 
 			// Camera.main.fieldOfView == VERTICAL FOV 
@@ -205,7 +203,7 @@ public class Actor : MonoBehaviour {
 		}
 
 		// or we move around from local input 
-		if (isLocal) {
+		if (User.local) {
 			if (!Spectating) {
 				Vector3 lastPos = transform.position;
 

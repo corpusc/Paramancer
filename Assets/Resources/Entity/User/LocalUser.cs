@@ -2,15 +2,22 @@ using UnityEngine;
 using System.Collections;
 
 
-
+// things only local users need 
 public class LocalUser : MonoBehaviour {
-	// *** FREELOOK / AIMING ***
-	// could be...
-	// (A) mouse movement
-	// (B) gamepad thumbstick
-	// (C) Hydra aiming/angle
-	// (D) God knows what the future brings!!!
-	// this setting is irrelevant for VR HMDs.  they need to precisely match head movements 
+	// *** AIMING ***   
+
+	// simplest scenario uses traditional controls (mouse, gamepad thumbstick) 
+	// which simultaneously controls: 
+	//		* eyes 
+	//		* chest 
+	//		* wielded-item (such as guns) 
+
+	// ....when wearing VR headsets, your up/down eye aim will be totally independent, 
+	// while your side to side eye/head motions will be relative to chest aim. 
+
+	// ....when using motion controller such as a Hydra, your wielded-items can aim 
+	// totally independent of your eye OR chest 
+
 	public bool LookInvert = false;
 	public float LookSensitivity = 2f;
 	public float FOV;
