@@ -135,29 +135,18 @@ public class Actor : MonoBehaviour {
 			
 			Respawn();
 		}else{
-			// we joined as a spectator
+			// we joined as a spectator 
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
 	}
 
-	private void updateMob() {
-	}
 
 	public bool sendRPCUpdate = false;
 	bool previouslyLockedCursor = true; // this is just so that clicking back into the screen won't fire explosive or gravgun immediately 
 	float rpcCamTime = 0f;
 	void Update() {
-		if (isMob) {
-			updateMob();
-			return;
-		}
-
-		// else....not a mob...
-
-
-
-		// temporary terrain hack.    YAY!   once we implement visual holes in terrain 
+		// temporary terrain hack.      once we implement visual holes in terrain 
 		// we will be able to disable terrain collision so we can run across terrain 
 		// and seamlessly (depending on how responsive we can make the generation) 
 		// enter through a dungeon entrance, and go down inside it 
@@ -176,11 +165,9 @@ public class Actor : MonoBehaviour {
 //			terr.collider.enabled = true;
 
 
-		if (User.local)
-			net.LocEnt.Actor = this;
-		
-		// if dead... 
-		if (User.Health <= 0f) {
+
+		if // dead 
+		(User.Health <= 0f) {
 			MakeBombInvisible();
 		}
 
@@ -190,322 +177,29 @@ public class Actor : MonoBehaviour {
 			MultiFragCount = 0;
 
 		if (User.local) {
+			net.LocEnt.Actor = this;
 			// fov adjustment 
 			// Camera.main.aspect == the horizontal proportion (compared to the vertical proportion of 1.0) 
 			// Camera.main.fieldOfView == VERTICAL FOV 
 			Camera.main.fieldOfView = (1.0f/Camera.main.aspect) * FOV;
 
-			// either we spectate.....
 			if (Spectating) {
 				stickToSpectated();
 				return;
-			}
-		}
-
-		// or we move around from local input 
-		if (User.local) {
-			if (!Spectating) {
-				Vector3 lastPos = transform.position;
-
-				// item pick up 
-				if (User.Health > 0f) {
-					HandlePickingUpItem();
-				}
-				offeredPickup = ""; // must do after the above check 
-				
-				if (User.Health > 0f) {
-					if (Camera.main.transform.parent == null) 
-						SetModelVisibility(false);
-					
-					net.LocEnt.FraggedBy = null;
-					Camera.main.transform.parent = camHolder.transform;
-					Camera.main.transform.localPosition = Vector3.zero;
-					// this makes sure we can walk along walls/ceilings with proper mouselook orientation 
-					Camera.main.transform.localRotation = Quaternion.Slerp(
-						Camera.main.transform.localRotation, 
-						Quaternion.Euler(Vector3.zero), 
-						Time.deltaTime * 5f);
-					
-					float invY = 1f;
-					if (locUser.LookInvert) 
-						invY = -1f;
-					
-					if (Screen.lockCursor &&
-						hud.Mode == HudMode.Playing || 
-						hud.Mode == HudMode.Editing
-					) {
-						camAngle.x -= Input.GetAxis("Mouse Y") * locUser.LookSensitivity * invY;
-						camAngle.y += Input.GetAxis("Mouse X") * locUser.LookSensitivity;
-						float max = 89f; // degrees up or down limit
-						if (camAngle.x >  max) 
-							camAngle.x =  max;
-						if (camAngle.x < -max) 
-							camAngle.x = -max;
-					}
-
-					if (CcInput.Started(UserAction.Sprint)) {
-						if (bod.sprinting) {
-							bod.sprinting = false;
-						} else if (SprintEnergy > 0.2f) {
-							bod.sprinting = true;
-							sprintRelease = 0f;
-						} else {
-							PlaySound("Exhausted");
-						}
-					}
-
-					bod.TickEnergy(this);
-
-					sprintRelease += Time.deltaTime;
-					
-					camHolder.transform.localEulerAngles = camAngle;
-					var inputVector = Vector3.zero; 
-
-					if (CcInput.Holding(UserAction.MoveForward)) 
-						inputVector += animObj.transform.forward;
-					
-					if (CcInput.Holding(UserAction.MoveBackward)) 
-						inputVector -= animObj.transform.forward;
-					
-					if (CcInput.Holding(UserAction.MoveRight)) 
-						inputVector += animObj.transform.right;
-					
-					if (CcInput.Holding(UserAction.MoveLeft)) 
-						inputVector -= animObj.transform.right;
-
-					if (inputVector != Vector3.zero)
-						sprintRelease = 0f;
-
-					if (sprintRelease > maxSprintRelease)
-						bod.sprinting = false;
-					
-					//inputVector.y = 0f;
-					inputVector.Normalize();
-
-					bod.UpVector = animObj.transform.up;
-					
-
-
-					var speedUpright = 10f;
-					var speedCrouching = 5f;
-					if (crouching) {
-						bod.Move(inputVector * Time.deltaTime * speedCrouching);
-					}else{
-						bod.Move(inputVector * Time.deltaTime * speedUpright);
-					}
-
-
-
-					SprintEnergy = bod.GetEnergy();
-					bod.VerticalMove(this);
-					bod.MaybeJumpOrFall(this, net);
-
-					bod.Move(transform.up * bod.yMove * Time.deltaTime * 5f);
-					
-					crouching = false;
-					if (CcInput.Holding(UserAction.MoveDown)) 
-						crouching = true;
-					
-					moveVec = inputVector;
-					
-					Ray lavaRay = new Ray(lastPos, transform.position - lastPos);
-					RaycastHit lavaHit = new RaycastHit();
-					float lavaRayLength = Vector3.Distance(transform.position, lastPos);
-					int lavaLayer = (1<<10);
-					if (Physics.Raycast(lavaRay, out lavaHit, lavaRayLength, lavaLayer)) {
-						transform.position = lavaHit.point+ (Vector3.up*0.35f);
-						sendRPCUpdate = true;
-						inputVector = Vector3.zero;
-						net.RegisterHit(Gun.Lava, User.viewID, User.viewID, lavaHit.point);
-					}
-					
-					
-					//sendRPCUpdate = false;
-					if (camAngle != lastCamAngle && Time.time > rpcCamTime) 
-						sendRPCUpdate = true;
-					if (moveVec != lastMoveVector) 
-						sendRPCUpdate = true;
-					if (crouching != crouchingPrev) 
-						sendRPCUpdate = true;
-					if (bod.yMove != lastYmove) 
-						sendRPCUpdate = true;
-					if (User.Health != lastHealth) 
-						sendRPCUpdate = true;
-					if (net.broadcastPos) {
-						net.broadcastPos = false;
-						sendRPCUpdate = true;
-					}
-					
-					lastCamAngle = camAngle;
-					lastMoveVector = moveVec;
-					crouchingPrev = crouching;
-					lastYmove = bod.yMove;
-					lastHealth = User.Health;
-					
-					if (sendRPCUpdate) {
-						net.SendUserUpdate(User.viewID, transform.position, camAngle, crouching, moveVec, bod.yMove, 
-							(int)GunInHand, (int)GunOnBack, transform.up, transform.forward);
-						sendRPCUpdate = false;
-						
-						rpcCamTime = Time.time; // + 0.02f;
-					}
-					
-					var gun = arse.Guns[(int)GunInHand];
-					if (GunInHand >= Gun.Pistol && 
-					    gun.Cooldown > 0f && 
-					    gun.Cooldown - Time.deltaTime <= 0f && 
-						gun.Delay >= 1f
-					) 
-						PlaySound("click");
-					
-					gun.Cooldown -= Time.deltaTime;
-					if (gun.Cooldown < 0f) 
-						gun.Cooldown = 0f;
-					
-					
-					swapperLocked = false;
-					swapperLockTarget = -1;
-					if (GunInHand == Gun.Swapper) {
-						// swapper aiming
-						List<int> validSwapTargets = new List<int>();
-						
-						for (int i=0; i<net.Entities.Count; i++){
-							if (!net.Entities[i].local && Vector3.Dot(Camera.main.transform.forward, (net.Entities[i].Actor.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.Entities[i].Health>0f){
-								
-								Ray swapCheckRay = new Ray(Camera.main.transform.position, net.Entities[i].Actor.transform.position - Camera.main.transform.position);
-								RaycastHit swapCheckHit = new RaycastHit();
-								int swapCheckLayer = 1<<0;
-								float swapCheckLength = Vector3.Distance(net.Entities[i].Actor.transform.position, Camera.main.transform.position);
-								
-								if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer) ) {
-									validSwapTargets.Add(i);
-									swapperLocked = true;
-								}
-							}
-						}
-						int nearestScreenspacePlayer = 0;
-						float nearestDistance = 9999f;
-						for (int i=0; i<validSwapTargets.Count; i++) {
-							Vector3 thisPos = Camera.main.WorldToScreenPoint(net.Entities[validSwapTargets[i]].Actor.transform.position);
-							if (Vector3.Distance(thisPos, 
-								new Vector3(Screen.width/2, Screen.height/2, 0)) < nearestDistance
-							) {
-								nearestScreenspacePlayer = validSwapTargets[i];
-							}
-						}
-						
-						if (swapperLocked) {
-							// move target to locked on player
-							Vector3 screenPos = Camera.main.WorldToScreenPoint(net.Entities[nearestScreenspacePlayer].Actor.transform.position);
-							swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
-							swapperLockTarget = nearestScreenspacePlayer;
-						}else{
-							// move target to center
-							swapperLock -= (swapperLock-new Vector3(Screen.width/2, Screen.height/2, 0)) * Time.deltaTime * 10f;
-						}
-					}else{
-						swapperLock = new Vector3(Screen.width/2, Screen.height/2, 0);
-					}
-					
-					swapperCrossX = Mathf.RoundToInt(swapperLock.x);
-					swapperCrossY = Mathf.RoundToInt(swapperLock.y);
-					
-					// basketball arrow
-					if (net.CurrMatch.basketball) {
-						if (bballArrowObj == null) {
-							bballArrowObj = (GameObject)GameObject.Instantiate(bballArrowPrefab);
-							bballArrowObj.transform.parent = Camera.main.transform;
-							bballArrowObj.transform.localPosition = Vector3.forward - (Vector3.right*0.8f) + (Vector3.up*0.5f);
-						}
-						if (User.hasBall) {
-							bballArrowObj.renderer.enabled = false;
-						}else{
-							bballArrowObj.renderer.enabled = true;
-							bballArrowObj.transform.LookAt(net.GetBball().transform.position);
-							
-						}
-					}else{
-						if (bballArrowObj != null) {
-							bballArrowObj.renderer.enabled = false;
-						}
-					}
-					
-					// gravulator arrow 
-					if (GunInHand == Gun.Gravulator) {
-						if (gravArrowObj == null) {
-							gravArrowObj = (GameObject)GameObject.Instantiate(gravArrowPrefab);
-							//gravArrowObj.layer = 
-							gravArrowObj.transform.parent = Camera.main.transform;
-							gravArrowObj.transform.localPosition = Vector3.forward;
-						}
-						
-						Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-						RaycastHit gravHit = new RaycastHit();
-						int gravLayer = 1<<0;
-						
-						if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)) {
-							gravArrowObj.transform.LookAt(gravArrowObj.transform.position - gravHit.normal);
-							gravArrowObj.renderer.enabled = true;
-						}else{
-							gravArrowObj.renderer.enabled = false;
-						}
-					}else{
-						if (gravArrowObj != null){
-							gravArrowObj.renderer.enabled = false;
-						}
-					}
-					
-					if /* we can shoot */ (
-						gun.Cooldown <= 0f &&
-						Screen.lockCursor && previouslyLockedCursor &&
-						!User.hasBall && 
-						GunInHand >= Gun.Pistol
-					) {
-						// if gun repeats while pressed 
-						if (arse.Guns[(int)GunInHand].AutoFire) {
-							if (CcInput.Holding(UserAction.Activate))
-								Fire(gun);
-						}else{ // nope...single shot 
-							if (CcInput.Started(UserAction.Activate))
-								Fire(gun);
-							if (CcInput.Started(UserAction.Alt))
-								Fire(gun, true);
-						}
-					}
-					
-					selectSpecificWeapon();
-
-					if (hud.Mode == HudMode.Playing) 
-						// ....then allow scrollwheel to cycle weaps/items 
-						switchWeapon();
-					if (CcInput.Started(UserAction.Activate))   throwBall();					
-					if (CcInput.Started(UserAction.Suicide))    net.RegisterHitRPC((int)Gun.Suicide, User.viewID, User.viewID, transform.position);
-
-					moveFPGun();
-				}else{ // we be dead
-					if (Camera.main.transform.parent != null) 
-						SetModelVisibility(true);
-					
-					if (net.LocEnt.FraggedBy != null) {
-						Camera.main.transform.parent = null;
-						Camera.main.transform.position = transform.position - animObj.transform.forward;
-						Camera.main.transform.LookAt(net.LocEnt.FraggedBy.transform.position, transform.up);
-						Camera.main.transform.Translate(0, 0, -2f);
-					}
-				}
+			}else{
+				localUserUpdate();
 			}
 		}else{
 			if (lastUpdateTime > 0f) {
 				NonLocalUpdate();
 			}
+
+			// visible avatar anims 
+			camHolder.transform.localEulerAngles = camAngle;
 		}
-		
+
 		setEyeHeight();
 
-		// visible person model anims
-		if (!User.local) 
-			camHolder.transform.localEulerAngles = camAngle;
-		
 		Vector3 lookDir = camHolder.transform.forward;
 		//lookDir.y = 0;
 		lookDir.Normalize();
@@ -822,8 +516,13 @@ public class Actor : MonoBehaviour {
 					FireBullet(gun);
 				}else{
 					// locked on, we hit
-				net.Shoot(gun, transform.position, net.Entities[swapperLockTarget].Actor.transform.position - transform.position, net.Entities[swapperLockTarget].Actor.transform.position , net.LocEnt.viewID, true, alt, Vector3.zero);
-					net.RegisterHit(gun, net.LocEnt.viewID, net.Entities[swapperLockTarget].viewID, net.Entities[swapperLockTarget].Actor.transform.position);
+					net.Shoot(gun, transform.position, 
+				          net.Entities[swapperLockTarget].Actor.transform.position - transform.position, 
+				          net.Entities[swapperLockTarget].Actor.transform.position , net.LocEnt.viewID, 
+				          true, alt, Vector3.zero);
+					net.RegisterHit(gun, net.LocEnt.viewID, 
+		                net.Entities[swapperLockTarget].viewID, 
+		                net.Entities[swapperLockTarget].Actor.transform.position);
 				}
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
@@ -1223,7 +922,7 @@ public class Actor : MonoBehaviour {
 			
 			if (CcInput.Started(UserAction.Activate) ||
 			    net.Entities[Spectatee].lives <= 0
-			    ) {
+		    ) {
 				Spectatee++;
 				
 				if (Spectatee >= net.Entities.Count) 
@@ -1270,6 +969,298 @@ public class Actor : MonoBehaviour {
 					GunInHand = (Gun)i;
 					weaponSwitchingSoundAndVisual();
 				}
+			}
+		}
+	}
+
+
+	void localUserUpdate() {
+		var lastPos = transform.position;
+		
+		// item pick up 
+		if (User.Health > 0f) {
+			HandlePickingUpItem();
+		}
+		offeredPickup = ""; // must do after the above check 
+		
+		if (User.Health > 0f) {
+			if (Camera.main.transform.parent == null) 
+				SetModelVisibility(false);
+			
+			net.LocEnt.FraggedBy = null;
+			Camera.main.transform.parent = camHolder.transform;
+			Camera.main.transform.localPosition = Vector3.zero;
+			// this makes sure we can walk along walls/ceilings with proper mouselook orientation 
+			Camera.main.transform.localRotation = Quaternion.Slerp(
+				Camera.main.transform.localRotation, 
+				Quaternion.Euler(Vector3.zero), 
+				Time.deltaTime * 5f);
+			
+			float invY = 1f;
+			if (locUser.LookInvert) 
+				invY = -1f;
+			
+			if (Screen.lockCursor &&
+			    hud.Mode == HudMode.Playing || 
+			    hud.Mode == HudMode.Editing
+			    ) {
+				camAngle.x -= Input.GetAxis("Mouse Y") * locUser.LookSensitivity * invY;
+				camAngle.y += Input.GetAxis("Mouse X") * locUser.LookSensitivity;
+				float max = 89f; // degrees up or down limit
+				if (camAngle.x >  max) 
+					camAngle.x =  max;
+				if (camAngle.x < -max) 
+					camAngle.x = -max;
+			}
+			
+			if (CcInput.Started(UserAction.Sprint)) {
+				if (bod.sprinting) {
+					bod.sprinting = false;
+				} else if (SprintEnergy > 0.2f) {
+					bod.sprinting = true;
+					sprintRelease = 0f;
+				} else {
+					PlaySound("Exhausted");
+				}
+			}
+			
+			bod.TickEnergy(this);
+			
+			sprintRelease += Time.deltaTime;
+			
+			camHolder.transform.localEulerAngles = camAngle;
+			var inputVector = Vector3.zero; 
+			
+			if (CcInput.Holding(UserAction.MoveForward)) 
+				inputVector += animObj.transform.forward;
+			
+			if (CcInput.Holding(UserAction.MoveBackward)) 
+				inputVector -= animObj.transform.forward;
+			
+			if (CcInput.Holding(UserAction.MoveRight)) 
+				inputVector += animObj.transform.right;
+			
+			if (CcInput.Holding(UserAction.MoveLeft)) 
+				inputVector -= animObj.transform.right;
+			
+			if (inputVector != Vector3.zero)
+				sprintRelease = 0f;
+			
+			if (sprintRelease > maxSprintRelease)
+				bod.sprinting = false;
+			
+			//inputVector.y = 0f;
+			inputVector.Normalize();
+			
+			bod.UpVector = animObj.transform.up;
+			
+			
+			
+			var speedUpright = 10f;
+			var speedCrouching = 5f;
+			if (crouching) {
+				bod.Move(inputVector * Time.deltaTime * speedCrouching);
+			}else{
+				bod.Move(inputVector * Time.deltaTime * speedUpright);
+			}
+			
+			
+			
+			SprintEnergy = bod.GetEnergy();
+			bod.VerticalMove(this);
+			bod.MaybeJumpOrFall(this, net);
+			
+			bod.Move(transform.up * bod.yMove * Time.deltaTime * 5f);
+			
+			crouching = false;
+			if (CcInput.Holding(UserAction.MoveDown)) 
+				crouching = true;
+			
+			moveVec = inputVector;
+			
+			Ray lavaRay = new Ray(lastPos, transform.position - lastPos);
+			RaycastHit lavaHit = new RaycastHit();
+			float lavaRayLength = Vector3.Distance(transform.position, lastPos);
+			int lavaLayer = (1<<10);
+			if (Physics.Raycast(lavaRay, out lavaHit, lavaRayLength, lavaLayer)) {
+				transform.position = lavaHit.point+ (Vector3.up*0.35f);
+				sendRPCUpdate = true;
+				inputVector = Vector3.zero;
+				net.RegisterHit(Gun.Lava, User.viewID, User.viewID, lavaHit.point);
+			}
+			
+			
+			//sendRPCUpdate = false;
+			if (camAngle != lastCamAngle && Time.time > rpcCamTime) 
+				sendRPCUpdate = true;
+			if (moveVec != lastMoveVector) 
+				sendRPCUpdate = true;
+			if (crouching != crouchingPrev) 
+				sendRPCUpdate = true;
+			if (bod.yMove != lastYmove) 
+				sendRPCUpdate = true;
+			if (User.Health != lastHealth) 
+				sendRPCUpdate = true;
+			if (net.broadcastPos) {
+				net.broadcastPos = false;
+				sendRPCUpdate = true;
+			}
+			
+			lastCamAngle = camAngle;
+			lastMoveVector = moveVec;
+			crouchingPrev = crouching;
+			lastYmove = bod.yMove;
+			lastHealth = User.Health;
+			
+			if (sendRPCUpdate) {
+				net.SendUserUpdate(User.viewID, transform.position, camAngle, crouching, moveVec, bod.yMove, 
+				                   (int)GunInHand, (int)GunOnBack, transform.up, transform.forward);
+				sendRPCUpdate = false;
+				
+				rpcCamTime = Time.time; // + 0.02f;
+			}
+			
+			var gun = arse.Guns[(int)GunInHand];
+			if (GunInHand >= Gun.Pistol && 
+			    gun.Cooldown > 0f && 
+			    gun.Cooldown - Time.deltaTime <= 0f && 
+			    gun.Delay >= 1f
+		    ) 
+				PlaySound("click");
+			
+			gun.Cooldown -= Time.deltaTime;
+			if (gun.Cooldown < 0f) 
+				gun.Cooldown = 0f;
+			
+			
+			swapperLocked = false;
+			swapperLockTarget = -1;
+			if (GunInHand == Gun.Swapper) {
+				// swapper aiming
+				List<int> validSwapTargets = new List<int>();
+				
+				for (int i=0; i<net.Entities.Count; i++){
+					if (!net.Entities[i].local && Vector3.Dot(Camera.main.transform.forward, (net.Entities[i].Actor.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.Entities[i].Health>0f){
+						
+						Ray swapCheckRay = new Ray(Camera.main.transform.position, net.Entities[i].Actor.transform.position - Camera.main.transform.position);
+						RaycastHit swapCheckHit = new RaycastHit();
+						int swapCheckLayer = 1<<0;
+						float swapCheckLength = Vector3.Distance(net.Entities[i].Actor.transform.position, Camera.main.transform.position);
+						
+						if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer) ) {
+							validSwapTargets.Add(i);
+							swapperLocked = true;
+						}
+					}
+				}
+				int nearestScreenspacePlayer = 0;
+				float nearestDistance = 9999f;
+				for (int i=0; i<validSwapTargets.Count; i++) {
+					Vector3 thisPos = Camera.main.WorldToScreenPoint(net.Entities[validSwapTargets[i]].Actor.transform.position);
+					if (Vector3.Distance(thisPos, 
+					                     new Vector3(Screen.width/2, Screen.height/2, 0)) < nearestDistance
+					    ) {
+						nearestScreenspacePlayer = validSwapTargets[i];
+					}
+				}
+				
+				if (swapperLocked) {
+					// move target to locked on player
+					Vector3 screenPos = Camera.main.WorldToScreenPoint(net.Entities[nearestScreenspacePlayer].Actor.transform.position);
+					swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
+					swapperLockTarget = nearestScreenspacePlayer;
+				}else{
+					// move target to center
+					swapperLock -= (swapperLock-new Vector3(Screen.width/2, Screen.height/2, 0)) * Time.deltaTime * 10f;
+				}
+			}else{
+				swapperLock = new Vector3(Screen.width/2, Screen.height/2, 0);
+			}
+			
+			swapperCrossX = Mathf.RoundToInt(swapperLock.x);
+			swapperCrossY = Mathf.RoundToInt(swapperLock.y);
+			
+			// basketball arrow 
+			if (net.CurrMatch.basketball) {
+				if (bballArrowObj == null) {
+					bballArrowObj = (GameObject)GameObject.Instantiate(bballArrowPrefab);
+					bballArrowObj.transform.parent = Camera.main.transform;
+					bballArrowObj.transform.localPosition = Vector3.forward - (Vector3.right*0.8f) + (Vector3.up*0.5f);
+				}
+				if (User.hasBall) {
+					bballArrowObj.renderer.enabled = false;
+				}else{
+					bballArrowObj.renderer.enabled = true;
+					bballArrowObj.transform.LookAt(net.GetBball().transform.position);
+					
+				}
+			}else{
+				if (bballArrowObj != null) {
+					bballArrowObj.renderer.enabled = false;
+				}
+			}
+			
+			// gravulator arrow 
+			if (GunInHand == Gun.Gravulator) {
+				if (gravArrowObj == null) {
+					gravArrowObj = (GameObject)GameObject.Instantiate(gravArrowPrefab);
+					//gravArrowObj.layer = 
+					gravArrowObj.transform.parent = Camera.main.transform;
+					gravArrowObj.transform.localPosition = Vector3.forward;
+				}
+				
+				Ray gravRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+				RaycastHit gravHit = new RaycastHit();
+				int gravLayer = 1<<0;
+				
+				if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)) {
+					gravArrowObj.transform.LookAt(gravArrowObj.transform.position - gravHit.normal);
+					gravArrowObj.renderer.enabled = true;
+				}else{
+					gravArrowObj.renderer.enabled = false;
+				}
+			}else{
+				if (gravArrowObj != null){
+					gravArrowObj.renderer.enabled = false;
+				}
+			}
+			
+			if // we can shoot 
+			(gun.Cooldown <= 0f &&
+				Screen.lockCursor && previouslyLockedCursor &&
+				!User.hasBall && 
+				GunInHand >= Gun.Pistol
+			) {
+				if // gun repeats while pressed 
+				(arse.Guns[(int)GunInHand].AutoFire) {
+					if (CcInput.Holding(UserAction.Activate))
+						Fire(gun);
+				}else{ // single shot 
+					if (CcInput.Started(UserAction.Activate))
+						Fire(gun);
+					if (CcInput.Started(UserAction.Alt))
+						Fire(gun, true);
+				}
+			}
+			
+			selectSpecificWeapon();
+			
+			if (hud.Mode == HudMode.Playing) 
+				// ....then allow scrollwheel to cycle weaps/items 
+				switchWeapon();
+			if (CcInput.Started(UserAction.Activate))   throwBall();					
+			if (CcInput.Started(UserAction.Suicide))    net.RegisterHitRPC((int)Gun.Suicide, User.viewID, User.viewID, transform.position);
+			
+			moveFPGun();
+		}else{ // we be dead 
+			if (Camera.main.transform.parent != null) 
+				SetModelVisibility(true);
+			
+			if (net.LocEnt.FraggedBy != null) {
+				Camera.main.transform.parent = null;
+				Camera.main.transform.position = transform.position - animObj.transform.forward;
+				Camera.main.transform.LookAt(net.LocEnt.FraggedBy.transform.position, transform.up);
+				Camera.main.transform.Translate(0, 0, -2f);
 			}
 		}
 	}

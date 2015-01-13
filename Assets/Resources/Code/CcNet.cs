@@ -51,7 +51,7 @@ public class CcNet : MonoBehaviour {
 	public string MatchName = "Init";
 	public int connections = 32;
 	public int listenPort = 25000;
-	public string MatchTypeAndMap = ""; // match type & map name (for server browser)
+	public string MatchTypeAndMap = ""; // match type & map name (for server browser) 
 	public string password = "";
 	public List<NetEntity> Entities;
 	public List<SpawnData> GunSpawns = new List<SpawnData>();
@@ -79,18 +79,11 @@ public class CcNet : MonoBehaviour {
 	float latestPacket = 0f;
 	float latestServerHeartbeat = 0f;
 	string nameOfOfflineBackdrop = "OfflineBackdrop";
-	// match 
-	float gameStartTime = 0f;
 	// bball 
 	GameObject basketball;
 	// map 
 	bool playableMapIsReady;
-	// announcements 
-	bool twoMinsAnnounced = false;
-	bool oneMinAnnounced = false;
-	bool thirtySecsAnnounced = false;
-	bool almostOverAnnounced = false;
-	bool countdownAnnounced = false;
+	Announcements announce = new Announcements();
 	VoxGen vGen;
 	// scripts 
 	CcLog log;
@@ -106,8 +99,8 @@ public class CcNet : MonoBehaviour {
 
 		DontDestroyOnLoad(this);
 		//Application.targetFrameRate = 60; // -1 (the default) makes standalone games render as fast as they can, 
-		// and web player games to render at 50-60 frames/second depending on the platform.
-		// If vsync is set in quality setting, the target framerate is ignored
+		// and web player games to render at 50-60 frames/second depending on the platform. 
+		// If vsync is set in quality setting, the target framerate is ignored 
 		
 		// scripts 
 		hud = GetComponent<Hud>();
@@ -218,35 +211,10 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		if (!countdownAnnounced) {
-			gameStartTime = Time.time + 5f; // so that you can't deal damage before "FIGHT!"
-			countdownAnnounced = true;
-			if (InServerMode) {
-				Sfx.PlayOmni("321Fight");
-			}
-		}
-		
-		// time announcements 
 		MatchTimeLeft -= Time.deltaTime;
-		if (InServerMode) {
-			if (MatchTimeLeft < 120f && !twoMinsAnnounced) {
-				Sfx.PlayOmni("RemainingMins2");
-				twoMinsAnnounced = true;
-			}
-			else if (MatchTimeLeft < 60f && !oneMinAnnounced) {
-				Sfx.PlayOmni("RemainingMins1");
-				oneMinAnnounced = true;
-			}
-			else if (MatchTimeLeft < 30f && !thirtySecsAnnounced) {
-				Sfx.PlayOmni("RemainingSecs30");
-				thirtySecsAnnounced = true;
-			}
-			else if (MatchTimeLeft < 10f && !almostOverAnnounced) {
-				Sfx.PlayOmni("AlmostOver");
-				almostOverAnnounced = true;
-			}
-		}
-		
+		// time announcements 
+		announce.Update(MatchTimeLeft);
+
 		// game time up? 
 		if (Connected && !gameOver) {
 			if (MatchTimeLeft <= 0f && CurrMatch.Duration > 0f){
@@ -408,7 +376,7 @@ public class CcNet : MonoBehaviour {
 	}
 	[RPC]
 	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, bool sprint, bool alt, Vector3 hitNorm, NetworkMessageInfo info) {
-		// somebody fired a shot, let's show it
+		// somebody fired a shot, let's show it 
 		latestPacket = Time.time;
 		arse.Shoot((Gun)weapon, origin, direction, end, shooterID, bulletID, info.timestamp, hit, alt, hitNorm, sprint);
 	}
@@ -416,10 +384,8 @@ public class CcNet : MonoBehaviour {
 	public void RegisterHit(Gun weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
 		if (gameOver) 
 			return;
-		if (Time.time < gameStartTime)
-			return;
-		
-		// we hit somebody, tell the server!
+
+		// we hit somebody, tell the server! 
 		if (!InServerMode) {
 			networkView.RPC("RegisterHitRPC", RPCMode.Server, (int)weapon, shooterID, victimID, hitPos);
 		}else{
@@ -428,16 +394,13 @@ public class CcNet : MonoBehaviour {
 	}
 	[RPC]
 	public void RegisterHitRPC(int weapon, NetworkViewID shooterID, NetworkViewID victimID, Vector3 hitPos) {
-		// one player hit another
+		if (gameOver) 
+			return; // no damage after game over 
+		
 		latestPacket = Time.time;
 		
-		if (gameOver) 
-			return; // no damage after game over
-		if (Time.time < gameStartTime)
-			return;
-		
-		int si = -1; // shooter index
-		int vi = -1; // victim index
+		int si = -1; // shooter index 
+		int vi = -1; // victim index 
 		bool killShot = false;
 		
 		//Debug.Log("hit registered");
@@ -1112,11 +1075,7 @@ public class CcNet : MonoBehaviour {
 		if (serverGameChange) {
 			MatchTimeLeft = CurrMatch.Duration * 60f;
 			gameOver = false;
-			countdownAnnounced = false;
-			twoMinsAnnounced = false;
-			oneMinAnnounced = false;
-			thirtySecsAnnounced = false;
-			almostOverAnnounced = false;
+			announce.ResetTimes();
 			livesBroadcast = CurrMatch.playerLives;
 		}else{
 			if (CurrMatch.playerLives > 0) {
@@ -1171,11 +1130,7 @@ public class CcNet : MonoBehaviour {
 		NetVI = viewID;
 		serverGameChange = false;
 
-		twoMinsAnnounced = false;
-		oneMinAnnounced = false;
-		thirtySecsAnnounced = false;
-		almostOverAnnounced = false;
-		countdownAnnounced = false;
+		announce.ResetTimes();
 		
 		if (!InServerMode) {
 			// update the local game settings 
