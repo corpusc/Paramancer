@@ -6,9 +6,7 @@ public class ProcWeapMusings : MonoBehaviour {
 // into different themes/settings.
 // not just for immersion, but also for variety and to have a traditional
 // weapon option for people who just want something familiar without having to 
-//		learn or 
-//		experiment with
-//		or jump thru any extra binding/selection hoops involved with procedural weapons
+// learn/experiment-with or jump thru any extra binding/selection hoops involved with procedural weapons
 
 
 
@@ -23,17 +21,6 @@ public class ProcWeapMusings : MonoBehaviour {
 
 
 
-//IceFlame's weapon power formula(based on (mostly)floating-point values instead of runes):
-//				bps - bullets per second
-//				dmg - damage per bullet
-//				auto - full auto : bool
-//				bnc - the amount of times a bullet bounces from wall to wall : int
-//				proj - projectiles launched at a time : int
-//				vamp - part of he damage the weapon delas that you get as health, CAN BE NEGATIVE for a weapon that deals loads of damage but costs you something, but never get down to -1.0f
-//				power = bps * dmg * sqrt(bnc + 1) * proj * (auto && bps > 1.0f ? sqrt(bps) : 1) * (vamp + 1.0f)
-//				You'd have a limit of, say 400 power points per weapon when creating one
-//				Each spawn would have a preset amount of power points that a weapon spawning on it should have
-//				So that the more dangerous spawns have more powerful weapons in them
 //[10:14:56 AM] Somebody (IceFlame): http://tesseractgamedev.wordpress.com/2012/11/24/procedural-weapon-generation-in-unity/}
 //
 //
@@ -59,11 +46,6 @@ public class ProcWeapMusings : MonoBehaviour {
 //						cuz IMO they are useless without that visual design.
 //						[7:48:18 PM] chattanoo: how would various bounce values appear?   how would damage per bullet appear?  etc.   
 //						different sizes could be used for at least one of the aspects, but most of them will probably be hard
-//							[7:49:16 PM] chattanoo: ideally it would be nice to have different procedural weapon sets for sci-fi, 
-//							present day, and fantasy/magic..... but i also think having a traditional gun system is a good option, 
-//							cuz some people won't want to be bothered with procweapons
-//[7:49:54 PM | Edited 7:53:01 PM] chattanoo: so IMO, present day stuff could be JUST traditional weapons imo.  not ALL the weapons sets 
-//have to be procedural
 //[7:52:31 PM] chattanoo: sci fi guns would probably be easier for an alternate proc weap system.  cuz technology is back again towards 
 //being more magical seeming and unknown.
 //

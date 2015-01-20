@@ -14,20 +14,12 @@ public class CcEmitter {
 
 	// private 
 	Transform tr;
-	Vector3 aim;
-	Vector3 pos;
 
 
 
-	public void Update(Transform t, bool spiralling) {
+	public void Update(Transform t) {
 		tr = t;
-		//aim = -tr.forward;
-		//pos = tr.position;
-
-		if (spiralling)
-			makeCluster(Color.green, Color.blue, Random.value, 1.5f);
-		else
-			makeCluster(S.Orange, Color.yellow, Random.Range(0f, 0.5f), 2.5f);
+		makeCluster(S.Orange, Color.yellow, Random.Range(0f, 0.5f), 2.5f);
 	}
 
 
@@ -48,15 +40,13 @@ public class CcEmitter {
 			var o = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
 			o.transform.position = tr.position;
 			o.transform.rotation = tr.rotation;
-			//o.transform.position = tr.position;//pos;
 			//o.transform.rotation = q;
 			var p = o.GetComponent<CcParticle>();
-			p.MinSize = 0.5f; // atm, just the 2 types of rockets use this 
-			p.MaxSize = 0.8f; // atm, just the 2 types of rockets use this 
-			p.MoveVec = -tr.forward /*aim*/*5f;// * Random.Range(MinParticleSpeed, MaxParticleSpeed);// + Random.insideUnitSphere;
+			p.MinSize = 0.5f;
+			p.MaxSize = 0.8f;
+			p.MoveVec = -tr.forward * 5f;// * Random.Range(MinParticleSpeed, MaxParticleSpeed);// + Random.insideUnitSphere;
 			p.Dura = dura;
 			p.StartColor = Color.Lerp(a, b, Random.value);
-			//p.MidColor = Color.Lerp(Color.green, Color.blue, rnd);
 			p.MidColor = Color.Lerp(S.Orange, Color.black, rnd);
 			p.MidColorPos = Random.Range(0.4f, 0.5f);
 			p.EndColor = Color.clear;

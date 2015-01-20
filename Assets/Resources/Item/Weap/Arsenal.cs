@@ -286,9 +286,6 @@ public class Arsenal : MonoBehaviour {
 				rs.shooterID = shooterID;
 				
 				activeRockets.Add(nr.GetComponent<Rocket>());
-
-				if (alt)
-					rs.Spiralling = true;
 				break;
 		}
 		

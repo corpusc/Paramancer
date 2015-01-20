@@ -60,15 +60,12 @@ public class Actor : MonoBehaviour {
 	public string offeredPickup = "";
 	public GunPickup currentOfferedPickup;
 
-	// AI 
-	public bool isMob = false;
-
 
 
 	// private 
 	// 		scripts 
 	Hud hud; // FIXME?  won't need this anymore once playingHud gets drawn correctly? *****************
-	public CcNet net;
+	CcNet net;
 	LocalUser locUser;
 	int swapperLockTarget = -1;
 
@@ -146,29 +143,9 @@ public class Actor : MonoBehaviour {
 	bool previouslyLockedCursor = true; // this is just so that clicking back into the screen won't fire explosive or gravgun immediately 
 	float rpcCamTime = 0f;
 	void Update() {
-		// temporary terrain hack.      once we implement visual holes in terrain 
-		// we will be able to disable terrain collision so we can run across terrain 
-		// and seamlessly (depending on how responsive we can make the generation) 
-		// enter through a dungeon entrance, and go down inside it 
-		// should detect height first.  like once we descended _ meters into the
-		// dungeon, we will have no need of checking the terrain.
-		// generally the top of the dungeon airspace that we'd occupy would be well
-		// below the lowest point of the terrain 
-//		var terr = GameObject.Find("Terrain");
-//		if (transform.position.x > 0f &&
-//		    transform.position.x < 5f &&
-//		    transform.position.z > -5f &&
-//		    transform.position.z < 0f
-//	    ) {
-//			terr.collider.enabled = false;
-//		}else
-//			terr.collider.enabled = true;
-
-
-
 		if // dead 
 		(User.Health <= 0f) {
-			MakeBombInvisible();
+			makeBombInvisible();
 		}
 
 		// frag monitor 
@@ -203,7 +180,7 @@ public class Actor : MonoBehaviour {
 		Vector3 lookDir = camHolder.transform.forward;
 		//lookDir.y = 0;
 		lookDir.Normalize();
-		animObj.transform.LookAt(animObj.transform.position + lookDir,transform.up);
+		animObj.transform.LookAt(animObj.transform.position + lookDir, transform.up);
 		animObj.transform.localEulerAngles = new Vector3(0, animObj.transform.localEulerAngles.y, 0);
 
 
@@ -221,7 +198,7 @@ public class Actor : MonoBehaviour {
 		//Model.transform.localEulerAngles = new Vector3(0, bod.transform.eulerAngles.y, 0);
 
 		previouslyLockedCursor = Screen.lockCursor;
-	} // end of Update() 
+	}
 
 
 
@@ -870,7 +847,7 @@ public class Actor : MonoBehaviour {
 		audio.Play();
 	}
 
-	public void MakeBombInvisible() {
+	void makeBombInvisible() {
 		Transform fl = null;
 		
 		fl = gunMesh1.transform.Find("Flash Light");
@@ -882,7 +859,7 @@ public class Actor : MonoBehaviour {
 			fl.GetComponent<FlashingLight>().Visible = false;
 	}
 
-	public void HandlePickingUpItem() {
+	void managePickingUpItem() {
 		if (offeredPickup != "") {
 			if (offeredPickup == "Health") {
 				if (User.Health < 100f) {
@@ -979,7 +956,7 @@ public class Actor : MonoBehaviour {
 		
 		// item pick up 
 		if (User.Health > 0f) {
-			HandlePickingUpItem();
+			managePickingUpItem();
 		}
 		offeredPickup = ""; // must do after the above check 
 		
@@ -1131,55 +1108,9 @@ public class Actor : MonoBehaviour {
 			gun.Cooldown -= Time.deltaTime;
 			if (gun.Cooldown < 0f) 
 				gun.Cooldown = 0f;
-			
-			
-			swapperLocked = false;
-			swapperLockTarget = -1;
-			if (GunInHand == Gun.Swapper) {
-				// swapper aiming
-				List<int> validSwapTargets = new List<int>();
-				
-				for (int i=0; i<net.Entities.Count; i++){
-					if (!net.Entities[i].local && Vector3.Dot(Camera.main.transform.forward, (net.Entities[i].Actor.transform.position - Camera.main.transform.position).normalized) > 0.94f && net.Entities[i].Health>0f){
-						
-						Ray swapCheckRay = new Ray(Camera.main.transform.position, net.Entities[i].Actor.transform.position - Camera.main.transform.position);
-						RaycastHit swapCheckHit = new RaycastHit();
-						int swapCheckLayer = 1<<0;
-						float swapCheckLength = Vector3.Distance(net.Entities[i].Actor.transform.position, Camera.main.transform.position);
-						
-						if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer) ) {
-							validSwapTargets.Add(i);
-							swapperLocked = true;
-						}
-					}
-				}
-				int nearestScreenspacePlayer = 0;
-				float nearestDistance = 9999f;
-				for (int i=0; i<validSwapTargets.Count; i++) {
-					Vector3 thisPos = Camera.main.WorldToScreenPoint(net.Entities[validSwapTargets[i]].Actor.transform.position);
-					if (Vector3.Distance(thisPos, 
-					                     new Vector3(Screen.width/2, Screen.height/2, 0)) < nearestDistance
-					    ) {
-						nearestScreenspacePlayer = validSwapTargets[i];
-					}
-				}
-				
-				if (swapperLocked) {
-					// move target to locked on player
-					Vector3 screenPos = Camera.main.WorldToScreenPoint(net.Entities[nearestScreenspacePlayer].Actor.transform.position);
-					swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
-					swapperLockTarget = nearestScreenspacePlayer;
-				}else{
-					// move target to center
-					swapperLock -= (swapperLock-new Vector3(Screen.width/2, Screen.height/2, 0)) * Time.deltaTime * 10f;
-				}
-			}else{
-				swapperLock = new Vector3(Screen.width/2, Screen.height/2, 0);
-			}
-			
-			swapperCrossX = Mathf.RoundToInt(swapperLock.x);
-			swapperCrossY = Mathf.RoundToInt(swapperLock.y);
-			
+
+			manageTargetLocking();
+
 			// basketball arrow 
 			if (net.CurrMatch.basketball) {
 				if (bballArrowObj == null) {
@@ -1263,5 +1194,57 @@ public class Actor : MonoBehaviour {
 				Camera.main.transform.Translate(0, 0, -2f);
 			}
 		}
+	}
+
+
+	void manageTargetLocking() {
+		swapperLocked = false;
+		swapperLockTarget = -1;
+		if (GunInHand == Gun.Swapper) {
+			// swapper aiming
+			var validSwapTargets = new List<int>();
+			
+			for (int i=0; i<net.Entities.Count; i++) {
+				var diff = net.Entities[i].Actor.transform.position - Camera.main.transform.position;
+				if (!net.Entities[i].local && 
+				    Vector3.Dot(Camera.main.transform.forward, diff.normalized) > 0.94f && 
+				    net.Entities[i].Health > 0f
+				    ) {						
+					Ray swapCheckRay = new Ray(Camera.main.transform.position, net.Entities[i].Actor.transform.position - Camera.main.transform.position);
+					RaycastHit swapCheckHit = new RaycastHit();
+					int swapCheckLayer = 1<<0;
+					float swapCheckLength = Vector3.Distance(net.Entities[i].Actor.transform.position, Camera.main.transform.position);
+					
+					if (!Physics.Raycast(swapCheckRay, out swapCheckHit, swapCheckLength, swapCheckLayer) ) {
+						validSwapTargets.Add(i);
+						swapperLocked = true;
+					}
+				}
+			}
+			
+			int nearestScreenspacePlayer = 0;
+			float nearestDistance = 9999f;
+			for (int i=0; i<validSwapTargets.Count; i++) {
+				Vector3 thisPos = Camera.main.WorldToScreenPoint(net.Entities[validSwapTargets[i]].Actor.transform.position);
+				if (Vector3.Distance(thisPos, new Vector3(Screen.width/2, Screen.height/2, 0)) < nearestDistance) {
+					nearestScreenspacePlayer = validSwapTargets[i];
+				}
+			}
+			
+			if (swapperLocked) {
+				// move target to locked on player
+				Vector3 screenPos = Camera.main.WorldToScreenPoint(net.Entities[nearestScreenspacePlayer].Actor.transform.position);
+				swapperLock -= (swapperLock-screenPos) * Time.deltaTime * 10f;
+				swapperLockTarget = nearestScreenspacePlayer;
+			}else{
+				// move target to center
+				swapperLock -= (swapperLock-new Vector3(Screen.width/2, Screen.height/2, 0)) * Time.deltaTime * 10f;
+			}
+		}else{
+			swapperLock = new Vector3(Screen.width/2, Screen.height/2, 0);
+		}
+		
+		swapperCrossX = Mathf.RoundToInt(swapperLock.x);
+		swapperCrossY = Mathf.RoundToInt(swapperLock.y);
 	}
 }

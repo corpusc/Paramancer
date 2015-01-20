@@ -1025,10 +1025,12 @@ public class Hud : MonoBehaviour {
 	void credits() {
 		menuBegin();
 
-		CategoryHeader("Current team", false, false);
-		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game design, Logos, Control config");
-		GUILayout.Label("IceFlame       - Coding, Various media & effects, Announcer, ProcGen maps");
+		CategoryHeader("Designer/Developer", false, false);
+		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game design, Logos, Control config, UI");
 
+		CategoryHeader("Former member", false, false);
+		GUILayout.Label("IceFlame       - Various media bits, Announcer, Voxel-style ProcGen maps");
+		
 		CategoryHeader("Engine", false);
 		GUILayout.Label("....(and much of the current game design)");
 		GUILayout.Label("This is an extensively remodeled fork of a game made in a seven day game jam.  By Sophie Houlden");
