@@ -19,8 +19,6 @@ public class CcEmitter {
 
 
 
-	public CcEmitter() {}
-	
 	public void Update(Transform t, bool spiralling) {
 		tr = t;
 		//aim = -tr.forward;
@@ -31,7 +29,8 @@ public class CcEmitter {
 		else
 			makeCluster(S.Orange, Color.yellow, Random.Range(0f, 0.5f), 2.5f);
 	}
-	
+
+
 	private void makeCluster(Color a, Color b, float rnd, float dura) {
 		int num = (int)((float)Random.Range(MinPerSec, MaxPerSec) * Time.deltaTime); // number of particles this frame 
 		num *= 2;
@@ -63,8 +62,8 @@ public class CcEmitter {
 			p.EndColor = Color.clear;
 		}
 	}
-	
-	// explosion 
+
+
 	// FIXME?  maybe this should be consolidated with the bullet impact puffs 
 	public void Explode(Vector3 prevPos, Color start, Color end, bool useMidColor = true) {
 		int num = 25; // ...num particles per frame 

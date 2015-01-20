@@ -21,11 +21,6 @@ public class Announcements {
 
 
 
-	public Announcements() {
-		ResetTimes();
-	}
-
-
 	public void Update(float timeLeft) {
 		if (!announcedMatchStart) {
 			announcedMatchStart = true;
@@ -40,7 +35,7 @@ public class Announcements {
 	}
 
 
-	public void ResetTimes() {
+	public void SetupTimeCountdowns() {
 		announcedMatchStart = false;
 		times.Clear();
 		times.Add(new TimingEvent(120f, "RemainingMins2"));

@@ -34,27 +34,26 @@
             new STONE("topaz",		 60),      //orangey and/or yellowish tinged brown.  light, maybe even tan?  fairly solid color.  
             new STONE("turquoise",	 70),
             new STONE("taaffeite",	300),      //dark, dull purple typically but can be radically diff colors.   "Colorless, greyish violet, violet red, red, greenish, light green, pink violet, mauve"
-            new STONE("zircon",	 80),      //typicall dark cyan?....not too saturated but very close to "plain regular blue"         "Reddish brown, yellow, green, blue, gray, colorless; in thin section, colorless to pale brown"
+            new STONE("zircon",	     80),      //typicall dark cyan?....not too saturated but very close to "plain regular blue"         "Reddish brown, yellow, green, blue, gray, colorless; in thin section, colorless to pale brown"
         };
+
         static int NSTONES = StonesPossible.Length;
         static int cNSTONES = NSTONES;
         static bool[] used = new bool[NSTONES];
 
 
 
-        public class STONE 
-        {
+        public class STONE {
             public string st_name;
             public int st_value;
 
-            public STONE(string name, int value)
-            {
+            public STONE(string name, int value) {
                 st_name = name;
                 st_value = value;
             }
         }
 
-        // Ring types
+        // Ring types 
         public const int R_PROTECT = 0;
         public const int R_ADDSTR = 1;
         public const int R_SUSTSTR = 2;
@@ -71,8 +70,7 @@
         public const int R_SUSTARM = 13;
         public const int MAX = 14;
 
-        public static ObjectData[] Data = new[]
-        {
+        public static ObjectData[] Data = new[] {
             new ObjectData("Protection", 9, 400, null, false),
             new ObjectData("Add Strength", 9, 400, null, false),
             new ObjectData("Sustain Strength", 5, 280, null, false),
@@ -89,20 +87,19 @@
             new ObjectData("Maintain Armour", 5, 380, null, false)
         };
 
-        //setup stone settings
-        static Ring()
-        {
+        // setup stone settings 
+        static Ring() {
             S.Log("Ring stones");
             int i, j;
 
             for (i = 0; i < NSTONES; i++)
                 used[i] = false;
 
-            for (i = 0; i < Ring.MAX; i++)
-            {
+            for (i = 0; i < Ring.MAX; i++) {
                 do
-                    j = R14.rnd(NSTONES);
-                while (used[j]);
+					j = R14.rnd(NSTONES);
+                while 
+					(used[j]);
 
                 used[j] = true;
                 StonesUsed[i] = StonesPossible[j].st_name;

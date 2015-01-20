@@ -1075,7 +1075,7 @@ public class CcNet : MonoBehaviour {
 		if (serverGameChange) {
 			MatchTimeLeft = CurrMatch.Duration * 60f;
 			gameOver = false;
-			announce.ResetTimes();
+			announce.SetupTimeCountdowns();
 			livesBroadcast = CurrMatch.playerLives;
 		}else{
 			if (CurrMatch.playerLives > 0) {
@@ -1130,7 +1130,7 @@ public class CcNet : MonoBehaviour {
 		NetVI = viewID;
 		serverGameChange = false;
 
-		announce.ResetTimes();
+		announce.SetupTimeCountdowns();
 		
 		if (!InServerMode) {
 			// update the local game settings 
