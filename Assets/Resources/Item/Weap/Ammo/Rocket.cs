@@ -13,27 +13,20 @@ public class Rocket : MonoBehaviour {
 	// private 
 	CcNet net;
 	Vector3 prevPos;
-	Vector3 origFwd; // the original forward direction 
-	Vector3 origUp; // the original up direction 
 	float life = 10f;
-	float maxLife;
 	CcEmitter em = new CcEmitter();
 
 	
 	
 	void Start() {
-		maxLife = life;
 		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		prevPos = transform.position;
-		origFwd = transform.forward;
-		origUp = transform.up;
 		transform.position += transform.forward * ForwardOffset;
 	}
 	
 	void Update() {
 		if (enabled) {
-			Vector3 moveForward = (transform.forward * Time.deltaTime) * (FlightSpeed * (maxLife - life) / maxLife + BaseFlightSpeed);
-			transform.position += moveForward;
+			transform.position += transform.forward * Time.deltaTime * 30f;
 
 			em.Update(transform);
 
@@ -59,7 +52,7 @@ public class Rocket : MonoBehaviour {
 		}
 	}
 
-	private void detonateMaybe(Vector3 preciseLocation, Vector3 hitNorm) {
+	private void detonateMaybe(Vector3 pos, Vector3 hitNorm) {
 		em.Explode(prevPos, Color.red, Color.Lerp(
 			Color.Lerp(Color.red, Color.clear, 1f), 
 			Color.Lerp(Color.black, Color.clear, 1f), 
@@ -68,8 +61,9 @@ public class Rocket : MonoBehaviour {
 
 		enabled = false;
 		if (net.InServerMode)
-			net.Detonate(Gun.RocketLauncher, preciseLocation, shooterID, viewID);
+			net.Detonate(Gun.RocketLauncher, pos, shooterID, viewID);
 
-		net.DetonateRocket(preciseLocation, hitNorm, viewID);
+		// FIXME?  originally we only did the above conditional, and not all the stuff below 
+		net.RemoveRocketWithExplosionEffects(pos, hitNorm, viewID);
 	}
 }

@@ -10,7 +10,6 @@ public class GunData {
 	public float BlastRadius = 0f;
 	public Color Color = Color.white;
 	public float Delay = 0f;
-	public float DelayAlt = 0f;
 	public float Cooldown = 0f; // current progress through the ^above^ Delay
 	public bool Carrying = false;
 	public float Range = 999f;

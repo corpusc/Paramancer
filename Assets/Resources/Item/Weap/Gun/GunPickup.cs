@@ -42,7 +42,7 @@ public class GunPickup : MonoBehaviour {
 
 
 		// initial scale & rotational offsets 
-		if (Name == "Grenade Launcher") {
+		if /***/ (Name == "Grenade Launcher") {
 			Model.transform.Rotate(0, 0, zOff);
 			Model.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
 		}else if (Name == "Rocket Launcher") {

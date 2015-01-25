@@ -448,18 +448,8 @@ public class Actor : MonoBehaviour {
 	
 	void Fire(GunData gunData, bool alt = false) {
 		Gun gun = (Gun)GunInHand;
-		if (alt) {
-			if (gun != Gun.RocketLauncher)
-				return;
-		}
-
-		if (alt) {
-			gunData.Cooldown += gunData.DelayAlt;
-		}
-		else
-			gunData.Cooldown += gunData.Delay;
-
 		var ct = Camera.main.transform;
+		gunData.Cooldown += gunData.Delay;
 
 		switch (gun) {
 			case Gun.Pistol:
@@ -822,7 +812,7 @@ public class Actor : MonoBehaviour {
 		lastUpdateTime = time;
 		GunInHand = gunA;
 		GunOnBack = gunB;
-		transform.LookAt(transform.position + playerForward ,playerUp);
+		transform.LookAt(transform.position + playerForward, playerUp);
 		NonLocalUpdate();
 	}
 	

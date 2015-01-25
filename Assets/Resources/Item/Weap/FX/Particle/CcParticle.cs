@@ -62,7 +62,9 @@ public class CcParticle : MonoBehaviour {
 		Dura -= Random.Range(0f, 0.5f);
 		maxLife = Dura;
 		moveVec *= MaxSpeed;
-		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * rotSpeed);
+		// if needing to set this rotation here, it actually should start with a random rotation, rather than 
+		// mirroring the Update() logic, RIGHT?!
+		//transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * rotSpeed);
 	}
 	
 	void Update() {
@@ -82,11 +84,12 @@ public class CcParticle : MonoBehaviour {
 
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, moveVec.normalized, out hit, moveVec.magnitude * Time.deltaTime, 1<<0))
+			//moveVec = hit.normal * moveVec.magnitude;      IceFlame changed to below line 
 			moveVec = Vector3.Reflect(moveVec, hit.normal);
 		
 		transform.position += moveVec * Time.deltaTime;
+		//transform.rotation = Camera.main.transform.rotation;       // IceFlame added the quaternion below 
 		transform.rotation = Camera.main.transform.rotation * Quaternion.Euler(0f, 0f, Time.time * rotSpeed);
-		//transform.forward = Camera.main.transform.forward + new Vector3(0f, Time.time, 0f); //for some reason, doesn't work
 		transform.localScale += Time.deltaTime * shrinkFactor;
 
 		moveVec *= Mathf.Pow(acceleration, Time.deltaTime);

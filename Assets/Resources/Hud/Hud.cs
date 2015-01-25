@@ -1028,13 +1028,13 @@ public class Hud : MonoBehaviour {
 		CategoryHeader("Designer/Developer", false, false);
 		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game design, Logos, Control config, UI");
 
-		CategoryHeader("Former member", false, false);
+		CategoryHeader("Former team member", false, false);
 		GUILayout.Label("IceFlame       - Various media bits, Announcer, Voxel-style ProcGen maps");
 		
-		CategoryHeader("Engine", false);
-		GUILayout.Label("....(and much of the current game design)");
-		GUILayout.Label("This is an extensively remodeled fork of a game made in a seven day game jam.  By Sophie Houlden");
+		CategoryHeader("Match Types", false);
+		GUILayout.Label("This is an extensively rewritten fork of a game made in a 7 day game jam.  By Sophie Houlden");
 		GUILayout.Label("(sophiehoulden.com)");
+		GUILayout.Label("The game modes however are largely untouched");
 		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?! 
 		// ... because otherwise, the player is thrown out of the game to the website 
 		//if (GUILayout.Button("Sophie Houlden (web page)"))

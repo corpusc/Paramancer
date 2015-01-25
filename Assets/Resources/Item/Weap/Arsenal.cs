@@ -72,47 +72,38 @@ public class Arsenal : MonoBehaviour {
 				case Gun.Pistol:   
 					Guns[i].Color = Color.white; 
 					Guns[i].Delay = 0.3f; 
-					Guns[i].DelayAlt = 0.3f; 
 					break; 
 				case Gun.GrenadeLauncher:   
 					Guns[i].Color = Color.green; 
 					Guns[i].Delay = 0.25f; 
-					Guns[i].DelayAlt = 0.25f;
 					break; 
 				case Gun.MachineGun:   
 					Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 0.1f; 
-					Guns[i].DelayAlt = 0.1f;
 					break; 
 				case Gun.RailGun:   
 					Guns[i].Color = Color.Lerp(Color.magenta, Color.white, 0.25f); 
 					Guns[i].Delay = 2f;
-					Guns[i].DelayAlt = 2f;
 					break;
 				case Gun.RocketLauncher:   
 					Guns[i].Color = S.Orange; 
 					Guns[i].Delay = 1.5f; 
-					Guns[i].DelayAlt = 0.7f;
 					break;
 				case Gun.Swapper:   
 					Guns[i].Color = Color.white; 
 					Guns[i].Delay = 2f; 
-					Guns[i].DelayAlt = 2f; 
 					break; 
 				case Gun.Gravulator:   
 					Guns[i].Color = S.Orange; 
 					Guns[i].Delay = 1f; 
-					Guns[i].DelayAlt = 1f; 
 					break; 
 				case Gun.Bomb:   
 					Guns[i].Color = Color.yellow; 
 					Guns[i].Delay = 1f; 
-					Guns[i].DelayAlt = 1f; 
 					break; 
 				case Gun.Spatula:   
 					Guns[i].Color = Color.gray; 
 					Guns[i].Delay = 1f;  
-					Guns[i].DelayAlt = 1f;
 					break; 
 			}
 		}
@@ -236,6 +227,7 @@ public class Arsenal : MonoBehaviour {
 				var center = beamStart + (beamDir * progress);
 				np.transform.position = center + v;
 				var p = np.GetComponent<CcParticle>();
+				//p.MoveVec = v;    IceFlame changed this to make spiral rotate a bit 
 				p.MoveVec = Quaternion.AngleAxis(90f, Camera.main.transform.forward) * v * 2f;
 				p.MinSize = 1.3f;
 				p.MaxSize = 1.3f;
@@ -385,7 +377,7 @@ public class Arsenal : MonoBehaviour {
 		}
 	}
 
-	public void DetonateRocket(Vector3 detPos, Vector3 hitNorm, NetworkViewID viewID) {
+	public void RemoveRocketWithExplosionEffects(Vector3 detPos, Vector3 hitNorm, NetworkViewID viewID) {
 		for (int i=0; i<activeRockets.Count; i++) {
 			// if this is the right rocket 
 			if (viewID == activeRockets[i].viewID) {

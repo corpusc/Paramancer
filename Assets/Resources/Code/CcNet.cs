@@ -280,7 +280,8 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 	}
-	
+
+
 	public void SendUserUpdate(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
 		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward
 	) {
@@ -302,9 +303,10 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 	}
-	
+
+
 	public void ConsumeHealth(NetworkViewID viewID) {
-		// we just used a health pack, tell the server our health is maxed out
+		// we just used a health pack, tell the server our health is maxed out 
 		if (!InServerMode) {
 			networkView.RPC("ConsumeHealthRPC", RPCMode.Server, viewID);
 		}else{
@@ -322,8 +324,8 @@ public class CcNet : MonoBehaviour {
 			LocEnt.Health = 100f;
 	}
 
-	public void DetonateRocket(Vector3 detPos, Vector3 hitNorm, NetworkViewID bulletID) {
-		arse.DetonateRocket(detPos, hitNorm, bulletID);
+	public void RemoveRocketWithExplosionEffects(Vector3 detPos, Vector3 hitNorm, NetworkViewID bulletID) {
+		arse.RemoveRocketWithExplosionEffects(detPos, hitNorm, bulletID);
 	}
 	
 	// this can be called by RL, GL, & Bomb 
