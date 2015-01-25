@@ -30,13 +30,13 @@ public class CcEmitter {
 		for (int i = 0; i < num; i++) {
 			var has = 45f; // half angle span 
 			//var q = Quaternion.Euler(Random.Range(-has, has), Random.Range(-has, has), 0f);
-			tr.Rotate(
-				new Vector3(
-					Random.Range(-has, has), 
-					Random.Range(-has, has), 
-					0f
-				)
-			);
+//			tr.Rotate(
+//				new Vector3(
+//					Random.Range(-has, has), 
+//					Random.Range(-has, has), 
+//					0f
+//				)
+//			);
 			var o = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
 			o.transform.position = tr.position;
 			o.transform.rotation = tr.rotation;
