@@ -51,6 +51,7 @@ public class Arsenal : MonoBehaviour {
 					break; 
 				case Gun.GrenadeLauncher:   
 					Guns[i].BlastRadius = 4f;
+					Guns[i].EulerOffset = new Vector3(0, 0, 180);
 					break; 
 				case Gun.RailGun:   
 					Guns[i].MarkScale = 2f;
@@ -58,6 +59,8 @@ public class Arsenal : MonoBehaviour {
 				case Gun.RocketLauncher:   
 					Guns[i].BlastRadius = 4f;
 					Guns[i].MarkScale = 5f; // set for the launcher because the projectile has a negative value in the gun system 
+					Guns[i].PosOffset = new Vector3(0f, 0.7f, 1.5f);
+					Guns[i].EulerOffset = new Vector3(0, -270, 0);
 					break;
 				case Gun.Bomb:   
 					Guns[i].BlastRadius = 10f;

@@ -90,7 +90,7 @@ public class Actor : MonoBehaviour {
 	Gun prevGunInHand = Gun.None;
 	Gun prevGunOnBack = Gun.None;
 	Vector3 hudGunOffs = new Vector3(0.47f, -0.48f, 0.84f); // offset of gun from camera (self, 1st person)
-	Vector3 remoteGunOffs = new Vector3(0.074f, 0.46f, 0.84f); // offset of gun from aimBone (other players)
+	Vector3 oobGunOffs = new Vector3(0.074f, 0.46f, 0.84f); // offset of gun from aimBone (out of body view)
 
 
 	
@@ -325,11 +325,12 @@ public class Actor : MonoBehaviour {
 
 	void showCorrectGuns() {
 		if (GunInHand != prevGunInHand) {
+			var gun = arse.Guns[(int)GunInHand];
 			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
 
 			if (GunInHand >= Gun.Pistol) {
-				gunMesh1 = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
+				gunMesh1 = (GameObject)GameObject.Instantiate(gun.Prefab);
 			}else{
 				gunMesh1 = new GameObject();
 			}
@@ -337,8 +338,8 @@ public class Actor : MonoBehaviour {
 			// FIXME:  i dunno why there should be a seperate instance of the first person gun......
 			// gunMesh1 should be the same whether local or remote?  atm, one is child of aimBone, and other is child of Camera.main
 			gunMesh1.transform.parent = aimBone.transform; //gunParent;
-			gunMesh1.transform.localEulerAngles = new Vector3(0, 270, 90);
-			gunMesh1.transform.localPosition = remoteGunOffs;
+			gunMesh1.transform.localEulerAngles = new Vector3(0, 270, 90) + gun.EulerOffset;
+			gunMesh1.transform.localPosition = oobGunOffs + gun.PosOffset;
 			prevGunInHand = GunInHand;
 			
 			if (User.local) {
@@ -346,14 +347,14 @@ public class Actor : MonoBehaviour {
 					Destroy(HudGun);
 				
 				if (GunInHand >= Gun.Pistol) {
-					HudGun = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
+					HudGun = (GameObject)GameObject.Instantiate(gun.Prefab);
 				}else{
 					HudGun = new GameObject();
 				}
 				
 				HudGun.transform.parent = Camera.main.transform;    // correct 
-				HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
-				HudGun.transform.localPosition = hudGunOffs;
+				HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0) + gun.EulerOffset;
+				HudGun.transform.localPosition = hudGunOffs + gun.PosOffset;
 				
 				if (HudGun.renderer) 
 					HudGun.renderer.castShadows = false;
@@ -401,12 +402,12 @@ public class Actor : MonoBehaviour {
 		if (HudGun == null) 
 			return;
 		
-		// angle
+		// angle 
 		Quaternion fromRot = HudGun.transform.rotation;
-		HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0);
+		HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0) + arse.Guns[(int)GunInHand].EulerOffset;
 		HudGun.transform.rotation = Quaternion.Slerp(fromRot, HudGun.transform.rotation, Time.deltaTime * 30f);
 
-		HudGun.transform.localPosition = new Vector3( 0.47f, -0.48f, 0.84f);
+		HudGun.transform.localPosition = new Vector3(0.47f, -0.48f, 0.84f);
 		
 		gunInertia -= (gunInertia-new Vector3(0f, bod.yMove, 0f)) * Time.deltaTime * 5f;
 		if (gunInertia.y < -3f) 

@@ -6,11 +6,13 @@ public class GunData {
 	public Texture Pic;
 	public Material Mat;
 	public GameObject Prefab;
+	public Vector3 PosOffset = Vector3.zero;
+	public Vector3 EulerOffset = Vector3.zero;
 	public bool AutoFire = false;
 	public float BlastRadius = 0f;
 	public Color Color = Color.white;
 	public float Delay = 0f;
-	public float Cooldown = 0f; // current progress through the ^above^ Delay
+	public float Cooldown = 0f; // current progress through the ^above^ Delay 
 	public bool Carrying = false;
 	public float Range = 999f;
 	public float MarkScale = 1f;

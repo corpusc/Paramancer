@@ -1025,16 +1025,15 @@ public class Hud : MonoBehaviour {
 	void credits() {
 		menuBegin();
 
-		CategoryHeader("Designer/Developer", false, false);
+		CategoryHeader("Developer", false, false);
 		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game design, Logos, Control config, UI");
 
 		CategoryHeader("Former team member", false, false);
 		GUILayout.Label("IceFlame       - Various media bits, Announcer, Voxel-style ProcGen maps");
 		
-		CategoryHeader("Match Types", false);
-		GUILayout.Label("This is an extensively rewritten fork of a game made in a 7 day game jam.  By Sophie Houlden");
-		GUILayout.Label("(sophiehoulden.com)");
-		GUILayout.Label("The game modes however are largely untouched");
+		CategoryHeader("Multiplayer modes & placeholder guns/maps", false);
+		GUILayout.Label("Sophie Houlden   -   This is an extensively rewritten fork of her 7-day-jam game.");
+		GUILayout.Label("(get it at sophiehoulden.com)");
 		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?! 
 		// ... because otherwise, the player is thrown out of the game to the website 
 		//if (GUILayout.Button("Sophie Houlden (web page)"))
@@ -1048,8 +1047,7 @@ public class Hud : MonoBehaviour {
 
 		CategoryHeader("Code fragments");
 		GUILayout.Label("runevision (CC-SA-A?)      - Polygon triangulation");
-		CategoryHeader("Rogue");
-		GUILayout.Label("Translated from Jason Diamond's RogueSharp (https://github.com/jdiamond)");
+		GUILayout.Label("Jason Diamond  (github.com/jdiamond) - RogueSharp");
 		GUILayout.Label("...which is a port of: ");
 		GUILayout.Label("");
 		GUILayout.Label("Rogue: Exploring the Dungeons of Doom");
