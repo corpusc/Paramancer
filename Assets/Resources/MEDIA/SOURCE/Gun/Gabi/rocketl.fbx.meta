@@ -1,0 +1,135 @@
+fileFormatVersion: 2
+guid: 6924bb1f41d7ab44d8d48620e4faa0cc
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Cinema4D_Editor
+    100002: Cloner_1
+    100004: Cylinder
+    100006: Cylinder_1
+    100008: Cylinder_13
+    100010: Cylinder_13_0
+    100012: Cylinder_13_1
+    100014: Cylinder_13_2
+    100016: Cylinder_13_3
+    100018: Cylinder_13_4
+    100020: Cylinder_13_5
+    100022: Cylinder_2
+    100024: Cylinder_2_2
+    100026: Cylinder_2_3
+    100028: Null
+    100030: //RootNode
+    100032: Symmetry
+    100034: Tube_2
+    400000: Cinema4D_Editor
+    400002: Cloner_1
+    400004: Cylinder
+    400006: Cylinder_1
+    400008: Cylinder_13
+    400010: Cylinder_13_0
+    400012: Cylinder_13_1
+    400014: Cylinder_13_2
+    400016: Cylinder_13_3
+    400018: Cylinder_13_4
+    400020: Cylinder_13_5
+    400022: Cylinder_2
+    400024: Cylinder_2_2
+    400026: Cylinder_2_3
+    400028: Null
+    400030: //RootNode
+    400032: Symmetry
+    400034: Tube_2
+    2300000: Cylinder
+    2300002: Cylinder_1
+    2300004: Cylinder_13
+    2300006: Cylinder_13_0
+    2300008: Cylinder_13_1
+    2300010: Cylinder_13_2
+    2300012: Cylinder_13_3
+    2300014: Cylinder_13_4
+    2300016: Cylinder_13_5
+    2300018: Cylinder_2
+    2300020: Cylinder_2_2
+    2300022: Cylinder_2_3
+    2300024: Tube_2
+    3300000: Cylinder
+    3300002: Cylinder_1
+    3300004: Cylinder_13
+    3300006: Cylinder_13_0
+    3300008: Cylinder_13_1
+    3300010: Cylinder_13_2
+    3300012: Cylinder_13_3
+    3300014: Cylinder_13_4
+    3300016: Cylinder_13_5
+    3300018: Cylinder_2
+    3300020: Cylinder_2_2
+    3300022: Cylinder_2_3
+    3300024: Tube_2
+    4300000: Cylinder_13
+    4300002: Cylinder
+    4300004: Cylinder_2
+    4300006: Cylinder_1
+    4300008: Cylinder_2_2
+    4300010: Cylinder_2_3
+    4300012: Cylinder_13_0
+    4300014: Cylinder_13_1
+    4300016: Cylinder_13_2
+    4300018: Cylinder_13_3
+    4300020: Cylinder_13_4
+    4300022: Cylinder_13_5
+    4300024: Tube_2
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
