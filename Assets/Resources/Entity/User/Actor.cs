@@ -353,7 +353,7 @@ public class Actor : MonoBehaviour {
 				}
 				
 				HudGun.transform.parent = Camera.main.transform;    // correct 
-				HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0) + gun.EulerOffset;
+				HudGun.transform.localEulerAngles = new Vector3(0, 270, 90) /*(-90, 0, 0)*/ + gun.EulerOffset;
 				HudGun.transform.localPosition = hudGunOffs + gun.PosOffset;
 				
 				if (HudGun.renderer) 

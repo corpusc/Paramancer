@@ -28,7 +28,7 @@ public class CcEmitter {
 		num *= 2;
 
 		for (int i = 0; i < num; i++) {
-			var has = 45f; // half angle span 
+			var has = 20f; // half angle span 
 			var q = Quaternion.Euler(Random.Range(-has, has), Random.Range(-has, has), 0f);
 			var o = (GameObject)GameObject.Instantiate(GOs.Get("CcParticle"));
 			o.transform.position = tr.position;
@@ -37,9 +37,8 @@ public class CcEmitter {
 			p.MaxSize = 0.8f;
 			p.MoveVec = Quaternion.Euler(Random.Range(-has, has), 
 			                             Random.Range(-has, has), 
-			                             0) 
-				* 
-				(-tr.forward * 5f);// * Random.Range(MinParticleSpeed, MaxParticleSpeed);// + Random.insideUnitSphere;
+			                             Random.Range(-has, has)) 
+				* -tr.forward * 3f;// * Random.Range(MinParticleSpeed, MaxParticleSpeed);// + Random.insideUnitSphere;
 			p.Dura = dura;
 			p.StartColor = Color.Lerp(a, b, Random.value);
 			p.MidColor = Color.Lerp(S.Orange, Color.black, rnd);
