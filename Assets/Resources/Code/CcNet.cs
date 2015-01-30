@@ -770,8 +770,7 @@ public class CcNet : MonoBehaviour {
 				
 				GunSpawns[i].stocked = true;
 
-				// health will be a kit model with an icon 
-				var o = GOs.Get("Kit");
+				var o = GOs.Get("Pill");
 				if (item >= (int)Gun.Pistol) 
 					o = arse.Guns[item].Prefab;
 
