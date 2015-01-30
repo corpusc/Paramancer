@@ -47,7 +47,10 @@ public class GunPickup : MonoBehaviour {
 		}else if (Name == "Spatula") {
 			Model.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
 			Model.transform.Rotate(0, 0, zOff);
-		} else {
+		}else if (Name == "Health") {
+			start = transform.position + Vector3.up * 0.33f;
+			return;
+		}else{
 			Model.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
 			Model.transform.Rotate(270, 0, zOff);
 		}
@@ -73,15 +76,15 @@ public class GunPickup : MonoBehaviour {
 		}
 		
 		sinny += Time.deltaTime * 2f;
-		Model.transform.position = start + (Vector3.up * ((Mathf.Sin(sinny)*0.2f) + 0.3f));
-//		boxObj.transform.position = transform.position + (Vector3.up * ((Mathf.Sin(sinny)*0.1f) + 0.3f));      original setting for all BOX models
 
 		if (isHealth) {
+			transform.position = start + (Vector3.up * ((Mathf.Sin(sinny)*0.2f) + 0.3f));
 			transform.Rotate(300f * Time.deltaTime, 0, 0);
-			//iconFront.transform.Rotate(300f * Time.deltaTime, 0, 0);
-			//iconBack.transform.Rotate(300f * Time.deltaTime, 0, 0);
-		}else
+		}else{
+			//boxObj.transform.position = transform.position + (Vector3.up * ((Mathf.Sin(sinny)*0.1f) + 0.3f));      original setting for all BOX models
+			Model.transform.position = start + (Vector3.up * ((Mathf.Sin(sinny)*0.2f) + 0.3f));
 			Model.transform.Rotate(0, 0, 130f * Time.deltaTime);
+		}
 	}
 
 
