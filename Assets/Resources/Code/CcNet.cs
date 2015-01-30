@@ -336,7 +336,7 @@ public class CcNet : MonoBehaviour {
 	[RPC]
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		latestPacket = Time.time;
-		if ((Gun)weapon != Gun.RocketLauncher) // rocket explosions are partially simulated client-side 
+		if ((Gun)weapon != Gun.NapalmLauncher) // rocket explosions are partially simulated client-side 
 			arse.Detonate((Gun)weapon, position, bulletID);
 		
 		if (InServerMode) {
@@ -422,12 +422,12 @@ public class CcNet : MonoBehaviour {
 		
 		
 		// subtract health 
-		if (si == vi && (Gun)weapon == Gun.RocketLauncher) {
+		if (si == vi && (Gun)weapon == Gun.NapalmLauncher) {
 			// rocket jumping 
 			Entities[vi].Health -= 30f;
 		}else{
 			// normal damage 
-			if ((Gun)weapon == Gun.GrenadeLauncher || (Gun)weapon == Gun.RocketLauncher) { // less damage when farther from the explosion 
+			if ((Gun)weapon == Gun.GrenadeLauncher || (Gun)weapon == Gun.NapalmLauncher) { // less damage when farther from the explosion 
 				float d = Vector3.Distance(hitPos, Entities[vi].Actor.transform.position) + 1f;
 				Entities[vi].Health -= arse.GetWeaponDamage((Gun)weapon) / d;
 
@@ -513,7 +513,7 @@ public class CcNet : MonoBehaviour {
 			case Gun.GrenadeLauncher:        numGibs = 15; break;
 			case Gun.MachineGun:             numGibs = 2; break;
 			case Gun.RailGun:                numGibs = 30; break;
-			case Gun.RocketLauncher:         numGibs = 20; break;
+			case Gun.NapalmLauncher:         numGibs = 20; break;
 			case Gun.Bomb:                   numGibs = 20; break;
 			
 			case Gun.Suicide:                numGibs = 30; break;

@@ -424,7 +424,7 @@ public class Actor : MonoBehaviour {
 				recoilRest = 8f; break;
 			case Gun.RailGun:
 				recoilRest = 2f; break;
-			case Gun.RocketLauncher:
+			case Gun.NapalmLauncher:
 				recoilRest = 1f; break;
 			case Gun.Spatula:
 				recoilRest = 2f; break;
@@ -473,8 +473,7 @@ public class Actor : MonoBehaviour {
 				FireBullet(gun);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 
-			case Gun.RocketLauncher:
-				//print ("Rocket launcher shot, alt = " + (alt ? "1" : "0"));
+			case Gun.NapalmLauncher:
 				net.Shoot(gun, ct.position, ct.forward, ct.position + ct.forward, net.LocEnt.viewID, false, alt, Vector3.zero);
 				gunRecoil -= Vector3.forward * 5f;
 				break; 

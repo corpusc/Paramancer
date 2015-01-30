@@ -87,7 +87,7 @@ public class MatchData {
 				Descript = "Last Person Standing...but you have 3 lives";
 				Duration = 0f;
 				killsIncreaseScore = false;
-				pickupSlot5 = Gun.RocketLauncher;
+				pickupSlot5 = Gun.NapalmLauncher;
 				break;
 			case Match.InstaGib:
 				Name = "InstaGib";
@@ -109,14 +109,14 @@ public class MatchData {
 				Name = "Slow Motion";
 				Descript = "...";
 				MoveSpeedMult = 0.2f;
-				spawnGunA = Gun.RocketLauncher;
+				spawnGunA = Gun.NapalmLauncher;
 				spawnGunB = Gun.GrenadeLauncher;
 				break;
 			case Match.HighSpeed:
 				Name = "High Speed";
 				Descript = "...";
 				MoveSpeedMult = 1.8f;
-				spawnGunA = Gun.RocketLauncher;
+				spawnGunA = Gun.NapalmLauncher;
 				spawnGunB = Gun.GrenadeLauncher;
 				break;
 		}

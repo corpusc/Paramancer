@@ -162,7 +162,7 @@ public static class CcInput {
 				case UserAction.RailGun:
 					bind(i, KeyCode.G);
 					break;
-				case UserAction.RocketLauncher:
+				case UserAction.NapalmLauncher:
 					bind(i, KeyCode.V);
 					break;
 				case UserAction.Swapper:

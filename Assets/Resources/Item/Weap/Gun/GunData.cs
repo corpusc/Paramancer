@@ -6,7 +6,7 @@ public class GunData {
 	public Texture Pic;
 	public Material Mat;
 	public GameObject Prefab;
-	public Vector3 PosOffset = Vector3.zero;
+	public Vector3 PosOffset = Vector3.zero; // i don't think these 2 offsets are needed when prefabs are setup right 
 	public Vector3 EulerOffset = Vector3.zero;
 	public bool AutoFire = false;
 	public float BlastRadius = 0f;

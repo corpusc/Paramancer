@@ -56,11 +56,11 @@ public class Arsenal : MonoBehaviour {
 				case Gun.RailGun:   
 					Guns[i].MarkScale = 2f;
 					break;
-				case Gun.RocketLauncher:   
+				case Gun.NapalmLauncher:   
 					Guns[i].BlastRadius = 4f;
 					Guns[i].MarkScale = 5f; // set for the launcher because the projectile has a negative value in the gun system 
-					Guns[i].PosOffset = new Vector3(0f, 0.7f, 1.5f);
-					Guns[i].EulerOffset = new Vector3(0, -270, 0);
+					//Guns[i].PosOffset = new Vector3(0f, 0.7f, 1.5f);
+					//Guns[i].EulerOffset = new Vector3(0, -270, 0);
 					break;
 				case Gun.Bomb:   
 					Guns[i].BlastRadius = 10f;
@@ -88,7 +88,7 @@ public class Arsenal : MonoBehaviour {
 					Guns[i].Color = Color.Lerp(Color.magenta, Color.white, 0.25f); 
 					Guns[i].Delay = 2f;
 					break;
-				case Gun.RocketLauncher:   
+				case Gun.NapalmLauncher:   
 					Guns[i].Color = S.Orange; 
 					Guns[i].Delay = 1.5f; 
 					break;
@@ -271,7 +271,7 @@ public class Arsenal : MonoBehaviour {
 				activeGrenades.Add(g);
 				break;
 			
-			case Gun.RocketLauncher:
+			case Gun.NapalmLauncher:
 				var nr = (GameObject)GameObject.Instantiate(GOs.Get("Rocket"));
 				nr.transform.position = origin + direction; // start a bit outwards 
 				nr.transform.LookAt(origin + direction * 2f);
@@ -294,7 +294,7 @@ public class Arsenal : MonoBehaviour {
 					// so a pursuer has to look around for a flee'er (since you can't hear them) 
 					// when they enter into a large space/room.  this may be a good thing? 
 					case Gun.GrenadeLauncher:  playPitchedSfx(i, Sfx.Get("boosh")); break;
-					case Gun.RocketLauncher:   playPitchedSfx(i, Sfx.Get("shot_bazooka")); break;
+					case Gun.NapalmLauncher:   playPitchedSfx(i, Sfx.Get("shot_bazooka")); break;
 					default: playPitchedSfx(i, Sfx.Get(weapon.ToString())); break;
 				}
 			}
@@ -324,7 +324,7 @@ public class Arsenal : MonoBehaviour {
 				return 105f;
 			case Gun.RailGun:          
 				return 105f;
-			case Gun.RocketLauncher: 
+			case Gun.NapalmLauncher: 
 				return 70f;
 			
 			case Gun.Lava:           
@@ -396,7 +396,7 @@ public class Arsenal : MonoBehaviour {
 
 						if (Vector3.Distance(entPos, rPos)
 						    <
-						    Guns[(int)Gun.RocketLauncher].BlastRadius
+						    Guns[(int)Gun.NapalmLauncher].BlastRadius
 					    ) {
 					    	// if user higher than the rocket 
 							if (entPos.y > rPos.y) {
@@ -424,7 +424,7 @@ public class Arsenal : MonoBehaviour {
 				var splo = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
 				splo.transform.position = rPos;
 				splo.GetComponent<SphereExplosion>().Color = S.Orange;
-				splo.GetComponent<SphereExplosion>().MaxRadius = Guns[(int)Gun.RocketLauncher].BlastRadius;
+				splo.GetComponent<SphereExplosion>().MaxRadius = Guns[(int)Gun.NapalmLauncher].BlastRadius;
 				//		cleanup 
 				Destroy(activeRockets[i].gameObject);
 				activeRockets.RemoveAt(i);
@@ -433,7 +433,7 @@ public class Arsenal : MonoBehaviour {
 					var o = (GameObject)GameObject.Instantiate(GOs.Get("BulletMark"));
 					o.transform.position = detPos + hitNorm * 0.03f;
 					o.transform.forward = -hitNorm;
-					o.transform.localScale *= Guns[(int)Gun.RocketLauncher].MarkScale;
+					o.transform.localScale *= Guns[(int)Gun.NapalmLauncher].MarkScale;
 					o.GetComponent<BulletMark>().StartCol = Color.Lerp(Color.gray, Color.black, Random.value);
 					o.GetComponent<BulletMark>().MaxLife = 30f;
 				}

@@ -61,7 +61,7 @@ public class Rocket : MonoBehaviour {
 
 		enabled = false;
 		if (net.InServerMode)
-			net.Detonate(Gun.RocketLauncher, pos, shooterID, viewID);
+			net.Detonate(Gun.NapalmLauncher, pos, shooterID, viewID);
 
 		// FIXME?  originally we only did the above conditional, and not all the stuff below 
 		net.RemoveRocketWithExplosionEffects(pos, hitNorm, viewID);
