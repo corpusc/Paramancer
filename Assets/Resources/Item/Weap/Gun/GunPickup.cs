@@ -11,36 +11,29 @@ public class GunPickup : MonoBehaviour {
 	// private 
 	CcNet net;
 	GameObject luO; // local user game object 
-	// icons are only for kits, which need to be moved out of the Guns enum (FIXME) 
-	GameObject iconFront; // ...or top, since kit model defaults to "laying flat on the ground" 
-	GameObject iconBack; // ...or bottom ^^ 
 	float sinny = 0f;
 	float zOff; // rotation offset, so that they aren't all pointed in the same direction 
 	bool isHealth;
-	Vector3 start; 
+	Vector3 start;
+
 
 	
 	
 	void Start() {
-		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 		sinny = Random.Range(0f, 4f);
-
-		makeQuad(ref iconFront, 90f, 1f);
-		makeQuad(ref iconBack, -90f, -1f);
+		net = GameObject.Find("Main Program").GetComponent<CcNet>();
 
 		if (Name == "Health") {
-			//setMat(iconFront, Pics.Health);
-			//setMat(iconBack, Pics.Health);
-
 			isHealth = true;
 			zOff = 90f;
+			transform.FindChild("Outer shell").renderer.material.color = S.Orange;
 		}else{
 			isHealth = false;
 			zOff = Random.Range(0f, 360f);
 		}
 
 
-		// initial scale & rotational offsets 
+		// scale & aim offsets 
 		if /***/ (Name == "Grenade Launcher") {
 			Model.transform.Rotate(0, 0, zOff);
 			Model.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);

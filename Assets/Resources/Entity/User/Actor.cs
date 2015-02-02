@@ -326,7 +326,6 @@ public class Actor : MonoBehaviour {
 	void showCorrectGuns() {
 		if (GunInHand != prevGunInHand) {
 			var gun = arse.Guns[(int)GunInHand];
-			Transform gunParent = gunMesh1.transform.parent;
 			Destroy(gunMesh1);
 
 			if (GunInHand >= Gun.Pistol) {
@@ -355,9 +354,6 @@ public class Actor : MonoBehaviour {
 				HudGun.transform.parent = Camera.main.transform;    // correct 
 				HudGun.transform.localEulerAngles = new Vector3(0, 270, 90) /*(-90, 0, 0)*/ + gun.EulerOffset;
 				HudGun.transform.localPosition = hudGunOffs + gun.PosOffset;
-				
-				if (HudGun.renderer) 
-					HudGun.renderer.castShadows = false;
 			}
 			
 			sendRPCUpdate = true;
@@ -370,7 +366,6 @@ public class Actor : MonoBehaviour {
 		}
 
 		if (GunOnBack != prevGunOnBack) {
-			Transform gunParentB = gunMesh2.transform.parent;
 			Destroy(gunMesh2);
 			
 			if (GunOnBack >= Gun.Pistol) {
@@ -379,7 +374,6 @@ public class Actor : MonoBehaviour {
 				gunMesh2 = new GameObject();
 			}
 			
-			gunMesh2.transform.parent = gunParentB;
 			gunMesh2.transform.localEulerAngles = new Vector3(0, 180, 90);
 			gunMesh2.transform.localPosition =  new Vector3(0.012f, 0.47f, -0.002f); //Vector3.zero;
 			prevGunOnBack = GunOnBack;

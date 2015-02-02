@@ -779,18 +779,18 @@ public class CcNet : MonoBehaviour {
 				inst.transform.position = GunSpawns[i].transform.position;
 				inst.transform.localScale = Vector3.one * 0.5f;
 
-				GunPickup gs;
+				GunPickup gp;
 				// if gun of some type 
 				if (item >= (int)Gun.Pistol) {
-					gs = inst.AddComponent<GunPickup>();
-					gs.Model = inst;
-					gs.Name = arse.Guns[item].Name;
+					gp = inst.AddComponent<GunPickup>();
+					gp.Model = inst;
+					gp.Name = arse.Guns[item].Name;
 				}else{ // it's health 
-					gs = inst.GetComponent<GunPickup>();
-					gs.Name = "Health";
+					gp = inst.GetComponent<GunPickup>();
+					gp.Name = "Health";
 				}
 
-				gs.SpawnData = GunSpawns[i];
+				gp.SpawnData = GunSpawns[i];
 			}
 		}
 	}
