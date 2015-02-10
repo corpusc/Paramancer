@@ -61,12 +61,12 @@ public class SphereExplosion : MonoBehaviour {
 		transform.localScale = ls;
 
 		// rotation & light 
-		if (IsRootSphere) {
+		//if (IsRootSphere) {
 			if (light != null) {
 				light.range = ls.x * 2f;
 				light.color = Color;
 			}
-		}
+		//}
 
 		// spinning/rotation 
 		transform.eulerAngles += rotateSpeed;

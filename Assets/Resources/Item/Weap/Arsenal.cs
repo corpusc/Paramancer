@@ -128,7 +128,7 @@ public class Arsenal : MonoBehaviour {
 		for (int i=0; i<net.Entities.Count; i++){
 			if (net.Entities[i].viewID == shooterID && net.Entities[i].local) {
 				localFire = true;
-				localstart = net.Entities[i].Actor.HudGun.transform.position + (Camera.main.transform.forward*0.5f);
+				localstart = net.Entities[i].Actor.MeshInHand.transform.position + (Camera.main.transform.forward*0.5f);
 			}
 		}
 		
@@ -152,7 +152,7 @@ public class Arsenal : MonoBehaviour {
 			// if local player 
 			if (net.Entities[i].viewID == shooterID && net.Entities[i].local){
 				localFire = true;
-				localStart = net.Entities[i].Actor.HudGun.transform.position + (Camera.main.transform.forward * 0.5f);
+				localStart = net.Entities[i].Actor.MeshInHand.transform.position + (Camera.main.transform.forward * 0.5f);
 			}
 		}
 

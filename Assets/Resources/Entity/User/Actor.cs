@@ -40,7 +40,6 @@ public class Actor : MonoBehaviour {
 	// inventory 
 	public Gun GunInHand = Gun.Pistol;
 	public Gun GunOnBack = Gun.GrenadeLauncher;
-	public GameObject HudGun;
 	public GameObject MeshInHand;
 	public GameObject MeshOnBack;
 	public GameObject weaponSoundObj;
@@ -136,6 +135,12 @@ public class Actor : MonoBehaviour {
 			SetModelVisibility(false);
 			transform.position = -Vector3.up * 99f;
 		}
+
+		// get rid of gun1 and gun2 builtin to the avatar 
+		MeshInHand.renderer.enabled = false;
+		MeshInHand.SetActive(false);
+		MeshOnBack.SetActive(false);
+		MeshOnBack.renderer.enabled = false;
 	}
 
 
@@ -274,11 +279,11 @@ public class Actor : MonoBehaviour {
 
 	void setHudGunVis() {
 		if (User.hasBall) {
-			if (User.local && HudGun && HudGun.renderer) {
+			if (User.local && MeshInHand && MeshInHand.renderer) {
 				if (User.Health > 0f) {
-					HudGun.renderer.enabled = true;
+					MeshInHand.renderer.enabled = true;
 				}else{
-					HudGun.renderer.enabled = false;
+					MeshInHand.renderer.enabled = false;
 				}
 			}
 		}
@@ -328,26 +333,16 @@ public class Actor : MonoBehaviour {
 		// previous gun is now on back, taken care of below 
 
 		if (GunInHand != prevGunInHand) {
-//			HudGun.SetActive(false);
-//			HudGun.transform.renderer.enabled = false;
-//			MeshInHand.SetActive(false);
-//			MeshInHand.transform.renderer.enabled = false;
+			MeshInHand = ch.Instance;
+			MeshInHand.SetActive(true);
+			ch.Renderer.enabled = true;
+			MeshInHand.transform.localEulerAngles = new Vector3(0, 270, 90) + ch.EulerOffset;
 
 			if (User.local) {
-				HudGun = ch.Instance;
-				HudGun.SetActive(true);
-				ch.Renderer.enabled = true;
-
-				HudGun.transform.parent = Camera.main.transform;
-				HudGun.transform.localEulerAngles = new Vector3(0, 270, 90) + ch.EulerOffset;
-				HudGun.transform.localPosition = hudGunOffs + ch.PosOffset;
+				MeshInHand.transform.parent = Camera.main.transform;
+				MeshInHand.transform.localPosition = hudGunOffs + ch.PosOffset;
 			}else{
-				MeshInHand = ch.Instance;
-				MeshInHand.SetActive(true);
-				MeshInHand.renderer.enabled = true;
-				
 				MeshInHand.transform.parent = aimBone.transform;
-				MeshInHand.transform.localEulerAngles = new Vector3(0, 270, 90) + ch.EulerOffset;
 				MeshInHand.transform.localPosition = oobGunOffs + ch.PosOffset;
 			}
 
@@ -372,6 +367,7 @@ public class Actor : MonoBehaviour {
 
 			MeshOnBack.transform.localEulerAngles = new Vector3(0, 180, 90);
 			MeshOnBack.transform.localPosition =  new Vector3(0.012f, 0.47f, -0.002f);
+
 			sendRPCUpdate = true;
 			prevGunOnBack = GunOnBack;
 		}
@@ -383,20 +379,20 @@ public class Actor : MonoBehaviour {
 	Vector3 gunRecoil = Vector3.zero;
 	float gunBounce = 0f;
 	void moveFPGun() {
-		if (HudGun == null) 
+		if (MeshInHand == null) 
 			return;
 		
 		// angle 
-		Quaternion fromRot = HudGun.transform.rotation;
-		HudGun.transform.localEulerAngles = new Vector3(-90, 0, 0) + arse.Guns[(int)GunInHand].EulerOffset;
-		HudGun.transform.rotation = Quaternion.Slerp(fromRot, HudGun.transform.rotation, Time.deltaTime * 30f);
+		Quaternion fromRot = MeshInHand.transform.rotation;
+		MeshInHand.transform.localEulerAngles = new Vector3(-90, 0, 0) + arse.Guns[(int)GunInHand].EulerOffset;
+		MeshInHand.transform.rotation = Quaternion.Slerp(fromRot, MeshInHand.transform.rotation, Time.deltaTime * 30f);
 
-		HudGun.transform.localPosition = new Vector3(0.47f, -0.48f, 0.84f);
+		MeshInHand.transform.localPosition = new Vector3(0.47f, -0.48f, 0.84f);
 		
 		gunInertia -= (gunInertia-new Vector3(0f, bod.yMove, 0f)) * Time.deltaTime * 5f;
 		if (gunInertia.y < -3f) 
 			gunInertia.y = -3f;
-		HudGun.transform.localPosition += gunInertia * 0.1f;
+		MeshInHand.transform.localPosition += gunInertia * 0.1f;
 		
 		float recoilRest = 5f;
 		switch ((Gun)GunInHand) {
@@ -415,7 +411,7 @@ public class Actor : MonoBehaviour {
 		}
 		
 		gunRecoil -= gunRecoil * Time.deltaTime * recoilRest;
-		HudGun.transform.localPosition += gunRecoil * 0.1f;
+		MeshInHand.transform.localPosition += gunRecoil * 0.1f;
 		
 		if (bod.grounded) {
 			if (moveVec.magnitude > 0.1f && net.gunBobbing){
@@ -425,7 +421,7 @@ public class Actor : MonoBehaviour {
 					gunBounce += Time.deltaTime * 15f;
 				}
 
-				HudGun.transform.position += Vector3.up * Mathf.Sin(gunBounce) * 0.05f;
+				MeshInHand.transform.position += Vector3.up * Mathf.Sin(gunBounce) * 0.05f;
 			}
 			
 		}
@@ -563,15 +559,15 @@ public class Actor : MonoBehaviour {
 		}
 		
 		if (User.local && 
-		    HudGun != null && 
-			HudGun.renderer && 
+		    MeshInHand != null && 
+			MeshInHand.renderer && 
 			GunInHand >= Gun.Pistol
 		) {
 			if (visible) {
-				HudGun.renderer.enabled = false;
+				MeshInHand.renderer.enabled = false;
 			}else{
-				HudGun.renderer.enabled = true;
-				HudGun.renderer.material = arse.Guns[(int)GunInHand].Mat;
+				MeshInHand.renderer.enabled = true;
+				MeshInHand.renderer.material = arse.Guns[(int)GunInHand].Mat;
 			}
 		}
 		
@@ -862,8 +858,8 @@ public class Actor : MonoBehaviour {
 
 	void stickToSpectated() {
 		if (net.Entities.Count > 0) {
-			if (HudGun) 
-				HudGun.renderer.enabled = false;
+			if (MeshInHand) 
+				MeshInHand.renderer.enabled = false;
 			
 			if (CcInput.Started(UserAction.Activate) ||
 			    net.Entities[Spectatee].lives <= 0
