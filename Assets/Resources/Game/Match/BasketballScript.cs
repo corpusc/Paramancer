@@ -53,7 +53,7 @@ public class BasketballScript : MonoBehaviour {
 			if (net.Entities[i].viewID == throwerID){
 				net.Entities[i].hasBall = true;
 				
-				transform.parent = net.Entities[i].Actor.gunMesh1.transform.parent;
+				transform.parent = net.Entities[i].Actor.MeshInHand.transform.parent;
 				transform.localPosition = (-Vector3.right * 0.7f) + (Vector3.forward * 0.2f);
 				
 				net.Entities[i].Actor.PlaySound("Catch");

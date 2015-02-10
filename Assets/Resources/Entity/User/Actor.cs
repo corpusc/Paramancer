@@ -41,8 +41,8 @@ public class Actor : MonoBehaviour {
 	public Gun GunInHand = Gun.Pistol;
 	public Gun GunOnBack = Gun.GrenadeLauncher;
 	public GameObject HudGun;
-	public GameObject gunMesh1;
-	public GameObject gunMesh2;
+	public GameObject MeshInHand;
+	public GameObject MeshOnBack;
 	public GameObject weaponSoundObj;
 
 	// network
@@ -324,66 +324,56 @@ public class Actor : MonoBehaviour {
 	}
 
 	void showCorrectGuns() {
-		if (GunInHand != prevGunInHand) {
-			var gun = arse.Guns[(int)GunInHand];
-			Destroy(gunMesh1);
+		var ch = arse.Guns[(int)GunInHand]; // current (gun in) hand 
+		// previous gun is now on back, taken care of below 
 
-			if (GunInHand >= Gun.Pistol) {
-				gunMesh1 = (GameObject)GameObject.Instantiate(gun.Prefab);
-			}else{
-				gunMesh1 = new GameObject();
-			}
-			
-			// FIXME:  i dunno why there should be a seperate instance of the first person gun......
-			// gunMesh1 should be the same whether local or remote?  atm, one is child of aimBone, and other is child of Camera.main
-			gunMesh1.transform.parent = aimBone.transform; //gunParent;
-			gunMesh1.transform.localEulerAngles = new Vector3(0, 270, 90) + gun.EulerOffset;
-			gunMesh1.transform.localPosition = oobGunOffs + gun.PosOffset;
-			prevGunInHand = GunInHand;
-			
+		if (GunInHand != prevGunInHand) {
+//			HudGun.SetActive(false);
+//			HudGun.transform.renderer.enabled = false;
+//			MeshInHand.SetActive(false);
+//			MeshInHand.transform.renderer.enabled = false;
+
 			if (User.local) {
-				if (HudGun != null) 
-					Destroy(HudGun);
-				
-				if (GunInHand >= Gun.Pistol) {
-					HudGun = (GameObject)GameObject.Instantiate(gun.Prefab);
-				}else{
-					HudGun = new GameObject();
-				}
-				
-				HudGun.transform.parent = Camera.main.transform;    // correct 
-				HudGun.transform.localEulerAngles = new Vector3(0, 270, 90) /*(-90, 0, 0)*/ + gun.EulerOffset;
-				HudGun.transform.localPosition = hudGunOffs + gun.PosOffset;
-			}
-			
-			sendRPCUpdate = true;
-			
-			if (User.Health <= 0f || !User.local) {
-				SetModelVisibility(true);
+				HudGun = ch.Instance;
+				HudGun.SetActive(true);
+				ch.Renderer.enabled = true;
+
+				HudGun.transform.parent = Camera.main.transform;
+				HudGun.transform.localEulerAngles = new Vector3(0, 270, 90) + ch.EulerOffset;
+				HudGun.transform.localPosition = hudGunOffs + ch.PosOffset;
 			}else{
-				SetModelVisibility(false);
+				MeshInHand = ch.Instance;
+				MeshInHand.SetActive(true);
+				MeshInHand.renderer.enabled = true;
+				
+				MeshInHand.transform.parent = aimBone.transform;
+				MeshInHand.transform.localEulerAngles = new Vector3(0, 270, 90) + ch.EulerOffset;
+				MeshInHand.transform.localPosition = oobGunOffs + ch.PosOffset;
 			}
+
+			sendRPCUpdate = true;
+			prevGunInHand = GunInHand;
 		}
 
 		if (GunOnBack != prevGunOnBack) {
-			Destroy(gunMesh2);
-			
-			if (GunOnBack >= Gun.Pistol) {
-				gunMesh2 = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunOnBack].Prefab);
-			}else{
-				gunMesh2 = new GameObject();
+			var cb = arse.Guns[(int)GunOnBack]; // current (gun on) back 
+
+			if (prevGunOnBack != Gun.None) {
+				var pb = arse.Guns[(int)prevGunOnBack]; // previous (gun on) back 
+
+				if // not swapping hand & back guns 
+					(pb != ch) {
+					pb.Renderer.enabled = false;
+					pb.Instance.SetActive(false);
+				}
 			}
-			
-			gunMesh2.transform.localEulerAngles = new Vector3(0, 180, 90);
-			gunMesh2.transform.localPosition =  new Vector3(0.012f, 0.47f, -0.002f); //Vector3.zero;
-			prevGunOnBack = GunOnBack;
+
+			MeshOnBack = cb.Instance;
+
+			MeshOnBack.transform.localEulerAngles = new Vector3(0, 180, 90);
+			MeshOnBack.transform.localPosition =  new Vector3(0.012f, 0.47f, -0.002f);
 			sendRPCUpdate = true;
-			
-			if (User.Health <= 0f || !User.local) {
-				SetModelVisibility(true);
-			}else{
-				SetModelVisibility(false);
-			}
+			prevGunOnBack = GunOnBack;
 		}
 	}
 	
@@ -541,33 +531,11 @@ public class Actor : MonoBehaviour {
 			mats[1] = inv;
 			mats[2] = inv;
 			meshObj.renderer.materials = mats;
-			
-			if (gunMesh1.renderer) {
-				gunMesh1.renderer.material = inv;
-				gunMesh1.renderer.enabled = false;
-			}
-			if (gunMesh2.renderer) {
-				gunMesh2.renderer.material = inv;
-				gunMesh2.renderer.enabled = false;
-			}
-
-			if (GunInHand == Gun.Bomb) {
-				var fl = gunMesh1.transform.Find("Flash Light");
-
-				if (gunMesh1 != null && fl != null) {
-					fl.GetComponent<FlashingLight>().Visible = false;
-				}
-			}
 		}else{
 			mats[0] = a;
 			mats[1] = b;
 			mats[2] = c;
 			meshObj.renderer.materials = mats;
-			
-			if (GunInHand >= 0 && gunMesh1.renderer) 
-				gunMesh1.renderer.material = arse.Guns[(int)GunInHand].Mat;
-			if (GunOnBack >= 0 && gunMesh2.renderer) 
-				gunMesh2.renderer.material = arse.Guns[(int)GunOnBack].Mat;
 		}
 		
 		// heads 
@@ -616,6 +584,7 @@ public class Actor : MonoBehaviour {
 		if (!User.local && net.CurrMatch.pitchBlack) {
 			if (net.CurrMatch.teamBased && User.team == net.LocEnt.team) {
 				firstPersonLight.enabled = true;
+
 				if (User.team == 1) {
 					firstPersonLight.color = Color.red;
 				}else{
@@ -624,7 +593,8 @@ public class Actor : MonoBehaviour {
 			}
 		}
 	}
-	
+
+
 	public void ForceLook(Vector3 targetLookPos) {
 		GameObject lookObj = new GameObject();
 		lookObj.transform.position = Camera.main.transform.position;
@@ -637,7 +607,8 @@ public class Actor : MonoBehaviour {
 			camAngle.x += 180f;
 		//Debug.Log("Force look: " + targetLookPos.ToString() + " ??? " + lookObj.transform.position.ToString() + " ??? " + camAngle.ToString());
 	}
-	
+
+
 	void FireBullet(Gun weapon, bool alt = false) {
 		// fire hitscan type gun 
 		// b ==  bullet/bolt 
@@ -685,7 +656,7 @@ public class Actor : MonoBehaviour {
 	
 		gameObject.layer = 8;
 		bStart = transform.position;
-		bStart = gunMesh1.transform.position + (Camera.main.transform.forward*0.5f);
+		bStart = MeshInHand.transform.position + (Camera.main.transform.forward*0.5f);
 		// RPC the shot, regardless 
 		net.Shoot(weapon, bStart, bOri, bEnd, net.LocEnt.viewID, hit, alt, hitNorm);
 
@@ -706,7 +677,10 @@ public class Actor : MonoBehaviour {
 		return go.transform.GetChild(i);
 	}
 
+
 	public void Respawn() {
+		Debug.Log("Respawn()");
+
 		Transform t = null;
 		if /***/ (!net.CurrMatch.teamBased) {
 			t = getRandomSpawn("FFA");
@@ -719,33 +693,38 @@ public class Actor : MonoBehaviour {
 		transform.position = t.position + Vector3.up;
 		transform.LookAt(transform.position + Vector3.forward, Vector3.up);
 		camAngle = t.eulerAngles;
-		bod.yMove = 0f;
 		moveVec = Vector3.zero;
+		bod.yMove = 0f;
 		bod.sprinting = false;
 
-		if (HudGun) 
-			Destroy(HudGun);
-		
-		// assign spawn guns
+		// assign spawn guns 
 		GunInHand = net.CurrMatch.spawnGunA;
 		GunOnBack = net.CurrMatch.spawnGunB;
 		prevGunInHand = Gun.None;
 		prevGunOnBack = Gun.None;
+		arse.Guns[(int)GunInHand].Instance = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunInHand].Prefab);
+		arse.Guns[(int)GunOnBack].Instance = (GameObject)GameObject.Instantiate(arse.Guns[(int)GunOnBack].Prefab);
+		arse.Guns[(int)GunInHand].Renderer = arse.Guns[(int)GunInHand].Instance.GetComponentInChildren<Renderer>();
+		arse.Guns[(int)GunOnBack].Renderer = arse.Guns[(int)GunOnBack].Instance.GetComponentInChildren<Renderer>();
 
-		// clear & setup inventory
+		// clear & setup inventory 
 		for (int i = 0; i < arse.Guns.Length; i++) {
 			arse.Guns[i].Cooldown = 0f;
 
-			if (Debug.isDebugBuild)	;//arse.Guns[i].Carrying = true; // carry full arsenal if in IDE 
-			else
+			if ((Gun)i == GunInHand || 
+			    (Gun)i == GunOnBack
+			    // ||Debug.isDebugBuild)	// carry full arsenal if in IDE 
+			) {
+				arse.Guns[i].Carrying = true;
+			}else{
 				arse.Guns[i].Carrying = false;
+				Destroy(arse.Guns[i].Instance);
+				arse.Guns[i].Instance = null;
+			}
 		}
-
-		// carry visible guns 
-		arse.Guns[(int)GunInHand].Carrying = true;
-		arse.Guns[(int)GunOnBack].Carrying = true;
 	}
-	
+
+
 	void LateUpdate() {
 		if (User.Health > 0f) {
 			aimBone.transform.localEulerAngles /*+=*/ = new Vector3(0, camAngle.x, 0);
@@ -754,7 +733,8 @@ public class Actor : MonoBehaviour {
 			animObj.transform.localPosition = (animObj.transform.forward * camAngle.x * -0.002f) - Vector3.up;
 		}
 	}
-	
+
+
 	void NonLocalUpdate() {
 		if (User.Health <= 0f) 
 			moveVec = Vector3.zero;
@@ -831,17 +811,19 @@ public class Actor : MonoBehaviour {
 		audio.Play();
 	}
 
+
 	void makeBombInvisible() {
 		Transform fl = null;
 		
-		fl = gunMesh1.transform.Find("Flash Light");
-		if (gunMesh1 != null && fl != null)	
+		fl = MeshInHand.transform.Find("Flash Light");
+		if (MeshInHand != null && fl != null)	
 			fl.GetComponent<FlashingLight>().Visible = false;
 		
-		fl = gunMesh2.transform.Find("Flash Light");
-		if (gunMesh2 != null && fl != null)	
+		fl = MeshOnBack.transform.Find("Flash Light");
+		if (MeshOnBack != null && fl != null)	
 			fl.GetComponent<FlashingLight>().Visible = false;
 	}
+
 
 	void managePickingUpItem() {
 		if (offeredPickup != "") {
@@ -860,6 +842,8 @@ public class Actor : MonoBehaviour {
 					if (offeredPickup == arse.Guns[i].Name) {
 						if (!arse.Guns[i].Carrying) {
 							arse.Guns[i].Carrying = true;
+							arse.Guns[i].Instance = (GameObject)GameObject.Instantiate(arse.Guns[i].Prefab);
+							arse.Guns[i].Renderer = arse.Guns[i].Instance.GetComponentInChildren<Renderer>();
 							arse.Guns[(int)GunOnBack].Cooldown =
 								arse.Guns[(int)GunInHand].Cooldown;
 							GunOnBack = GunInHand;
