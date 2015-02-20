@@ -1025,8 +1025,9 @@ public class Hud : MonoBehaviour {
 	void credits() {
 		menuBegin();
 
-		CategoryHeader("Developer", false, false);
+		CategoryHeader("Current team", false, false);
 		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game design, Logos, Control config, UI");
+		GUILayout.Label("Gabi (game jam winner) - Guns & their textures");
 
 		CategoryHeader("Former team member", false, false);
 		GUILayout.Label("IceFlame       - Various media bits, Announcer, Voxel-style ProcGen maps");

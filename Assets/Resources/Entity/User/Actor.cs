@@ -360,6 +360,9 @@ public class Actor : MonoBehaviour {
 					(pb != ch) {
 					pb.Renderer.enabled = false;
 					pb.Instance.SetActive(false);
+					// if () // it's the bomb 
+					//FIXME makeBombInvisible().... right now its set to change GunInhand? 
+					// ......needs to do it for GunOnBack 
 				}
 			}
 
@@ -692,6 +695,27 @@ public class Actor : MonoBehaviour {
 		moveVec = Vector3.zero;
 		bod.yMove = 0f;
 		bod.sprinting = false;
+
+		// make blocky pink guns invisible 
+		if (prevGunInHand == Gun.None) {
+			Debug.Log("make blocky pink guns invisible ");
+			MeshInHand.renderer.material = Mats.Get("InvisibleShadow");
+			MeshInHand.renderer.enabled = false;
+			MeshOnBack.renderer.material = Mats.Get("InvisibleShadow");
+			MeshOnBack.renderer.enabled = false;
+
+			for (int i = 0; i < gameObject.transform.childCount; i++) {
+				var tr = gameObject.transform.GetChild(i);
+				Debug.Log("---------> tr.name: " + tr.name);
+
+				var mrs = tr.GetComponentsInChildren<MeshRenderer>();
+				for (int j = 0; j < mrs.Length; j++) {
+					Debug.Log("---------> mrs[j].name: " + mrs[j].name);
+					mrs[j].enabled = false;
+					mrs[j].material = Mats.Get("InvisibleShadow");
+				}
+			}
+		}
 
 		// assign spawn guns 
 		GunInHand = net.CurrMatch.spawnGunA;
