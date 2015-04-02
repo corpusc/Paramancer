@@ -24,12 +24,12 @@ public class FlashingLight : MonoBehaviour {
 	}
 	
 	void Update() {
-		if (bombObj.renderer.enabled && Visible) {
+		if (bombObj.GetComponent<Renderer>().enabled && Visible) {
 			if (Time.time > changeTime) {
 				changeTime += flashTime;
-				light.enabled = !light.enabled;
+				GetComponent<Light>().enabled = !GetComponent<Light>().enabled;
 				
-				if (light.enabled) 
+				if (GetComponent<Light>().enabled) 
 					arse.BombBeep(transform.position);
 			}
 			
@@ -39,7 +39,7 @@ public class FlashingLight : MonoBehaviour {
 				ps.Play();
 		}else{
 			Sparks.enabled = false;
-			light.enabled = false;
+			GetComponent<Light>().enabled = false;
 			
 			if (ps.isPlaying) {
 				ps.Clear();

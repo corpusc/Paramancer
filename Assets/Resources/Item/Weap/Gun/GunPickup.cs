@@ -26,7 +26,7 @@ public class GunPickup : MonoBehaviour {
 		if (Name == "Health") {
 			isHealth = true;
 			zOff = 90f;
-			transform.FindChild("Outer shell").renderer.material.color = S.Orange;
+			transform.FindChild("Outer shell").GetComponent<Renderer>().material.color = S.Orange;
 		}else{
 			isHealth = false;
 			zOff = Random.Range(0f, 360f);
@@ -98,7 +98,7 @@ public class GunPickup : MonoBehaviour {
 
 
 	void setMat(GameObject go, Texture pic) {
-		go.renderer.material.SetTexture("_MainTex", pic);
-		go.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
+		go.GetComponent<Renderer>().material.SetTexture("_MainTex", pic);
+		go.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Cutout/Diffuse");
 	}
 }

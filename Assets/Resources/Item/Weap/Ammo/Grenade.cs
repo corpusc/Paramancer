@@ -58,8 +58,8 @@ public class Grenade : MonoBehaviour {
 					transform.position = hitInfo.point + (hitInfo.normal*0.15f);
 					moveVector = Vector3.Reflect(moveVector, hitInfo.normal);
 					moveVector *= 0.8f;
-					audio.clip = sfx_bounce;
-					audio.Play();
+					GetComponent<AudioSource>().clip = sfx_bounce;
+					GetComponent<AudioSource>().Play();
 				}
 			}
 			

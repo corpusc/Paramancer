@@ -7,11 +7,11 @@ using System.Collections;
 
 public class SoundObjScript : MonoBehaviour {
 	void Start() {
-		audio.Play();
+		GetComponent<AudioSource>().Play();
 	}
 	
 	void FixedUpdate() {
-		if (audio.time >= audio.clip.length) 
+		if (GetComponent<AudioSource>().time >= GetComponent<AudioSource>().clip.length) 
 			Destroy(gameObject);
 	}
 }

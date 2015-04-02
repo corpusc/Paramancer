@@ -17,7 +17,7 @@ public class BulletMark : MonoBehaviour {
 	}
 	
 	void Update() {
-		renderer.material.color = Color.Lerp(Color.clear, StartCol, life / MaxLife);
+		GetComponent<Renderer>().material.color = Color.Lerp(Color.clear, StartCol, life / MaxLife);
 		life -= Time.deltaTime;
 
 		if (life < 0f) 

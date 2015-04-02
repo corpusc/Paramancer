@@ -20,7 +20,7 @@ public class SixenseInputTest : MonoBehaviour
 		guiText = GameObject.Find( "gui_text_base_connected" );
 		if ( guiText )
 		{
-			guiText.guiText.text = "Base Connected = " + SixenseInput.IsBaseConnected( 0 );
+			guiText.GetComponent<GUIText>().text = "Base Connected = " + SixenseInput.IsBaseConnected( 0 );
 		}
 		
 		for ( uint i = 0; i < 2; i++ )
@@ -32,26 +32,26 @@ public class SixenseInputTest : MonoBehaviour
 				guiText = GameObject.Find( "gui_text_controller_" + controllerNumber + "_enabled" );
 				if ( guiText )
 				{
-					guiText.guiText.text = "Enabled = " + SixenseInput.Controllers[i].Enabled;
+					guiText.GetComponent<GUIText>().text = "Enabled = " + SixenseInput.Controllers[i].Enabled;
 				}
 				
 				guiText = GameObject.Find( "gui_text_controller_" + controllerNumber + "_docked" );
 				if ( guiText )
 				{
-					guiText.guiText.text = "Docked = ";
+					guiText.GetComponent<GUIText>().text = "Docked = ";
 					if ( SixenseInput.Controllers[i].Enabled )
 					{
-						guiText.guiText.text += SixenseInput.Controllers[i].Docked;
+						guiText.GetComponent<GUIText>().text += SixenseInput.Controllers[i].Docked;
 					}
 				}
 				
 				guiText = GameObject.Find( "gui_text_controller_" + controllerNumber + "_hand" );
 				if ( guiText )
 				{
-					guiText.guiText.text = "Hand = ";
+					guiText.GetComponent<GUIText>().text = "Hand = ";
 					if ( SixenseInput.Controllers[i].Enabled )
 					{
-						guiText.guiText.text += SixenseInput.Controllers[i].Hand;
+						guiText.GetComponent<GUIText>().text += SixenseInput.Controllers[i].Hand;
 					}
 				}
 				
@@ -96,57 +96,57 @@ public class SixenseInputTest : MonoBehaviour
 							//}
 						}
 					}
-					guiText.guiText.text = "Buttons = " + buttonsText;
-					guiText2.guiText.text = "" + buttonsText2;
+					guiText.GetComponent<GUIText>().text = "Buttons = " + buttonsText;
+					guiText2.GetComponent<GUIText>().text = "" + buttonsText2;
 				}
 				
 				guiText = GameObject.Find( "gui_text_controller_" + controllerNumber + "_trigger" );
 				if ( guiText )
 				{
-					guiText.guiText.text = "Trigger = ";
+					guiText.GetComponent<GUIText>().text = "Trigger = ";
 					if ( SixenseInput.Controllers[i].Enabled )
 					{
-						guiText.guiText.text += SixenseInput.Controllers[i].Trigger;
+						guiText.GetComponent<GUIText>().text += SixenseInput.Controllers[i].Trigger;
 					}
 				}
 				
 				guiText = GameObject.Find( "gui_text_controller_" + controllerNumber + "_joystick_x" );
 				if ( guiText )
 				{
-					guiText.guiText.text = "Joystick X = ";
+					guiText.GetComponent<GUIText>().text = "Joystick X = ";
 					if ( SixenseInput.Controllers[i].Enabled )
 					{
-						guiText.guiText.text += SixenseInput.Controllers[i].JoystickX;
+						guiText.GetComponent<GUIText>().text += SixenseInput.Controllers[i].JoystickX;
 					}
 				}
 				
 				guiText = GameObject.Find( "gui_text_controller_" + controllerNumber + "_joystick_y" );
 				if ( guiText )
 				{
-					guiText.guiText.text = "Joystick Y = ";
+					guiText.GetComponent<GUIText>().text = "Joystick Y = ";
 					if ( SixenseInput.Controllers[i].Enabled )
 					{
-						guiText.guiText.text += SixenseInput.Controllers[i].JoystickY;
+						guiText.GetComponent<GUIText>().text += SixenseInput.Controllers[i].JoystickY;
 					}
 				}
 				
 				guiText = GameObject.Find( "gui_text_controller_" + controllerNumber + "_position" );
 				if ( guiText )
 				{
-					guiText.guiText.text = "Position = ";
+					guiText.GetComponent<GUIText>().text = "Position = ";
 					if ( SixenseInput.Controllers[i].Enabled )
 					{
-						guiText.guiText.text += SixenseInput.Controllers[i].Position;
+						guiText.GetComponent<GUIText>().text += SixenseInput.Controllers[i].Position;
 					}
 				}
 				
 				guiText = GameObject.Find( "gui_text_controller_" + controllerNumber + "_rotation" );
 				if ( guiText )
 				{
-					guiText.guiText.text = "Rotation = ";
+					guiText.GetComponent<GUIText>().text = "Rotation = ";
 					if ( SixenseInput.Controllers[i].Enabled )
 					{
-						guiText.guiText.text += SixenseInput.Controllers[i].Rotation;
+						guiText.GetComponent<GUIText>().text += SixenseInput.Controllers[i].Rotation;
 					}
 				}
 			}

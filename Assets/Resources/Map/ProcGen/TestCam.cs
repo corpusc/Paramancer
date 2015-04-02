@@ -30,10 +30,10 @@ public class TestCam : MonoBehaviour {
 		if /**/ (CcInput.Started(UserAction.Alt)) {
 			if (Screen.lockCursor) {
 				Screen.lockCursor = false;
-				Screen.showCursor = true;
+				Cursor.visible = true;
 			}else{
 				Screen.lockCursor = true;
-				Screen.showCursor = true;
+				Cursor.visible = true;
 			}
 		}
 

@@ -173,7 +173,7 @@ public class GridGen {
 			np.transform.localScale = new Vector3(scale.x, scale.z * pwH, scale.z);
 			np.transform.position = Pos + v;
 			np.transform.forward = ori;
-			np.renderer.material = Cells[i, j].Surfaces.Walls;
+			np.GetComponent<Renderer>().material = Cells[i, j].Surfaces.Walls;
 
 			if (uvScale == Vector2.zero) { // no offset 
 				uvScale = new Vector2(1, pwH); // (normal full cell thickness) 
@@ -182,13 +182,13 @@ public class GridGen {
 				var uo = new Vector2(thickMAX*3, 0f); // UV offset   (FIXME? hardwired to a particular quadrant where rivets spanned the entirety) 
 				if (xIsThinner)
 					uo.x += thickMAX/4; // FIXME?  hardwired
-				np.renderer.material = Cells[i, j].Surfaces.Lip;
-				np.renderer.material.mainTextureOffset = uo;
-				np.renderer.material.SetTextureOffset("_BumpMap", uo);
+				np.GetComponent<Renderer>().material = Cells[i, j].Surfaces.Lip;
+				np.GetComponent<Renderer>().material.mainTextureOffset = uo;
+				np.GetComponent<Renderer>().material.SetTextureOffset("_BumpMap", uo);
 			}
 
-			np.renderer.material.mainTextureScale = uvScale;
-			np.renderer.material.SetTextureScale("_BumpMap", uvScale);
+			np.GetComponent<Renderer>().material.mainTextureScale = uvScale;
+			np.GetComponent<Renderer>().material.SetTextureScale("_BumpMap", uvScale);
 		}
 	}
 
@@ -462,7 +462,7 @@ public class GridGen {
 					0f, 
 					(float)j * Scale.z);
 				np.transform.localScale = Scale;
-				np.renderer.material = Cells[i, j].Surfaces.Floor;
+				np.GetComponent<Renderer>().material = Cells[i, j].Surfaces.Floor;
 				np.transform.parent = primBin.transform;
 			}
 			
@@ -475,7 +475,7 @@ public class GridGen {
 					Scale.z * (float)currH, 
 					Scale.z * (float)j);
 				np.transform.localScale = Scale;
-				np.renderer.material = Cells[i, j].Surfaces.Ceiling;
+				np.GetComponent<Renderer>().material = Cells[i, j].Surfaces.Ceiling;
 			}
 		} // done processing cells 
 	} // end of Build3D()

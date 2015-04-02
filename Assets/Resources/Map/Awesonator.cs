@@ -13,7 +13,7 @@ public class Awesonator {
 
 		set {
 			if (value == null && nearbyWallEdge != null) {
-				nearbyWallEdge.GO.renderer.material.color = Color.white;
+				nearbyWallEdge.GO.GetComponent<Renderer>().material.color = Color.white;
 				nearbyWallEdge.GO.transform.localScale = scale;
 			}
 
@@ -58,7 +58,7 @@ public class Awesonator {
 			scale.y *= 50f;
 			nearbyWallEdge.GO.transform.localScale = scale;
 			scale.y /= 50f;
-			nearbyWallEdge.GO.renderer.material.color = S.ShoutyPurple;
+			nearbyWallEdge.GO.GetComponent<Renderer>().material.color = S.ShoutyPurple;
 			nearbyWallEdge.GO.transform.Rotate(new Vector3(0, Time.deltaTime, 0));
 		}
 
@@ -80,7 +80,7 @@ public class Awesonator {
 		RaycastHit rh;
 		float distance = 100f;
 
-		if (gridSurface.collider.Raycast(ray, out rh, distance))
+		if (gridSurface.GetComponent<Collider>().Raycast(ray, out rh, distance))
 			return rh.point;
 
 		return null;
@@ -116,7 +116,7 @@ public class Awesonator {
 		
 		RaycastHit rh;
 		float distance = 100f;
-		if (gridSurface.collider.Raycast(ray, out rh, distance)) {
+		if (gridSurface.GetComponent<Collider>().Raycast(ray, out rh, distance)) {
 			// place precisely at an existing wall location if within a threshold 
 			float threshold = 0.2f;
 			WallEdge cc = null; // current closest wall point 
@@ -176,8 +176,8 @@ public class Awesonator {
 			var v = new Vector3 (delta.magnitude, f, f);
 			nq.transform.localScale = v;
 			v /= 4f;
-			nq.renderer.material = Mats.Get ("sci_fi_003");
-			nq.renderer.material.mainTextureScale = v;
+			nq.GetComponent<Renderer>().material = Mats.Get ("sci_fi_003");
+			nq.GetComponent<Renderer>().material.mainTextureScale = v;
 			begin = null;
 			end = null;
 		}

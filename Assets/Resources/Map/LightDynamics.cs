@@ -26,15 +26,15 @@ public class LightDynamics : MonoBehaviour {
 		if (mp != null) {
 			if (mp.GetComponent<CcNet>().CurrMatch.pitchBlack) {
 				if (!litInPitchBlack) 
-					light.enabled = false;
+					GetComponent<Light>().enabled = false;
 			}else{
 				if (OnlyPitchBlack){
-					light.enabled = false;
+					GetComponent<Light>().enabled = false;
 					dontFlicker = true;
 				}
 			}
 			
-			begin = light.transform.position;
+			begin = GetComponent<Light>().transform.position;
 		}
 	}
 	
@@ -46,14 +46,14 @@ public class LightDynamics : MonoBehaviour {
 				dir.z = Random.Range(-MaxSpeed, MaxSpeed);
 			}
 			
-			light.transform.Translate(dir.x * Time.deltaTime, dir.y * Time.deltaTime, dir.z * Time.deltaTime);
-			if (Vector3.Distance(light.transform.position, begin) > MaxWanderDistance) 
-				light.transform.position = begin; // revert to start (can't use "start" as var name) 
+			GetComponent<Light>().transform.Translate(dir.x * Time.deltaTime, dir.y * Time.deltaTime, dir.z * Time.deltaTime);
+			if (Vector3.Distance(GetComponent<Light>().transform.position, begin) > MaxWanderDistance) 
+				GetComponent<Light>().transform.position = begin; // revert to start (can't use "start" as var name) 
 		}
 		
 		if (Flickering && !dontFlicker) {
 			if (Random.Range(0, FlickerTimer) == 0) 
-				light.enabled = !light.enabled;
+				GetComponent<Light>().enabled = !GetComponent<Light>().enabled;
 		}
 	}
 }

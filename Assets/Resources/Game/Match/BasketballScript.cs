@@ -78,22 +78,17 @@ public class BasketballScript : MonoBehaviour {
 					if (net.InServerMode && !net.gameOver) {
 						ResetBall();
 						net.team2Score++;
-						net.networkView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
-						net.networkView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "TEAM BLUE SCORES!", col);
 					}
 				}else if (hitInfo.collider.gameObject.layer == 12) {
 					// red scores 
 					if (net.InServerMode && !net.gameOver) {
 						ResetBall();
 						net.team1Score++;
-						net.networkView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
-						net.networkView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "TEAM RED SCORES!", col);
 					}
 				}else if (hitInfo.collider.gameObject.layer == 10) {
 					// LAVA 
 					if (net.InServerMode) {
 						ResetBall();
-						net.networkView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "OH NO, I FELL IN THE LAVA!", col);
 					}
 				}else{
 					transform.position = hitInfo.point + (hitInfo.normal*0.5f);
@@ -101,9 +96,9 @@ public class BasketballScript : MonoBehaviour {
 					moveVector *= 0.7f;
 
 					if (moveVector.magnitude > 1.5f) {
-						audio.clip = sfx_bounce;
-						audio.pitch = Random.Range(1f, 1.2f);
-						audio.Play();
+						GetComponent<AudioSource>().clip = sfx_bounce;
+						GetComponent<AudioSource>().pitch = Random.Range(1f, 1.2f);
+						GetComponent<AudioSource>().Play();
 					}
 				}
 			}

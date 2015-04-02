@@ -137,10 +137,10 @@ public class Actor : MonoBehaviour {
 		}
 
 		// get rid of gun1 and gun2 builtin to the avatar 
-		MeshInHand.renderer.enabled = false;
+		MeshInHand.GetComponent<Renderer>().enabled = false;
 		MeshInHand.SetActive(false);
 		MeshOnBack.SetActive(false);
-		MeshOnBack.renderer.enabled = false;
+		MeshOnBack.GetComponent<Renderer>().enabled = false;
 	}
 
 
@@ -279,11 +279,11 @@ public class Actor : MonoBehaviour {
 
 	void setHudGunVis() {
 		if (User.hasBall) {
-			if (User.local && MeshInHand && MeshInHand.renderer) {
+			if (User.local && MeshInHand && MeshInHand.GetComponent<Renderer>()) {
 				if (User.Health > 0f) {
-					MeshInHand.renderer.enabled = true;
+					MeshInHand.GetComponent<Renderer>().enabled = true;
 				}else{
-					MeshInHand.renderer.enabled = false;
+					MeshInHand.GetComponent<Renderer>().enabled = false;
 				}
 			}
 		}
@@ -506,7 +506,7 @@ public class Actor : MonoBehaviour {
 	}
 	
 	public void SetModelVisibility(bool visible) {
-		Material[] mats = meshObj.renderer.materials;
+		Material[] mats = meshObj.GetComponent<Renderer>().materials;
 		var inv = Mats.Get("InvisibleShadow");
 
 		var a = new Material(Mats.Get("ColorA"));
@@ -529,48 +529,48 @@ public class Actor : MonoBehaviour {
 			mats[0] = inv;
 			mats[1] = inv;
 			mats[2] = inv;
-			meshObj.renderer.materials = mats;
+			meshObj.GetComponent<Renderer>().materials = mats;
 		}else{
 			mats[0] = a;
 			mats[1] = b;
 			mats[2] = c;
-			meshObj.renderer.materials = mats;
+			meshObj.GetComponent<Renderer>().materials = mats;
 		}
 		
 		// heads 
 		for (int i=0; i<heads.Length; i++) {
 			if (i != headType) {
-				heads[i].renderer.enabled = false;
+				heads[i].GetComponent<Renderer>().enabled = false;
 			}
 			
 			if (!visible) {
-				heads[i].renderer.material = inv;
+				heads[i].GetComponent<Renderer>().material = inv;
 			}	
 		}
 		
 		if (visible) { // OPTME: don't set these regardless? 
-			heads[0].renderer.material = a;
-			heads[1].renderer.material = Mats.Get("CardboardBox");
-			heads[2].renderer.material = Mats.Get("Fish");
-			heads[3].renderer.material = Mats.Get("Banana");
-			heads[4].renderer.material = Mats.Get("Creeper");
-			heads[5].renderer.material = Mats.Get("Elephant");
-			heads[6].renderer.material = Mats.Get("MoonTM0360");
-			heads[7].renderer.material = Mats.Get("Pyramid");
-			heads[8].renderer.material = Mats.Get("Chocobo");
-			heads[9].renderer.material = Mats.Get("Spike");
+			heads[0].GetComponent<Renderer>().material = a;
+			heads[1].GetComponent<Renderer>().material = Mats.Get("CardboardBox");
+			heads[2].GetComponent<Renderer>().material = Mats.Get("Fish");
+			heads[3].GetComponent<Renderer>().material = Mats.Get("Banana");
+			heads[4].GetComponent<Renderer>().material = Mats.Get("Creeper");
+			heads[5].GetComponent<Renderer>().material = Mats.Get("Elephant");
+			heads[6].GetComponent<Renderer>().material = Mats.Get("MoonTM0360");
+			heads[7].GetComponent<Renderer>().material = Mats.Get("Pyramid");
+			heads[8].GetComponent<Renderer>().material = Mats.Get("Chocobo");
+			heads[9].GetComponent<Renderer>().material = Mats.Get("Spike");
 		}
 		
 		if (User.local && 
 		    MeshInHand != null && 
-			MeshInHand.renderer && 
+			MeshInHand.GetComponent<Renderer>() && 
 			GunInHand >= Gun.Pistol
 		) {
 			if (visible) {
-				MeshInHand.renderer.enabled = false;
+				MeshInHand.GetComponent<Renderer>().enabled = false;
 			}else{
-				MeshInHand.renderer.enabled = true;
-				MeshInHand.renderer.material = arse.Guns[(int)GunInHand].Mat;
+				MeshInHand.GetComponent<Renderer>().enabled = true;
+				MeshInHand.GetComponent<Renderer>().material = arse.Guns[(int)GunInHand].Mat;
 			}
 		}
 		
@@ -699,10 +699,10 @@ public class Actor : MonoBehaviour {
 		// make blocky pink guns invisible 
 		if (prevGunInHand == Gun.None) {
 			Debug.Log("make blocky pink guns invisible ");
-			MeshInHand.renderer.material = Mats.Get("InvisibleShadow");
-			MeshInHand.renderer.enabled = false;
-			MeshOnBack.renderer.material = Mats.Get("InvisibleShadow");
-			MeshOnBack.renderer.enabled = false;
+			MeshInHand.GetComponent<Renderer>().material = Mats.Get("InvisibleShadow");
+			MeshInHand.GetComponent<Renderer>().enabled = false;
+			MeshOnBack.GetComponent<Renderer>().material = Mats.Get("InvisibleShadow");
+			MeshOnBack.GetComponent<Renderer>().enabled = false;
 
 			for (int i = 0; i < gameObject.transform.childCount; i++) {
 				var tr = gameObject.transform.GetChild(i);
@@ -826,9 +826,9 @@ public class Actor : MonoBehaviour {
 		PlaySound(cc.Volume, cc.Clip);
 	}
 	public void PlaySound(float volume, AudioClip clip) {
-		audio.clip = clip;
-		audio.volume = volume;
-		audio.Play();
+		GetComponent<AudioSource>().clip = clip;
+		GetComponent<AudioSource>().volume = volume;
+		GetComponent<AudioSource>().Play();
 	}
 
 
@@ -883,7 +883,7 @@ public class Actor : MonoBehaviour {
 	void stickToSpectated() {
 		if (net.Entities.Count > 0) {
 			if (MeshInHand) 
-				MeshInHand.renderer.enabled = false;
+				MeshInHand.GetComponent<Renderer>().enabled = false;
 			
 			if (CcInput.Started(UserAction.Activate) ||
 			    net.Entities[Spectatee].lives <= 0
@@ -1107,15 +1107,15 @@ public class Actor : MonoBehaviour {
 					bballArrowObj.transform.localPosition = Vector3.forward - (Vector3.right*0.8f) + (Vector3.up*0.5f);
 				}
 				if (User.hasBall) {
-					bballArrowObj.renderer.enabled = false;
+					bballArrowObj.GetComponent<Renderer>().enabled = false;
 				}else{
-					bballArrowObj.renderer.enabled = true;
+					bballArrowObj.GetComponent<Renderer>().enabled = true;
 					bballArrowObj.transform.LookAt(net.GetBball().transform.position);
 					
 				}
 			}else{
 				if (bballArrowObj != null) {
-					bballArrowObj.renderer.enabled = false;
+					bballArrowObj.GetComponent<Renderer>().enabled = false;
 				}
 			}
 			
@@ -1134,13 +1134,13 @@ public class Actor : MonoBehaviour {
 				
 				if (Physics.Raycast(gravRay, out gravHit, 999f, gravLayer)) {
 					gravArrowObj.transform.LookAt(gravArrowObj.transform.position - gravHit.normal);
-					gravArrowObj.renderer.enabled = true;
+					gravArrowObj.GetComponent<Renderer>().enabled = true;
 				}else{
-					gravArrowObj.renderer.enabled = false;
+					gravArrowObj.GetComponent<Renderer>().enabled = false;
 				}
 			}else{
 				if (gravArrowObj != null){
-					gravArrowObj.renderer.enabled = false;
+					gravArrowObj.GetComponent<Renderer>().enabled = false;
 				}
 			}
 			

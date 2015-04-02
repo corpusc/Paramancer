@@ -96,7 +96,7 @@ public class CcLog : MonoBehaviour {
 					// if input box not empty, add entry 
 					if (newEntry != "") {
 						if (net.Connected) {
-							networkView.RPC(
+							GetComponent<NetworkView>().RPC(
 								"AddEntry", RPCMode.All, 
 			                	net.LocEnt.name + ":", newEntry, S.ColToVec(net.LocEnt.colA) );
 						}else{
@@ -139,7 +139,7 @@ public class CcLog : MonoBehaviour {
 	}
 
 	public void BroadcastSystemMessage(string msg, Color col) {
-		networkView.RPC("AddSystemMessage", RPCMode.All, msg, S.ColToVec(col));
+		GetComponent<NetworkView>().RPC("AddSystemMessage", RPCMode.All, msg, S.ColToVec(col));
 	}
 
 	[RPC]

@@ -204,7 +204,7 @@ public class Arsenal : MonoBehaviour {
 
 		// muzzle flash 
 		var mf = (GameObject)GameObject.Instantiate(GOs.Get("MuzzleFlash"));
-		mf.light.color = Guns[(int)weapon].Color;
+		mf.GetComponent<Light>().color = Guns[(int)weapon].Color;
 		mf.transform.position = origin;
 		if (localFire) { // Sophie didn't allow remote player flashes? 
 			mf.transform.position = localStart - (Camera.main.transform.right * 0.2f);
@@ -302,14 +302,14 @@ public class Arsenal : MonoBehaviour {
 	}
 		
 	void playPitchedSfx(int i, AudioClip ac) { // randomly pitched for variety 
-		net.Entities[i].Actor.weaponSoundObj.audio.clip = ac;
+		net.Entities[i].Actor.weaponSoundObj.GetComponent<AudioSource>().clip = ac;
 		
 		// if local user 
 		if (net.Entities[i].viewID == net.LocEnt.viewID) 
-			net.Entities[i].Actor.weaponSoundObj.audio.volume = 0.3f;
+			net.Entities[i].Actor.weaponSoundObj.GetComponent<AudioSource>().volume = 0.3f;
 		
-		net.Entities[i].Actor.weaponSoundObj.audio.pitch = Random.Range(0.9f, 1.1f);
-		net.Entities[i].Actor.weaponSoundObj.audio.Play();
+		net.Entities[i].Actor.weaponSoundObj.GetComponent<AudioSource>().pitch = Random.Range(0.9f, 1.1f);
+		net.Entities[i].Actor.weaponSoundObj.GetComponent<AudioSource>().Play();
 	}
 	
 	public float GetWeaponDamage(Gun weapon) {
@@ -342,8 +342,8 @@ public class Arsenal : MonoBehaviour {
 	public void BombBeep(Vector3 pos) {
 		var o = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound")); // bomb beep/sound object 
 		o.transform.position = pos;
-		o.audio.clip = Sfx.Get("BombBeep");
-		o.audio.volume = 1f;
+		o.GetComponent<AudioSource>().clip = Sfx.Get("BombBeep");
+		o.GetComponent<AudioSource>().volume = 1f;
 	}
 	
 	public void Detonate(Gun weapon, Vector3 detPos, NetworkViewID viewID) {
@@ -355,8 +355,8 @@ public class Arsenal : MonoBehaviour {
 
 			var ws = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
 			ws.transform.position = detPos;
-			ws.audio.clip = Sfx.Get("ExplodeBomb");
-			ws.audio.volume = 4f;
+			ws.GetComponent<AudioSource>().clip = Sfx.Get("ExplodeBomb");
+			ws.GetComponent<AudioSource>().volume = 4f;
 		} else if (weapon == Gun.GrenadeLauncher) {
 			for (int i=0; i<activeGrenades.Count; i++) {
 				if (viewID == activeGrenades[i].viewID) {
@@ -368,8 +368,8 @@ public class Arsenal : MonoBehaviour {
 					
 					var nade = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
 					nade.transform.position = activeGrenades[i].transform.position;
-					nade.audio.clip = Sfx.Get("ExplodeGrenade");
-					nade.audio.volume = 2f;
+					nade.GetComponent<AudioSource>().clip = Sfx.Get("ExplodeGrenade");
+					nade.GetComponent<AudioSource>().volume = 2f;
 					
 					Destroy(activeGrenades[i].gameObject);
 					activeGrenades.RemoveAt(i);
@@ -418,8 +418,8 @@ public class Arsenal : MonoBehaviour {
 				// 		sound 
 				var ws = (GameObject)GameObject.Instantiate(GOs.Get("WeapSound"));
 				ws.transform.position = rPos;
-				ws.audio.clip = Sfx.Get("explosion_bazooka");
-				ws.audio.volume = 9f; // hmmm, the docs said range from 0f - 1f i believe 
+				ws.GetComponent<AudioSource>().clip = Sfx.Get("explosion_bazooka");
+				ws.GetComponent<AudioSource>().volume = 9f; // hmmm, the docs said range from 0f - 1f i believe 
 				// 		blast visual 
 				var splo = (GameObject)GameObject.Instantiate(GOs.Get("SphereExplosion"));
 				splo.transform.position = rPos;

@@ -15,7 +15,7 @@ public class GridEntry : MonoBehaviour {
 		grid = new GridGen();
 		var pic = new Texture2D(grid.Max.x, grid.Max.z);
 		pic.filterMode = FilterMode.Point;
-		renderer.material.mainTexture = pic;
+		GetComponent<Renderer>().material.mainTexture = pic;
 
 		Debug.Log("about to SetPixel all the things");
 		for (int x = 0; x < pic.width; x++)

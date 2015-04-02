@@ -649,7 +649,7 @@ public class VoxGen {
 			np.transform.position = Pos + offset;
 			np.transform.localScale = Scale;
 			np.transform.forward = currDir;
-			np.renderer.material = mat;
+			np.GetComponent<Renderer>().material = mat;
 			np.transform.parent = PrimBag.transform;
 		}
 	}

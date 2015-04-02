@@ -36,7 +36,7 @@ public class SphereExplosion : MonoBehaviour {
 		}
 
 		if (!IsRootSphere)
-			light.enabled = false;
+			GetComponent<Light>().enabled = false;
 	}
 
 	void Update() {
@@ -62,9 +62,9 @@ public class SphereExplosion : MonoBehaviour {
 
 		// rotation & light 
 		//if (IsRootSphere) {
-			if (light != null) {
-				light.range = ls.x * 2f;
-				light.color = Color;
+			if (GetComponent<Light>() != null) {
+				GetComponent<Light>().range = ls.x * 2f;
+				GetComponent<Light>().color = Color;
 			}
 		//}
 

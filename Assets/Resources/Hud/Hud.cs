@@ -991,18 +991,18 @@ public class Hud : MonoBehaviour {
 	void avatarView() {
 		if (GameObject.Find("CharaMesh") != null) {
 			// colours
-			Material[] mats = GameObject.Find("CharaMesh").renderer.materials;
+			Material[] mats = GameObject.Find("CharaMesh").GetComponent<Renderer>().materials;
 			mats[0].color = net.LocEnt.colA;
 			mats[1].color = net.LocEnt.colB;
 			mats[2].color = net.LocEnt.colC;
-			GameObject.Find("NormalHead").renderer.material.color = net.LocEnt.colA;
+			GameObject.Find("NormalHead").GetComponent<Renderer>().material.color = net.LocEnt.colA;
 			
 			// visibility of heads 
 			for (int i = 0; i < (int)Head.Count; i++) {
 				if (i == net.LocEnt.headType)
-					GameObject.Find("" + (Head)i).renderer.enabled = true;
+					GameObject.Find("" + (Head)i).GetComponent<Renderer>().enabled = true;
 				else
-					GameObject.Find("" + (Head)i).renderer.enabled = false;
+					GameObject.Find("" + (Head)i).GetComponent<Renderer>().enabled = false;
 			}
 
 			GameObject.Find("PlayerNameText").GetComponent<TextMesh>().text = net.LocEnt.name;
