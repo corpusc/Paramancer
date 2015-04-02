@@ -1027,12 +1027,12 @@ public class Hud : MonoBehaviour {
 
 		CategoryHeader("Current team", false, false);
 		GUILayout.Label("Corpus Callosum - Coding, Various media & effects, Game design, Logos, Control config, UI");
-		GUILayout.Label("Gabi (game jam winner) - Guns & their textures");
+		GUILayout.Label("Gabi (multi-game-jam winner) - Guns & their textures");
 
 		CategoryHeader("Former team member", false, false);
 		GUILayout.Label("IceFlame       - Various media bits, Announcer, Voxel-style ProcGen maps");
 		
-		CategoryHeader("Multiplayer modes & placeholder guns/maps", false);
+		CategoryHeader("Multiplayer modes & placeholder media (Est. %85)", false);
 		GUILayout.Label("Sophie Houlden   -   This is an extensively rewritten fork of her 7-day-jam game.");
 		GUILayout.Label("(get it at sophiehoulden.com)");
 		// CLEANME: IS THERE A WAY TO OPEN URL IN A BACKGROUND TAB/WINDOW?! 
