@@ -78,22 +78,22 @@ public class BasketballScript : MonoBehaviour {
 					if (net.InServerMode && !net.gameOver) {
 						ResetBall();
 						net.team2Score++;
-						net.netView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
-						net.netView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "TEAM BLUE SCORES!", col);
+						net.NetView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
+						net.NetView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "TEAM BLUE SCORES!", col);
 					}
 				}else if (hitInfo.collider.gameObject.layer == 12) {
 					// red scores 
 					if (net.InServerMode && !net.gameOver) {
 						ResetBall();
 						net.team1Score++;
-						net.netView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
-						net.netView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "TEAM RED SCORES!", col);
+						net.NetView.RPC("AnnounceTeamScores", RPCMode.Others, net.team1Score, net.team2Score);
+						net.NetView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "TEAM RED SCORES!", col);
 					}
 				}else if (hitInfo.collider.gameObject.layer == 10) {
 					// LAVA 
 					if (net.InServerMode) {
 						ResetBall();
-						net.netView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "OH NO, I FELL IN THE LAVA!", col);
+						net.NetView.RPC("AddEntry",RPCMode.All, "BASKETBALL: ", "OH NO, I FELL IN THE LAVA!", col);
 					}
 				}else{
 					transform.position = hitInfo.point + (hitInfo.normal*0.5f);

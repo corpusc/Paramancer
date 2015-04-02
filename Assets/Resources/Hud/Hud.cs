@@ -537,7 +537,8 @@ public class Hud : MonoBehaviour {
 		float wid = GetWidthLabel(s + "188.8");
 		GUILayout.Label(s + locUser.FOV.ToString("#.#"), GUILayout.MinWidth(wid));
 		locUser.FOV = GUILayout.HorizontalSlider(locUser.FOV, 50f, 180f, GUILayout.MinWidth(128));
-		net.LocEnt.Actor.FOV = locUser.FOV;
+		if (net.Connected)
+			net.LocEnt.Actor.FOV = locUser.FOV;
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 

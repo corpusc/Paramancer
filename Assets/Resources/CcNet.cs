@@ -42,6 +42,7 @@ using System.Collections.Generic;
 
 public class CcNet : MonoBehaviour {
 	public string Error = "'Error' string init value...NO ERRORS YET!";
+	public NetworkView NetView;
 	public NetworkViewID NetVI;
 	public bool Connected = false;
 	public bool InServerMode = false;
@@ -79,7 +80,6 @@ public class CcNet : MonoBehaviour {
 	float latestPacket = 0f;
 	float latestServerHeartbeat = 0f;
 	string nameOfOfflineBackdrop = "OfflineBackdrop";
-	NetworkView netView;
 	// bball 
 	GameObject basketball;
 	// map 
@@ -107,7 +107,7 @@ public class CcNet : MonoBehaviour {
 		hud = GetComponent<Hud>();
 		log = GetComponent<CcLog>();
 		arse = GetComponent<Arsenal>();
-		netView = GetComponent<NetworkView>();
+		NetView = GetComponent<NetworkView>();
 		CurrMatch = new MatchData(Match.FFAFragMatch);
 		
 		Application.LoadLevel(nameOfOfflineBackdrop);
@@ -140,7 +140,7 @@ public class CcNet : MonoBehaviour {
 		if (Connected && InServerMode) {
 			if (Time.time > latestServerHeartbeat + 9f) {
 				latestServerHeartbeat = Time.time + 9f;
-				netView.RPC("HeartbeatFromServer", RPCMode.All);
+				NetView.RPC("HeartbeatFromServer", RPCMode.All);
 			}
 		}
 		
@@ -156,7 +156,7 @@ public class CcNet : MonoBehaviour {
 			// remind the server we here 
 			for (int i=0; i<Entities.Count; i++) {
 				if (Entities[i].local && Time.time > Entities[i].lastPong + 5f) {
-					netView.RPC("PONG", RPCMode.Server,Entities[i].viewID);
+					NetView.RPC("PONG", RPCMode.Server,Entities[i].viewID);
 					Entities[i].lastPong = Time.time;
 				}	
 			}
@@ -181,13 +181,13 @@ public class CcNet : MonoBehaviour {
 						if (CurrMatch.playerLives == 0 || Entities[i].lives > 0)
 							Entities[i].Health = 100f;
 						
-						netView.RPC("AssignPlayerStats", RPCMode.All, 
+						NetView.RPC("AssignPlayerStats", RPCMode.All, 
 						                Entities[i].viewID, 
 						                Entities[i].Health, 
 						                Entities[i].kills, 
 						                Entities[i].deaths, 
 						                Entities[i].currentScore);
-						netView.RPC("RespawnPlayer", RPCMode.All, Entities[i].viewID);
+						NetView.RPC("RespawnPlayer", RPCMode.All, Entities[i].viewID);
 					}
 				}else{ // set spawn countdown 
 					Entities[i].respawnTime = Time.time + CurrMatch.respawnWait;
@@ -204,7 +204,7 @@ public class CcNet : MonoBehaviour {
 					LocEnt.team = 1;
 				}
 				
-				netView.RPC("PlayerChangedTeams", RPCMode.AllBuffered, LocEnt.viewID, LocEnt.team);
+				NetView.RPC("PlayerChangedTeams", RPCMode.AllBuffered, LocEnt.viewID, LocEnt.team);
 				
 				for (int i=0; i<Entities.Count; i++) {
 					if (Entities[i].viewID == LocEnt.viewID && Entities[i].Health > 0f) 
@@ -250,7 +250,7 @@ public class CcNet : MonoBehaviour {
 					GunSpawns[i].RestockTime -= Time.deltaTime;
 					if (GunSpawns[i].RestockTime <= 0f) {
 						Gun item = (Gun)GunSpawns[i].Gun;
-						netView.RPC("RestockPickup", RPCMode.All, GunSpawns[i].Gun, (int)item);
+						NetView.RPC("RestockPickup", RPCMode.All, GunSpawns[i].Gun, (int)item);
 					}
 				}
 			}
@@ -265,7 +265,7 @@ public class CcNet : MonoBehaviour {
 
 	//-------- network gameplay ---------- 
 	public void SendTINYUserUpdate(NetworkViewID nvi, UserAction action) {
-		netView.RPC("SendTINYUserUpdateRPC", RPCMode.Others, nvi, (int)action);
+		NetView.RPC("SendTINYUserUpdateRPC", RPCMode.Others, nvi, (int)action);
 	}
 	[RPC]
 	void SendTINYUserUpdateRPC(NetworkViewID nvi, int action) {
@@ -288,7 +288,7 @@ public class CcNet : MonoBehaviour {
 		int gunA, int gunB, Vector3 playerUp, Vector3 playerForward
 	) {
 		// send out a player's current properties to everyone, so they know where we are
-		netView.RPC("SendUserUpdateRPC", RPCMode.Others, viewID, pos, ang, crouch, moveVec, yMove, gunA, gunB, playerUp, playerForward);
+		NetView.RPC("SendUserUpdateRPC", RPCMode.Others, viewID, pos, ang, crouch, moveVec, yMove, gunA, gunB, playerUp, playerForward);
 	}
 	[RPC]
 	void SendUserUpdateRPC(NetworkViewID viewID, Vector3 pos, Vector3 ang, bool crouch, Vector3 moveVec, float yMove, 
@@ -310,7 +310,7 @@ public class CcNet : MonoBehaviour {
 	public void ConsumeHealth(NetworkViewID viewID) {
 		// we just used a health pack, tell the server our health is maxed out 
 		if (!InServerMode) {
-			netView.RPC("ConsumeHealthRPC", RPCMode.Server, viewID);
+			NetView.RPC("ConsumeHealthRPC", RPCMode.Server, viewID);
 		}else{
 			ConsumeHealthRPC(viewID);
 		}
@@ -333,7 +333,7 @@ public class CcNet : MonoBehaviour {
 	// this can be called by RL, GL, & Bomb 
 	public void Detonate(Gun weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
 		// we are server and something detonated, tell everyone
-		netView.RPC("DetonateRPC", RPCMode.All, (int)weapon, position, shooterID, bulletID);
+		NetView.RPC("DetonateRPC", RPCMode.All, (int)weapon, position, shooterID, bulletID);
 	}
 	[RPC]
 	void DetonateRPC(int weapon, Vector3 position, NetworkViewID shooterID, NetworkViewID bulletID) {
@@ -376,7 +376,7 @@ public class CcNet : MonoBehaviour {
 		// we have fired a shot, let's tell everyone about it so they can see it 
 		//print ("Shot info received by net.Shoot(), alt = " + (alt ? "1" : "0"));
 		NetworkViewID bulletID = Network.AllocateViewID();
-		netView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit, sprint, alt, hitNorm);
+		NetView.RPC("ShootRPC", RPCMode.All, (int)weapon, origin, direction, end, shooterID, bulletID, hit, sprint, alt, hitNorm);
 	}
 	[RPC]
 	void ShootRPC(int weapon, Vector3 origin, Vector3 direction, Vector3 end, NetworkViewID shooterID, NetworkViewID bulletID, bool hit, bool sprint, bool alt, Vector3 hitNorm, NetworkMessageInfo info) {
@@ -391,7 +391,7 @@ public class CcNet : MonoBehaviour {
 
 		// we hit somebody, tell the server! 
 		if (!InServerMode) {
-			netView.RPC("RegisterHitRPC", RPCMode.Server, (int)weapon, shooterID, victimID, hitPos);
+			NetView.RPC("RegisterHitRPC", RPCMode.Server, (int)weapon, shooterID, victimID, hitPos);
 		}else{
 			RegisterHitRPC((int)weapon, shooterID, victimID, hitPos);
 		}
@@ -418,7 +418,7 @@ public class CcNet : MonoBehaviour {
 			return;
 		
 		if ((Gun)weapon == Gun.Swapper){
-			netView.RPC("SwapPlayers",RPCMode.All, shooterID, Entities[si].Actor.transform.position, victimID, Entities[vi].Actor.transform.position);
+			NetView.RPC("SwapPlayers",RPCMode.All, shooterID, Entities[si].Actor.transform.position, victimID, Entities[vi].Actor.transform.position);
 			return;
 		}
 		
@@ -466,24 +466,24 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// assign results
-		netView.RPC("AssignPlayerStats", RPCMode.All, victimID, Entities[vi].Health, Entities[vi].kills, Entities[vi].deaths, Entities[vi].currentScore);
-		netView.RPC("AssignPlayerStats", RPCMode.All, shooterID, Entities[si].Health, Entities[si].kills, Entities[si].deaths, Entities[si].currentScore);
+		NetView.RPC("AssignPlayerStats", RPCMode.All, victimID, Entities[vi].Health, Entities[vi].kills, Entities[vi].deaths, Entities[vi].currentScore);
+		NetView.RPC("AssignPlayerStats", RPCMode.All, shooterID, Entities[si].Health, Entities[si].kills, Entities[si].deaths, Entities[si].currentScore);
 
 		if (killShot) {
-			netView.RPC("AnnounceKill", RPCMode.All, weapon, shooterID, victimID);
+			NetView.RPC("AnnounceKill", RPCMode.All, weapon, shooterID, victimID);
 			
 			if (CurrMatch.teamBased) 
-				netView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
+				NetView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
 		
 		// do hit effects 
-		netView.RPC("DoHitEffects", RPCMode.All, weapon, hitPos, victimID);
+		NetView.RPC("DoHitEffects", RPCMode.All, weapon, hitPos, victimID);
 		
 		// check for game over
 		if (CurrMatch.winScore > 0) {
 			for (int i=0; i<Entities.Count; i++) {
 				if (Entities[i].currentScore>=CurrMatch.winScore) {
-					netView.RPC("AnnounceGameOver", RPCMode.All);
+					NetView.RPC("AnnounceGameOver", RPCMode.All);
 				}
 			}
 		}
@@ -655,7 +655,7 @@ public class CcNet : MonoBehaviour {
 				MatchTimeLeft = 0f;
 				gameOver = true;
 				IntermissionTimeLeft = 15f;
-				netView.RPC("AnnounceGameOver", RPCMode.Others);
+				NetView.RPC("AnnounceGameOver", RPCMode.Others);
 			}
 		}
 		
@@ -802,7 +802,7 @@ public class CcNet : MonoBehaviour {
 	public void UnstockPickupPoint(SpawnData point){
 		for (int i=0; i<GunSpawns.Count; i++) {
 			if (point == GunSpawns[i]) {
-				netView.RPC("UnstockRPC", RPCMode.All, GunSpawns[i].Gun);
+				NetView.RPC("UnstockRPC", RPCMode.All, GunSpawns[i].Gun);
 			}
 		}
 	}
@@ -831,7 +831,7 @@ public class CcNet : MonoBehaviour {
 				if (item == Gun.None)
 					item = Gun.Health;
 
-				netView.RPC("RestockPickup", RPCMode.All, GunSpawns[i].Gun, (int)item);
+				NetView.RPC("RestockPickup", RPCMode.All, GunSpawns[i].Gun, (int)item);
 			}
 		}
 	}
@@ -843,7 +843,7 @@ public class CcNet : MonoBehaviour {
 	#region BBall
 
 	public void AnnounceBallCapture(NetworkViewID viewID) {
-		netView.RPC("AnnounceBallCaptureRPC", RPCMode.All, viewID);
+		NetView.RPC("AnnounceBallCaptureRPC", RPCMode.All, viewID);
 	}
 	
 	[RPC]
@@ -852,7 +852,7 @@ public class CcNet : MonoBehaviour {
 	}
 	
 	public void ThrowBall(Vector3 fromPos, Vector3 direction, float strength) {
-		netView.RPC("ThrowBallRPC", RPCMode.All, fromPos, direction, strength);
+		NetView.RPC("ThrowBallRPC", RPCMode.All, fromPos, direction, strength);
 	}
 	
 	[RPC]
@@ -929,7 +929,7 @@ public class CcNet : MonoBehaviour {
 				MatchTimeLeft = 0f;
 				gameOver = true;
 				IntermissionTimeLeft = 5f; // CHANGE ME
-				netView.RPC("AnnounceGameOver", RPCMode.Others);
+				NetView.RPC("AnnounceGameOver", RPCMode.Others);
 			}	
 		}
 		
@@ -967,14 +967,14 @@ public class CcNet : MonoBehaviour {
 		if (InServerMode) {
 			// let new players know the scores 
 			for (int i=0; i<Entities.Count; i++) {
-				netView.RPC("SharePlayerScores", RPCMode.Others, 
+				NetView.RPC("SharePlayerScores", RPCMode.Others, 
 	                Entities[i].viewID, 
 	                Entities[i].kills, 
 	                Entities[i].deaths, 
 					Entities[i].currentScore);
 			}
 			
-			netView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
+			NetView.RPC("AnnounceTeamScores", RPCMode.Others, team1Score, team2Score);
 		}
 		
 		if (playableMapIsReady) {
@@ -1086,7 +1086,7 @@ public class CcNet : MonoBehaviour {
 			}
 		}
 		
-		netView.RPC("BroadcastNewGame", RPCMode.All, NetVI, 
+		NetView.RPC("BroadcastNewGame", RPCMode.All, NetVI, 
 			CurrMatch.Name, CurrMatch.MapName, CurrMatch.Descript, CurrMatch.winScore, CurrMatch.Duration, 
 			CurrMatch.respawnWait, CurrMatch.deathsSubtractScore, CurrMatch.killsIncreaseScore, CurrMatch.teamBased, 
 			targetTeam, CurrMatch.FriendlyFire, CurrMatch.pitchBlack, gameOver, MatchTimeLeft, 
@@ -1236,13 +1236,13 @@ public class CcNet : MonoBehaviour {
 		}
 		
 		// tell everyone we're here 
-		netView.RPC("NewPlayer", RPCMode.AllBuffered, LocEnt.viewID, LocEnt.name, 
+		NetView.RPC("NewPlayer", RPCMode.AllBuffered, LocEnt.viewID, LocEnt.name, 
 		                S.ColToVec(LocEnt.colA), S.ColToVec(LocEnt.colB), S.ColToVec(LocEnt.colC), 
 		                LocEnt.headType, Network.player, LocEnt.team, CurrMatch.playerLives);
 		
 		setupGunSpawns();
 		
-		netView.RPC("RequestPickupStocks", RPCMode.Server);
+		NetView.RPC("RequestPickupStocks", RPCMode.Server);
 		hud.Mode = HudMode.Playing;
 	}
 
@@ -1251,7 +1251,7 @@ public class CcNet : MonoBehaviour {
 			basketball = (GameObject)GameObject.Instantiate(GOs.Get("BasketBall"));
 			
 			if (!InServerMode) 
-				netView.RPC("RequestBallStatus", RPCMode.Server);
+				NetView.RPC("RequestBallStatus", RPCMode.Server);
 		}else{
 			if (GameObject.Find("_BasketRed") != null) 
 				Destroy(GameObject.Find("_BasketRed"));
@@ -1300,7 +1300,7 @@ public class CcNet : MonoBehaviour {
 	void RequestBallStatus() {
 		// player has joined and doesn't yet know the status of the basketball, lets share it 
 		var bballScript = basketball.GetComponent<BasketballScript>();
-		netView.RPC("ShareBallStatus",RPCMode.Others, basketball.transform.position, bballScript.moveVector, bballScript.throwerID, bballScript.held);
+		NetView.RPC("ShareBallStatus",RPCMode.Others, basketball.transform.position, bballScript.moveVector, bballScript.throwerID, bballScript.held);
 	}
 	
 	[RPC]
@@ -1352,7 +1352,7 @@ public class CcNet : MonoBehaviour {
 		//Debug.Log("Connected to a server");
 		Connected = true;
 		// we just connected to a host, let's RPC the host and ask for the game info
-		netView.RPC("RequestGameData", RPCMode.Server);
+		NetView.RPC("RequestGameData", RPCMode.Server);
 		hud.Mode = HudMode.Wait;
 		latestPacket = Time.time;
 		LocEnt.viewID = Network.AllocateViewID();
@@ -1410,9 +1410,9 @@ public class CcNet : MonoBehaviour {
 	public void DisconnectNow() {
 		if (Connected) {
 			if (!InServerMode) {
-				netView.RPC("PlayerLeave", RPCMode.OthersBuffered, LocEnt.viewID, LocEnt.name);
+				NetView.RPC("PlayerLeave", RPCMode.OthersBuffered, LocEnt.viewID, LocEnt.name);
 			}else{
-				netView.RPC("ServerLeave", RPCMode.OthersBuffered);
+				NetView.RPC("ServerLeave", RPCMode.OthersBuffered);
 			}
 			
 			LocEnt.viewID = new NetworkViewID();
@@ -1470,7 +1470,7 @@ public class CcNet : MonoBehaviour {
 	
 	public void Kick(int playerIndex, bool autokick){
 		Network.CloseConnection(Entities[playerIndex].netPlayer, true);
-		netView.RPC("KickedPlayer", RPCMode.AllBuffered, Entities[playerIndex].viewID, autokick);
+		NetView.RPC("KickedPlayer", RPCMode.AllBuffered, Entities[playerIndex].viewID, autokick);
 	}
 	
 	[RPC]
