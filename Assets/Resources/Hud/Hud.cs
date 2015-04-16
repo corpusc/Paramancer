@@ -136,7 +136,7 @@ public class Hud : MonoBehaviour {
 	    ) {
 			if (Mode != HudMode.MainMenu) {
 				Mode = HudMode.MainMenu;
-				Screen.lockCursor = false;
+				Cursor.lockState = CursorLockMode.None;
 			}else{
 				// the only people who should see my fullscreen'ish button 
 				// now (about how you gotta click in the window to grab cursor) 
@@ -311,8 +311,8 @@ public class Hud : MonoBehaviour {
 	
 	
 	void maybePromptClickIn() {
-		if (!Screen.lockCursor) {
-			Screen.lockCursor = true;
+		if (Cursor.lockState == CursorLockMode.None) {
+			Cursor.lockState = CursorLockMode.Locked;
 			
 			int mar = 32; // margin to push inwards from screen dimensions
 			var r = new Rect(0, 0, Screen.width, Screen.height);

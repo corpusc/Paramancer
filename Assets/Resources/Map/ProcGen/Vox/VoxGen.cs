@@ -42,7 +42,7 @@ public class VoxGen {
 	public float JumpPadOffset = 0.05f; // the distance from the center of the jump pad to the floor it is on 
 	// spawns 
 	//		entities 
-	public Vector3 SpawnPointScale = Vector3.one;
+	public Vector3 SpawnPointScale = new Vector3(0.28f, 0.28f, 0.28f);//Vector3.one;
 	public int NumUserSpawns = 6; // (FFA/red/blue) 
 	public int NumMobSpawns = 8;
 	// 		weapons 
@@ -773,11 +773,11 @@ public class VoxGen {
 
 	private void makeSpawns(int num, GameObject o, Transform tr, bool isGun = false) {
 		numMade = 0;
-		float yOff = 0f;
+		float yOff = -0.5f * Scale.y;
 		var scale = SpawnPointScale;
 		
 		if (isGun) {
-			yOff = WeaponSpawnOffset - Scale.y * 0.5f;
+			//yOff = WeaponSpawnOffset;
 			scale = WeaponSpawnScale;
 		}
 		

@@ -145,7 +145,7 @@ public class Actor : MonoBehaviour {
 
 
 	public bool sendRPCUpdate = false;
-	bool previouslyLockedCursor = true; // this is just so that clicking back into the screen won't fire explosive or gravgun immediately 
+	CursorLockMode prevLockMode = CursorLockMode.Locked; // this is just so that clicking back into the screen won't fire explosive or gravgun immediately 
 	float rpcCamTime = 0f;
 	void Update() {
 		if // dead 
@@ -202,7 +202,7 @@ public class Actor : MonoBehaviour {
 		//Model.transform.rotation = transform.rotation;
 		//Model.transform.localEulerAngles = new Vector3(0, bod.transform.eulerAngles.y, 0);
 
-		previouslyLockedCursor = Screen.lockCursor;
+		prevLockMode = Cursor.lockState;
 	}
 
 
@@ -902,7 +902,7 @@ public class Actor : MonoBehaviour {
 			if (locUser.LookInvert)
 				yChange = -1f;
 			
-			if (Screen.lockCursor) {
+			if (Cursor.lockState == CursorLockMode.Locked) {
 				camAngle.x -= Input.GetAxis("Mouse Y") * Time.deltaTime * 30f * locUser.LookSensitivity * yChange;
 				camAngle.y += Input.GetAxis("Mouse X") * Time.deltaTime * 30f * locUser.LookSensitivity;
 				
@@ -918,7 +918,7 @@ public class Actor : MonoBehaviour {
 	}
 
 	void throwBall() {
-		if (User.hasBall && Screen.lockCursor) {
+		if (User.hasBall && Cursor.lockState == CursorLockMode.Locked) {
 			net.ThrowBall(Camera.main.transform.position, Camera.main.transform.forward, 20f);
 		}
 	}
@@ -965,7 +965,7 @@ public class Actor : MonoBehaviour {
 			if (locUser.LookInvert) 
 				invY = -1f;
 			
-			if (Screen.lockCursor &&
+			if (Cursor.lockState == CursorLockMode.Locked &&
 			    hud.Mode == HudMode.Playing || 
 			    hud.Mode == HudMode.Editing
 			    ) {
@@ -1146,7 +1146,8 @@ public class Actor : MonoBehaviour {
 			
 			if // we can shoot 
 			(gun.Cooldown <= 0f &&
-				Screen.lockCursor && previouslyLockedCursor &&
+				Cursor.lockState == CursorLockMode.Locked && 
+			 	prevLockMode == CursorLockMode.Locked &&
 				!User.hasBall && 
 				GunInHand >= Gun.Pistol
 			) {

@@ -5,11 +5,11 @@ using System.Collections;
 
 public class TestCam : MonoBehaviour {
 	void Start() {
-		Screen.lockCursor = true;
+		Cursor.lockState = CursorLockMode.Locked;
 	}
 
 	void OnGUI() {
-		if (Screen.lockCursor) {
+		if (Cursor.lockState == CursorLockMode.Locked) {
 			GUI.Label(new Rect(Screen.width/2, Screen.height/2, 99, 99), "P");
 		}
 	}
@@ -17,7 +17,7 @@ public class TestCam : MonoBehaviour {
 	void Update() {
 		float speed = 10f;
 
-		if (Screen.lockCursor) {
+		if (Cursor.lockState == CursorLockMode.Locked) {
 			transform.localEulerAngles += new Vector3(
 				-Input.GetAxis("Mouse Y") * 2f, 
 				Input.GetAxis("Mouse X") * 2f, 
@@ -28,11 +28,11 @@ public class TestCam : MonoBehaviour {
 
 		if /**/ (CcInput.Holding(UserAction.Sprint))       speed *= 4f;
 		if /**/ (CcInput.Started(UserAction.Alt)) {
-			if (Screen.lockCursor) {
-				Screen.lockCursor = false;
+			if (Cursor.lockState == CursorLockMode.Locked) {
+				Cursor.lockState = CursorLockMode.None;
 				Cursor.visible = true;
 			}else{
-				Screen.lockCursor = true;
+				Cursor.lockState = CursorLockMode.Locked;
 				Cursor.visible = true;
 			}
 		}
