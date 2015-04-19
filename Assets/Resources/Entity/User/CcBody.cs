@@ -47,7 +47,7 @@ public class CcBody : MonoBehaviour {
 		if (grounded) {
 			yMove = 0f;
 
-			if (CcInput.Started(UserAction.MoveUp) || (net.JumpAuto && JumpBoosted)) {
+			if (CcInput.Started(UserAction.MoveUp) || JumpBoosted) {
 				yMove = JumpBoosted ? 7f : 4f;
 
 				if /****/ (JumpBoosted) {
@@ -56,7 +56,8 @@ public class CcBody : MonoBehaviour {
 					ne.PlaySound("Jump");
 				}
 
-				net.SendTINYUserUpdate(ne.User.viewID, UserAction.MoveUp);
+				net.SendTINYUserUpdate(ne.User.viewID, UserAction.MoveUp); 
+				// FIXME: this makes remote players play normal jump sound even when bouncepadding 
 			}
 		}else{ // we're in the air 
 			yMove -= Time.deltaTime * net.CurrMatch.Gravity;

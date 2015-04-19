@@ -41,7 +41,7 @@ public class MatchData {
 	
 	public MatchData(Match match) {
 		var all = new List<string>() { VoxelName, "Furnace", "Conflict Room", "The OctaDrome", "Overpass", "Tower" };
-		var hasGoalsAndCeilings = new List<string>() { "Furnace", "Conflict Room", "The OctaDrome" }; // voxel maps & Overpass have no red/blue goals.  if you add some,
+		var hasGoalsAndCeilings = new List<string>() { "Furnace", "Conflict Room", "The OctaDrome" }; // voxel maps & Overpass have no red/blue goals 
 		Maps = all;
 
 		switch (match) {
@@ -53,8 +53,8 @@ public class MatchData {
 				Name = "Bring Your Own Gravity"; //  A Gravity Of Your Own?  Gravity Is/Gets Personal? 
 				Descript = "Each player has their own, independent, changeable gravity";
 				Maps = hasGoalsAndCeilings;
-				Maps.Insert(0, VoxelName);  // has ceiling (no goals needed)
-				Maps.Insert(0, "Overpass"); // has ceiling (no goals needed)
+				Maps.Insert(0, VoxelName);  // has ceiling (no goals needed) 
+				Maps.Insert(0, "Overpass"); // has ceiling (no goals needed) 
 				spawnGunA = Gun.Gravulator;
 				spawnGunB = Gun.Pistol;
 				break;

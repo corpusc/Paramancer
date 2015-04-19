@@ -290,7 +290,6 @@ public class Actor : MonoBehaviour {
 	}
 
 
-
 	void switchWeapon() {
 		bool nex, pre;
 		CcInput.PollScrollWheel(out nex, out pre);
@@ -320,13 +319,13 @@ public class Actor : MonoBehaviour {
 	}
 
 
-
 	void weaponSwitchingSoundAndVisual() {
 		gunRecoil += Vector3.right * 3f;
 		gunRecoil -= Vector3.up * 4f;
 		PlaySound("guncocked");
 		net.SendTINYUserUpdate(User.viewID, UserAction.Next);
 	}
+
 
 	void showCorrectGuns() {
 		var ch = arse.Guns[(int)GunInHand]; // current (gun in) hand 

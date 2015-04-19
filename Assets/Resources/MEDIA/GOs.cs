@@ -18,9 +18,11 @@ public static class GOs {
 		handleFolder("Theme");
 	}
 
+
 	public static void Init() {
 	}
-	
+
+
 	public static GameObject Get(string s) { // hash lookups in a Dictionary are fast right? 
 		if (gos.ContainsKey(s))
 			return gos[s];
@@ -28,7 +30,8 @@ public static class GOs {
 		Debug.LogError("______ GOs: COULDN'T FIND THE FILE NAMED '" + s + "'!!! ______");
 		return null;
 	}
-	
+
+
 	public static GameObject GetFirstWith(string s) { // this is slow i think.  iterating thru key/value pairs 
 		foreach (var pair in gos) {
 			if (pair.Value.name.Contains(s))
@@ -38,7 +41,8 @@ public static class GOs {
 		Debug.LogError("______ GOs: COULDN'T FIND ANY FILE WITH '" + s + "' IN THE NAME!!! ______");
 		return null;
 	}
-	
+
+
 	static void handleFolder(string s) {
 		string feedback = "";
 		var tGOs = Resources.LoadAll<GameObject>(s);

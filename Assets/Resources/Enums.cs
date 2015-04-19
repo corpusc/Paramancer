@@ -76,7 +76,6 @@ public enum Match {
 public enum HudMode {
 	// offline 
 	SplashLogos,
-	MainMenu,
 	NewGame,    // (don't need both MatchSetup AND NewGame anymore?) 
 	Connecting,
 	ConnectionError,
@@ -88,6 +87,8 @@ public enum HudMode {
 	KickAPlayer,
 
 	// both 
+	MainMenu,
+
 	About,
 	Controls,
 	Settings,

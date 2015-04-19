@@ -71,7 +71,6 @@ public class CcNet : MonoBehaviour {
 	// personal / local user 
 	public NetEntity LocEnt;
 	public bool gunBobbing = true;
-	public bool JumpAuto = true;
 
 
 
@@ -1278,7 +1277,7 @@ public class CcNet : MonoBehaviour {
 				Gun gun = guns[i];
 				guns.RemoveAt(i);
 				
-				var gs = (GameObject)GameObject.Instantiate(GOs.Get("GunSpawn"));
+				var gs = (GameObject)GameObject.Instantiate(GOs.Get("Teleporter Pad Yellow"));
 				gs.transform.position = 
 				child.transform.position;
 

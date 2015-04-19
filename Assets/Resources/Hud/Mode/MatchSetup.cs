@@ -471,7 +471,7 @@ public class MatchSetup {
 		GUILayout.Label ("Map:");
 		GUILayout.FlexibleSpace ();
 		// set friendly map text for player 
-		var n = matches [matchId].Maps [mapId];
+		var n = matches [matchId].Maps[mapId];
 		// name of map/scene 
 		var pgName = MatchData.VoxelName;
 		if (n == pgName) {
