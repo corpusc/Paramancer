@@ -8,7 +8,7 @@ using System.Globalization;
 
 static public class S {
 	public const float GoldenRatio = 1.6180339887498948482f;
-	public const int K = 1000; // kilo in common usage (really it's 1024) 
+	public const int K = 1000; // kilo in common usage (a kilo is actually 1024) 
 	public static Hud Hud = null;
 
 	// colors 

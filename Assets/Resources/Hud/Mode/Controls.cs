@@ -441,19 +441,21 @@ public class Controls : MonoBehaviour {
 			
 		modifyText(ref text, "Left", "L");
 		modifyText(ref text, "Right", "R");
-		// just get rid of these (no substitution)
+		// just get rid of these (no substitution) 
 		modifyText(ref text, "Keypad", "");
 		modifyText(ref text, "Alpha", "");
 		modifyText(ref text, "Arrow", "");
 
 		return text;
 	}
-	
+
+
 	void modifyText(ref string s, string substring, string replacement) {
 		if (s.Contains(substring) )
 			s = s.Replace(substring, replacement);
 	}
-	
+
+
 	int numNonesToTheRight(KeyCode kc) {
 		switch (kc) {
 			case KeyCode.Keypad0:
@@ -470,6 +472,7 @@ public class Controls : MonoBehaviour {
 				return 0;		
 		}		
 	}
+
 
 	void setupKeyData() {
 		int lOvW; // leftover width 

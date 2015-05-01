@@ -39,6 +39,10 @@ public class Hud : MonoBehaviour {
 					controls.enabled = false;
 					PlayerPrefs.Save();
 					break;
+				case HudMode.Playing:
+					Cursor.visible = true;
+					Cursor.lockState = CursorLockMode.None;
+					break;
 				case HudMode.Settings:
 					PlayerPrefs.Save();
 					break;
@@ -53,6 +57,10 @@ public class Hud : MonoBehaviour {
 					break;
 				case HudMode.Controls: 
 					controls.enabled = true;
+					break;
+				case HudMode.Playing:
+					Cursor.visible = false;
+					Cursor.lockState = CursorLockMode.Locked;
 					break;
 				case HudMode.Settings:
 					net.LocEnt.name = PlayerPrefs.GetString("PlayerName", defaultName);
@@ -118,6 +126,7 @@ public class Hud : MonoBehaviour {
 		S.Hud = this;
 	}
 
+
 	float serverSearch;
 	void Update() {
 		// periodically check for servers
@@ -133,22 +142,18 @@ public class Hud : MonoBehaviour {
 		    Mode == HudMode.SplashLogos && 
 		    CcInput.Started(UserAction.Activate) // allow alt splash screen escape 
 	    ) {
-			if (Mode != HudMode.MainMenu) {
-				Mode = HudMode.MainMenu;
-				Cursor.lockState = CursorLockMode.None;
+			if (Mode == HudMode.MainMenu) {
+//				if (net.Connected)
+//					Mode = HudMode.Playing;
 			}else{
-				// the only people who should see my fullscreen'ish button 
-				// now (about how you gotta click in the window to grab cursor) 
-				// should be people running the game in the Unity IDE 
-				// & those who hit ESC key 
-				if (net.Connected && !Application.isWebPlayer)
-					Mode = HudMode.Playing;
+				Mode = HudMode.MainMenu;
 			}
 		}
 			
 		if (CcInput.Started(UserAction.Scores))
 			playMode.ShowingScores = !playMode.ShowingScores;
 	}
+
 
 	bool firstTime = true;
 	int oldW, oldH;
@@ -310,14 +315,15 @@ public class Hud : MonoBehaviour {
 	
 	
 	void maybePromptClickIn() {
-		if (Cursor.lockState == CursorLockMode.None) {
+		Debug.Log("void maybePromptClickIn() {");
+		if (Cursor.lockState != CursorLockMode.Locked) {
 			Cursor.lockState = CursorLockMode.Locked;
-			
-			int mar = 32; // margin to push inwards from screen dimensions
-			var r = new Rect(0, 0, Screen.width, Screen.height);
-			r.x += mar;    r.width -= mar*2;
-			r.y += mar;   r.height -= mar*2;				
-			GUI.Button(r, "To grab mouse cursor,\nUnity REQUIRES clicking on the game screen");
+//			
+//			int mar = 32; // margin to push inwards from screen dimensions
+//			var r = new Rect(0, 0, Screen.width, Screen.height);
+//			r.x += mar;    r.width -= mar*2;
+//			r.y += mar;   r.height -= mar*2;				
+//			GUI.Button(r, "To grab mouse cursor,\nUnity REQUIRES clicking on the game screen");
 		}
 	}
 	

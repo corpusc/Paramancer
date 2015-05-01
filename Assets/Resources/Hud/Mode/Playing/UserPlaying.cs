@@ -126,9 +126,6 @@ public class UserPlaying {
 			// width of old cooldown bar meter was: Mathf.FloorToInt(coolDownPercent)
 		}
 
-		// 2 types of crosshairs
-		var old = GUI.matrix; // we need to store this, cuz we only want to spin the crosshairs
-		GUIUtility.RotateAroundPivot(-Camera.main.transform.rotation.eulerAngles.y, new Vector2(midX, midY));
 
 		if (gunHand != Gun.Gravulator) {
 		GUI.DrawTexture(new Rect(
@@ -175,8 +172,7 @@ public class UserPlaying {
 		}
 
 		prevCrossHair = GUI.color;
-		GUI.matrix = old; // done drawing spinny stuff
-		
+
 		// draw carried item icons 
 		int scaleUp = 2;
 		int maxW = arse.WidestIcon * scaleUp;

@@ -33,7 +33,7 @@ public class TestCam : MonoBehaviour {
 				Cursor.visible = true;
 			}else{
 				Cursor.lockState = CursorLockMode.Locked;
-				Cursor.visible = true;
+				Cursor.visible = false;
 			}
 		}
 
