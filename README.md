@@ -13,7 +13,7 @@ features such as FOV sliders).
 ***** Sophie Houlden's game "Splat Death Salad" *****
 
 Something that is mentioned in-game and in the code is that I started this project from that source code.
-It was a very impressive, fully functioning multiplayer FPS game with a number of game modes.  Ccoded in just 7 days for the 7DFPS game
+It was a very impressive, fully functioning multiplayer FPS game with a number of game modes.  Coded in just 7 days for the 7DFPS game
 jam.
 
 I talked with Sophie & she gave me permission to use this as a base for Paramancer, which I clearly told her was meant to be a commercial
@@ -25,8 +25,7 @@ reason.  But you MUST GET PERMISSION FROM SOPHIE if you want to use this project
 made by a 3rd guy, and I'm fairly sure he would NOT give you permission to use them, as he had some weird financial ideas with me, which 
 (and combined with other more personal reasons) caused me to stop using his guns and to stop communicating with him.
 
-Every part of the code that I read and interacted with was virtually entirely rewritten.  Almost no identifiers kept the same name, and 
-flow/architecture greatly changed.
+Every part of the code that I read and interacted with was virtually entirely rewritten.  Almost no identifiers kept the same name, for 1 example.
 
 
 2 things lead to abandoning this code base.
