@@ -3,6 +3,8 @@ Multiplayer, frantic, OLD SCHOOL arena FPS.     Using Unity/C#.    Soon with rog
 BALANCED procedural weapons
 
 
+August, 2019
+
 This version of the game was abandoned about 4 years ago.
 I restarted making Paramancer from scratch, and it will remain closed source.
 I will pull out a few small bits of code (that were authored by me) from this code base, but most of my work here was simply
