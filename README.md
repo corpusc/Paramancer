@@ -1,6 +1,5 @@
 # Paramancer
-Multiplayer, frantic, OLD SCHOOL arena FPS.     Using Unity/C#.    Soon with roguelike mode.    Eventually with thousands of 
-BALANCED procedural weapons
+Multiplayer, frantic, OLD SCHOOL arena FPS.     Using Unity/C#.
 
 
 August, 2019
